@@ -1,0 +1,10 @@
+{
+  "name": "@kassis/mcp-contract",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Typed MCP tool contract shared by core and addons.",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}
