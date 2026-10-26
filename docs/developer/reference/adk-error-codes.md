@@ -202,6 +202,15 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Fix: Use a path relative to the package root, without '..' segments.
 - Reported by: `validateManifestV2` in `@kassis/addon-sdk`
 
+<a id="kadk-121"></a>
+
+### KADK-121 Addon configuration does not match config.schema
+
+- Severity: error
+- Message: `Configuration of '{id}' is invalid: {detail}`
+- Fix: Change the addon configuration so it matches config.schema in the manifest.
+- Reported by: `createAddonContext`, before `initialize()` (3b)
+
 ## 2xx Boundaries
 
 <a id="kadk-201"></a>
@@ -339,6 +348,15 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Fix: Declare '\{capability\}' in provides with the version it implements.
 - Reported by: `ctx.capabilities` (3b, 3f)
 
+<a id="kadk-216"></a>
+
+### KADK-216 Route permission is not declared
+
+- Severity: error
+- Message: `Add-on '{id}' mounted a route with permission '{value}', which is not in permissions`
+- Fix: Declare '\{value\}' in permissions, or mount the route with a permission the manifest declares.
+- Reported by: `ctx.routes.mount` (3b)
+
 ## 3xx Data
 
 <a id="kadk-301"></a>
@@ -422,7 +440,7 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Severity: error
 - Message: `Add-on '{id}' published '{event}', which is not in events.publishes`
 - Fix: Declare the event with its schema in events.publishes.
-- Reported by: `ctx.events` (3c)
+- Reported by: `ctx.events` (name check 3b, schemas 3c)
 
 <a id="kadk-402"></a>
 
@@ -440,7 +458,7 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Severity: error
 - Message: `Add-on '{id}' subscribed to '{event}', which is not in events.subscribes`
 - Fix: Declare the event in events.subscribes.
-- Reported by: `ctx.events` (3c)
+- Reported by: `ctx.events` (3b)
 
 <a id="kadk-404"></a>
 
@@ -589,6 +607,42 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Message: `Add-on '{id}' used job type '{value}', which is not in jobs.types`
 - Fix: Declare the job type in jobs.types.
 - Reported by: `AddonContext` facades (3b, 3d)
+
+<a id="kadk-611"></a>
+
+### KADK-611 Principal not issued by the host
+
+- Severity: error
+- Message: `Add-on '{id}' passed {operation} a principal or request the host did not issue`
+- Fix: Pass the principal from ctx.routes.principalOf(request), event.principal or job.principal, unchanged.
+- Reported by: `AddonContext` facades (3b)
+
+<a id="kadk-612"></a>
+
+### KADK-612 Setting outside the addon's read scope
+
+- Severity: error
+- Message: `Add-on '{id}' read setting '{value}', which is outside its namespace`
+- Fix: Read settings that start with \{prefixes\}. Core settings reach an addon through a facade, such as ctx.settings.search().
+- Reported by: `ctx.settings.get` (3b)
+
+<a id="kadk-613"></a>
+
+### KADK-613 No user to attribute the write to
+
+- Severity: error
+- Message: `Add-on '{id}' called {operation} with a principal that has no user`
+- Fix: Act for the signed-in user's principal, or provision the addon's service user; audited writes never run as 'system'.
+- Reported by: `AddonContext` facades that write on behalf of a principal (3b)
+
+<a id="kadk-614"></a>
+
+### KADK-614 Egress limit exceeded
+
+- Severity: error
+- Message: `Add-on '{id}' call to '{host}' exceeded the egress {limit} limit of {value}`
+- Fix: Ask for less data or a faster answer, or have an operator raise addons.egress.timeoutMs or addons.egress.maxResponseBytes in Settings.
+- Reported by: `ctx.http.fetch` (3b)
 
 ## 7xx Attestation
 

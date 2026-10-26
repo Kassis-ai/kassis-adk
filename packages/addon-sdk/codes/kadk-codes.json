@@ -182,6 +182,15 @@
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-120"
     },
     {
+      "code": "KADK-121",
+      "category": "manifest",
+      "severity": "error",
+      "title": "Addon configuration does not match config.schema",
+      "message": "Configuration of '{id}' is invalid: {detail}",
+      "fix": "Change the addon configuration so it matches config.schema in the manifest.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-121"
+    },
+    {
       "code": "KADK-201",
       "category": "boundaries",
       "severity": "error",
@@ -315,6 +324,15 @@
       "message": "Add-on '{id}' provided '{capability}', which is not in provides",
       "fix": "Declare '{capability}' in provides with the version it implements.",
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-215"
+    },
+    {
+      "code": "KADK-216",
+      "category": "boundaries",
+      "severity": "error",
+      "title": "Route permission is not declared",
+      "message": "Add-on '{id}' mounted a route with permission '{value}', which is not in permissions",
+      "fix": "Declare '{value}' in permissions, or mount the route with a permission the manifest declares.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-216"
     },
     {
       "code": "KADK-301",
@@ -558,6 +576,42 @@
       "message": "Add-on '{id}' used job type '{value}', which is not in jobs.types",
       "fix": "Declare the job type in jobs.types.",
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-610"
+    },
+    {
+      "code": "KADK-611",
+      "category": "security",
+      "severity": "error",
+      "title": "Principal not issued by the host",
+      "message": "Add-on '{id}' passed {operation} a principal or request the host did not issue",
+      "fix": "Pass the principal from ctx.routes.principalOf(request), event.principal or job.principal, unchanged.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-611"
+    },
+    {
+      "code": "KADK-612",
+      "category": "security",
+      "severity": "error",
+      "title": "Setting outside the addon's read scope",
+      "message": "Add-on '{id}' read setting '{value}', which is outside its namespace",
+      "fix": "Read settings that start with {prefixes}. Core settings reach an addon through a facade, such as ctx.settings.search().",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-612"
+    },
+    {
+      "code": "KADK-613",
+      "category": "security",
+      "severity": "error",
+      "title": "No user to attribute the write to",
+      "message": "Add-on '{id}' called {operation} with a principal that has no user",
+      "fix": "Act for the signed-in user's principal, or provision the addon's service user; audited writes never run as 'system'.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-613"
+    },
+    {
+      "code": "KADK-614",
+      "category": "security",
+      "severity": "error",
+      "title": "Egress limit exceeded",
+      "message": "Add-on '{id}' call to '{host}' exceeded the egress {limit} limit of {value}",
+      "fix": "Ask for less data or a faster answer, or have an operator raise addons.egress.timeoutMs or addons.egress.maxResponseBytes in Settings.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-614"
     },
     {
       "code": "KADK-701",
