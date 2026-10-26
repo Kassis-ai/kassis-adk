@@ -64,6 +64,18 @@ export type McpToolDefinition<TInput, TOutput> = {
   handler: (args: TInput, ctx: McpContext) => Promise<McpToolOutcome<TOutput>>;
 };
 
+/**
+ * Reserved tool argument that carries an agent-registry run id.
+ *
+ * Stdio and HTTP only forward `params.arguments` into the runtime, so the
+ * MCP request `_meta` field never arrives. Callers set this argument on a
+ * tool call that belongs to a run. The runtime removes it before JSON Schema
+ * validation and before the handler. A mutating tool is refused until that
+ * run is acknowledged. A call that omits it is unchanged (Phase 9 makes a
+ * run mandatory for agent principals).
+ */
+export const MCP_AGENT_RUN_ID_ARGUMENT = 'agentRunId';
+
 const TOOL_NAME = /^[A-Za-z0-9_.-]{1,128}$/;
 
 export function defineMcpTool<TInput, TOutput>(
