@@ -6,6 +6,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildCanonicalManifestString } from '../../server/core/addon-deployment/canonicalJson.mjs';
+import {
+  keyIsTrusted,
+  loadPublisherTrustPolicy,
+} from '../../server/core/addon-platform/trust/publisherTrust.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const profilesDir = path.join(here, 'profiles');
@@ -32,17 +36,25 @@ function publicKey() {
   });
 }
 
-export function verifyProfileSignature(profile) {
+export function verifyProfileSignature(profile, policy = loadPublisherTrustPolicy()) {
   if (!profile || typeof profile.signature !== 'string' || profile.signature.length < 64) {
     return false;
   }
   const canonical = buildCanonicalManifestString(profile);
-  return crypto.verify(
+  const verified = crypto.verify(
     null,
     Buffer.from(canonical, 'utf8'),
     publicKey(),
     Buffer.from(profile.signature, 'hex')
   );
+  if (!verified) return false;
+  try {
+    const publisher = typeof profile.publisher === 'string' && profile.publisher ? profile.publisher : '*';
+    keyIsTrusted(fs.readFileSync(publicKeyPath, 'utf8'), publisher, policy);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export async function downloadProfile(instance, profileId, token, fetchImpl = globalThis.fetch) {
