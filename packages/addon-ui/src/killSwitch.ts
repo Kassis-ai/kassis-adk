@@ -1,4 +1,12 @@
-const killed = new Set<string>();
+const killed = hostKilled();
+
+function hostKilled(): Set<string> {
+  const host = globalThis as { __kassisAddonKilled?: Set<string> };
+  // One set on the host global, so an addon that shares this module and one that
+  // bundled an older copy still see the same switch when the host created it first.
+  if (!host.__kassisAddonKilled) host.__kassisAddonKilled = new Set();
+  return host.__kassisAddonKilled;
+}
 
 /** Turn an addon's slots off without unloading the host page. */
 export function killAddon(addonId: string): void {
