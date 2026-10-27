@@ -14,9 +14,11 @@ export type McpToolAccess = {
   mutating: boolean;
   destructive?: boolean;
   idempotent?: boolean;
+  /** When true, the call is applied only after the agent run is attested. */
+  finalDecision?: boolean;
 };
 
-export type McpPrincipalKind = 'user' | 'apiKey' | 'plugin';
+export type McpPrincipalKind = 'user' | 'apiKey' | 'plugin' | 'agent';
 
 export type McpPrincipal = {
   id: string;

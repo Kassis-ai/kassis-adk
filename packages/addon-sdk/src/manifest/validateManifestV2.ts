@@ -27,8 +27,6 @@ export const MANIFEST_V1_FIELD_HOMES: Readonly<Record<string, string>> = {
   hostApiVersion: 'hostApi',
   compatibleAppVersion: 'hostApi',
   compatibility: 'hostApi',
-  health: 'nothing until the tier 2 supervisor enforces it (Phase 5)',
-  resources: 'nothing until the tier 2 supervisor enforces it (Phase 5)',
   licenseRequirement: 'ctx.extend.registerLicenseFeatures',
   author: 'metadata.author',
   packageLicense: 'metadata.license',

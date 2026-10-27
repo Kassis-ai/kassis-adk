@@ -98,6 +98,22 @@
         }
       }
     },
+    "resources": {
+      "type": "object",
+      "required": ["memoryMb"],
+      "additionalProperties": false,
+      "properties": {
+        "memoryMb": { "type": "integer", "minimum": 32, "maximum": 4096 }
+      }
+    },
+    "health": {
+      "type": "object",
+      "required": ["path"],
+      "additionalProperties": false,
+      "properties": {
+        "path": { "type": "string", "minLength": 1, "maxLength": 200 }
+      }
+    },
     "jobs": {
       "type": "object",
       "required": ["types"],

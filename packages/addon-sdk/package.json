@@ -12,6 +12,10 @@
     "./codes/kadk-codes.json": "./codes/kadk-codes.json",
     "./package.json": "./package.json"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "restricted"
+  },
   "dependencies": {
     "ajv": "^8.17.1"
   }
