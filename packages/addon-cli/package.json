@@ -1,0 +1,22 @@
+{
+  "name": "@kassis/addon-cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "kassis-addon command line. The host supplies the runtime; this package supplies the commands.",
+  "bin": {
+    "kassis-addon": "./bin/kassis-addon.mjs"
+  },
+  "files": ["bin", "lib", "templates", "schema"],
+  "scripts": {
+    "prepack": "node prepack.mjs"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "restricted",
+    "provenance": true
+  }
+}

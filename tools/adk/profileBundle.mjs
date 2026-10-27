@@ -5,15 +5,18 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildCanonicalManifestString } from '../../server/core/addon-deployment/canonicalJson.mjs';
+import { buildCanonicalManifestString } from './canonicalJson.mjs';
 import {
   keyIsTrusted,
   loadPublisherTrustPolicy,
-} from '../../server/core/addon-platform/trust/publisherTrust.mjs';
+} from './publisherTrust.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const profilesDir = path.join(here, 'profiles');
-const publicKeyPath = path.resolve(here, '../../server/keys/addon_verification_public.key');
+const besideKey = path.join(here, 'addon_verification_public.key');
+const publicKeyPath = fs.existsSync(besideKey)
+  ? besideKey
+  : path.resolve(here, '../../server/keys/addon_verification_public.key');
 
 export function bundledProfilePath(profileId) {
   return path.join(profilesDir, `${profileId}.json`);

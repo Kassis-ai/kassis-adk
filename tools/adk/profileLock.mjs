@@ -5,7 +5,7 @@
 import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
-import { canonicalJsonStringify } from '../../server/core/addon-deployment/canonicalJson.mjs';
+import { canonicalJsonStringify } from './canonicalJson.mjs';
 import { certifyAttestation } from './certifyAttestation.mjs';
 
 export function buildProfileLock(profile) {
