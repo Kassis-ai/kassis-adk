@@ -6,6 +6,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { certifyAttestation, kadkIssue } from './certifyAttestation.mjs';
+import { buildProfileLock, packEvidence } from './profileLock.mjs';
 
 const root = process.cwd();
 const lockPath = path.join(root, '.kassis', 'agent-profile.lock.json');
@@ -65,11 +66,45 @@ function explain(code) {
   }
 }
 
+function flagValue(name) {
+  const prefix = `--${name}=`;
+  const found = process.argv.find((arg) => arg.startsWith(prefix));
+  return found ? found.slice(prefix.length) : '';
+}
+
+function sync() {
+  const from = flagValue('from');
+  if (!from) {
+    console.error('Usage: node tools/adk/kassis-addon.mjs sync --from=<profile.json>');
+    process.exit(1);
+  }
+  const lock = buildProfileLock(JSON.parse(fs.readFileSync(from, 'utf8')));
+  fs.mkdirSync(path.dirname(lockPath), { recursive: true });
+  fs.writeFileSync(lockPath, `${JSON.stringify(lock, null, 2)}\n`);
+  console.log(lockPath);
+}
+
+function pack() {
+  const outDir = flagValue('out') || path.join(root, '.kassis', 'evidence');
+  const result = packEvidence({
+    lock: readJson(lockPath),
+    attestation: readJson(attestationPath),
+    outDir,
+  });
+  for (const issue of result.issues) {
+    console.log(`${issue.code} ${issue.message}`);
+  }
+  if (!result.ok) process.exit(1);
+  console.log(outDir);
+}
+
 const command = process.argv[2];
 if (command === 'certify') certify();
 else if (command === 'attest') attest();
 else if (command === 'explain') explain(process.argv[3]);
+else if (command === 'sync') sync();
+else if (command === 'pack') pack();
 else {
-  console.error('Usage: node tools/adk/kassis-addon.mjs <certify|attest|explain> [KADK-7xx]');
+  console.error('Usage: node tools/adk/kassis-addon.mjs <certify|attest|explain|sync|pack>');
   process.exit(1);
 }
