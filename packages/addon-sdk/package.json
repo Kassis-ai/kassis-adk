@@ -14,7 +14,8 @@
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com",
-    "access": "restricted"
+    "access": "restricted",
+    "provenance": true
   },
   "dependencies": {
     "ajv": "^8.17.1"

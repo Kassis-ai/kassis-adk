@@ -48,6 +48,9 @@ describe('addon CLI', () => {
         path.join(dir, '.kassis/attestation.json'),
         `${JSON.stringify({ version: lock.version, lockHash: lock.hash, runId: 'rehearsal', answers }, null, 2)}\n`
       );
+      const certified = run(['certify', '--json'], dir);
+      expect(certified.status).toBe(0);
+      expect(JSON.parse(certified.stdout).ok).toBe(true);
       const packed = run(['pack', `--out=${path.join(dir, 'evidence')}`], dir);
       expect(packed.status).toBe(0);
       expect(assertEvidencePack(path.join(dir, 'evidence')).ok).toBe(true);

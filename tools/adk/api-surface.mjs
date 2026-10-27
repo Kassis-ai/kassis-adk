@@ -1,10 +1,11 @@
 /**
- * Public export names of @kassis/addon-sdk.
+ * Public API report for @kassis/addon-sdk, produced by API Extractor.
  *   node tools/adk/api-surface.mjs
  *   node tools/adk/api-surface.mjs --write
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -33,20 +34,22 @@ export function apiSurfaceReport(source) {
 }
 
 function main() {
-  const source = fs.readFileSync(indexPath, 'utf8');
-  const report = apiSurfaceReport(source);
-  if (process.argv.includes('--write')) {
-    fs.mkdirSync(path.dirname(reportPath), { recursive: true });
-    fs.writeFileSync(reportPath, report);
-    console.log(reportPath);
-    return;
-  }
-  const current = fs.existsSync(reportPath) ? fs.readFileSync(reportPath, 'utf8') : '';
-  if (current !== report) {
-    console.error('API surface changed. Run node tools/adk/api-surface.mjs --write');
+  const tsc = path.join(repoRoot, 'node_modules/typescript/lib/tsc.js');
+  const extractor = path.join(repoRoot, 'node_modules/@microsoft/api-extractor/bin/api-extractor');
+  if (!fs.existsSync(extractor)) {
+    console.error('Install @microsoft/api-extractor (npm install).');
     process.exit(1);
   }
-  console.log(`${apiSurfaceNames(source).length} exports`);
+  const compiled = spawnSync(
+    process.execPath,
+    [tsc, '-p', path.join(repoRoot, 'packages/addon-sdk/tsconfig.json'), '--pretty', 'false'],
+    { stdio: 'inherit' }
+  );
+  if (compiled.status !== 0) process.exit(compiled.status ?? 1);
+  const args = ['run', '--config', path.join(repoRoot, 'packages/addon-sdk/api-extractor.json')];
+  if (process.argv.includes('--write')) args.push('--local');
+  const result = spawnSync(process.execPath, [extractor, ...args], { cwd: repoRoot, stdio: 'inherit' });
+  process.exit(result.status ?? 1);
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
