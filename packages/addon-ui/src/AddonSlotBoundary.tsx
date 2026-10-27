@@ -1,4 +1,4 @@
-import { Component, type ErrorInfo, type ReactNode } from 'react';
+import { Component, type ReactNode } from 'react';
 
 import { isAddonKilled } from './killSwitch';
 
@@ -20,8 +20,9 @@ class SlotCatch extends Component<AddonSlotBoundaryProps, CatchState> {
     return { failed: true };
   }
 
-  componentDidCatch(_error: Error, _info: ErrorInfo): void {
-    // The slot is isolated. The host page does not need the stack.
+  componentDidCatch(error: Error): void {
+    // Isolated from the host page, but the message has to be visible when a slot fails.
+    console.error(`[addon-slot] ${this.props.addonId}: ${error.message}`);
   }
 
   render(): ReactNode {
