@@ -1,0 +1,11 @@
+{
+  "name": "@kassis/addon-testkit",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Assertions a coding agent uses to prove an addon pack and that source stays off the host.",
+  "main": "./src/index.mjs",
+  "exports": {
+    ".": "./src/index.mjs"
+  }
+}
