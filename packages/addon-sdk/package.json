@@ -9,6 +9,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./schema/addon-manifest.v2.schema.json": "./schema/addon-manifest.v2.schema.json",
+    "./browser-externals.json": "./browser-externals.json",
     "./codes/kadk-codes.json": "./codes/kadk-codes.json",
     "./package.json": "./package.json"
   },
