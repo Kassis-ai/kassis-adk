@@ -1,0 +1,2 @@
+@kassis:registry=https://npm.pkg.github.com
+# NODE_AUTH_TOKEN is set by the publisher. Do not commit a token.

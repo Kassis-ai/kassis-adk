@@ -5,6 +5,10 @@
   "type": "module",
   "description": "Assertions a coding agent uses to prove an addon pack and that source stays off the host.",
   "main": "./src/index.mjs",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "restricted"
+  },
   "exports": {
     ".": "./src/index.mjs"
   }
