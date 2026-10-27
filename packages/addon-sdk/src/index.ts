@@ -101,6 +101,7 @@ export type {
   CasesFacade,
   CoreFacades,
   DocumentCreateInput,
+  DocumentIndexInput,
   DocumentRecord,
   DocumentTagMatch,
   DocumentTextSource,

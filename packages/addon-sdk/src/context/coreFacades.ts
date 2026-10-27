@@ -158,6 +158,17 @@ export interface DocumentTagMatch {
   readonly tagId: string | null;
 }
 
+/**
+ * Text to index for semantic search (RAG). The host sets the owner and the visibility from the
+ * principal's permissions; the addon cannot choose them.
+ */
+export interface DocumentIndexInput {
+  /** In the addon namespace (`<id>.…`), or a type the host lists for this addon. */
+  readonly sourceType: string;
+  readonly sourceKey: string;
+  readonly content: string;
+}
+
 export interface DocumentsFacade {
   create(principal: AddonPrincipal, input: DocumentCreateInput): Promise<DocumentRecord>;
   extractText(
@@ -165,6 +176,8 @@ export interface DocumentsFacade {
     source: DocumentTextSource
   ): Promise<{ readonly text: string; readonly truncated: boolean }>;
   mapTags(principal: AddonPrincipal, tags: readonly string[]): Promise<readonly DocumentTagMatch[]>;
+  /** Queues the text for semantic search indexing; blank content is ignored. */
+  indexText(principal: AddonPrincipal, input: DocumentIndexInput): Promise<void>;
 }
 
 export interface UserSummary {

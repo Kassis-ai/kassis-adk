@@ -614,6 +614,33 @@
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-614"
     },
     {
+      "code": "KADK-615",
+      "category": "security",
+      "severity": "error",
+      "title": "Principal lacks the permission",
+      "message": "Add-on '{id}' called {operation} for a principal without {permission}",
+      "fix": "Act for a user who holds {permission}, or have an operator grant it to the addon's service account. Facades check the principal's permissions, never the addon's.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-615"
+    },
+    {
+      "code": "KADK-616",
+      "category": "security",
+      "severity": "error",
+      "title": "Record outside the principal's scope",
+      "message": "Add-on '{id}' called {operation} on {resource} '{value}', which the principal cannot access",
+      "fix": "Act for a user whose scope (own, department, jurisdiction) includes the record.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-616"
+    },
+    {
+      "code": "KADK-617",
+      "category": "security",
+      "severity": "error",
+      "title": "Record type not open to the addon",
+      "message": "Add-on '{id}' called {operation} on record type '{value}', which is not open to it",
+      "fix": "Use a record type the addon owns: one it registered through ctx.extend, or one in its namespace. Core record types are reached only through the facade operations that apply their API checks.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-617"
+    },
+    {
       "code": "KADK-701",
       "category": "attestation",
       "severity": "error",

@@ -644,6 +644,33 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Fix: Ask for less data or a faster answer, or have an operator raise addons.egress.timeoutMs or addons.egress.maxResponseBytes in Settings.
 - Reported by: `ctx.http.fetch` (3b)
 
+<a id="kadk-615"></a>
+
+### KADK-615 Principal lacks the permission
+
+- Severity: error
+- Message: `Add-on '{id}' called {operation} for a principal without {permission}`
+- Fix: Act for a user who holds \{permission\}, or have an operator grant it to the addon's service account. Facades check the principal's permissions, never the addon's.
+- Reported by: `ctx.core`, `ctx.risk` and `ctx.audit.search` (3b)
+
+<a id="kadk-616"></a>
+
+### KADK-616 Record outside the principal's scope
+
+- Severity: error
+- Message: `Add-on '{id}' called {operation} on {resource} '{value}', which the principal cannot access`
+- Fix: Act for a user whose scope (own, department, jurisdiction) includes the record.
+- Reported by: `ctx.core` and `ctx.risk` (3b)
+
+<a id="kadk-617"></a>
+
+### KADK-617 Record type not open to the addon
+
+- Severity: error
+- Message: `Add-on '{id}' called {operation} on record type '{value}', which is not open to it`
+- Fix: Use a record type the addon owns: one it registered through ctx.extend, or one in its namespace. Core record types are reached only through the facade operations that apply their API checks.
+- Reported by: `ctx.core.approvals`, `ctx.core.entities.link` and `ctx.core.documents.indexText` (3b)
+
 ## 7xx Attestation
 
 <a id="kadk-701"></a>
