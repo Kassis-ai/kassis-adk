@@ -1,0 +1,282 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { ADDON_MANIFEST_V2_SCHEMA, validateManifestV2, type KadkCode } from '@kassis/addon-sdk';
+import { describe, expect, it } from 'vitest';
+
+import { MANIFEST_V2_KEYS, validManifest } from './fixtures/manifestV2.fixture.js';
+
+type MutableManifest = Record<string, unknown>;
+
+function manifestWith(changes: MutableManifest, remove: string[] = []): MutableManifest {
+  const manifest: MutableManifest = { ...structuredClone(validManifest), ...changes };
+  for (const key of remove) delete manifest[key];
+  return manifest;
+}
+
+function tierOne(changes: MutableManifest = {}): MutableManifest {
+  return manifestWith(
+    { tier: 1, data: undefined, database: { ownedTables: ['tprm_assessments'] }, ...changes },
+    ['data']
+  );
+}
+
+function codesOf(manifest: unknown): string[] {
+  return validateManifestV2(manifest).issues.map((issue) => issue.code);
+}
+
+function expectOnly(manifest: unknown, code: KadkCode, pathPrefix?: string): void {
+  const { ok, issues } = validateManifestV2(manifest);
+  expect(ok).toBe(false);
+  expect(issues.map((issue) => issue.code)).toEqual([code]);
+  if (pathPrefix !== undefined) expect(issues[0]?.path.startsWith(pathPrefix)).toBe(true);
+}
+
+describe('validateManifestV2', () => {
+  it('accepts the reference manifest', () => {
+    expect(validateManifestV2(validManifest)).toEqual({ ok: true, issues: [] });
+  });
+
+  it('accepts a tier 1 manifest with core read access and an owned legacy table', () => {
+    const manifest = tierOne({
+      database: { ownedTables: ['tprm_assessments'], readAccess: ['entities'] },
+      legacyTables: [
+        { tableName: 'tprm_assessments', strategy: 'retain', removalDeadline: '2027-12-31' },
+      ],
+    });
+    expect(validateManifestV2(manifest)).toEqual({ ok: true, issues: [] });
+  });
+
+  it('keeps AddonManifestV2 and the JSON Schema on the same top-level fields', () => {
+    const properties = ADDON_MANIFEST_V2_SCHEMA['properties'];
+    expect(properties && typeof properties === 'object').toBe(true);
+    expect(Object.keys(properties as object).sort()).toEqual(Object.keys(MANIFEST_V2_KEYS).sort());
+  });
+
+  it('reports every issue with code, path, message, fix and docs link', () => {
+    const [issue] = validateManifestV2(manifestWith({ jobs: { types: ['core.reindex'] } })).issues;
+    expect(issue).toEqual({
+      code: 'KADK-111',
+      path: 'jobs.types[0]',
+      message:
+        "Job type 'core.reindex' at jobs.types[0] must start with 'sample-tprm-check.' or 'sample_tprm_check.'",
+      fix: "Rename the job type so it starts with 'sample-tprm-check.' or 'sample_tprm_check.'.",
+      docs: 'docs/developer/reference/adk-error-codes.md#kadk-111',
+    });
+  });
+
+  describe('schema rules', () => {
+    it('rejects a value that is not an object (KADK-101)', () => {
+      expectOnly([], 'KADK-101');
+    });
+
+    it('rejects a value that breaks a pattern (KADK-101)', () => {
+      expectOnly(manifestWith({ hostApi: '1.x' }), 'KADK-101', 'hostApi');
+    });
+
+    it('rejects a missing required field (KADK-102)', () => {
+      expectOnly(manifestWith({}, ['publisher']), 'KADK-102');
+    });
+
+    it('rejects an unknown nested field (KADK-103)', () => {
+      expectOnly(manifestWith({ audit: { actions: [], vocabulary: 'x' } }), 'KADK-103', 'audit');
+    });
+
+    it('rejects a manifest that is not version 2 (KADK-104)', () => {
+      expectOnly(manifestWith({ manifestVersion: 1 }), 'KADK-104', 'manifestVersion');
+      expect(codesOf(manifestWith({}, ['manifestVersion']))).toEqual(['KADK-104']);
+    });
+
+    it('rejects routing.mountPath (KADK-105)', () => {
+      expectOnly(manifestWith({ routing: { mountPath: '/api/v1/cases' } }), 'KADK-105', 'routing');
+    });
+
+    it('rejects entry (KADK-106)', () => {
+      expectOnly(manifestWith({ entry: 'index.js' }), 'KADK-106', 'entry');
+    });
+
+    it('rejects permissionNamespaceWaiver (KADK-107)', () => {
+      expectOnly(
+        manifestWith({ permissionNamespaceWaiver: { approved: true, namespaces: ['cases'] } }),
+        'KADK-107'
+      );
+    });
+
+    it('names the v2 home of a v1 field (KADK-108)', () => {
+      const { issues } = validateManifestV2(
+        manifestWith({ consumesCapabilities: ['party.lookup'] })
+      );
+      expect(issues.map((issue) => issue.code)).toEqual(['KADK-108']);
+      expect(issues[0]?.message).toContain('requires or optional');
+    });
+
+    it('requires newName for a rename (KADK-102)', () => {
+      const manifest = tierOne({
+        legacyTables: [
+          { tableName: 'tprm_assessments', strategy: 'rename', removalDeadline: '2027-12-31' },
+        ],
+      });
+      expect(codesOf(manifest)).toEqual(['KADK-102']);
+    });
+  });
+
+  describe('semantic rules', () => {
+    it('rejects an addon id reserved by the host (KADK-109)', () => {
+      const result = validateManifestV2(validManifest, {
+        reservedNamespaces: ['cases', 'sample_tprm_check'],
+      });
+      expect(result.issues.map((issue) => issue.code)).toEqual(['KADK-109']);
+    });
+
+    it.each([
+      [
+        'KADK-110',
+        { permissions: [{ name: 'cases.view' }], requiredPermissions: [] },
+        'permissions[0].name',
+      ],
+      ['KADK-111', { jobs: { types: ['cr_btm_daily_scan.run'] } }, 'jobs.types[0]'],
+      ['KADK-112', { prompts: { keys: ['fincrime.case.summary'] } }, 'prompts.keys[0]'],
+      ['KADK-113', { secrets: { keys: ['core:jwt-secret'] } }, 'secrets.keys[0]'],
+      [
+        'KADK-114',
+        {
+          events: {
+            publishes: [{ name: 'case.closed', schema: 'events/case.schema.json' }],
+            subscribes: [],
+          },
+        },
+        'events.publishes[0].name',
+      ],
+      ['KADK-115', { audit: { actions: ['user.login'] } }, 'audit.actions[0]'],
+    ] as const)('rejects a name outside the addon namespace (%s)', (code, changes, issuePath) => {
+      expectOnly(manifestWith(changes), code, issuePath);
+    });
+
+    it('accepts the underscore form of the id as a namespace', () => {
+      expect(codesOf(manifestWith({ jobs: { types: ['sample_tprm_check.rescreen'] } }))).toEqual(
+        []
+      );
+    });
+
+    it('rejects duplicate entries (KADK-116)', () => {
+      expectOnly(
+        manifestWith({ egress: { hosts: ['api.example.com', 'api.example.com'] } }),
+        'KADK-116',
+        'egress.hosts'
+      );
+      expectOnly(
+        manifestWith({ secrets: { keys: ['sample-tprm-check:a', 'sample-tprm-check:a'] } }),
+        'KADK-116',
+        'secrets.keys'
+      );
+    });
+
+    it('rejects a capability that is both required and optional (KADK-117)', () => {
+      expectOnly(
+        manifestWith({ optional: [{ capability: 'party.lookup', range: '^1.0.0' }] }),
+        'KADK-117',
+        'optional[0]'
+      );
+    });
+
+    it('rejects a required permission that is not declared (KADK-118)', () => {
+      expectOnly(
+        manifestWith({ requiredPermissions: ['sample-tprm-check.admin'] }),
+        'KADK-118',
+        'requiredPermissions[0]'
+      );
+    });
+
+    it('rejects a package path that leaves the package (KADK-120)', () => {
+      expectOnly(
+        manifestWith({ entrypoints: { main: 'dist/../../server/index.js' } }),
+        'KADK-120',
+        'entrypoints.main'
+      );
+    });
+
+    it('rejects an event schema that is not a .schema.json file (KADK-406)', () => {
+      const events = {
+        publishes: [
+          { name: 'sample-tprm-check.assessment.completed', schema: 'events/completed.json' },
+        ],
+        subscribes: ['party.updated'],
+      };
+      expectOnly(manifestWith({ events }), 'KADK-406', 'events.publishes[0].schema');
+    });
+
+    it('rejects runtime-loaded UI without an entry file (KADK-501)', () => {
+      expectOnly(manifestWith({ ui: { runtimeLoad: true } }), 'KADK-501', 'ui.entryFile');
+    });
+  });
+
+  describe('tier and data rules', () => {
+    it('rejects legacyTables on a tier 2 addon (KADK-301)', () => {
+      const legacyTables = [
+        { tableName: 'tprm_assessments', strategy: 'retain', removalDeadline: '2027-12-31' },
+      ];
+      expectOnly(manifestWith({ legacyTables }), 'KADK-301', 'legacyTables');
+    });
+
+    it('rejects core read access on a tier 2 addon (KADK-302)', () => {
+      const database = {
+        ownedTables: ['addon_sample_tprm_check.assessments'],
+        readAccess: ['entities'],
+      };
+      expectOnly(manifestWith({ database }), 'KADK-302', 'database.readAccess');
+    });
+
+    it('rejects a tier 2 owned table outside data.schema (KADK-303)', () => {
+      expectOnly(
+        manifestWith({ database: { ownedTables: ['audit_logs'] } }),
+        'KADK-303',
+        'database.ownedTables[0]'
+      );
+    });
+
+    it('rejects a data.schema that does not match the id (KADK-304)', () => {
+      const changes = {
+        data: { schema: 'addon_other' },
+        database: { ownedTables: ['addon_other.assessments'] },
+      };
+      expectOnly(manifestWith(changes), 'KADK-304', 'data.schema');
+    });
+
+    it('rejects tier 2 tables without data.schema (KADK-305)', () => {
+      expectOnly(manifestWith({}, ['data']), 'KADK-305', 'data.schema');
+    });
+
+    it('rejects a legacy table the addon does not own (KADK-306)', () => {
+      const legacyTables = [
+        { tableName: 'audit_logs', strategy: 'retain', removalDeadline: '2027-12-31' },
+      ];
+      expectOnly(tierOne({ legacyTables }), 'KADK-306', 'legacyTables[0].tableName');
+    });
+
+    it('rejects a legacy rename outside the addon prefix (KADK-307)', () => {
+      const legacyTables = [
+        {
+          tableName: 'tprm_assessments',
+          strategy: 'rename',
+          newName: 'cases_archive',
+          removalDeadline: '2027-12-31',
+        },
+      ];
+      expectOnly(tierOne({ legacyTables }), 'KADK-307', 'legacyTables[0].newName');
+    });
+  });
+
+  it('reports every current v1 addon manifest as not v2 (KADK-104)', () => {
+    const addonsDir = path.resolve('addons');
+    const manifests = fs
+      .readdirSync(addonsDir, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => path.join(addonsDir, entry.name, 'manifest.json'))
+      .filter((file) => fs.existsSync(file));
+
+    expect(manifests.length).toBeGreaterThan(0);
+    for (const file of manifests) {
+      const manifest: unknown = JSON.parse(fs.readFileSync(file, 'utf8'));
+      expect(codesOf(manifest), file).toContain('KADK-104');
+    }
+  });
+});
