@@ -36,9 +36,13 @@ async function certify() {
     lock: readJson(lockPath),
     attestation: readJson(attestationPath),
   });
-  for (const issue of result.issues) {
-    console.log(`${issue.code} ${issue.message}`);
-    console.log(`  ${issue.fix}`);
+  if (process.argv.includes('--json')) {
+    console.log(JSON.stringify({ ok: result.ok, issues: result.issues }));
+  } else {
+    for (const issue of result.issues) {
+      console.log(`${issue.code} ${issue.message}`);
+      console.log(`  ${issue.fix}`);
+    }
   }
   if (!result.ok) process.exit(1);
   const instance = process.env.KASSIS_ADK_INSTANCE || '';
@@ -153,6 +157,15 @@ function sign() {
   if (!id) {
     console.error('manifest.json needs an id');
     process.exit(1);
+  }
+  const key = flagValue('key');
+  if (key) {
+    const signer = path.join(repoRoot, 'tools/signing/sign-addon.cjs');
+    const result = spawnSync(process.execPath, [signer, root, '--private-key', path.resolve(key)], {
+      cwd: repoRoot,
+      stdio: 'inherit',
+    });
+    process.exit(result.status ?? 1);
   }
   const signer = path.join(repoRoot, 'tools/signing/sign-all-addons.mjs');
   const result = spawnSync(process.execPath, [signer, `--only=${id}`], {

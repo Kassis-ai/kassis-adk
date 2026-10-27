@@ -65,5 +65,9 @@ export async function downloadProfile(instance, profileId, token, fetchImpl = gl
   if (!response.ok) {
     throw new Error(`Profile download failed (${response.status})`);
   }
-  return response.json();
+  const body = await response.json();
+  if (body && typeof body === 'object' && body.data && typeof body.data === 'object') {
+    return body.data;
+  }
+  return body;
 }
