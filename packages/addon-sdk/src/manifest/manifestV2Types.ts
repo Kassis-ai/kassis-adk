@@ -186,6 +186,10 @@ export interface AddonManifestV2 {
   readonly events?: ManifestEvents;
   readonly audit?: { readonly actions: readonly string[] };
   readonly egress?: { readonly hosts: readonly string[] };
+  /** Heap limit the tier 2 supervisor passes to the addon process. */
+  readonly resources?: { readonly memoryMb: number };
+  /** Path the supervisor calls inside the addon process. */
+  readonly health?: { readonly path: string };
   readonly jobs?: { readonly types: readonly string[] };
   readonly prompts?: { readonly keys: readonly string[] };
   readonly secrets?: { readonly keys: readonly string[] };

@@ -1,0 +1,12 @@
+{
+  "manifestVersion": 2,
+  "id": "sample-tprm-check",
+  "name": "Sample TPRM check",
+  "version": "0.1.0",
+  "publisher": "kassis",
+  "tier": 2,
+  "hostApi": "^1.0.0",
+  "egress": { "hosts": ["example.com"] },
+  "resources": { "memoryMb": 128 },
+  "health": { "path": "/health" }
+}
