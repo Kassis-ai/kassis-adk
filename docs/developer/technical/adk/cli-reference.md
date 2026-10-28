@@ -47,6 +47,7 @@ node tools/adk/kassis-addon.mjs certify --json
 
 | Date | Change |
 | --- | --- |
+| 2026-10-28 | `dev` pulls `ghcr.io/equitas78/kassis-devhost:latest` when no image is configured and publishes the container on 127.0.0.1. |
 | 2026-10-28 | `sbom` writes the addon's CycloneDX file. `package` includes certify evidence and refuses a folder that has not been certified. |
 | 2026-10-28 | `kassis-adk-mcp` keeps `dir` inside its working directory, or `--root`. A path or symlink outside that root is KADK-217. |
 | 2026-10-28 | The packed CLI bundles its commands. `kassis-adk-mcp` is the MCP bin in the same package. |
