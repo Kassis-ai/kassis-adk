@@ -739,7 +739,7 @@ A published code keeps its number, category and meaning. A retired code is marke
 
 - Severity: error
 - Message: `Guardrail '{key}' is followed but has no evidence from {check}`
-- Fix: Run \{check\} and attach its result as evidence.
+- Fix: Run certify so \{check\} is recorded in `.kassis/evidence/checks.json`. Evidence typed into the attestation is ignored.
 - Reported by: `kassis addon certify` (7a) and the agent run service (2a)
 
 <a id="kadk-708"></a>
@@ -795,3 +795,27 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Message: `Advisory guardrail '{key}' has no answer`
 - Fix: Answer every guardrail, including advisory ones.
 - Reported by: `kassis addon certify` (7a) and the agent run service (2a)
+
+<a id="kadk-714"></a>
+
+### KADK-714 Attestation outcome is not allowed
+
+- Severity: error
+- Message: `Guardrail '{key}' has outcome '{outcome}', which is not followed, violated or not_applicable`
+- Fix: Set the outcome to followed, violated or not_applicable. A blank outcome fails certify.
+- Reported by: `kassis addon certify`
+
+<a id="kadk-715"></a>
+
+### KADK-715 Typed machine evidence is ignored
+
+- Severity: warning
+- Message: `Guardrail '{key}' has typed evidence. Machine evidence comes only from .kassis/evidence/checks.json.`
+- Fix: Remove the typed evidence for '\{key\}'. Certify records \{check\} itself.
+- Reported by: `kassis addon certify`
+
+## Changelog
+
+| Date | Change |
+| --- | --- |
+| 2026-10-28 | KADK-714 blocks an outcome that is not followed, violated or not_applicable. KADK-715 warns when machine evidence is typed into the attestation. KADK-707 still means the checks file has no passing result for that check. |

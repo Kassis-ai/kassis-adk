@@ -700,7 +700,7 @@
       "severity": "error",
       "title": "Machine-verified guardrail without evidence",
       "message": "Guardrail '{key}' is followed but has no evidence from {check}",
-      "fix": "Run {check} and attach its result as evidence.",
+      "fix": "Run certify so {check} is recorded in .kassis/evidence/checks.json. Evidence typed into the attestation is ignored.",
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-707"
     },
     {
@@ -756,6 +756,24 @@
       "message": "Advisory guardrail '{key}' has no answer",
       "fix": "Answer every guardrail, including advisory ones.",
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-713"
+    },
+    {
+      "code": "KADK-714",
+      "category": "attestation",
+      "severity": "error",
+      "title": "Attestation outcome is not allowed",
+      "message": "Guardrail '{key}' has outcome '{outcome}', which is not followed, violated or not_applicable",
+      "fix": "Set the outcome to followed, violated or not_applicable. A blank outcome fails certify.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-714"
+    },
+    {
+      "code": "KADK-715",
+      "category": "attestation",
+      "severity": "warning",
+      "title": "Typed machine evidence is ignored",
+      "message": "Guardrail '{key}' has typed evidence. Machine evidence comes only from .kassis/evidence/checks.json.",
+      "fix": "Remove the typed evidence for '{key}'. Certify records {check} itself.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-715"
     }
   ]
 }

@@ -8,13 +8,17 @@
 
 ## Coding-agent profile
 
-The signed profile is `tools/adk/profiles/addon-coding-agent.json`. `sync --profile=addon-coding-agent` checks that signature and writes:
+The signed profile is `tools/adk/profiles/addon-coding-agent.json` (version 2). `sync --profile=addon-coding-agent` checks that signature and writes:
 
 - `.kassis/agent-profile.lock.json`
 - `AGENTS.md`
 - `.cursor/rules/adk-guardrails.mdc`
 - `.claude/CLAUDE.md`
 - `.github/copilot-instructions.md`
+
+Version 1 stays readable at `tools/adk/profiles/addon-coding-agent.v1.json`. Its signature still verifies. The version 2 document also keeps that version on `previousVersion`, which is what `GET /api/v1/agent-registry/profiles/published/addon-coding-agent` returns.
+
+Version 2 replaces the machine check `kassis-addon-certify` on `adk.certify` with `kassis-addon-check`, `kassis-addon-conformance`, `kassis-addon-build` and `kassis-addon-test`. Certify runs those checks and writes the only copy of the results. An agent does not type them into the attestation.
 
 `sync --instance=<url>` downloads `GET /api/v1/agent-registry/profiles/published/<id>` instead of the bundled file.
 
@@ -43,3 +47,9 @@ Autonomy is read from the agent profile. If it cannot be read, the level is the 
 | `agents.autonomy.callCost` | Cost reserved before a tool call. |
 
 `agent_config_draft` returns a proposed settings change with `applied: false`. It does not write. A person publishes configuration.
+
+## Changelog
+
+| Date | Change |
+| --- | --- |
+| 2026-10-28 | Coding profile version 2 replaces the `kassis-addon-certify` machine check with check, conformance, build and test. Version 1 stays readable. |

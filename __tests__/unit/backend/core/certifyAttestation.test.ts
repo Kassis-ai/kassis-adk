@@ -44,11 +44,12 @@ describe('certifyAttestation', () => {
             key: 'manifest-valid',
             outcome: 'followed',
             note: null,
-            evidence: { checkId: 'kassis addon check' },
+            evidence: null,
           },
           { key: 'readme', outcome: 'followed', note: null, evidence: null },
         ],
       },
+      checks: { checks: [{ id: 'kassis addon check', exitCode: 0 }] },
     });
     expect(result.issues.map((issue) => issue.code)).toContain('KADK-703');
     expect(result.ok).toBe(false);
@@ -66,12 +67,80 @@ describe('certifyAttestation', () => {
             key: 'manifest-valid',
             outcome: 'followed',
             note: null,
-            evidence: { checkId: 'kassis addon check' },
+            evidence: null,
           },
         ],
       },
+      checks: { checks: [{ id: 'kassis addon check', exitCode: 0 }] },
     });
     expect(result.issues.map((issue) => issue.code)).toEqual(['KADK-713']);
+    expect(result.ok).toBe(true);
+  });
+
+  it('fails with KADK-714 when an outcome is blank or null', () => {
+    const result = certifyAttestation({
+      lock,
+      attestation: {
+        version: '3',
+        lockHash: 'abc',
+        answers: [
+          { key: 'no-core-edits', outcome: '', note: null, evidence: null },
+          { key: 'manifest-valid', outcome: null, note: null, evidence: null },
+          { key: 'readme', outcome: 'followed', note: null, evidence: null },
+        ],
+      },
+      checks: null,
+    });
+    const blocked = result.issues.filter((issue) => issue.code === 'KADK-714');
+    expect(blocked).toHaveLength(2);
+    expect(blocked[0]?.message).toContain('(blank)');
+    expect(blocked[1]?.message).toContain('null');
+    expect(result.ok).toBe(false);
+  });
+
+  it('fails with KADK-707 and warns KADK-715 when machine evidence is typed by hand', () => {
+    const result = certifyAttestation({
+      lock,
+      attestation: {
+        version: '3',
+        lockHash: 'abc',
+        answers: [
+          { key: 'no-core-edits', outcome: 'followed', note: null, evidence: null },
+          {
+            key: 'manifest-valid',
+            outcome: 'followed',
+            note: null,
+            evidence: { checkId: 'kassis-addon-certify' },
+          },
+          { key: 'readme', outcome: 'followed', note: null, evidence: null },
+        ],
+      },
+      checks: { checks: [{ id: 'kassis-addon-check', exitCode: 0 }] },
+    });
+    expect(result.issues.map((issue) => issue.code)).toEqual(['KADK-715', 'KADK-707']);
+    expect(result.ok).toBe(false);
+  });
+
+  it('warns KADK-715 and still passes when the checks file recorded the machine check', () => {
+    const result = certifyAttestation({
+      lock,
+      attestation: {
+        version: '3',
+        lockHash: 'abc',
+        answers: [
+          { key: 'no-core-edits', outcome: 'followed', note: null, evidence: null },
+          {
+            key: 'manifest-valid',
+            outcome: 'followed',
+            note: null,
+            evidence: { checkId: 'kassis addon check' },
+          },
+          { key: 'readme', outcome: 'followed', note: null, evidence: null },
+        ],
+      },
+      checks: { checks: [{ id: 'kassis addon check', exitCode: 0 }] },
+    });
+    expect(result.issues.map((issue) => issue.code)).toEqual(['KADK-715']);
     expect(result.ok).toBe(true);
   });
 });
