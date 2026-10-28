@@ -47,6 +47,8 @@ On-prem uses `docker-compose.onprem.yml`. Air-gapped install uses the bundle fro
 | Agent tool returns an approval id instead of changing the case | The tool is a final decision and the run is not attested, or autonomy is not `act`. Approve it in the Approvals UI. |
 | Bank addon does not load | The publisher must be approved, the key must be `current` or `previous`, the addon id must start with one of that publisher's prefixes, and the tier must be 2. Tier 1 is only for kassis. |
 | Upload returns 503 | Apply `20261028-addon-deployment-staged` and publish an `addon_deployment` policy. A missing policy does not install the package. |
+| Backend crash: `Cannot find module '/tools/adk/evidenceSummary.mjs'` | The production image must copy `tools/adk/evidenceSummary.mjs` and symlink `/tools` to `/app/tools`. Rebuild the backend. |
+| MCP HTTP crash: `Cannot find module '/app/server/prisma.js'` | The MCP image does not ship Prisma. Publisher trust then uses the seeded file. Rebuild MCP. |
 
 ## Package deploy
 
@@ -64,6 +66,7 @@ The version must be higher than the installed one, and the addon id must match t
 
 | Date | Change |
 | --- | --- |
+| 2026-10-28 | The production backend image copies `tools/adk/evidenceSummary.mjs` and links `/tools` so host approval evidence can load after `server/` is flattened onto `/app`. MCP HTTP falls back to the seeded publisher-trust file when Prisma is not in the image. |
 | 2026-10-28 | `GET /api/v1/platform/addons/installations` returns the active version, publisher, and pending staged versions for each addon id. |
 | 2026-10-28 | Package upload stages an `addon_deployment` approval and installs to `addons-installed/<id>/<version>/`. Tier 2 enables without a restart. Rollback is `POST /api/v1/platform/addons/:id/rollback`. |
 | 2026-10-28 | Runtime UI requests include `contentHash`. The host serves `/addons-ui/<id>/*` only after the signature gate, while the addon is enabled and the content-hash fingerprint still matches. |
