@@ -1,0 +1,35 @@
+{
+  "name": "@kassis/adk-core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Command library for kassis-addon and kassis-adk-mcp. It returns results and does not print or exit. Private until it is published to GitHub Packages.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "files": ["src", "dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@kassis/addon-testkit": "0.1.0",
+    "@modelcontextprotocol/sdk": "1.32.1",
+    "ajv": "^8.17.1"
+  },
+  "publishConfig": {
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js",
+        "default": "./dist/index.js"
+      }
+    }
+  }
+}

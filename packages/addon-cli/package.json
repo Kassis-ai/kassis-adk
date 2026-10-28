@@ -1,22 +1,40 @@
 {
   "name": "@kassis/addon-cli",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
   "description": "kassis-addon command line. The host supplies the runtime; this package supplies the commands.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "bin": {
     "kassis-addon": "./bin/kassis-addon.mjs"
   },
-  "files": ["bin", "lib", "templates", "schema"],
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "files": ["bin", "dist", "lib", "templates", "schema"],
   "scripts": {
+    "build": "tsc -p tsconfig.json",
     "prepack": "node prepack.mjs"
   },
   "dependencies": {
+    "@kassis/addon-testkit": "0.1.0",
     "ajv": "^8.17.1"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com",
     "access": "restricted",
-    "provenance": true
+    "provenance": true,
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js",
+        "default": "./dist/index.js"
+      }
+    }
   }
 }

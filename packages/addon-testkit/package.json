@@ -1,16 +1,36 @@
 {
   "name": "@kassis/addon-testkit",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
   "description": "Assertions a coding agent uses to prove an addon pack and that source stays off the host.",
+  "dependencies": {
+    "es-module-lexer": "^2.1.0",
+    "typescript": "^5.9.3"
+  },
   "main": "./src/index.mjs",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./src/index.mjs"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "node build.mjs"
+  },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com",
     "access": "restricted",
-    "provenance": true
-  },
-  "exports": {
-    ".": "./src/index.mjs"
+    "provenance": true,
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js",
+        "default": "./dist/index.js"
+      }
+    }
   }
 }

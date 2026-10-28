@@ -4,7 +4,11 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import { apiSurfaceReport } from '../../../../tools/adk/api-surface.mjs';
-import { writeAirgapBundle } from '../../../../tools/adk/airgap-bundle.mjs';
+import {
+  assertPopulatedAirgapBundle,
+  verifyAirgapChecksums,
+  writeAirgapBundle,
+} from '../../../../tools/adk/airgap-bundle.mjs';
 import { buildSbom } from '../../../../tools/adk/package-sbom.mjs';
 import { signTarball } from '../../../../tools/adk/sign-tarball.mjs';
 
@@ -26,7 +30,33 @@ describe('ADK package distribution', () => {
       expect(fs.existsSync(path.join(dir, 'sbom.json'))).toBe(true);
       expect(fs.existsSync(path.join(dir, 'keys/addon_verification_public.key'))).toBe(true);
       expect(fs.existsSync(path.join(dir, 'templates/kassis-addon/manifest.json'))).toBe(true);
+      expect(fs.existsSync(path.join(dir, 'packages/adk-core/src/index.ts'))).toBe(true);
+      expect(fs.existsSync(path.join(dir, 'tools/adk/kassis-addon.mjs'))).toBe(true);
+      expect(fs.existsSync(path.join(dir, 'checksums.txt'))).toBe(true);
+      expect(fs.readFileSync(path.join(dir, 'checksums.txt'), 'utf8')).toContain('tools/adk/kassis-addon.mjs');
+      verifyAirgapChecksums(dir);
+      expect(() => assertPopulatedAirgapBundle(dir)).toThrow(/not populated/);
       expect(fs.existsSync(path.join(dir, 'server/keys/addon_signing_private.key'))).toBe(false);
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('copies a supplied tarball and rejects a bad checksum', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'kassis-airgap-tar-'));
+    try {
+      const fake = path.join(dir, 'fake.tgz');
+      fs.writeFileSync(fake, 'not-a-tarball');
+      const out = path.join(dir, 'bundle');
+      writeAirgapBundle(out, undefined, { tarballs: [{ name: '@kassis/addon-sdk', file: fake }] });
+      const index = JSON.parse(fs.readFileSync(path.join(out, 'packs/index.json'), 'utf8')) as {
+        packages: Record<string, string>;
+      };
+      expect(index.packages['@kassis/addon-sdk']).toBe('packs/fake.tgz');
+      expect(fs.readFileSync(path.join(out, 'packs/fake.tgz'), 'utf8')).toBe('not-a-tarball');
+      verifyAirgapChecksums(out);
+      fs.appendFileSync(path.join(out, 'tools/adk/kassis-addon.mjs'), '\n');
+      expect(() => verifyAirgapChecksums(out)).toThrow(/checksum mismatch: tools\/adk\/kassis-addon.mjs/);
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }

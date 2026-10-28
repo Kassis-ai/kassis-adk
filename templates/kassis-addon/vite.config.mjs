@@ -5,8 +5,10 @@ const externals = createRequire(import.meta.url)('@kassis/addon-sdk/browser-exte
 
 export default defineConfig({
   build: {
+    outDir: 'frontend/dist',
+    emptyOutDir: true,
     lib: {
-      entry: 'frontend/index.ts',
+      entry: 'src/ui/index.ts',
       formats: ['es'],
       fileName: () => 'index.js',
     },

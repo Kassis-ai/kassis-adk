@@ -24,7 +24,17 @@ async function canonicalString(body) {
   return loaded.buildCanonicalManifestString(body);
 }
 
+function keyIsInsideAddon(manifestPath, keyPath) {
+  const addonDir = path.resolve(path.dirname(manifestPath));
+  const resolvedKey = path.resolve(keyPath);
+  const relative = path.relative(addonDir, resolvedKey);
+  return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative));
+}
+
 export async function signManifestFile(manifestPath, keyPath) {
+  if (keyIsInsideAddon(manifestPath, keyPath)) {
+    throw new Error('Refusing to sign with a private key inside the addon folder');
+  }
   const hex = fs.readFileSync(keyPath, 'utf8').trim();
   const key = crypto.createPrivateKey({
     key: Buffer.from(hex, 'hex'),
@@ -34,6 +44,11 @@ export async function signManifestFile(manifestPath, keyPath) {
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
   const body = { ...manifest };
   delete body.signature;
+  const publicDer = crypto.createPublicKey(key).export({ type: 'spki', format: 'der' });
+  body.signing = {
+    alg: 'ed25519',
+    keyId: crypto.createHash('sha256').update(publicDer).digest('hex'),
+  };
   const { computeAddonContentHash } = await loadSignerModule(
     'addonContentHash.mjs',
     '../../server/core/addon-deployment/addonContentHash.mjs'

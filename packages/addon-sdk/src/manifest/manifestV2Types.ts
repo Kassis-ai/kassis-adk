@@ -164,6 +164,12 @@ export interface ManifestMetadata {
   readonly supportEmail?: string;
 }
 
+/** Covered by the manifest signature. keyId is the sha256 hex of the Ed25519 SPKI DER. */
+export interface ManifestSigning {
+  readonly alg: 'ed25519';
+  readonly keyId: string;
+}
+
 export interface AddonManifestV2 {
   readonly manifestVersion: 2;
   /** Namespace root of every name the addon publishes. The mount path is derived from it. */
@@ -176,6 +182,7 @@ export interface AddonManifestV2 {
   readonly hostApi: string;
   readonly entrypoints?: { readonly main: string };
   readonly signature?: string;
+  readonly signing?: ManifestSigning;
   readonly contentHash?: string;
   readonly permissions?: readonly ManifestPermission[];
   /** Permissions every route of the addon needs; each must be declared in `permissions`. */
