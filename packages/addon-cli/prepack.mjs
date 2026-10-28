@@ -30,6 +30,14 @@ fs.copyFileSync(
   path.join(lib, 'canonicalJson.mjs')
 );
 fs.copyFileSync(
+  path.join(repoRoot, 'server/core/addon-deployment/addonContentHash.mjs'),
+  path.join(lib, 'addonContentHash.mjs')
+);
+fs.copyFileSync(
+  path.join(repoRoot, 'server/core/addon-deployment/addonContentHash.config.json'),
+  path.join(lib, 'addonContentHash.config.json')
+);
+fs.copyFileSync(
   path.join(repoRoot, 'server/core/addon-platform/trust/publisherTrust.mjs'),
   path.join(lib, 'publisherTrust.mjs')
 );
