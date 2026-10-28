@@ -12,7 +12,7 @@ Enable and disable go through the platform lifecycle API (`system.admin`), not a
 
 The UI kill switch is `@kassis/addon-ui`. A killed addon renders the killed slot and does not mount its page. A thrown slot shows the failed-slot message and the rest of the host stays up.
 
-Addon pages that set `ui.runtimeLoad` load from `/runtime-addons.json` (hashed files, not cached) or, in dev, from `/addons-ui/<id>/`. The loader skips a disabled addon. Before it keeps a module, it runs the same license and health gates as `enableAddon`.
+Addon pages that set `ui.runtimeLoad` load from `/runtime-addons.json` (hashed files, not cached) or, in dev, from `/addons-ui/<id>/<file>?contentHash=<hash>`. The host serves that URL only after the addon passed the signature gate on its last load and is still enabled, and only while the content-hash fingerprint still matches. The loader skips a disabled addon. Before it keeps a module, it runs the same license and health gates as `enableAddon`.
 
 ## Release steps and seeds
 
@@ -50,4 +50,5 @@ On-prem uses `docker-compose.onprem.yml`. Air-gapped install uses the bundle fro
 
 | Date | Change |
 | --- | --- |
+| 2026-10-28 | Runtime UI requests include `contentHash`. The host serves `/addons-ui/<id>/*` only after the signature gate, while the addon is enabled and the content-hash fingerprint still matches. |
 | 2026-10-28 | Apply `20261028_addon_publisher_trust` before a bank signing key can be stored. Revocation is immediate. |
