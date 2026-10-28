@@ -27,7 +27,7 @@ npm run changeset
 
 ## Registry
 
-The six public packages (`addon-sdk`, `addon-testkit`, `addon-ui`, `host-sdk`, `agent-kit`, `addon-cli`) set `publishConfig.registry` to GitHub Packages, `access` to `restricted`, and `provenance` to `true`. `npm run ci:packages:publish-config` fails when a non-private `@kassis/*` package is missing that registry. Internal packages stay `"private": true`. `npm publish` from a trusted CI run attaches provenance. A packed file can also be signed locally:
+The six public packages (`addon-sdk`, `addon-testkit`, `addon-ui`, `host-sdk`, `agent-kit`, `addon-cli`) set `publishConfig.registry` to GitHub Packages, `access` to `restricted`, and `provenance` to `true`. `prepack` copies `publishConfig` `main`, `types`, and `exports` onto the tarball, because npm does not apply those fields from `publishConfig`. `postpack` restores the workspace file, which keeps pointing at source. `npm run ci:packages:publish-config` packs each public package and fails when a packed entry is TypeScript, points outside `files`, or is missing from the tarball. It also fails when a non-private `@kassis/*` package is missing the GitHub Packages registry. Internal packages stay `"private": true`. `npm publish` from a trusted CI run attaches provenance. A packed file can also be signed locally:
 
 ```bash
 npm pack
@@ -58,6 +58,7 @@ The install path is `addons-installed/<id>/<version>/`. The version must be high
 
 | Date | Change |
 | --- | --- |
+| 2026-10-28 | Public tarballs publish `dist` entry points. `ci:packages:publish-config` packs each package and checks those entries. |
 | 2026-10-28 | `kassis-addon package` writes a self-contained `.addon` zip. `deploy` uploads it and prints the approval request id. `status` lists installed and pending versions. |
 | 2026-10-28 | The instance installs a package only after signature and `contentHash` checks. `manifest.checksum` is not used. |
 | 2026-10-28 | All six public packages publish to GitHub Packages. API Extractor also checks `host-sdk.api.md`. |

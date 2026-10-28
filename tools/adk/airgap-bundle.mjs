@@ -130,58 +130,6 @@ function packageName(pkgDir) {
   return parsed.name;
 }
 
-const PACK_ENTRY_KEYS = ['main', 'types', 'exports', 'bin', 'module', 'browser'];
-
-/**
- * npm pack keeps the development export map. publishConfig points the packed
- * install at dist, which is the JavaScript plain Node can import. src is not
- * in the tarball.
- * @param {string} tarball
- */
-function applyPackedPublishConfig(tarball) {
-  const staging = fs.mkdtempSync(path.join(os.tmpdir(), 'kassis-pack-fix-'));
-  const rewritten = `${tarball}.publishing.tgz`;
-  try {
-    const extracted = spawnSync('tar', ['-xzf', tarball, '-C', staging], {
-      encoding: 'utf8',
-      windowsHide: true,
-    });
-    if (extracted.error) throw extracted.error;
-    if (extracted.status !== 0) {
-      throw new Error(`tar extract failed for ${path.basename(tarball)}\n${extracted.stderr ?? ''}`);
-    }
-    const pkgPath = path.join(staging, 'package', 'package.json');
-    const parsed = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
-    if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
-      throw new Error('packed package.json is not an object');
-    }
-    const publishConfig = 'publishConfig' in parsed ? parsed.publishConfig : null;
-    if (publishConfig === null || typeof publishConfig !== 'object' || Array.isArray(publishConfig)) {
-      throw new Error(`${tarball} has no publishConfig`);
-    }
-    for (const key of PACK_ENTRY_KEYS) {
-      if (key in publishConfig) parsed[key] = publishConfig[key];
-    }
-    const main = 'main' in parsed && typeof parsed.main === 'string' ? parsed.main : '';
-    if (main.endsWith('.ts') || main.endsWith('.tsx') || main.endsWith('.mts')) {
-      throw new Error(`${tarball} still exports TypeScript after publishConfig`);
-    }
-    fs.writeFileSync(pkgPath, `${JSON.stringify(parsed, null, 2)}\n`);
-    const packed = spawnSync('tar', ['-czf', rewritten, '-C', staging, 'package'], {
-      encoding: 'utf8',
-      windowsHide: true,
-    });
-    if (packed.error) throw packed.error;
-    if (packed.status !== 0) {
-      throw new Error(`tar pack failed for ${path.basename(tarball)}\n${packed.stderr ?? ''}`);
-    }
-  } finally {
-    fs.rmSync(staging, { recursive: true, force: true });
-  }
-  fs.rmSync(tarball, { force: true });
-  fs.renameSync(rewritten, tarball);
-}
-
 /**
  * @param {string} spec
  * @returns {string}
@@ -209,7 +157,6 @@ export function packPublicPackages(root, destination) {
     process.stdout.write(`pack ${dirName}\n`);
     const stdout = runNpm(['pack', '--json', '--pack-destination', destination], pkgDir, 'pipe');
     const tarball = packedFile(destination, packFilename(stdout));
-    applyPackedPublishConfig(tarball);
     const name = packageName(pkgDir);
     if (!PUBLIC_PACKAGE_NAMES.includes(name)) {
       throw new Error(`${dirName} packed as ${name}, which is not a public package`);
