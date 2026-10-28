@@ -3,6 +3,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
 
 const HOST_IMPORT = /(?:from\s+|import\s*\(\s*)['"](?:@\/shared\/|@\/features\/|server\/)/;
@@ -17,23 +18,24 @@ function walk(dir, out) {
   }
 }
 
-async function loadAjv(repoRoot) {
-  const candidates = [
-    path.join(repoRoot, 'node_modules/ajv/dist/2020.js'),
-    path.join(repoRoot, 'packages/addon-sdk/node_modules/ajv/dist/2020.js'),
-  ];
-  for (const file of candidates) {
-    if (fs.existsSync(file)) {
-      const loaded = await import(pathToFileURL(file).href);
-      return loaded.default;
-    }
+async function loadAjv() {
+  try {
+    const file = createRequire(import.meta.url).resolve('ajv/dist/2020.js');
+    const loaded = await import(pathToFileURL(file).href);
+    return loaded.default;
+  } catch {
+    throw new Error('ajv is not installed');
   }
-  throw new Error('ajv is not installed');
 }
 
-export async function checkManifest(manifest, repoRoot) {
-  const schemaPath = path.join(repoRoot, 'packages/addon-sdk/schema/addon-manifest.v2.schema.json');
-  const Ajv = await loadAjv(repoRoot);
+export async function checkManifest(manifest, root) {
+  const schemaCandidates = [
+    path.join(root, 'packages/addon-sdk/schema/addon-manifest.v2.schema.json'),
+    path.join(root, 'schema/addon-manifest.v2.schema.json'),
+  ];
+  const schemaPath = schemaCandidates.find((candidate) => fs.existsSync(candidate));
+  if (!schemaPath) throw new Error('addon manifest schema was not found');
+  const Ajv = await loadAjv();
   const ajv = new Ajv({ allErrors: true, strict: false });
   const validate = ajv.compile(JSON.parse(fs.readFileSync(schemaPath, 'utf8')));
   const issues = [];

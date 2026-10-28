@@ -5,7 +5,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const templateDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../templates/kassis-addon');
+const here = path.dirname(fileURLToPath(import.meta.url));
+const packedTemplate = path.resolve(here, '../templates/kassis-addon');
+const templateDir = fs.existsSync(path.join(packedTemplate, 'manifest.json'))
+  ? packedTemplate
+  : path.resolve(here, '../../templates/kassis-addon');
 const ID_RE = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
 
 function displayName(id) {
