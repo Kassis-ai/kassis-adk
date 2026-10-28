@@ -5,18 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
-
-const HOST_IMPORT = /(?:from\s+|import\s*\(\s*)['"](?:@\/shared\/|@\/features\/|server\/)/;
-
-function walk(dir, out) {
-  if (!fs.existsSync(dir)) return;
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    if (entry.name === 'node_modules' || entry.name === 'dist') continue;
-    const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) walk(full, out);
-    else if (/\.(ts|tsx|js|jsx|mjs)$/.test(entry.name)) out.push(full);
-  }
-}
+import { checkAddonImports } from '@kassis/addon-testkit';
 
 async function loadAjv() {
   try {
@@ -55,17 +44,14 @@ export async function checkManifest(manifest, root) {
   return issues;
 }
 
+/**
+ * @param {string} addonDir
+ * @returns {string[]}
+ */
 export function conformanceIssues(addonDir) {
-  const issues = [];
-  const files = [];
-  walk(path.join(addonDir, 'src'), files);
-  walk(path.join(addonDir, 'frontend'), files);
-  for (const file of files) {
-    const text = fs.readFileSync(file, 'utf8');
-    if (HOST_IMPORT.test(text)) {
-      issues.push(`${path.relative(addonDir, file)} imports the host`);
-    }
-  }
+  const issues = checkAddonImports(addonDir).map(
+    (issue) => `${issue.code} ${issue.file}:${issue.line} imports '${issue.specifier}'`
+  );
   const migrations = path.join(addonDir, 'migrations');
   if (fs.existsSync(migrations)) {
     for (const name of fs.readdirSync(migrations)) {

@@ -13,7 +13,7 @@ Run `npx kassis-addon <command>` after installing `@kassis/addon-cli`, or `node 
 | `init` | `--id` `--dir` `--publisher` `--tier` `--rung` | Copies `templates/kassis-addon`. `--id` is required. Publisher defaults to `kassis`, tier to 2, rung to 1. Tier 1 is refused unless the publisher is `kassis`. Any other publisher gets an id prefix of `<publisher>-` when the id does not already start with it. Rung 1 is server only. Rung 2 adds UI. Rung 3 adds UI and migrations. |
 | `build` | `--only=server` or `--only=ui` | Writes `dist/server/index.js`. Also writes `frontend/dist/index.js` when `src/ui/index.ts` exists. Prints each path. Exits 1 when `initialize` is missing, or when the UI was built and `register` is missing. |
 | `check` | | Validates `manifest.json` against manifest v2. |
-| `conformance` | | Rejects host imports under `src/` and `frontend/`, and an up script with no down script. |
+| `conformance` | | Runs the addon-testkit import check on `src/`, `frontend/`, and built `dist/server/index.js` and `frontend/dist/index.js` when those files exist. Also rejects an up script with no down script. |
 | `test` | | Runs `node --test` in `./test`. Prints `No test directory` and exits 0 when that folder is missing. |
 | `dev` | | Prints the mount path and the UI URL. It does not start a server. |
 | `migrate` | | Lists `migrations/*.sql`. It does not apply them. |
@@ -41,6 +41,7 @@ node tools/adk/kassis-addon.mjs certify --json
 
 | Date | Change |
 | --- | --- |
+| 2026-10-28 | `conformance` uses the addon-testkit import check, including the server and UI bundles when they exist. |
 | 2026-10-28 | `keys generate`, `keys export-public`, and `keys register`. `sign --key` writes `signing.keyId` and refuses a key inside the addon folder. |
 | 2026-10-28 | `init` accepts `--publisher`, `--tier`, and `--rung`. `build` writes the server bundle and, when the addon has a UI, the frontend bundle. |
 | 2026-10-28 | `certify` records check, conformance, build and test. `pack` writes `index.json` and `README.md`. |

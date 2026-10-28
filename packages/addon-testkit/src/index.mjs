@@ -1,18 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const HOST_IMPORT = /(?:from\s+|import\s*\(\s*)['"](?:@\/|server\/)/;
-
-/**
- * @param {string} source
- * @param {string} [label]
- * @returns {void}
- */
-export function assertNoHostImports(source, label = 'source') {
-  if (HOST_IMPORT.test(source)) {
-    throw new Error(`${label} imports the host`);
-  }
-}
+export { assertNoHostImports, checkAddonImports } from './checkAddonImports.mjs';
 
 /**
  * @typedef {object} CertifyReport

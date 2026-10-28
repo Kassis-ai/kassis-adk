@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "type": "module",
   "description": "Assertions a coding agent uses to prove an addon pack and that source stays off the host.",
+  "dependencies": {
+    "es-module-lexer": "^2.1.0",
+    "typescript": "^5.9.3"
+  },
   "main": "./src/index.mjs",
   "types": "./index.d.ts",
   "exports": {

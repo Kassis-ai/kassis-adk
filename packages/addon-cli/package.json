@@ -20,6 +20,7 @@
     "prepack": "node prepack.mjs"
   },
   "dependencies": {
+    "@kassis/addon-testkit": "0.1.0",
     "ajv": "^8.17.1"
   },
   "publishConfig": {

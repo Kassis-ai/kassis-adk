@@ -4,6 +4,18 @@ export interface CertifyReport {
 
 export function assertNoHostImports(source: string, label?: string): void;
 
+export type AddonImportCode = 'KADK-201' | 'KADK-202' | 'KADK-203' | 'KADK-204' | 'KADK-205';
+
+export interface AddonImportIssue {
+  readonly code: AddonImportCode;
+  readonly file: string;
+  readonly line: number;
+  readonly specifier: string;
+  readonly message: string;
+}
+
+export function checkAddonImports(addonDir: string): AddonImportIssue[];
+
 export function assertEvidencePack(dir: string): CertifyReport;
 
 export type JsonPrimitive = string | number | boolean | null;

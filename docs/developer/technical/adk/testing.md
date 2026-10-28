@@ -6,7 +6,11 @@
 **Last reviewed:** 2026-10-28
 
 
-`@kassis/addon-testkit` checks an evidence pack and rejects host imports. The CLI `conformance` command uses the same idea on `src/` and `frontend/`.
+`@kassis/addon-testkit` checks an evidence pack. `checkAddonImports` is the import boundary used by `assertNoHostImports` and by the CLI `conformance` command. JavaScript is read with `es-module-lexer` (static `import`, dynamic `import()`, and `export ... from`). `require()` is not an ECMAScript import, so the TypeScript scanner records it. `.ts` files use that scanner for every form.
+
+An import is allowed when the specifier is a relative path that stays inside the addon folder, one of `@kassis/addon-sdk`, `@kassis/host-sdk`, `@kassis/addon-ui`, or `@kassis/agent-kit`, a package named in `dependencies`, `optionalDependencies`, or `peerDependencies`, or a Node built-in in server code. Server code is every checked file except `src/ui/` and `frontend/`. Anything else fails with a KADK-2xx code, the file, and the line: KADK-201 for the host alias `@/`, KADK-202 for Kassis core (`server/`), KADK-203 for the core capability registry, KADK-204 for a relative path outside the package, and KADK-205 for an undeclared package or a Node built-in in UI code.
+
+`conformance` runs that check on `src/`, `frontend/`, and, when the files exist, `dist/server/index.js` and `frontend/dist/index.js`. A migration that goes up still needs a down script.
 
 `certify` runs the CLI commands `check`, `conformance`, `build` and `test`, then computes the content hash. It writes `.kassis/evidence/checks.json` with the CLI version, the Node version, and for each check the input hash, exit code, duration and output digest.
 
@@ -19,7 +23,7 @@ Machine evidence comes only from `.kassis/evidence/checks.json`. Evidence typed 
 The KADK checks that matter while you are writing an addon:
 
 - the manifest matches v2 (`check`)
-- source does not import the host (`conformance`)
+- imports stay inside the addon boundary (`conformance`)
 - a migration that goes up can come down (`conformance`)
 - the attestation matches the signed profile lock (`certify`)
 
@@ -42,4 +46,5 @@ node tools/adk/kassis-addon.mjs pack --out=evidence
 
 | Date | Change |
 | --- | --- |
+| 2026-10-28 | Conformance uses one import checker. Forbidden imports fail with KADK-201 through KADK-205, including `dist/server/index.js` and `frontend/dist/index.js` when those files exist. |
 | 2026-10-28 | Certify records check, conformance, build and test in `.kassis/evidence/checks.json`. A blank outcome is KADK-714. Typed machine evidence is KADK-715. The evidence pack writes `index.json` and `README.md`. |
