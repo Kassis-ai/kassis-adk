@@ -98,5 +98,6 @@ Use `npm test` for the template. The CLI `test` command runs `node --test` in `.
 
 | Date | Change |
 | --- | --- |
+| 2026-10-28 | The template `.npmrc` points `@kassis` at GitHub Packages and reads `NODE_AUTH_TOKEN`. The certify workflow uses Node 24 and that secret. |
 | 2026-10-28 | `dev` starts a configured local image and does not pull or build. `migrate` targets that dev host only. `check --json` includes KADK codes. `--id value` and `--id=value` both work. |
 | 2026-10-28 | `init` accepts `--publisher`, `--tier`, and `--rung`. `npm run build` writes `dist/server/index.js` and, for a rung with UI, `frontend/dist/index.js`. |
