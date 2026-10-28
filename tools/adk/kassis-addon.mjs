@@ -175,17 +175,60 @@ async function sign() {
     });
     process.exit(result.status ?? 1);
   }
-  const repoSigner = path.join(repoRoot, 'tools/signing/sign-addon.cjs');
-  if (fs.existsSync(repoSigner)) {
-    const result = spawnSync(process.execPath, [repoSigner, root, '--private-key', path.resolve(key)], {
-      cwd: repoRoot,
-      stdio: 'inherit',
-    });
-    process.exit(result.status ?? 1);
-  }
   const { signManifestFile } = await import('./signManifest.mjs');
-  await signManifestFile(path.join(root, 'manifest.json'), path.resolve(key));
+  try {
+    await signManifestFile(path.join(root, 'manifest.json'), path.resolve(key));
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : 'sign failed');
+    process.exit(1);
+  }
   process.exit(0);
+}
+
+async function keys() {
+  const sub = process.argv[3];
+  const keysModule = await import('./publisherKeys.mjs');
+  if (sub === 'generate') {
+    const publisher = flagValue('publisher');
+    if (!publisher) {
+      console.error('keys generate --publisher=<id> is required');
+      process.exit(1);
+    }
+    const created = keysModule.generatePublisherKey(publisher);
+    console.log(created.fingerprint);
+    console.log(created.publicKey);
+    console.log(created.file);
+    return;
+  }
+  if (sub === 'export-public') {
+    const key = flagValue('key');
+    const out = flagValue('out');
+    if (!key || !out) {
+      console.error('keys export-public --key=<path> --out=<path> is required');
+      process.exit(1);
+    }
+    keysModule.exportPublicKey(path.resolve(key), path.resolve(out));
+    console.log(path.resolve(out));
+    return;
+  }
+  if (sub === 'register') {
+    const instance = flagValue('instance');
+    const publisher = flagValue('publisher');
+    const key = flagValue('key');
+    if (!instance || !publisher || !key) {
+      console.error('keys register --instance=<url> --publisher=<id> --key=<path> is required');
+      process.exit(1);
+    }
+    await keysModule.registerPublisherKey({
+      instance,
+      publisher,
+      keyPath: path.resolve(key),
+      token: process.env.KASSIS_ADK_TOKEN || '',
+    });
+    return;
+  }
+  console.error('Usage: node tools/adk/kassis-addon.mjs keys <generate|export-public|register>');
+  process.exit(1);
 }
 
 function init() {
@@ -249,6 +292,7 @@ const commands = {
   check,
   conformance,
   sign,
+  keys,
   init,
   rules,
   test,
@@ -258,7 +302,7 @@ const commands = {
 const selected = commands[command];
 if (!selected) {
   console.error(
-    'Usage: node tools/adk/kassis-addon.mjs <certify|attest|explain|sync|pack|check|conformance|sign|init|rules|test|dev|migrate>'
+    'Usage: node tools/adk/kassis-addon.mjs <certify|attest|explain|sync|pack|check|conformance|sign|keys|init|rules|test|dev|migrate>'
   );
   process.exit(1);
 }

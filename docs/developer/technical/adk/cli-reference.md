@@ -17,7 +17,10 @@ Run `npx kassis-addon <command>` after installing `@kassis/addon-cli`, or `node 
 | `dev` | | Prints the mount path and the UI URL. It does not start a server. |
 | `migrate` | | Lists `migrations/*.sql`. It does not apply them. |
 | `pack` | `--out=<dir>` | Writes an evidence pack after certify would pass. |
-| `sign` | `--key=<path>` | Signs this addon. Inside the repo, without `--key`, uses the repo signer for the manifest id. Outside the repo, `--key` is required and the command exits 1 without it. That path writes `contentHash` before the signature, which is what the host checks on load. |
+| `sign` | `--key=<path>` | Signs this addon. With `--key`, writes `contentHash` and `signing.keyId`, then the signature. Refuses a key file inside the addon folder. Inside the repo, without `--key`, uses the repo signer for the manifest id and does not add `signing`. Outside the repo, `--key` is required. |
+| `keys generate` | `--publisher=<id>` | Writes an Ed25519 private key to `~/.kassis/keys/<fingerprint>.key` (mode 0600; on Windows, only the current user). Prints the fingerprint and the public key. The private key is not written into the addon folder. |
+| `keys export-public` | `--key=<path>` `--out=<path>` | Writes the SPKI DER hex of that private key. |
+| `keys register` | `--instance=<url>` `--publisher=<id>` `--key=<path>` | POSTs the public key to `/api/v1/platform/addon-publishers/<id>/keys`. Token: `KASSIS_ADK_TOKEN`. The instance still has to approve the key. |
 | `certify` | `--json` | Checks KADK-701 through KADK-711. `--json` prints `{ "ok", "issues" }` and still exits 1 when `ok` is false. |
 | `attest` | | Writes `.kassis/attestation.json` from the lock when it is missing, then prints its path. It does not post to the registry. `certify` posts when the instance env vars are set. |
 | `explain` | `<code>` | Prints the meaning of a KADK code. |
@@ -32,3 +35,9 @@ Example:
 node tools/adk/kassis-addon.mjs init --id=sample-tprm-check --dir=../sample-tprm-check
 node tools/adk/kassis-addon.mjs certify --json
 ```
+
+## Changelog
+
+| Date | Change |
+| --- | --- |
+| 2026-10-28 | `keys generate`, `keys export-public`, and `keys register`. `sign --key` writes `signing.keyId` and refuses a key inside the addon folder. |

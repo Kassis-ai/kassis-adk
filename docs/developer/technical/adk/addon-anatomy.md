@@ -13,6 +13,7 @@
 | Field | Role |
 | --- | --- |
 | `id` | Addon id. Routes mount at `/api/v1/addons/<id>`. |
+| `signing` | Optional `{ alg: "ed25519", keyId }`. `keyId` is the sha256 hex of the Ed25519 SPKI DER. It is inside the signed body. A first-party manifest that still has no `signing` block verifies with the kassis current key. |
 | `tier` | `1` (default) or `2`. See [Tiers](./tiers.md). |
 | `routing.mountPath` | Path the host passes into `initialize()`. |
 | `database.ownedTables` / `database.readAccess` | Tables this addon owns or may read. Do not use a wildcard for a new addon. |
@@ -40,3 +41,9 @@ export const register = registerExampleExtensions;
 User-visible chrome goes through the addon i18n helpers. See [Frontend i18n](../addons/frontend-i18n.md). Do not import `i18next` from an addon.
 
 An addon built outside this repository keeps `@kassis/host-sdk` and `@kassis/addon-ui` external. `kassis-addon init` copies `vite.config.mjs`, which reads that list from `@kassis/addon-sdk/browser-externals.json`. The host serves those modules from `/host-sdk/`.
+
+## Changelog
+
+| Date | Change |
+| --- | --- |
+| 2026-10-28 | Manifest v2 may carry `signing.keyId`, covered by the signature. |

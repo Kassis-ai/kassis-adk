@@ -25,6 +25,7 @@ Seeds and migrations this kit depends on:
 | `database/seeds/overlays/20261027_agent_autonomy.sql` | `agents.autonomy.*` settings. An agent call fails closed when the threshold is missing. |
 | Tier 2 settings in the day-0 schema | `addons.tier2.*` and the egress limits. A tier 2 child will not start without them. |
 | `database/migrations/20261027_audit_logs_append_only.sql` | Audit rows cannot be updated or deleted. |
+| `database/migrations/20261028_addon_publisher_trust.sql` | Publisher trust tables, the kassis key, and the approval policies for adding or rotating a key and for changing tiers or prefixes. |
 | `database/migrations/20261026_db_roles_audit_owner.sql` | `kassis_app` and the audit owner. |
 
 **Prod empty volume.** Prod compose does not load the full schema on an empty volume. Only the roles script runs. Restore a backup or apply the release ledger. On-prem does load the day-0 schema, because that file is the new-site install. Details are in the release steps.
@@ -40,6 +41,13 @@ On-prem uses `docker-compose.onprem.yml`. Air-gapped install uses the bundle fro
 | Addon page is blank and the console says `register` is missing | Export `register` from `frontend/index.ts`. |
 | `{"ok":false,"issues":[...]}` from `certify --json` | The `issues` array names the KADK codes. KADK-709 is a missing lock (`sync` first). KADK-701 is a missing attestation (`attest`, then fill the answers). |
 | Tier 2 addon does not start | Check `addons.tier2.*` and `addons.egress.*` in Settings. An invalid value refuses the start. |
-| Revoked key still in `previous` | Put the fingerprint in `revoked`. Listing it under `previous` or `keys` does not keep it trusted. |
+| Revoked key still in `previous` | Revoke it with `POST /api/v1/platform/addon-publishers/:id/keys/:fp/revoke`, or set status `revoked` in `KASSIS_PUBLISHER_TRUST_FILE`. A revoked row in either source wins. Listing it as `previous` does not keep it trusted. |
 | Fresh prod database has roles and no tables | Expected. Restore or run `npm run release:apply`. Do not expect the prod compose file to create the schema. |
 | Agent tool returns an approval id instead of changing the case | The tool is a final decision and the run is not attested, or autonomy is not `act`. Approve it in the Approvals UI. |
+| Bank addon does not load | The publisher must be approved, the key must be `current` or `previous`, the addon id must start with one of that publisher's prefixes, and the tier must be 2. Tier 1 is only for kassis. |
+
+## Changelog
+
+| Date | Change |
+| --- | --- |
+| 2026-10-28 | Apply `20261028_addon_publisher_trust` before a bank signing key can be stored. Revocation is immediate. |

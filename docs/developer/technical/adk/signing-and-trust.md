@@ -8,21 +8,23 @@
 
 ## Publisher keys
 
-`server/core/addon-platform/trust/publisher-trust.json` lists publishers. `*` is the platform default. A named publisher does not fall back to `*`.
+The instance trust store is the database (`platform_addon_publishers` and `platform_addon_publisher_keys`), merged with `server/core/addon-platform/trust/publisher-trust.json`. That file seeds publisher `kassis` so boot and unit tests can verify first-party addons before the database is up.
 
-Each publisher has:
+`KASSIS_PUBLISHER_TRUST_FILE`, when set, is a read-only JSON file in the same shape: `publishers` and `keys`, with key status `pending`, `current`, `previous`, or `revoked`. It is merged with the seeded file and the database. A `revoked` key in any source is revoked. A `suspended` publisher in any source is suspended.
 
-- `current` — the fingerprint in use
-- `keys` — more fingerprints that are current at the same time
-- `previous` — fingerprints still accepted during rotation
+`kassis` may sign tiers 1 and 2, and its id prefix `*` matches any addon id. A bank publisher is limited to tier 2. Each of its id prefixes must start with the publisher id and a hyphen, so publisher `acme` can sign `acme-tprm` and cannot sign `ubo-panel`. Tier 1 is refused for every publisher other than `kassis`. A key, a rotation, or a tier or prefix change stays pending until a second person approves it. If no approval policy is published, that change is refused.
 
-`revoked` is checked first. A fingerprint in `revoked` is refused even when it is still listed under `current`, `keys`, or `previous`.
+`signing.keyId` on the manifest is the sha256 hex of the Ed25519 SPKI DER. The verifier loads that key. A bank key cannot sign `publisher: "kassis"`. A manifest with no `signing` block is verified only with the kassis current key, and only when `publisher` is `kassis` or the legacy first-party id `kassis-corp`. Any other publisher without `signing` is refused. `ADDON_VERIFICATION_PUBLIC_KEY` is only a bootstrap fallback for the kassis public key bytes.
+
+Guardrail profiles still accept the kassis key, including a fingerprint listed as `previous` during rotation.
 
 ## Rotation and revocation
 
-Add the new fingerprint to `keys` (or replace `current` and move the old one to `previous`) before you stop signing with the old key. When the old key must die, put its fingerprint in `revoked`. Revocation is enforced when signature checks are strict and when they are not. An invalid signature that is not a trust failure still warns and continues in non-strict mode. That is separate from revocation.
+`current` and `previous` keys verify. `pending` does not, until an approver accepts it. Add the new key and wait for approval before you stop signing with the old one; approval moves the new key to `current` and the old one to `previous`.
 
-Addon load and deploy verification call the same trust check.
+Revocation is immediate and does not wait for approval. A revoked fingerprint is refused when signature checks are strict and when they are not. An invalid signature that is not a trust failure still warns and continues in non-strict mode, and only for `kassis` and `kassis-corp`. Any other named publisher is verified in strict mode whatever `ENABLE_STRICT_ADDON_SIGNATURES` says.
+
+Addon load, deploy verification, and the MCP contribution loader call the same trust loader. A revocation emits `system.addon.publisher_trust.invalidated`. The in-process cache also expires after a short TTL, which covers a process that misses the event.
 
 ## Signed tarballs
 
@@ -35,3 +37,9 @@ This writes `<file.tgz>.sig`. The default key path is `server/keys/addon_signing
 ## SBOM
 
 `node tools/adk/package-sbom.mjs` writes a CycloneDX document. `airgap-bundle.mjs` includes it as `sbom.json`.
+
+## Changelog
+
+| Date | Change |
+| --- | --- |
+| 2026-10-28 | Trust is the database plus the seeded file and optional `KASSIS_PUBLISHER_TRUST_FILE`. Revoked wins. Bank publishers are always strict, cannot use tier 1, and their id prefixes must start with the publisher id and a hyphen. A key or scope change is refused when no approval policy is published. |
