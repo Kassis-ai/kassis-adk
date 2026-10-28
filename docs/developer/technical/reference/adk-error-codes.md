@@ -6,6 +6,12 @@ sidebar_label: ADK error codes
 
 # ADK error codes (KADK)
 
+**Status:** GA
+**Version checked:** 2026-10-28
+**Technical owner:** Unassigned
+**Last reviewed:** 2026-10-28
+
+
 Every check of the addon development kit reports a stable `KADK-NNN` code with a message, a fix hint and a link to this page. The catalog is data: `packages/addon-sdk/codes/kadk-codes.json`, read through `listKadkCodes()` and `getKadkCode()` in `@kassis/addon-sdk`. A test keeps this page and the catalog in step (one anchor per code, no extra anchors).
 
 A published code keeps its number, category and meaning. A retired code is marked as retired here and in the catalog; its number is never reused. Text in braces, such as `{path}`, is filled in by the reporter.
