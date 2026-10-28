@@ -1,4 +1,4 @@
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -9,15 +9,40 @@ import { submitCertifiedRun } from '../../../../tools/adk/registryRun.mjs';
 
 const repo = path.resolve(import.meta.dirname, '../../../..');
 const cli = path.join(repo, 'tools/adk/kassis-addon.mjs');
+const mcp = path.join(repo, 'tools/adk/kassis-adk-mcp.mjs');
 
 function run(args: string[], cwd: string): { status: number | null; stdout: string; stderr: string } {
   const result = spawnSync(process.execPath, [cli, ...args], { cwd, encoding: 'utf8' });
   return { status: result.status, stdout: result.stdout, stderr: result.stderr };
 }
 
-function frame(message: unknown): Buffer {
-  const body = Buffer.from(JSON.stringify(message));
-  return Buffer.concat([Buffer.from(`Content-Length: ${body.length}\r\n\r\n`), body]);
+function mcpText(messages: readonly object[]): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const child = spawn(process.execPath, [mcp], { stdio: ['pipe', 'pipe', 'pipe'] });
+    let stdout = '';
+    let stderr = '';
+    const timer = setTimeout(() => {
+      child.kill();
+      reject(new Error(`MCP timed out\n${stdout}\n${stderr}`));
+    }, 15000);
+    const finish = (): void => {
+      clearTimeout(timer);
+      child.kill();
+      resolve(stdout);
+    };
+    child.stdout.on('data', (chunk: Buffer) => {
+      stdout += chunk.toString('utf8');
+      if (stdout.includes('KADK-701') && !stdout.includes('Content-Length')) finish();
+    });
+    child.stderr.on('data', (chunk: Buffer) => {
+      stderr += chunk.toString('utf8');
+    });
+    child.on('error', (error: Error) => {
+      clearTimeout(timer);
+      reject(error);
+    });
+    for (const message of messages) child.stdin.write(`${JSON.stringify(message)}\n`);
+  });
 }
 
 describe('addon CLI', () => {
@@ -136,13 +161,27 @@ describe('addon CLI', () => {
     expect(calls[1]).toBe('https://kassis.example/api/v1/agent-registry/runs/run-1/attest');
   });
 
-  it('answers a read-only KADK question from the dev MCP', () => {
-    const result = spawnSync(process.execPath, [path.join(repo, 'tools/adk/kassis-adk-mcp.mjs')], {
-      input: frame({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'kadk_explain', arguments: { code: 'KADK-701' } } }),
-      encoding: 'buffer',
-    });
-    const text = result.stdout.toString('utf8');
+  it('answers a KADK question from the dev MCP over newline-delimited JSON', async () => {
+    const text = await mcpText([
+      {
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'initialize',
+        params: {
+          protocolVersion: '2024-11-05',
+          capabilities: {},
+          clientInfo: { name: 'adk-test', version: '0.0.0' },
+        },
+      },
+      { jsonrpc: '2.0', method: 'notifications/initialized' },
+      {
+        jsonrpc: '2.0',
+        id: 2,
+        method: 'tools/call',
+        params: { name: 'explain_error', arguments: { code: 'KADK-701' } },
+      },
+    ]);
     expect(text).toContain('KADK-701');
-    expect(result.status).toBe(0);
+    expect(text).not.toContain('Content-Length');
   });
 });

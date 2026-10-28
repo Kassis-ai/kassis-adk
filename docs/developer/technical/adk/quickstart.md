@@ -49,7 +49,7 @@ node <repo>/tools/adk/kassis-addon.mjs check
 node <repo>/tools/adk/kassis-addon.mjs conformance
 ```
 
-Both exit 0 and print nothing when the template is valid.
+Both exit 0 and print nothing when the template is valid. `check --json` prints `{ "ok", "issues", "data" }`. A schema failure includes a KADK-1xx code.
 
 ## Profile, certify, pack
 
@@ -79,16 +79,13 @@ Prints `evidence` and exits 0.
 
 ## Dev and test
 
+`dev` starts a container only when a dev host image is already configured and already present locally. Set `KASSIS_DEVHOST_IMAGE`, pass `--image`, or write `{ "image": "<name>" }` to `~/.kassis/devhost.json`. The command uses Docker or Podman. It does not build an image and does not pull one. The addon directory is mounted read-only at `/opt/kassis/dev-addon`. It prints a `http://127.0.0.1` URL and follows the container logs. If the runtime or the image is missing, it exits 1 with an issue.
+
+`migrate up`, `migrate down`, and `migrate status` run only against that dev host database. With no dev host, they exit 1.
+
 ```bash
 node <repo>/tools/adk/kassis-addon.mjs dev
 node <repo>/tools/adk/kassis-addon.mjs test
-```
-
-`dev` prints:
-
-```text
-Routes mount at /api/v1/addons/sample-tprm-check
-UI loads from /addons-ui/sample-tprm-check/index.js
 ```
 
 Use `npm test` for the template. The CLI `test` command runs `node --test` in `./test`. It prints `No test directory` and exits 0 when that folder is missing.
@@ -101,4 +98,5 @@ Use `npm test` for the template. The CLI `test` command runs `node --test` in `.
 
 | Date | Change |
 | --- | --- |
+| 2026-10-28 | `dev` starts a configured local image and does not pull or build. `migrate` targets that dev host only. `check --json` includes KADK codes. `--id value` and `--id=value` both work. |
 | 2026-10-28 | `init` accepts `--publisher`, `--tier`, and `--rung`. `npm run build` writes `dist/server/index.js` and, for a rung with UI, `frontend/dist/index.js`. |

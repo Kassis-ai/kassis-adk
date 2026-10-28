@@ -67,7 +67,15 @@ async function buildServer(addonDir) {
   await assertExport(addonDir, SERVER_OUT, 'initialize');
 }
 
-function buildUi(addonDir) {
+/**
+ * @param {{ onLog?: (event: { stream: 'stdout' | 'stderr', text: string }) => void }} [options]
+ */
+function emitLog(options, stream, text) {
+  if (!text || !options.onLog) return;
+  options.onLog({ stream, text });
+}
+
+function buildUi(addonDir, options) {
   const entry = path.join(addonDir, 'src/ui/index.ts');
   if (!fs.existsSync(entry)) throw new Error('src/ui/index.ts is missing');
   const vitePackage = resolveInstalled(addonDir, 'vite/package.json');
@@ -77,6 +85,8 @@ function buildUi(addonDir) {
     cwd: addonDir,
     encoding: 'utf8',
   });
+  emitLog(options, 'stdout', result.stdout ?? '');
+  emitLog(options, 'stderr', result.stderr ?? '');
   if (result.status !== 0) {
     const detail = `${result.stdout ?? ''}\n${result.stderr ?? ''}`.trim();
     throw new Error(detail || 'vite build failed');
@@ -85,8 +95,8 @@ function buildUi(addonDir) {
 
 /**
  * @param {string} addonDir
- * @param {{ only?: string }} [options]
- * @returns {Promise<void>}
+ * @param {{ only?: string, onLog?: (event: { stream: 'stdout' | 'stderr', text: string }) => void }} [options]
+ * @returns {Promise<string[]>}
  */
 export async function buildAddon(addonDir, options = {}) {
   const only = options.only ?? 'all';
@@ -103,10 +113,10 @@ export async function buildAddon(addonDir, options = {}) {
     if (!fs.existsSync(uiEntry)) {
       if (only === 'ui') throw new Error('src/ui/index.ts is missing');
     } else {
-      buildUi(addonDir);
+      buildUi(addonDir, options);
       await assertExport(addonDir, UI_OUT, 'register');
       built.push(UI_OUT);
     }
   }
-  for (const relative of built) console.log(relative);
+  return built;
 }

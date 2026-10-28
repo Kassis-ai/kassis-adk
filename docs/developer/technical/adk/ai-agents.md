@@ -22,7 +22,7 @@ Version 2 replaces the machine check `kassis-addon-certify` on `adk.certify` wit
 
 `sync --instance=<url>` downloads `GET /api/v1/agent-registry/profiles/published/<id>` instead of the bundled file.
 
-`node tools/adk/kassis-adk-mcp.mjs` is a read-only stdio MCP server with `kadk_explain`, `profile_lock_read`, and `manifest_summary`.
+`node tools/adk/kassis-adk-mcp.mjs` is a stdio MCP server. Messages are newline-delimited JSON. Its tools are `validate_manifest`, `run_checks`, `explain_error`, and `scaffold`. Catalog tools that read `GET /api/v1/adk/catalog` are not part of this server.
 
 ## Registry, runs, and attestation
 
@@ -52,4 +52,5 @@ Autonomy is read from the agent profile. If it cannot be read, the level is the 
 
 | Date | Change |
 | --- | --- |
+| 2026-10-28 | The dev MCP server speaks newline-delimited JSON and exposes `validate_manifest`, `run_checks`, `explain_error`, and `scaffold`. |
 | 2026-10-28 | Coding profile version 2 replaces the `kassis-addon-certify` machine check with check, conformance, build and test. Version 1 stays readable. |

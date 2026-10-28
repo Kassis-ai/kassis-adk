@@ -82,5 +82,5 @@ export async function registerPublisherKey({ instance, publisher, keyPath, token
   if (!response.ok && response.status !== 202) {
     throw new Error(`Key registration failed (${response.status})`);
   }
-  process.stdout.write(`${text}\n`);
+  return text;
 }

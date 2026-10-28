@@ -6,27 +6,29 @@
 **Last reviewed:** 2026-10-28
 
 
-Run `npx kassis-addon <command>` after installing `@kassis/addon-cli`, or `node tools/adk/kassis-addon.mjs <command>` from this repository. An unknown command prints usage and exits 1. Exit 0 is success.
+Run `npx kassis-addon <command>` after installing `@kassis/addon-cli`, or `node tools/adk/kassis-addon.mjs <command>` from this repository. Help and errors name the command `kassis-addon`. `--help` exits 0. `--version` prints the CLI version and exits 0. `--flag value` and `--flag=value` both work. `--json` on every command prints `{ "ok", "issues", "data" }`. An issue is `{ "code", "severity", "message", "fix", "file", "line" }`. An unknown command prints usage and exits 1. Exit 0 is success.
 
 | Command | Flags | What it does |
 | --- | --- | --- |
 | `init` | `--id` `--dir` `--publisher` `--tier` `--rung` | Copies `templates/kassis-addon`. `--id` is required. Publisher defaults to `kassis`, tier to 2, rung to 1. Tier 1 is refused unless the publisher is `kassis`. Any other publisher gets an id prefix of `<publisher>-` when the id does not already start with it. Rung 1 is server only. Rung 2 adds UI. Rung 3 adds UI and migrations. |
 | `build` | `--only=server` or `--only=ui` | Writes `dist/server/index.js`. Also writes `frontend/dist/index.js` when `src/ui/index.ts` exists. Prints each path. Exits 1 when `initialize` is missing, or when the UI was built and `register` is missing. |
-| `check` | | Validates `manifest.json` against manifest v2. |
-| `conformance` | | Runs the addon-testkit import check on `src/`, `frontend/`, and built `dist/server/index.js` and `frontend/dist/index.js` when those files exist. Also rejects an up script with no down script. |
-| `test` | | Runs `node --test` in `./test`. Prints `No test directory` and exits 0 when that folder is missing. |
-| `dev` | | Prints the mount path and the UI URL. It does not start a server. |
-| `migrate` | | Lists `migrations/*.sql`. It does not apply them. |
-| `pack` | `--out=<dir>` | Writes an evidence pack after certify would pass: attestation, lock, certify result, `index.json` and `README.md`. |
-| `sign` | `--key=<path>` | Signs this addon. With `--key`, writes `contentHash` and `signing.keyId`, then the signature. Refuses a key file inside the addon folder. Inside the repo, without `--key`, uses the repo signer for the manifest id and does not add `signing`. Outside the repo, `--key` is required. |
-| `keys generate` | `--publisher=<id>` | Writes an Ed25519 private key to `~/.kassis/keys/<fingerprint>.key` (mode 0600; on Windows, only the current user). Prints the fingerprint and the public key. The private key is not written into the addon folder. |
-| `keys export-public` | `--key=<path>` `--out=<path>` | Writes the SPKI DER hex of that private key. |
-| `keys register` | `--instance=<url>` `--publisher=<id>` `--key=<path>` | POSTs the public key to `/api/v1/platform/addon-publishers/<id>/keys`. Token: `KASSIS_ADK_TOKEN`. The instance still has to approve the key. |
-| `certify` | `--json` | Runs check, conformance, build and test, writes `.kassis/evidence/checks.json`, then checks the attestation. KADK-714 blocks a blank outcome. KADK-715 warns when machine evidence is typed in. `--json` prints `{ "ok", "issues" }` and still exits 1 when `ok` is false. |
-| `attest` | | Writes `.kassis/attestation.json` from the lock when it is missing, then prints its path. It does not post to the registry. `certify` posts when the instance env vars are set. |
-| `explain` | `<code>` | Prints the meaning of a KADK code. |
-| `sync` | `--profile=<id>` `--instance=<url>` | Verifies the signed profile, or downloads `GET /api/v1/agent-registry/profiles/published/<id>`, then writes the lock and the rule files. |
-| `rules` | | Rewrites `AGENTS.md` and the rule files from the lock. Fails if you have not run `sync`. |
+| `check` | `--json` | Validates `manifest.json` against manifest v2. Schema errors use the existing KADK-1xx codes. A permission outside `<id>.` is KADK-110. |
+| `conformance` | `--json` | Runs the addon-testkit import check on `src/`, `frontend/`, and built `dist/server/index.js` and `frontend/dist/index.js` when those files exist. Also rejects an up script with no down script. |
+| `test` | `--json` | Runs `node --test` in `./test`. Prints `No test directory` and exits 0 when that folder is missing. |
+| `dev` | `--image` `--json` | Starts a local container with Docker or Podman only when an image is already configured and already on the machine. Configuration is `--image`, then `KASSIS_DEVHOST_IMAGE`, then `~/.kassis/devhost.json`. The addon directory is mounted read-only at `/opt/kassis/dev-addon`. The command prints the localhost URL and follows container logs. It does not build an image, pull from a registry, or add a publisher to the trust store. If Docker, Podman, or the image is missing, it returns an issue and exits. |
+| `migrate` | `up` `down` `status` `--target` `--json` | Runs only against the database of the dev host started by `dev`. If that host is not running, it refuses. `--target` is refused unless it is that same database. |
+| `doctor` | `--json` | Checks that Node is 20 or newer, that `npm whoami` succeeds for `https://npm.pkg.github.com` (the token is not printed), that a key file exists under `~/.kassis/keys`, that `KASSIS_ADK_INSTANCE` answers `GET /api/v1/adk/version`, and that `manifest.hostApi` accepts `HOST_API_VERSION`. |
+| `scaffold` | `--kind` `--id` `--name` `--dir` | `--kind=addon` is init. The other kinds add a route, capability, event, job, migration, or UI slot in the current addon. |
+| `pack` | `--out=<dir>` `--json` | Writes an evidence pack after certify would pass: attestation, lock, certify result, `index.json` and `README.md`. |
+| `sign` | `--key=<path>` `--json` | Signs this addon. With `--key`, writes `contentHash` and `signing.keyId`, then the signature. Refuses a key file inside the addon folder. Inside the repo, without `--key`, uses the repo signer for the manifest id and does not add `signing`. Outside the repo, `--key` is required. |
+| `keys generate` | `--publisher=<id>` `--json` | Writes an Ed25519 private key to `~/.kassis/keys/<fingerprint>.key` (mode 0600; on Windows, only the current user). Prints the fingerprint and the public key. The private key is not written into the addon folder. |
+| `keys export-public` | `--key=<path>` `--out=<path>` `--json` | Writes the SPKI DER hex of that private key. |
+| `keys register` | `--instance=<url>` `--publisher=<id>` `--key=<path>` `--json` | POSTs the public key to `/api/v1/platform/addon-publishers/<id>/keys`. Token: `KASSIS_ADK_TOKEN`. The instance still has to approve the key. |
+| `certify` | `--json` | Runs check, conformance, build and test, writes `.kassis/evidence/checks.json`, then checks the attestation. KADK-714 blocks a blank outcome. KADK-715 warns when machine evidence is typed in. `--json` prints `{ "ok", "issues", "data" }` and still exits 1 when `ok` is false. |
+| `attest` | `--json` | Writes `.kassis/attestation.json` from the lock when it is missing, then prints its path. It does not post to the registry. `certify` posts when the instance env vars are set. |
+| `explain` | `<code>` `--json` | Prints the meaning of a KADK code. |
+| `sync` | `--profile=<id>` `--instance=<url>` `--from=<file>` `--json` | Verifies the signed profile, reads `--from`, or downloads `GET /api/v1/agent-registry/profiles/published/<id>`, then writes the lock and the rule files. |
+| `rules` | `--json` | Rewrites `AGENTS.md` and the rule files from the lock. Fails if you have not run `sync`. |
 
 `sync --instance` reads the published profile route. The id is a slug such as `addon-coding-agent`, not a database number. The response body is `{ success, data }`. The CLI uses `data`.
 
@@ -41,6 +43,7 @@ node tools/adk/kassis-addon.mjs certify --json
 
 | Date | Change |
 | --- | --- |
+| 2026-10-28 | `--help` exits 0 and the usage line says `kassis-addon`. `--version`, `--json`, and both `--id value` and `--id=value` work. `check` reports KADK-1xx. `dev` starts a configured local image and does not pull or build. `migrate` is up, down, and status on that dev host only. `doctor` checks Node, registry login, keys, the instance, and hostApi. |
 | 2026-10-28 | `conformance` uses the addon-testkit import check, including the server and UI bundles when they exist. |
 | 2026-10-28 | `keys generate`, `keys export-public`, and `keys register`. `sign --key` writes `signing.keyId` and refuses a key inside the addon folder. |
 | 2026-10-28 | `init` accepts `--publisher`, `--tier`, and `--rung`. `build` writes the server bundle and, when the addon has a UI, the frontend bundle. |
