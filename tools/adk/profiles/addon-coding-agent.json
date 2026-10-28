@@ -63,7 +63,7 @@
       "key": "adk.document-changes",
       "severity": "advisory",
       "title": "Document what you built",
-      "rule": "Document what you built in README.md and CHANGELOG.md.",
+      "rule": "When a change is described by Kassisdoc, update the business page, the technical page, or both, and link the business page from the technical guide. Also update README.md and CHANGELOG.md.",
       "verification": "self"
     },
     {
@@ -81,5 +81,5 @@
       "verification": "self"
     }
   ],
-  "signature": "6d109ec301650ebc8e39fbad1a579274836fc3536bd085a017cd3eeb3c515b699b9b122cdc889302a46a4656ea7a207b82f9820b2a377ad4dd45d3fba27f2305"
+  "signature": "8c824b2dd3a91bff121eb290990034fd8ef316c5077b2c509830607bd7c02f2c9ad3cc4363265816bf8c73ed89e54f8767cd9e529a251d17bd37e9e20baa3902"
 }

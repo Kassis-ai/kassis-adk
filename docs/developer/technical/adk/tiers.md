@@ -1,5 +1,11 @@
 # Tiers
 
+**Status:** GA
+**Version checked:** 2026-10-28
+**Technical owner:** Unassigned
+**Last reviewed:** 2026-10-28
+
+
 ## Tier 1
 
 A tier 1 addon is loaded in the host process. `initialize()` runs there. This is the right tier for the first-party addons that ship with Kassis.

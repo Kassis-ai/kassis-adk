@@ -1,5 +1,11 @@
 # Addon anatomy
 
+**Status:** GA
+**Version checked:** 2026-10-28
+**Technical owner:** Unassigned
+**Last reviewed:** 2026-10-28
+
+
 ## Manifest
 
 `manifest.json` is validated as manifest v2 by `kassis-addon check`. The fields an addon author sets most often:

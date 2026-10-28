@@ -1,5 +1,11 @@
 # Testing
 
+**Status:** GA
+**Version checked:** 2026-10-28
+**Technical owner:** Unassigned
+**Last reviewed:** 2026-10-28
+
+
 `@kassis/addon-testkit` checks an evidence pack and rejects host imports. The CLI `conformance` command uses the same idea on `src/` and `frontend/`.
 
 `certify` fails on KADK-701 through KADK-711. Advisory KADK-712 and KADK-713 do not fail it. Codes are listed in [KADK error codes](../reference/adk-error-codes.md).

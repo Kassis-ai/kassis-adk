@@ -1,8 +1,14 @@
 # Operators
 
+**Status:** GA
+**Version checked:** 2026-10-28
+**Technical owner:** Unassigned
+**Last reviewed:** 2026-10-28
+
+
 ## Enable and disable
 
-Enable and disable go through the platform lifecycle API (`system.admin`), not a Settings toggle. See [Addons overview](../addons/overview.md).
+Enable and disable go through the platform lifecycle API (`system.admin`), not a Settings toggle. See [Addons overview](../../business/addons/overview.md).
 
 The UI kill switch is `@kassis/addon-ui`. A killed addon renders the killed slot and does not mount its page. A thrown slot shows the failed-slot message and the rest of the host stays up.
 

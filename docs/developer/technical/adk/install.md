@@ -1,5 +1,11 @@
 # Install
 
+**Status:** GA
+**Version checked:** 2026-10-28
+**Technical owner:** Unassigned
+**Last reviewed:** 2026-10-28
+
+
 ## Prerequisites
 
 - Node.js 24 (the server image is `node:24.18.1`). The CLI itself runs on the Node that ships with the repo.
@@ -7,7 +13,7 @@
 
 ## Packages
 
-The public packages are `@kassis/addon-sdk`, `@kassis/addon-testkit`, `@kassis/addon-ui`, `@kassis/host-sdk`, `@kassis/agent-kit`, and `@kassis/addon-cli`. They are private and publish to GitHub Packages. Copy [`.npmrc.example`](../../../.npmrc.example) to `.npmrc` and set `NODE_AUTH_TOKEN` in the environment. Do not commit a token.
+The public packages are `@kassis/addon-sdk`, `@kassis/addon-testkit`, `@kassis/addon-ui`, `@kassis/host-sdk`, `@kassis/agent-kit`, and `@kassis/addon-cli`. They are private and publish to GitHub Packages. Copy [`.npmrc.example`](../../../../.npmrc.example) to `.npmrc` and set `NODE_AUTH_TOKEN` in the environment. Do not commit a token.
 
 `@kassis/host-sdk` publishes type declarations only. The running host serves the implementation at `/host-sdk/index.js`. An addon frontend build leaves that import external.
 

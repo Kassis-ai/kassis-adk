@@ -1,5 +1,11 @@
 # Quickstart
 
+**Status:** GA
+**Version checked:** 2026-10-28
+**Technical owner:** Unassigned
+**Last reviewed:** 2026-10-28
+
+
 These steps were run in a folder outside the repository. Replace `<repo>` with the checkout path and `<scratch>` with an empty directory that is not inside the checkout.
 
 ## Create

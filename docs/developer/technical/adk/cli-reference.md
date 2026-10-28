@@ -1,5 +1,11 @@
 # CLI reference
 
+**Status:** GA
+**Version checked:** 2026-10-28
+**Technical owner:** Unassigned
+**Last reviewed:** 2026-10-28
+
+
 Run `npx kassis-addon <command>` after installing `@kassis/addon-cli`, or `node tools/adk/kassis-addon.mjs <command>` from this repository. An unknown command prints usage and exits 1. Exit 0 is success.
 
 | Command | Flags | What it does |

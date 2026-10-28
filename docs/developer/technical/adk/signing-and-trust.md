@@ -1,5 +1,11 @@
 # Signing and trust
 
+**Status:** GA
+**Version checked:** 2026-10-28
+**Technical owner:** Unassigned
+**Last reviewed:** 2026-10-28
+
+
 ## Publisher keys
 
 `server/core/addon-platform/trust/publisher-trust.json` lists publishers. `*` is the platform default. A named publisher does not fall back to `*`.

@@ -1,5 +1,11 @@
 # AI agents
 
+**Status:** GA
+**Version checked:** 2026-10-28
+**Technical owner:** Unassigned
+**Last reviewed:** 2026-10-28
+
+
 ## Coding-agent profile
 
 The signed profile is `tools/adk/profiles/addon-coding-agent.json`. `sync --profile=addon-coding-agent` checks that signature and writes:
