@@ -66,10 +66,30 @@ const CLI_RELATIVE = 'tools/adk/kassis-addon.mjs';
  * @param {Record<string, string | undefined>} [env]
  * @returns {string}
  */
+function npmInvocation() {
+  const fromEnv = process.env.npm_execpath;
+  if (fromEnv && fs.existsSync(fromEnv)) return { command: process.execPath, prefix: [fromEnv] };
+  const lookup = spawnSync(process.platform === 'win32' ? 'where.exe' : 'which', ['npm'], {
+    encoding: 'utf8',
+    windowsHide: true,
+  });
+  const hit = (lookup.stdout ?? '')
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .find((line) => line.length > 0 && fs.existsSync(line));
+  if (hit) {
+    const sibling = path.join(path.dirname(hit), 'node_modules', 'npm', 'bin', 'npm-cli.js');
+    if (fs.existsSync(sibling)) return { command: process.execPath, prefix: [sibling] };
+    if (!hit.endsWith('.cmd') && !hit.endsWith('.ps1')) return { command: hit, prefix: [] };
+  }
+  const beside = path.join(path.dirname(process.execPath), 'node_modules', 'npm', 'bin', 'npm-cli.js');
+  if (fs.existsSync(beside)) return { command: process.execPath, prefix: [beside] };
+  throw new Error('npm was not found on PATH or next to node');
+}
+
 export function runNpm(args, cwd, stdio = 'pipe', env) {
-  const npmCli = path.join(path.dirname(process.execPath), 'node_modules', 'npm', 'bin', 'npm-cli.js');
-  if (!fs.existsSync(npmCli)) throw new Error('npm was not found next to node');
-  const result = spawnSync(process.execPath, [npmCli, ...args], {
+  const npm = npmInvocation();
+  const result = spawnSync(npm.command, [...npm.prefix, ...args], {
     cwd,
     encoding: 'utf8',
     windowsHide: true,
