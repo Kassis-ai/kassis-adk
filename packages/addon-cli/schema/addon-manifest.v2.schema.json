@@ -1,0 +1,399 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kassis.local/schemas/addon-manifest.v2.schema.json",
+  "title": "Kassis addon manifest v2",
+  "description": "Every field is enforced by the host or the CLI. Informational fields live under metadata. Rules a schema cannot express (namespaces, duplicates, tier rules) are checked by validateManifestV2 in @kassis/addon-sdk and reported as KADK codes.",
+  "type": "object",
+  "required": ["manifestVersion", "id", "name", "version", "publisher", "tier", "hostApi"],
+  "additionalProperties": false,
+  "properties": {
+    "manifestVersion": { "const": 2 },
+    "id": {
+      "description": "Namespace root of every name the addon publishes. The route mount path /api/v1/addons/<id> is derived from it.",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+      "maxLength": 64
+    },
+    "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "version": { "$ref": "#/$defs/semver" },
+    "publisher": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$", "maxLength": 64 },
+    "tier": { "enum": [1, 2] },
+    "hostApi": { "$ref": "#/$defs/semverRange" },
+    "entrypoints": {
+      "type": "object",
+      "required": ["main"],
+      "additionalProperties": false,
+      "properties": { "main": { "$ref": "#/$defs/packagePath" } }
+    },
+    "signature": { "type": "string", "pattern": "^[0-9a-f]+$", "minLength": 64 },
+    "contentHash": { "type": "string", "pattern": "^sha256-[0-9a-f]{64}$" },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "$ref": "#/$defs/permissionName" },
+          "displayName": { "type": "string", "minLength": 1 },
+          "description": { "type": "string" },
+          "resourceType": { "type": "string", "minLength": 1 },
+          "action": { "type": "string", "minLength": 1 },
+          "category": { "type": "string", "minLength": 1 },
+          "default": { "type": "boolean" }
+        }
+      }
+    },
+    "requiredPermissions": { "type": "array", "items": { "$ref": "#/$defs/permissionName" } },
+    "requires": { "type": "array", "items": { "$ref": "#/$defs/capabilityRequirement" } },
+    "optional": { "type": "array", "items": { "$ref": "#/$defs/capabilityRequirement" } },
+    "provides": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["capability", "version"],
+        "additionalProperties": false,
+        "properties": {
+          "capability": { "$ref": "#/$defs/capabilityId" },
+          "version": { "$ref": "#/$defs/semver" }
+        }
+      }
+    },
+    "events": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "publishes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "schema"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "$ref": "#/$defs/dottedName" },
+              "schema": { "$ref": "#/$defs/packagePath" }
+            }
+          }
+        },
+        "subscribes": { "type": "array", "items": { "$ref": "#/$defs/dottedName" } }
+      }
+    },
+    "audit": {
+      "type": "object",
+      "required": ["actions"],
+      "additionalProperties": false,
+      "properties": { "actions": { "type": "array", "items": { "$ref": "#/$defs/dottedName" } } }
+    },
+    "egress": {
+      "type": "object",
+      "required": ["hosts"],
+      "additionalProperties": false,
+      "properties": {
+        "hosts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^(?:\\*\\.)?(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z]{2,63}$"
+          }
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "required": ["memoryMb"],
+      "additionalProperties": false,
+      "properties": {
+        "memoryMb": { "type": "integer", "minimum": 32, "maximum": 4096 }
+      }
+    },
+    "health": {
+      "type": "object",
+      "required": ["path"],
+      "additionalProperties": false,
+      "properties": {
+        "path": { "type": "string", "minLength": 1, "maxLength": 200 }
+      }
+    },
+    "jobs": {
+      "type": "object",
+      "required": ["types"],
+      "additionalProperties": false,
+      "properties": { "types": { "type": "array", "items": { "$ref": "#/$defs/dottedName" } } }
+    },
+    "prompts": {
+      "type": "object",
+      "required": ["keys"],
+      "additionalProperties": false,
+      "properties": { "keys": { "type": "array", "items": { "$ref": "#/$defs/dottedName" } } }
+    },
+    "secrets": {
+      "type": "object",
+      "required": ["keys"],
+      "additionalProperties": false,
+      "properties": {
+        "keys": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9_.-]*$" }
+        }
+      }
+    },
+    "config": {
+      "type": "object",
+      "required": ["schema"],
+      "additionalProperties": false,
+      "properties": {
+        "schema": {
+          "description": "JSON Schema the host validates the addon configuration against before initialize().",
+          "type": "object"
+        }
+      }
+    },
+    "data": {
+      "type": "object",
+      "required": ["schema"],
+      "additionalProperties": false,
+      "properties": {
+        "schema": {
+          "description": "Postgres schema owned by the addon role: addon_<id with underscores>.",
+          "type": "string",
+          "pattern": "^addon_[a-z0-9_]+$",
+          "maxLength": 63
+        }
+      }
+    },
+    "database": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ownedTables": { "type": "array", "items": { "$ref": "#/$defs/tableName" } },
+        "readAccess": { "type": "array", "items": { "$ref": "#/$defs/tableName" } }
+      }
+    },
+    "legacyTables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["tableName", "strategy", "removalDeadline"],
+        "additionalProperties": false,
+        "properties": {
+          "tableName": { "$ref": "#/$defs/tableName" },
+          "strategy": { "enum": ["retain", "rename"] },
+          "newName": { "$ref": "#/$defs/tableName" },
+          "removalDeadline": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+          "rationale": { "type": "string" }
+        },
+        "if": { "properties": { "strategy": { "const": "rename" } } },
+        "then": { "required": ["newName"] }
+      }
+    },
+    "contributions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mcp": {
+          "type": "object",
+          "required": ["entry", "tools"],
+          "additionalProperties": false,
+          "properties": {
+            "entry": { "$ref": "#/$defs/packagePath" },
+            "tools": {
+              "type": "array",
+              "items": { "type": "string", "pattern": "^[A-Za-z0-9_.-]{1,128}$" }
+            }
+          }
+        }
+      }
+    },
+    "resourceTypes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "label", "abilities"],
+        "additionalProperties": false,
+        "properties": {
+          "type": { "type": "string", "pattern": "^[a-z0-9]+:[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "abilities": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "pin": { "type": "boolean" },
+              "follow": { "type": "boolean" },
+              "anchor": { "type": "boolean" },
+              "search": { "type": "boolean" },
+              "preview": { "type": "boolean" },
+              "share": { "type": "boolean" },
+              "linkToCase": { "type": "boolean" },
+              "workItems": { "type": "boolean" }
+            }
+          },
+          "icon": { "type": "string" },
+          "sensitivity": { "type": "string" },
+          "viewPermissions": { "type": "array", "items": { "type": "string" } },
+          "access": { "type": "string" },
+          "table": { "$ref": "#/$defs/tableName" },
+          "urlTemplate": { "type": "string" },
+          "relations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "to", "label"],
+              "additionalProperties": false,
+              "properties": {
+                "id": { "type": "string", "minLength": 1 },
+                "to": { "type": "string", "minLength": 1 },
+                "label": { "type": "string", "minLength": 1 }
+              }
+            }
+          },
+          "events": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "deleted": { "$ref": "#/$defs/dottedName" },
+              "changed": { "$ref": "#/$defs/dottedName" }
+            }
+          }
+        }
+      }
+    },
+    "ui": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "entryFile": { "$ref": "#/$defs/packagePath" },
+        "runtimeLoad": { "type": "boolean" },
+        "assetOrigin": { "type": ["string", "null"] },
+        "contributions": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "featureFlag": { "type": "string", "minLength": 1 },
+            "featureLabel": { "type": "string", "minLength": 1 },
+            "nav": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["section", "name", "href"],
+                "additionalProperties": false,
+                "properties": {
+                  "section": { "type": "string", "minLength": 1 },
+                  "name": { "type": "string", "minLength": 1 },
+                  "href": { "type": "string", "minLength": 1 },
+                  "icon": { "type": "string" },
+                  "permission": { "type": "string" },
+                  "permissions": { "type": "array", "items": { "type": "string" } },
+                  "order": { "type": "number" }
+                }
+              }
+            },
+            "deepLinks": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["id", "path"],
+                "additionalProperties": false,
+                "properties": {
+                  "id": { "type": "string", "minLength": 1 },
+                  "path": { "type": "string", "minLength": 1 }
+                }
+              }
+            },
+            "settingsTabs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["id", "label"],
+                "additionalProperties": false,
+                "properties": {
+                  "id": { "type": "string", "minLength": 1 },
+                  "label": { "type": "string", "minLength": 1 },
+                  "icon": { "type": "string" },
+                  "group": { "type": "string" },
+                  "order": { "type": "number" },
+                  "keywords": { "type": "array", "items": { "type": "string" } }
+                }
+              }
+            }
+          }
+        },
+        "slots": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["slot", "component"],
+            "additionalProperties": false,
+            "properties": {
+              "slot": { "type": "string", "pattern": "^[a-z][a-zA-Z0-9-]*(?:\\.[a-zA-Z0-9-]+)+$" },
+              "component": { "type": "string", "pattern": "^[A-Z][A-Za-z0-9]*$" },
+              "order": { "type": "number" },
+              "permission": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "metadata": {
+      "description": "Informational only. Nothing in the host enforces these fields.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "displayName": { "type": "string" },
+        "description": { "type": "string" },
+        "author": { "type": "string" },
+        "license": { "type": "string" },
+        "category": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "iconUrl": { "type": "string" },
+        "docUrl": { "type": "string" },
+        "supportEmail": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "semver": {
+      "type": "string",
+      "pattern": "^(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
+    },
+    "semverRange": {
+      "description": "x.y.z, ^x.y.z, ~x.y.z, >=x.y.z, or >=x.y.z <a.b.c.",
+      "type": "string",
+      "pattern": "^(?:[\\^~]?(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)|>=(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)(?: <(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*))?)$"
+    },
+    "permissionName": {
+      "type": "string",
+      "pattern": "^[a-z0-9_-]+(?:\\.[a-z0-9_*-]+)+$",
+      "maxLength": 128
+    },
+    "dottedName": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]*(?:\\.[a-zA-Z0-9_-]+)+$",
+      "maxLength": 128
+    },
+    "capabilityId": {
+      "type": "string",
+      "pattern": "^[a-z][a-zA-Z0-9-]*(?:[.:][a-zA-Z0-9-]+)+$",
+      "maxLength": 128
+    },
+    "capabilityRequirement": {
+      "type": "object",
+      "required": ["capability", "range"],
+      "additionalProperties": false,
+      "properties": {
+        "capability": { "$ref": "#/$defs/capabilityId" },
+        "range": { "$ref": "#/$defs/semverRange" }
+      }
+    },
+    "tableName": {
+      "type": "string",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)?$",
+      "maxLength": 127
+    },
+    "packagePath": {
+      "description": "Relative path inside the addon package.",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_][A-Za-z0-9_./-]*$",
+      "maxLength": 255
+    }
+  }
+}

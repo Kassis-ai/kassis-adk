@@ -1,0 +1,22 @@
+{
+  "description": "Files covered by the addon manifest contentHash. Globs are POSIX paths relative to the addon folder: ** matches any number of folders, * and ? stay inside one folder, matching is case-sensitive and dotfiles are not special. Read by the signer (tools/signing/sign-all-addons.mjs) and by the server before every addon import. Changing this file changes every contentHash: re-sign all addons with npm run sign:addons.",
+  "include": ["**"],
+  "exclude": [
+    "manifest.json",
+    "dist/manifest.json",
+    "frontend/**",
+    "**/node_modules/**",
+    "**/package-lock.json",
+    "**/*.md",
+    "**/*.map",
+    "**/*.d.ts",
+    "**/*.test.*",
+    "**/*.spec.*",
+    "**/__tests__/**",
+    "**/*.tsbuildinfo",
+    "**/.tsbuildinfo*",
+    "**/*.log",
+    "**/.DS_Store",
+    "**/Thumbs.db"
+  ]
+}

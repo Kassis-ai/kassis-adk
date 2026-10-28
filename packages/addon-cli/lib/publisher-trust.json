@@ -1,0 +1,9 @@
+{
+  "revoked": [],
+  "publishers": {
+    "*": {
+      "current": "59e5e119565daeb9fcd196965b0c1da32112c7a343bd95fc4724e6c722fceef3",
+      "previous": []
+    }
+  }
+}
