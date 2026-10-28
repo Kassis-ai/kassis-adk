@@ -1,0 +1,51 @@
+# ADK clean room. Uses this repository checkout only.
+# It does not deploy, approve a request, or call a live addon health check.
+# The air-gap step installs file: tarballs and refuses the npm registry.
+# Docker is not used.
+
+name: ADK clean room
+
+on:
+  pull_request:
+    paths:
+      - 'tools/adk/**'
+      - 'templates/kassis-addon/**'
+      - 'packages/addon-cli/**'
+      - 'packages/addon-sdk/**'
+      - 'packages/addon-testkit/**'
+      - 'packages/host-sdk/**'
+      - 'packages/addon-ui/**'
+      - 'packages/agent-kit/**'
+      - 'packages/adk-core/**'
+      - 'server/core/addon-deployment/**'
+      - 'server/core/addon-platform/**'
+      - 'docs/developer/technical/adk/**'
+      - 'scripts/adk-clean-room.mjs'
+      - '.github/workflows/adk-clean-room.yml'
+  schedule:
+    - cron: '0 5 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: adk-clean-room-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  adk-clean-room:
+    name: ADK clean room
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Kassis Node
+        uses: ./.github/actions/setup-kassis-node
+
+      - name: Pack, install, and exercise the CLI
+        run: node scripts/adk-clean-room.mjs --write-bundle=airgap-bundle
+
+      - name: Install and build from the air-gap bundle
+        run: node scripts/adk-clean-room.mjs --airgap --bundle=airgap-bundle

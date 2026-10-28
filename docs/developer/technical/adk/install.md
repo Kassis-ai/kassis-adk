@@ -42,16 +42,28 @@ In this repository, `kassis-addon` is `tools/adk/kassis-addon.mjs`. `npm run cre
 
 Outside the repository, install `@kassis/addon-cli` and run `npx kassis-addon`. That package does not contain the private signing key. `sign` without `--key` exits 1 there.
 
+## Clean-room check
+
+```bash
+node scripts/adk-clean-room.mjs
+```
+
+The script builds the six public packages, packs them, and installs those tarballs in an empty folder with `npm install --no-package-lock`. `npm pack` leaves the development export map in place, so the script copies each tarball's `publishConfig` entry points onto that packed `package.json` before install. Plain Node then loads `dist`. It imports each runtime entry with plain Node. It then runs `kassis-addon init`, `build`, `test`, `check`, and `conformance` for a tier 2 rung 2 addon, and `package` on a manifest that already has `signature` and `contentHash`. `@kassis/adk-core` stays private and is not packed. The script does not deploy to an instance and does not approve a request.
+
 ## Air-gapped bundle
 
 ```bash
 node tools/adk/airgap-bundle.mjs --out=./airgap
+node scripts/adk-clean-room.mjs --airgap --bundle=./airgap
 ```
 
-The bundle contains the SDK, the testkit, the CLI, the template, the public verification key, and `sbom.json`. It refuses to include the private signing key.
+The bundle contains the SDK, the testkit, the template, the public verification key, `sbom.json`, the six public package tarballs, `packages/adk-core` sources, the CLI entry `tools/adk/kassis-addon.mjs`, and `checksums.txt`. It refuses to include the private signing key. There is no separate CLI binary.
+
+`--airgap` runs only when that directory is already populated. It checks `checksums.txt`, installs with `file:` tarballs from the bundle, and refuses the npm registry. Deploy, approval, and a live health check are not part of this command.
 
 ## Changelog
 
 | Date | Change |
 | --- | --- |
+| 2026-10-28 | `node scripts/adk-clean-room.mjs` packs the six public packages, installs the tarballs, imports them, and runs init, build, test, check, conformance, and package for a tier 2 rung 2 addon. The air-gap bundle adds those tarballs, adk-core sources, the CLI entry, and checksums. |
 | 2026-10-28 | The six public packages build to `dist` and publish to GitHub Packages. `host-sdk` and `addon-ui` publish types and a Node shim. The host still serves the runtime. |
