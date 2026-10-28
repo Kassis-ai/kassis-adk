@@ -4,9 +4,14 @@
  * Advisory answers are warnings and do not fail certification.
  */
 import { createRequire } from 'node:module';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
-const catalog = require('../../packages/addon-sdk/codes/kadk-codes.json');
+const here = path.dirname(fileURLToPath(import.meta.url));
+const repoCatalog = path.resolve(here, '../../packages/addon-sdk/codes/kadk-codes.json');
+const catalog = require(fs.existsSync(repoCatalog) ? repoCatalog : path.join(here, 'kadk-codes.json'));
 
 const byCode = new Map(catalog.codes.map((entry) => [entry.code, entry]));
 

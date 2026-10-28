@@ -1,0 +1,19 @@
+{
+  "react": "/vendor/react.js",
+  "react/jsx-runtime": "/vendor/react-jsx-runtime.js",
+  "react/jsx-dev-runtime": "/vendor/react-jsx-runtime.js",
+  "react-dom": "/vendor/react-dom.js",
+  "react-dom/client": "/vendor/react-dom-client.js",
+  "react-router": "/vendor/react-router.js",
+  "react-router-dom": "/vendor/react-router-dom.js",
+  "@tanstack/react-query": "/vendor/react-query.js",
+  "@kassis/host-sdk": "/host-sdk/index.js",
+  "@kassis/host-sdk/registries": "/host-sdk/registries.js",
+  "@kassis/host-sdk/routes": "/host-sdk/routes.js",
+  "@kassis/host-sdk/entities": "/host-sdk/entities.js",
+  "@kassis/host-sdk/caseWorkspace": "/host-sdk/caseWorkspace.js",
+  "@kassis/host-sdk/i18n": "/host-sdk/i18n.js",
+  "@kassis/host-sdk/risk": "/host-sdk/risk.js",
+  "@kassis/host-sdk/risk-level": "/host-sdk/riskLevel.js",
+  "@kassis/addon-ui": "/host-sdk/addon-ui.js"
+}

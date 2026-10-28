@@ -16,7 +16,11 @@ import { submitCertifiedRun } from './registryRun.mjs';
 import { initAddon } from './scaffold.mjs';
 
 const root = process.cwd();
-const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+const here = path.dirname(fileURLToPath(import.meta.url));
+const packedRoot = path.resolve(here, '..');
+const repoRoot = fs.existsSync(path.join(packedRoot, 'templates/kassis-addon/manifest.json'))
+  ? packedRoot
+  : path.resolve(here, '../..');
 const lockPath = path.join(root, '.kassis', 'agent-profile.lock.json');
 const attestationPath = path.join(root, '.kassis', 'attestation.json');
 
@@ -151,7 +155,7 @@ function conformance() {
   process.exit(issues.length === 0 ? 0 : 1);
 }
 
-function sign() {
+async function sign() {
   const manifest = readJson(path.join(root, 'manifest.json'));
   const id = typeof manifest?.id === 'string' ? manifest.id : '';
   if (!id) {
@@ -159,20 +163,29 @@ function sign() {
     process.exit(1);
   }
   const key = flagValue('key');
-  if (key) {
-    const signer = path.join(repoRoot, 'tools/signing/sign-addon.cjs');
-    const result = spawnSync(process.execPath, [signer, root, '--private-key', path.resolve(key)], {
+  if (!key) {
+    const bundled = path.join(repoRoot, 'tools/signing/sign-all-addons.mjs');
+    if (!fs.existsSync(bundled)) {
+      console.error('sign --key=<path> is required outside the Kassis repository');
+      process.exit(1);
+    }
+    const result = spawnSync(process.execPath, [bundled, `--only=${id}`], {
       cwd: repoRoot,
       stdio: 'inherit',
     });
     process.exit(result.status ?? 1);
   }
-  const signer = path.join(repoRoot, 'tools/signing/sign-all-addons.mjs');
-  const result = spawnSync(process.execPath, [signer, `--only=${id}`], {
-    cwd: repoRoot,
-    stdio: 'inherit',
-  });
-  process.exit(result.status ?? 1);
+  const repoSigner = path.join(repoRoot, 'tools/signing/sign-addon.cjs');
+  if (fs.existsSync(repoSigner)) {
+    const result = spawnSync(process.execPath, [repoSigner, root, '--private-key', path.resolve(key)], {
+      cwd: repoRoot,
+      stdio: 'inherit',
+    });
+    process.exit(result.status ?? 1);
+  }
+  const { signManifestFile } = await import('./signManifest.mjs');
+  await signManifestFile(path.join(root, 'manifest.json'), path.resolve(key));
+  process.exit(0);
 }
 
 function init() {
