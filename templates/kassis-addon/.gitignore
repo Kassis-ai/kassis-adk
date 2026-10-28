@@ -1,0 +1,4 @@
+dist
+frontend/dist
+.kassis/evidence
+node_modules

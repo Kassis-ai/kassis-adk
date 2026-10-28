@@ -4,10 +4,10 @@
   "type": "module",
   "description": "Assertions a coding agent uses to prove an addon pack and that source stays off the host.",
   "main": "./src/index.mjs",
-  "types": "./src/index.mjs",
+  "types": "./index.d.ts",
   "exports": {
     ".": {
-      "types": "./src/index.mjs",
+      "types": "./index.d.ts",
       "default": "./src/index.mjs"
     }
   },

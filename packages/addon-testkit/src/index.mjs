@@ -36,3 +36,5 @@ export function assertEvidencePack(dir) {
   }
   return certify;
 }
+
+export { createTestContext } from './createTestContext.mjs';

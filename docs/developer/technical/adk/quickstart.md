@@ -11,10 +11,34 @@ These steps were run in a folder outside the repository. Replace `<repo>` with t
 ## Create
 
 ```bash
-node <repo>/tools/adk/kassis-addon.mjs init --id=sample-tprm-check --dir=<scratch>
+node <repo>/tools/adk/kassis-addon.mjs init --id=sample-tprm-check --publisher=kassis --dir=<scratch>
 ```
 
-Exit 0. `<scratch>/manifest.json` exists.
+Exit 0. `<scratch>/manifest.json` exists. `--publisher` defaults to `kassis`. `--tier` defaults to 2. Publisher `kassis` may pass `--tier=1`. Any other publisher is tier 2, and `--tier=1` exits 1. `--rung` defaults to 1.
+
+| Rung | What init writes |
+| --- | --- |
+| 1 | Server only. No `src/ui` and no `migrations/`. |
+| 2 | Server and UI. No `migrations/`. |
+| 3 | Server, UI, and `migrations/`. |
+
+A publisher other than `kassis` gets an id prefix. `--publisher=acme --id=widget` writes id `acme-widget`. An id that already starts with `acme-` is kept. `kassis` keeps the id you pass. `hostApi` is `^1.0.0`. `entrypoints.main` is `dist/server/index.js`. `signing` is omitted until `sign`. When the rung has a UI, `ui.entryFile` is `frontend/dist/index.js`.
+
+Inside this repository, init points `@kassis/addon-sdk`, `@kassis/addon-testkit`, and `@kassis/addon-cli` at the local packages. A published CLI writes the semver ranges instead.
+
+## Build and test
+
+From `<scratch>`, after init:
+
+```bash
+npm install
+npm run build
+npm test
+```
+
+`npm run build` prints `dist/server/index.js`. It exits 1 when that file does not export `initialize`. For rung 2 or 3 it also prints `frontend/dist/index.js` and exits 1 when that file does not export `register`. The server bundle is ESM and leaves `@kassis/*` external. The UI bundle leaves the modules in `@kassis/addon-sdk/browser-externals.json` external.
+
+`npm test` runs `test/server.test.ts`. That test calls `createTestContext()` and does not need a database. `build:server` and `build:ui` build one output. `check` and `certify` run the CLI commands below.
 
 ## Check and conformance
 
@@ -67,18 +91,14 @@ Routes mount at /api/v1/addons/sample-tprm-check
 UI loads from /addons-ui/sample-tprm-check/index.js
 ```
 
-`test` prints `No test directory` when `./test` is absent. When `./test` exists it runs `node --test` there and uses that exit code.
+Use `npm test` for the template. The CLI `test` command runs `node --test` in `./test`. It prints `No test directory` and exits 0 when that folder is missing.
 
 ## Sign
 
 `sign` without `--key` uses the repo signer for this addon id. Outside the repository, `sign` without `--key` exits 1. `sign --key=<path>` writes `contentHash` and signs with that publisher key file. Do not commit the private key.
 
-## Frontend build
+## Changelog
 
-`init` copies `vite.config.mjs`. From the addon directory, after installing `@kassis/addon-sdk` and `vite`:
-
-```bash
-npx vite build
-```
-
-This writes `dist/index.js`. Imports of `@kassis/host-sdk` and `@kassis/addon-ui` stay bare. The host resolves them from the import map.
+| Date | Change |
+| --- | --- |
+| 2026-10-28 | `init` accepts `--publisher`, `--tier`, and `--rung`. `npm run build` writes `dist/server/index.js` and, for a rung with UI, `frontend/dist/index.js`. |

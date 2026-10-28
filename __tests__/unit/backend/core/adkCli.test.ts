@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { assertEvidencePack, assertNoHostImports } from '../../../../packages/addon-testkit/src/index.mjs';
+import { assertNoHostImports } from '../../../../packages/addon-testkit/src/index.mjs';
 import { verifyProfileSignature, readBundledProfile } from '../../../../tools/adk/profileBundle.mjs';
 import { submitCertifiedRun } from '../../../../tools/adk/registryRun.mjs';
 
@@ -23,9 +23,25 @@ function frame(message: unknown): Buffer {
 describe('addon CLI', () => {
   it('accepts the signed coding-agent profile snapshot', () => {
     expect(verifyProfileSignature(readBundledProfile('addon-coding-agent'))).toBe(true);
+    const version1 = JSON.parse(
+      fs.readFileSync(path.join(repo, 'tools/adk/profiles/addon-coding-agent.v1.json'), 'utf8')
+    );
+    expect(version1.version).toBe('1');
+    expect(verifyProfileSignature(version1)).toBe(true);
+    const current = readBundledProfile('addon-coding-agent');
+    expect(current.version).toBe('2');
+    const certify = current.guardrails.find((item: { key: string }) => item.key === 'adk.certify');
+    expect(certify.checkIds).toEqual([
+      'kassis-addon-check',
+      'kassis-addon-conformance',
+      'kassis-addon-build',
+      'kassis-addon-test',
+    ]);
+    expect(certify.checkId).toBeUndefined();
+    expect(verifyProfileSignature(current.previousVersion)).toBe(true);
   });
 
-  it('scaffolds sample-tprm-check outside the repo and packs a passing attestation', () => {
+  it('scaffolds sample-tprm-check and rejects a blank or hand-written attestation', () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'kassis-sample-tprm-check-'));
     expect(path.resolve(dir).startsWith(repo)).toBe(false);
     try {
@@ -35,30 +51,68 @@ describe('addon CLI', () => {
       expect(run(['conformance'], dir).status).toBe(0);
       expect(run(['sync', '--profile=addon-coding-agent'], dir).status).toBe(0);
       expect(fs.existsSync(path.join(dir, 'AGENTS.md'))).toBe(true);
+      expect(run(['attest'], dir).status).toBe(0);
+      const attested = JSON.parse(fs.readFileSync(path.join(dir, '.kassis/attestation.json'), 'utf8')) as {
+        answers: Array<{ outcome: string | null }>;
+      };
+      expect(attested.answers.every((answer) => answer.outcome === null)).toBe(true);
       const lock = JSON.parse(fs.readFileSync(path.join(dir, '.kassis/agent-profile.lock.json'), 'utf8'));
-      const answers = lock.guardrails.map(
-        (item: { key: string; verification?: string; checkId?: string }) => ({
-          key: item.key,
-          outcome: 'followed',
-          note: 'rehearsal',
-          evidence: item.verification === 'machine' ? { checkId: item.checkId } : null,
-        })
+      const blankAnswers = lock.guardrails.map((item: { key: string }) => ({
+        key: item.key,
+        outcome: '',
+        note: null,
+        evidence: null,
+      }));
+      fs.writeFileSync(
+        path.join(dir, '.kassis/attestation.json'),
+        `${JSON.stringify({ version: lock.version, lockHash: lock.hash, runId: '', answers: blankAnswers }, null, 2)}\n`
       );
+      const blank = run(['certify', '--json'], dir);
+      expect(blank.status).toBe(1);
+      expect(JSON.parse(blank.stdout).issues.map((issue: { code: string }) => issue.code)).toContain('KADK-714');
+      const answers = lock.guardrails.map((item: { key: string; verification?: string }) => ({
+        key: item.key,
+        outcome: 'followed',
+        note: 'rehearsal',
+        evidence: item.verification === 'machine' ? { checkId: 'kassis-addon-certify' } : null,
+      }));
       fs.writeFileSync(
         path.join(dir, '.kassis/attestation.json'),
         `${JSON.stringify({ version: lock.version, lockHash: lock.hash, runId: 'rehearsal', answers }, null, 2)}\n`
       );
       const certified = run(['certify', '--json'], dir);
-      expect(certified.status).toBe(0);
-      expect(JSON.parse(certified.stdout).ok).toBe(true);
+      const certifiedBody = JSON.parse(certified.stdout) as { ok: boolean; issues: Array<{ code: string }> };
+      expect(certified.status).toBe(1);
+      expect(certifiedBody.ok).toBe(false);
+      expect(certifiedBody.issues.map((issue) => issue.code)).toEqual(['KADK-715', 'KADK-707']);
+      const checks = JSON.parse(fs.readFileSync(path.join(dir, '.kassis/evidence/checks.json'), 'utf8')) as {
+        cliVersion: string;
+        nodeVersion: string;
+        contentHash: string;
+        checks: Array<{ id: string; exitCode: number; inputHash: string; outputDigest: string; durationMs: number }>;
+      };
+      expect(checks.cliVersion).toMatch(/^\d+\.\d+\.\d+$/);
+      expect(checks.nodeVersion).toBe(process.version);
+      expect(checks.contentHash).toMatch(/^sha256-[0-9a-f]{64}$/);
+      expect(checks.checks.map((item) => `${item.id}:${item.exitCode}`)).toEqual([
+        'kassis-addon-check:0',
+        'kassis-addon-conformance:0',
+        'kassis-addon-build:1',
+        'kassis-addon-test:1',
+      ]);
+      expect(
+        checks.checks.every(
+          (item) => item.inputHash.startsWith('sha256-') && item.outputDigest.startsWith('sha256-') && item.durationMs >= 0
+        )
+      ).toBe(true);
       const packed = run(['pack', `--out=${path.join(dir, 'evidence')}`], dir);
-      expect(packed.status).toBe(0);
-      expect(assertEvidencePack(path.join(dir, 'evidence')).ok).toBe(true);
-      assertNoHostImports(fs.readFileSync(path.join(dir, 'src/index.ts'), 'utf8'), 'src/index.ts');
+      expect(packed.status).toBe(1);
+      expect(fs.existsSync(path.join(dir, 'evidence', 'index.json'))).toBe(false);
+      assertNoHostImports(fs.readFileSync(path.join(dir, 'src/server/index.ts'), 'utf8'), 'src/server/index.ts');
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }
-  });
+  }, 120000);
 
   it('posts a registry run when certify is given a reachable instance', async () => {
     const calls: string[] = [];

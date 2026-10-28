@@ -10,9 +10,10 @@ import { fileURLToPath } from 'node:url';
 import { checkManifest, conformanceIssues } from './addonCheck.mjs';
 import { writeAgentRuleFiles } from './agentRules.mjs';
 import { certifyAttestation, kadkIssue } from './certifyAttestation.mjs';
-import { buildProfileLock, packEvidence } from './profileLock.mjs';
+import { blankAttestation, buildProfileLock, packEvidence } from './profileLock.mjs';
 import { downloadProfile, readBundledProfile, verifyProfileSignature } from './profileBundle.mjs';
 import { submitCertifiedRun } from './registryRun.mjs';
+import { buildAddon } from './addonBuild.mjs';
 import { initAddon } from './scaffold.mjs';
 
 const root = process.cwd();
@@ -73,23 +74,8 @@ function attest() {
     return;
   }
   const lock = readJson(lockPath);
-  const answers = Array.isArray(lock?.guardrails)
-    ? lock.guardrails.map((item) => ({ key: item.key, outcome: '', note: null, evidence: null }))
-    : [];
   fs.mkdirSync(path.dirname(attestationPath), { recursive: true });
-  fs.writeFileSync(
-    attestationPath,
-    `${JSON.stringify(
-      {
-        version: lock?.version ?? '',
-        lockHash: lock?.hash ?? '',
-        runId: '',
-        answers,
-      },
-      null,
-      2
-    )}\n`
-  );
+  fs.writeFileSync(attestationPath, `${JSON.stringify(blankAttestation(lock), null, 2)}\n`);
   console.log(attestationPath);
 }
 
@@ -234,11 +220,26 @@ async function keys() {
 function init() {
   const id = flagValue('id');
   if (!id) {
-    console.error('Usage: node tools/adk/kassis-addon.mjs init --id=<addon-id> [--dir=<path>]');
+    console.error(
+      'Usage: node tools/adk/kassis-addon.mjs init --id=<addon-id> [--dir=<path>] [--publisher=<id>] [--tier=1|2] [--rung=1|2|3]'
+    );
     process.exit(1);
   }
   const dir = path.resolve(flagValue('dir') || path.join(root, id));
-  console.log(initAddon(id, dir));
+  const publisher = flagValue('publisher');
+  const tierText = flagValue('tier');
+  const rungText = flagValue('rung');
+  /** @type {{ publisher?: string, tier?: number, rung?: number }} */
+  const options = {};
+  if (publisher) options.publisher = publisher;
+  if (tierText) options.tier = Number(tierText);
+  if (rungText) options.rung = Number(rungText);
+  console.log(initAddon(id, dir, options));
+}
+
+function build() {
+  const only = flagValue('only') || 'all';
+  return buildAddon(root, { only });
 }
 
 function rules() {
@@ -294,6 +295,7 @@ const commands = {
   sign,
   keys,
   init,
+  build,
   rules,
   test,
   dev,
@@ -302,7 +304,7 @@ const commands = {
 const selected = commands[command];
 if (!selected) {
   console.error(
-    'Usage: node tools/adk/kassis-addon.mjs <certify|attest|explain|sync|pack|check|conformance|sign|keys|init|rules|test|dev|migrate>'
+    'Usage: node tools/adk/kassis-addon.mjs <certify|attest|explain|sync|pack|check|conformance|sign|keys|init|build|rules|test|dev|migrate>'
   );
   process.exit(1);
 }
