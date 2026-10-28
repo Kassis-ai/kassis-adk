@@ -23,7 +23,7 @@ Inside this repository, each public package's `exports` point at TypeScript sour
 npm install @kassis/addon-sdk @kassis/addon-testkit @kassis/addon-ui @kassis/host-sdk @kassis/agent-kit @kassis/addon-cli
 ```
 
-Offline, run `npm run build` in each package, then pack the tarballs and install them elsewhere. `@kassis/addon-cli` also runs `prepack`, which copies the CLI, the template, and the schema into the tarball:
+Offline, run `npm run build` in each package, then pack the tarballs and install them elsewhere. `@kassis/addon-cli` `prepack` bundles `kassis-addon` and `kassis-adk-mcp` so the tarball does not import the repository. It also copies the template, the manifest schema, profiles, and the public verification key:
 
 ```bash
 npm pack --pack-destination ./packs ./packages/addon-sdk
@@ -40,7 +40,7 @@ npm pack --pack-destination ./packs ./packages/addon-cli
 
 In this repository, `kassis-addon` is `tools/adk/kassis-addon.mjs`. `npm run create-addon` forwards to `init`.
 
-Outside the repository, install `@kassis/addon-cli` and run `npx kassis-addon`. That package does not contain the private signing key. `sign` without `--key` exits 1 there.
+Outside the repository, install `@kassis/addon-cli` and run `npx kassis-addon`. `--version` reads that package's own `package.json`. The MCP server is `npx kassis-adk-mcp`. The package does not contain the private signing key. `sign` without `--key` exits 1 there.
 
 ## Clean-room check
 
@@ -65,5 +65,6 @@ The bundle contains the SDK, the testkit, the template, the public verification 
 
 | Date | Change |
 | --- | --- |
+| 2026-10-28 | The packed `@kassis/addon-cli` bundles the CLI and the MCP server. An install outside the repository runs `init`, `check`, and `kassis-adk-mcp` without the checkout. |
 | 2026-10-28 | `node scripts/adk-clean-room.mjs` packs the six public packages, installs the tarballs, imports them, and runs init, build, test, check, conformance, and package for a tier 2 rung 2 addon. The air-gap bundle adds those tarballs, adk-core sources, the CLI entry, and checksums. |
 | 2026-10-28 | The six public packages build to `dist` and publish to GitHub Packages. `host-sdk` and `addon-ui` publish types and a Node shim. The host still serves the runtime. |

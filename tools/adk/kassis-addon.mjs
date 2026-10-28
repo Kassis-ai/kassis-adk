@@ -3,12 +3,9 @@
  * kassis-addon command line. Argument parsing and printing live here.
  * Command work is in @kassis/adk-core, which does not print or exit.
  */
-import fs from 'node:fs';
-import path from 'node:path';
 import { parseArgs } from 'node:util';
-import { fileURLToPath } from 'node:url';
-
-const here = path.dirname(fileURLToPath(import.meta.url));
+import { cliVersion } from '../../packages/adk-core/src/issues.ts';
+import { runCommand } from '../../packages/adk-core/src/runCommand.ts';
 const COMMANDS = [
   'init',
   'build',
@@ -134,12 +131,6 @@ Writes .kassis/attestation.json with null outcomes when it is missing.
 `,
 };
 
-function cliVersion() {
-  const file = path.resolve(here, '../../packages/addon-cli/package.json');
-  const parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
-  return typeof parsed.version === 'string' ? parsed.version : '0.0.0';
-}
-
 function helpText(command) {
   return HELP[command] ?? HELP[''];
 }
@@ -258,7 +249,6 @@ if (!COMMANDS.includes(command)) {
   process.exit(1);
 }
 
-const { runCommand } = await import('../../packages/adk-core/src/runCommand.ts');
 const json = parsed.values.json === true;
 const result = await runCommand({
   command,

@@ -110,7 +110,7 @@ export function explainProject(code: string): CommandResult {
       fix: issue.fix,
     });
   } catch (error) {
-    return failure(messageOf(error), 'Use a code from packages/addon-sdk/codes/kadk-codes.json.', 'ADK-CODE');
+    return failure(messageOf(error), 'Use a code from kadk-codes.json.', 'ADK-CODE');
   }
 }
 

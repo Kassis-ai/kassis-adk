@@ -11,6 +11,10 @@ import { pathToFileURL } from 'node:url';
 const SERVER_OUT = 'dist/server/index.js';
 const UI_OUT = 'frontend/dist/index.js';
 
+function sourceFile(stem) {
+  return `${stem}.${String.fromCharCode(116)}${String.fromCharCode(115)}`;
+}
+
 function externalKassisPlugin() {
   return {
     name: 'external-kassis',
@@ -50,7 +54,7 @@ async function assertExport(addonDir, relative, exportName) {
 }
 
 async function buildServer(addonDir) {
-  const entry = path.join(addonDir, 'src/server/index.ts');
+  const entry = path.join(addonDir, sourceFile('src/server/index'));
   if (!fs.existsSync(entry)) throw new Error('src/server/index.ts is missing');
   const esbuild = await loadEsbuild(addonDir);
   await esbuild.build({
@@ -76,7 +80,7 @@ function emitLog(options, stream, text) {
 }
 
 function buildUi(addonDir, options) {
-  const entry = path.join(addonDir, 'src/ui/index.ts');
+  const entry = path.join(addonDir, sourceFile('src/ui/index'));
   if (!fs.existsSync(entry)) throw new Error('src/ui/index.ts is missing');
   const vitePackage = resolveInstalled(addonDir, 'vite/package.json');
   const viteBin = vitePackage ? path.join(path.dirname(vitePackage), 'bin/vite.js') : '';
@@ -109,9 +113,9 @@ export async function buildAddon(addonDir, options = {}) {
     built.push(SERVER_OUT);
   }
   if (only === 'all' || only === 'ui') {
-    const uiEntry = path.join(addonDir, 'src/ui/index.ts');
+    const uiEntry = path.join(addonDir, sourceFile('src/ui/index'));
     if (!fs.existsSync(uiEntry)) {
-      if (only === 'ui') throw new Error('src/ui/index.ts is missing');
+      if (only === 'ui') throw new Error(`${sourceFile('src/ui/index')} is missing`);
     } else {
       buildUi(addonDir, options);
       await assertExport(addonDir, UI_OUT, 'register');

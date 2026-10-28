@@ -6,7 +6,7 @@
 **Last reviewed:** 2026-10-28
 
 
-Run `npx kassis-addon <command>` after installing `@kassis/addon-cli`, or `node tools/adk/kassis-addon.mjs <command>` from this repository. Help and errors name the command `kassis-addon`. `--help` exits 0. `--version` prints the CLI version and exits 0. `--flag value` and `--flag=value` both work. `--json` on every command prints `{ "ok", "issues", "data" }`. An issue is `{ "code", "severity", "message", "fix", "file", "line" }`. An unknown command prints usage and exits 1. Exit 0 is success.
+Run `npx kassis-addon <command>` after installing `@kassis/addon-cli`, or `node tools/adk/kassis-addon.mjs <command>` from this repository. The packed CLI is a bundle. `npx kassis-adk-mcp` starts the MCP server from the same package. Help and errors name the command `kassis-addon`. `--help` exits 0. `--version` prints the CLI version and exits 0. `--flag value` and `--flag=value` both work. `--json` on every command prints `{ "ok", "issues", "data" }`. An issue is `{ "code", "severity", "message", "fix", "file", "line" }`. An unknown command prints usage and exits 1. Exit 0 is success.
 
 | Command | Flags | What it does |
 | --- | --- | --- |
@@ -46,6 +46,7 @@ node tools/adk/kassis-addon.mjs certify --json
 
 | Date | Change |
 | --- | --- |
+| 2026-10-28 | The packed CLI bundles its commands. `kassis-adk-mcp` is the MCP bin in the same package. |
 | 2026-10-28 | `package` writes a signed `.addon` zip and prints its path and sha256. `deploy` uploads it and prints the approval request id. `status` prints installed and pending versions. |
 | 2026-10-28 | `--help` exits 0 and the usage line says `kassis-addon`. `--version`, `--json`, and both `--id value` and `--id=value` work. `check` reports KADK-1xx. `dev` starts a configured local image and does not pull or build. `migrate` is up, down, and status on that dev host only. `doctor` checks Node, registry login, keys, the instance, and hostApi. |
 | 2026-10-28 | `conformance` uses the addon-testkit import check, including the server and UI bundles when they exist. |

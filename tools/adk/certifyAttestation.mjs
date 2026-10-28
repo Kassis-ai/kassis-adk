@@ -11,8 +11,12 @@ import { recordMachineChecks } from './certifyChecks.mjs';
 
 const require = createRequire(import.meta.url);
 const here = path.dirname(fileURLToPath(import.meta.url));
-const repoCatalog = path.resolve(here, '../../packages/addon-sdk/codes/kadk-codes.json');
-const catalog = require(fs.existsSync(repoCatalog) ? repoCatalog : path.join(here, 'kadk-codes.json'));
+const besideCatalog = path.join(here, 'kadk-codes.json');
+const repoCatalog =
+  globalThis.__KASSIS_ADK_PACKED__ === true
+    ? ''
+    : path.resolve(here, '../../packages/addon-sdk/codes/kadk-codes.json');
+const catalog = require(fs.existsSync(repoCatalog) ? repoCatalog : besideCatalog);
 
 const byCode = new Map(catalog.codes.map((entry) => [entry.code, entry]));
 

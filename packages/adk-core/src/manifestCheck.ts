@@ -8,6 +8,10 @@ import { createRequire } from 'node:module';
 import type { AdkIssue } from './types.ts';
 import { isRecordValue, kadkIssue, repoRoot } from './issues.ts';
 
+declare global {
+  var __KASSIS_ADK_PACKED__: boolean | undefined;
+}
+
 interface SchemaError {
   readonly keyword: string;
   readonly instancePath: string;
@@ -67,13 +71,16 @@ const V1_HOMES: Readonly<Record<string, string>> = {
 let validator: SchemaValidator | null = null;
 
 function schemaPath(): string {
-  const candidates = [
-    path.join(repoRoot(), 'packages/addon-sdk/schema/addon-manifest.v2.schema.json'),
-    path.join(repoRoot(), 'schema/addon-manifest.v2.schema.json'),
-  ];
-  const found = candidates.find((candidate) => fs.existsSync(candidate));
-  if (!found) throw new Error('addon manifest schema was not found');
-  return found;
+  const home = repoRoot();
+  const installed = path.join(home, 'schema/addon-manifest.v2.schema.json');
+  if (globalThis.__KASSIS_ADK_PACKED__ === true) {
+    if (!fs.existsSync(installed)) throw new Error('addon manifest schema was not found');
+    return installed;
+  }
+  const repoSchema = path.join(home, 'packages/addon-sdk/schema/addon-manifest.v2.schema.json');
+  if (fs.existsSync(repoSchema)) return repoSchema;
+  if (fs.existsSync(installed)) return installed;
+  throw new Error('addon manifest schema was not found');
 }
 
 function loadAjv(): Ajv2020Constructor {
