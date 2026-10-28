@@ -40,7 +40,7 @@ This writes `<file.tgz>.sig`. The default key path is `server/keys/addon_signing
 
 ## Content hash and runtime UI
 
-`contentHash` covers the files in `server/core/addon-deployment/addonContentHash.config.json`. `frontend/dist/**` is outside the hash. The server image builds that folder after the manifest is signed, so including it would make every first-party addon fail verification. `frontend/src/**`, `frontend/node_modules/**`, `.kassis/**`, `.cursor/**`, `.claude/**`, `.github/**`, `evidence/**` and `test/**` are outside the hash too. A scope change changes every hash. Re-sign with `npm run sign:addons`.
+`contentHash` covers the files in `server/core/addon-deployment/addonContentHash.config.json`. `frontend/dist/**` is outside that hash. A publisher other than `kassis` with a `ui` block also signs `uiContentHash` over `frontend/dist/**`. The host refuses the package when that field is missing or no longer matches, and does not serve the UI. The server image builds that folder after the manifest is signed, so including it would make every first-party addon fail verification. `frontend/src/**`, `frontend/node_modules/**`, `.kassis/**`, `.cursor/**`, `.claude/**`, `.github/**`, `evidence/**` and `test/**` are outside the hash too. A scope change changes every hash. Re-sign with `npm run sign:addons`.
 
 `GET /addons-ui/<id>/*` is served only when that addon passed the signature gate on its last load and is enabled. Each response re-checks the content-hash cache fingerprint (file size, mtime and ctime) and does not re-read file bytes when the fingerprint still matches. Any other case is 404.
 
@@ -50,5 +50,6 @@ The runtime UI catalog entry carries `contentHash`. The loader appends it as a q
 
 | Date | Change |
 | --- | --- |
+| 2026-10-28 | A client UI package signs `uiContentHash` over `frontend/dist`. A missing or mismatched hash is refused, and the UI route returns 404. |
 | 2026-10-28 | Tool, evidence, test, and `frontend/dist/**` folders are outside `contentHash`. The server image builds `frontend/dist` after signing. Runtime UI is served only after a passing signature gate while the addon stays enabled and the content-hash fingerprint still matches. The catalog `contentHash` is the loader query string. |
 | 2026-10-28 | Trust is the database plus the seeded file and optional `KASSIS_PUBLISHER_TRUST_FILE`. Revoked wins. Bank publishers are always strict, cannot use tier 1, and their id prefixes must start with the publisher id and a hyphen. A key or scope change is refused when no approval policy is published. |
