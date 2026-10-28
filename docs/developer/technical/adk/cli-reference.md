@@ -46,6 +46,7 @@ node tools/adk/kassis-addon.mjs certify --json
 
 | Date | Change |
 | --- | --- |
+| 2026-10-28 | `kassis-adk-mcp` keeps `dir` inside its working directory, or `--root`. A path or symlink outside that root is KADK-217. |
 | 2026-10-28 | The packed CLI bundles its commands. `kassis-adk-mcp` is the MCP bin in the same package. |
 | 2026-10-28 | `package` writes a signed `.addon` zip and prints its path and sha256. `deploy` uploads it and prints the approval request id. `status` prints installed and pending versions. |
 | 2026-10-28 | `--help` exits 0 and the usage line says `kassis-addon`. `--version`, `--json`, and both `--id value` and `--id=value` work. `check` reports KADK-1xx. `dev` starts a configured local image and does not pull or build. `migrate` is up, down, and status on that dev host only. `doctor` checks Node, registry login, keys, the instance, and hostApi. |

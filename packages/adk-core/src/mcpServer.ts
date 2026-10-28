@@ -1,8 +1,10 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import type { CommandResult } from './types.ts';
-import { cliVersion, failure, isRecordValue } from './issues.ts';
+import { cliVersion, commandResult, failure, isRecordValue, kadkIssue } from './issues.ts';
 import { checkProject, conformanceProject, explainProject } from './projectCommands.ts';
 import { scaffoldProject } from './scaffoldFeature.ts';
 
@@ -73,6 +75,34 @@ function runChecks(dir: string): CommandResult {
   };
 }
 
+/** Resolve dir inside rootDir. A symlink that leaves the root is rejected. */
+export function projectDirWithinRoot(rootDir: string, requested: string): string | null {
+  const rootReal = fs.realpathSync(rootDir);
+  const absolute = path.resolve(rootReal, requested);
+  let existing = absolute;
+  const missing: string[] = [];
+  while (!fs.existsSync(existing)) {
+    const parent = path.dirname(existing);
+    if (parent === existing) return null;
+    missing.unshift(path.basename(existing));
+    existing = parent;
+  }
+  let resolved = fs.realpathSync(existing);
+  for (const part of missing) resolved = path.join(resolved, part);
+  const relative = path.relative(rootReal, resolved);
+  if (relative.startsWith('..') || path.isAbsolute(relative)) return null;
+  return resolved;
+}
+
+export function runContainedTool(rootDir: string, name: string, args: Record<string, unknown>): CommandResult {
+  const requested = argString(args, 'dir') || rootDir;
+  const dir = projectDirWithinRoot(rootDir, requested);
+  if (!dir) {
+    return commandResult([kadkIssue('KADK-217', requested, null, { path: requested })], {});
+  }
+  return callTool(name, { ...args, dir });
+}
+
 function callTool(name: string, args: Record<string, unknown>): CommandResult {
   const dir = argString(args, 'dir') || process.cwd();
   if (name === 'validate_manifest') return checkProject(dir);
@@ -101,13 +131,15 @@ function toolPayload(result: CommandResult): { content: { type: 'text'; text: st
 
 /** Stdio MCP server. Messages are newline-delimited JSON. */
 export async function startAdkMcpServer(): Promise<void> {
+  const rootFlag = process.argv.find((item) => item.startsWith('--root='));
+  const projectRoot = fs.realpathSync(rootFlag ? rootFlag.slice('--root='.length) : process.cwd());
   const server = new Server(
     { name: 'kassis-adk', version: cliVersion() },
     { capabilities: { tools: { listChanged: false } } }
   );
   server.setRequestHandler(ListToolsRequestSchema, () => ({ tools: TOOLS }));
   server.setRequestHandler(CallToolRequestSchema, (request) => {
-    const result = callTool(request.params.name, toolArguments(request.params.arguments));
+    const result = runContainedTool(projectRoot, request.params.name, toolArguments(request.params.arguments));
     return toolPayload(result);
   });
   const transport = new StdioServerTransport();

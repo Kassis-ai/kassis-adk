@@ -335,6 +335,15 @@
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-216"
     },
     {
+      "code": "KADK-217",
+      "category": "boundaries",
+      "severity": "error",
+      "title": "Tool path is outside the project",
+      "message": "{path} is outside the project root",
+      "fix": "Pass a dir inside the directory where kassis-adk-mcp was started, or set --root to that directory.",
+      "docs": "docs/developer/technical/adk/cli-reference.md"
+    },
+    {
       "code": "KADK-301",
       "category": "data",
       "severity": "error",
