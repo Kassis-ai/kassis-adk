@@ -201,5 +201,12 @@ export function checkManifestDirectory(dir: string): AdkIssue[] {
   const validate = manifestValidator();
   const matches = validate(parsed);
   const schemaIssues = matches ? [] : (validate.errors ?? []).flatMap((error) => schemaIssue(error) ?? []);
-  return [...schemaIssues, ...permissionIssues(parsed)];
+  return [...schemaIssues, ...permissionIssues(parsed), ...entryFileIssues(parsed)];
+}
+
+function entryFileIssues(manifest: Record<string, unknown>): AdkIssue[] {
+  const ui = manifest.ui;
+  if (!isRecordValue(ui) || typeof ui.entryFile !== 'string') return [];
+  if (!ui.entryFile.includes('/')) return [];
+  return [kadkIssue('KADK-504', 'manifest.json', null, { value: ui.entryFile })];
 }

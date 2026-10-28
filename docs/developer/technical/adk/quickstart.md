@@ -22,7 +22,7 @@ Exit 0. `<scratch>/manifest.json` exists. `--publisher` defaults to `kassis`. `-
 | 2 | Server and UI. No `migrations/`. |
 | 3 | Server, UI, and `migrations/`. |
 
-A publisher other than `kassis` gets an id prefix. `--publisher=acme --id=widget` writes id `acme-widget`. An id that already starts with `acme-` is kept. `kassis` keeps the id you pass. `hostApi` is `^1.0.0`. `entrypoints.main` is `dist/server/index.js`. `signing` is omitted until `sign`. When the rung has a UI, `ui.entryFile` is `frontend/dist/index.js`.
+A publisher other than `kassis` gets an id prefix. `--publisher=acme --id=widget` writes id `acme-widget`. An id that already starts with `acme-` is kept. `kassis` keeps the id you pass. `hostApi` is `^1.0.0`. `entrypoints.main` is `dist/server/index.js`. `signing` is omitted until `sign`. When the rung has a UI, `ui.entryFile` is `index.js`, relative to `frontend/dist`.
 
 Inside this repository, init points `@kassis/addon-sdk`, `@kassis/addon-testkit`, and `@kassis/addon-cli` at the local packages. A published CLI writes the semver ranges instead.
 

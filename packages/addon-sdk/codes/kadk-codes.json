@@ -497,6 +497,15 @@
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-503"
     },
     {
+      "code": "KADK-504",
+      "category": "ui",
+      "severity": "warning",
+      "title": "UI entry file includes a directory",
+      "message": "ui.entryFile '{value}' includes a slash",
+      "fix": "Set ui.entryFile to the file name inside frontend/dist, for example index.js.",
+      "docs": "docs/developer/technical/adk/addon-anatomy.md"
+    },
+    {
       "code": "KADK-601",
       "category": "security",
       "severity": "error",

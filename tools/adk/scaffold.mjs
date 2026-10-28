@@ -96,7 +96,7 @@ function finalizeManifest(dir, fields) {
   manifest.hostApi = '^1.0.0';
   manifest.entrypoints = { main: 'dist/server/index.js' };
   if (fields.rung >= 2) {
-    manifest.ui = { entryFile: 'frontend/dist/index.js', runtimeLoad: true };
+    manifest.ui = { entryFile: 'index.js', runtimeLoad: true };
   } else {
     delete manifest.ui;
   }

@@ -54,7 +54,7 @@ describe('kassis-addon init', () => {
       expect(manifest.publisher).toBe('acme');
       expect(manifest.tier).toBe(2);
       expect(manifest.permissions[0].name).toBe('acme-widget.view');
-      expect(manifest.ui.entryFile).toBe('frontend/dist/index.js');
+      expect(manifest.ui.entryFile).toBe('index.js');
       expect(fs.existsSync(path.join(dir, 'src/ui/index.ts'))).toBe(true);
       expect(fs.existsSync(path.join(dir, 'vite.config.mjs'))).toBe(true);
       expect(fs.existsSync(path.join(dir, 'migrations'))).toBe(false);
