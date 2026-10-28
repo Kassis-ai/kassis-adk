@@ -42,8 +42,15 @@ node tools/adk/sign-tarball.mjs <file.tgz> --key=<private-key-hex-file>
 4. The air-gap bundle still excludes the private key: `node tools/adk/airgap-bundle.mjs --out=./airgap`.
 5. `npm run ci:packages:publish-config` passes.
 
+## Instance install
+
+The host does not compare `manifest.checksum` to the archive. The manifest is inside the package, so that digest cannot be a property of the package. Integrity is the signature plus `contentHash`, recomputed on the extracted folder before the host copies anything. An optional upload field `archiveSha256` is compared to the uploaded bytes and protects the transfer only.
+
+The install path is `addons-installed/<id>/<version>/`. The version must be higher than the one already installed. A lower version is a rollback, not an install. `hostApi` must accept the instance host API. A tier 1 package is refused unless the publisher is `kassis`. Install waits for an `addon_deployment` approval. See [Operators](./operators.md).
+
 ## Changelog
 
 | Date | Change |
 | --- | --- |
+| 2026-10-28 | The instance installs a package only after signature and `contentHash` checks. `manifest.checksum` is not used. |
 | 2026-10-28 | All six public packages publish to GitHub Packages. API Extractor also checks `host-sdk.api.md`. |

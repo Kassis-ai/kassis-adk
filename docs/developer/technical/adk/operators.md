@@ -26,6 +26,7 @@ Seeds and migrations this kit depends on:
 | Tier 2 settings in the day-0 schema | `addons.tier2.*` and the egress limits. A tier 2 child will not start without them. |
 | `database/migrations/20261027_audit_logs_append_only.sql` | Audit rows cannot be updated or deleted. |
 | `database/migrations/20261028_addon_publisher_trust.sql` | Publisher trust tables, the kassis key, and the approval policies for adding or rotating a key and for changing tiers or prefixes. |
+| `database/migrations/20261028_addon_deployment_staged.sql` | `DeploymentState.staged`, and the approval policies for an addon install and for a rollback that widens access. |
 | `database/migrations/20261026_db_roles_audit_owner.sql` | `kassis_app` and the audit owner. |
 
 **Prod empty volume.** Prod compose does not load the full schema on an empty volume. Only the roles script runs. Restore a backup or apply the release ledger. On-prem does load the day-0 schema, because that file is the new-site install. Details are in the release steps.
@@ -45,10 +46,22 @@ On-prem uses `docker-compose.onprem.yml`. Air-gapped install uses the bundle fro
 | Fresh prod database has roles and no tables | Expected. Restore or run `npm run release:apply`. Do not expect the prod compose file to create the schema. |
 | Agent tool returns an approval id instead of changing the case | The tool is a final decision and the run is not attested, or autonomy is not `act`. Approve it in the Approvals UI. |
 | Bank addon does not load | The publisher must be approved, the key must be `current` or `previous`, the addon id must start with one of that publisher's prefixes, and the tier must be 2. Tier 1 is only for kassis. |
+| Upload returns 503 | Apply `20261028-addon-deployment-staged` and publish an `addon_deployment` policy. A missing policy does not install the package. |
+
+## Package deploy
+
+`POST /api/v1/addon-security/deploy` accepts `.addon` (zip) and `.tar.gz`. It checks the signature and recomputes `contentHash` on the extracted folder before anything is copied. `manifest.checksum` is not compared. An optional `archiveSha256` field is compared to the uploaded bytes and protects the transfer only.
+
+A valid package creates a `platform_addon_deployments` row in `staged` and an `addon_deployment` approval. On approval the host copies the package to `addons-installed/<id>/<version>/` and keeps older version folders. Tier 2 is then enabled through the lifecycle API, and the supervisor starts the child without a process restart. A tier 1 package from a publisher other than `kassis` is refused. A `kassis` tier 1 package is stored and is not hot-started; enable and disable stay on the lifecycle API.
+
+The version must be higher than the installed one, and the addon id must match the manifest id pattern. An id already owned by another publisher is refused. `hostApi` must accept this instance's host API (`1.0.0`).
+
+`POST /api/v1/platform/addons/:id/rollback` with `{ "targetVersion": "<version>" }` switches `active.json` back to a kept folder and is audited. It asks for approval only when that version adds permissions, egress hosts, or data access. `addons-installed` is a volume on the compose stacks and a persistent volume claim in `k8s/production/deployment.yaml`. The loader looks in `addons/` first, then the active folder under `addons-installed`.
 
 ## Changelog
 
 | Date | Change |
 | --- | --- |
+| 2026-10-28 | Package upload stages an `addon_deployment` approval and installs to `addons-installed/<id>/<version>/`. Tier 2 enables without a restart. Rollback is `POST /api/v1/platform/addons/:id/rollback`. |
 | 2026-10-28 | Runtime UI requests include `contentHash`. The host serves `/addons-ui/<id>/*` only after the signature gate, while the addon is enabled and the content-hash fingerprint still matches. |
 | 2026-10-28 | Apply `20261028_addon_publisher_trust` before a bank signing key can be stored. Revocation is immediate. |
