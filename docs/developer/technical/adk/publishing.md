@@ -15,7 +15,7 @@ node tools/adk/api-surface.mjs
 node tools/adk/api-surface.mjs --write
 ```
 
-The first command fails when `packages/addon-sdk/etc/addon-sdk.api.md` would change. `--write` updates that file. It compiles declarations into `packages/addon-sdk/dist` (gitignored) and runs API Extractor. The report is the public surface.
+The first command fails when `packages/addon-sdk/etc/addon-sdk.api.md` or `packages/host-sdk/etc/host-sdk.api.md` would change. `--write` updates those files. It compiles `@kassis/addon-sdk` into `packages/addon-sdk/dist` (gitignored) and rolls `@kassis/host-sdk` into one `.d.ts` per public subpath. The reports are the public surface.
 
 ## Changesets
 
@@ -27,7 +27,7 @@ npm run changeset
 
 ## Registry
 
-`@kassis/addon-sdk` and `@kassis/addon-testkit` set `publishConfig.registry` to GitHub Packages, `access` to `restricted`, and `provenance` to `true`. `npm publish` from a trusted CI run attaches provenance. A packed file can also be signed locally:
+The six public packages (`addon-sdk`, `addon-testkit`, `addon-ui`, `host-sdk`, `agent-kit`, `addon-cli`) set `publishConfig.registry` to GitHub Packages, `access` to `restricted`, and `provenance` to `true`. `npm run ci:packages:publish-config` fails when a non-private `@kassis/*` package is missing that registry. Internal packages stay `"private": true`. `npm publish` from a trusted CI run attaches provenance. A packed file can also be signed locally:
 
 ```bash
 npm pack
@@ -40,3 +40,10 @@ node tools/adk/sign-tarball.mjs <file.tgz> --key=<private-key-hex-file>
 2. A changeset describes the public change.
 3. The tarball is published with provenance, or signed with `sign-tarball.mjs`.
 4. The air-gap bundle still excludes the private key: `node tools/adk/airgap-bundle.mjs --out=./airgap`.
+5. `npm run ci:packages:publish-config` passes.
+
+## Changelog
+
+| Date | Change |
+| --- | --- |
+| 2026-10-28 | All six public packages publish to GitHub Packages. API Extractor also checks `host-sdk.api.md`. |

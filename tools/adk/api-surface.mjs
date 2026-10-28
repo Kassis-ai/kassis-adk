@@ -1,5 +1,5 @@
 /**
- * Public API report for @kassis/addon-sdk, produced by API Extractor.
+ * Public API reports for @kassis/addon-sdk and @kassis/host-sdk, produced by API Extractor.
  *   node tools/adk/api-surface.mjs
  *   node tools/adk/api-surface.mjs --write
  */
@@ -47,9 +47,14 @@ function main() {
   );
   if (compiled.status !== 0) process.exit(compiled.status ?? 1);
   const args = ['run', '--config', path.join(repoRoot, 'packages/addon-sdk/api-extractor.json')];
-  if (process.argv.includes('--write')) args.push('--local');
+  const write = process.argv.includes('--write');
+  if (write) args.push('--local');
   const result = spawnSync(process.execPath, [extractor, ...args], { cwd: repoRoot, stdio: 'inherit' });
-  process.exit(result.status ?? 1);
+  if (result.status !== 0) process.exit(result.status ?? 1);
+  const hostArgs = [path.join(repoRoot, 'packages/host-sdk/build.mjs')];
+  if (write) hostArgs.push('--write');
+  const host = spawnSync(process.execPath, hostArgs, { cwd: repoRoot, stdio: 'inherit' });
+  process.exit(host.status ?? 1);
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

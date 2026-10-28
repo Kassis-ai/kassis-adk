@@ -1,5 +1,0 @@
-# Changelog
-
-## 0.1.0
-
-- Scaffolded from the Kassis addon template.
