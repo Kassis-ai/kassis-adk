@@ -1,5 +1,5 @@
-# ADK clean room. Uses this repository checkout only.
-# It does not deploy, approve a request, or call a live addon health check.
+# ADK clean room. Packs the public packages and runs the installed CLI
+# outside this checkout. It signs with a generated key and does not deploy.
 # The air-gap step installs file: tarballs and refuses the npm registry.
 # Docker is not used.
 

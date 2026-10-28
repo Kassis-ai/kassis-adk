@@ -46,7 +46,8 @@ function copyTree(from, to, replacements, rung) {
     const source = path.join(from, entry.name);
     const relative = path.relative(templateDir, source).split(path.sep).join('/');
     if (skipped(relative, rung)) continue;
-    const target = path.join(to, entry.name);
+    const targetName = entry.name === 'npmrc' ? '.npmrc' : entry.name;
+    const target = path.join(to, targetName);
     if (entry.isDirectory()) {
       copyTree(source, target, replacements, rung);
       continue;

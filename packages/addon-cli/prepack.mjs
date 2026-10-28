@@ -95,6 +95,10 @@ copyIntoLib(path.join(repoRoot, 'packages/addon-sdk/codes/kadk-codes.json'), 'ka
 fs.cpSync(path.join(repoRoot, 'templates/kassis-addon'), path.join(pkgRoot, 'templates/kassis-addon'), {
   recursive: true,
 });
+const templateNpmrc = path.join(pkgRoot, 'templates/kassis-addon/.npmrc');
+if (fs.existsSync(templateNpmrc)) {
+  fs.copyFileSync(templateNpmrc, path.join(pkgRoot, 'templates/kassis-addon/npmrc'));
+}
 fs.mkdirSync(path.join(pkgRoot, 'schema'), { recursive: true });
 fs.copyFileSync(
   path.join(repoRoot, 'packages/addon-sdk/schema/addon-manifest.v2.schema.json'),

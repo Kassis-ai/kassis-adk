@@ -110,11 +110,25 @@ export function runNpm(args, cwd, stdio = 'pipe', env) {
  * @returns {string}
  */
 function packFilename(stdout) {
-  const start = stdout.indexOf('[');
-  const end = stdout.lastIndexOf(']');
-  if (start < 0 || end <= start) throw new Error(`npm pack did not return JSON\n${stdout}`);
-  const parsed = JSON.parse(stdout.slice(start, end + 1));
-  if (!Array.isArray(parsed) || parsed.length === 0) throw new Error('npm pack JSON was empty');
+  let end = stdout.lastIndexOf(']');
+  let parsed = null;
+  while (end >= 0 && parsed === null) {
+    let start = stdout.lastIndexOf('[', end);
+    while (start >= 0) {
+      try {
+        const candidate = JSON.parse(stdout.slice(start, end + 1));
+        if (Array.isArray(candidate) && candidate.length > 0) {
+          parsed = candidate;
+          break;
+        }
+      } catch (error) {
+        if (!(error instanceof SyntaxError)) throw error;
+      }
+      start = stdout.lastIndexOf('[', start - 1);
+    }
+    end = stdout.lastIndexOf(']', end - 1);
+  }
+  if (!Array.isArray(parsed) || parsed.length === 0) throw new Error(`npm pack did not return JSON\n${stdout}`);
   const first = parsed[0];
   if (first === null || typeof first !== 'object' || !('filename' in first) || typeof first.filename !== 'string') {
     throw new Error('npm pack JSON has no filename');
@@ -242,12 +256,11 @@ function primeNpmCache(outDir, index) {
       [
         'install',
         '--no-package-lock',
-        '--omit=peer',
-        '--legacy-peer-deps',
         '--no-audit',
         '--no-fund',
         '--cache',
         path.join(outDir, 'npm-cache'),
+        'react@19.2.3',
         ...specs,
       ],
       work,
