@@ -52,6 +52,8 @@ On-prem uses `docker-compose.onprem.yml`. Air-gapped install uses the bundle fro
 
 `POST /api/v1/addon-security/deploy` accepts `.addon` (zip) and `.tar.gz`. It checks the signature and recomputes `contentHash` on the extracted folder before anything is copied. `manifest.checksum` is not compared. An optional `archiveSha256` field is compared to the uploaded bytes and protects the transfer only.
 
+`GET /api/v1/platform/addons/installations` lists each addon id, the active version, the publisher, and pending staged versions. It uses the same `system.admin` token as deploy. It does not return secrets. `kassis-addon status` calls this route.
+
 A valid package creates a `platform_addon_deployments` row in `staged` and an `addon_deployment` approval. On approval the host copies the package to `addons-installed/<id>/<version>/` and keeps older version folders. Tier 2 is then enabled through the lifecycle API, and the supervisor starts the child without a process restart. A tier 1 package from a publisher other than `kassis` is refused. A `kassis` tier 1 package is stored and is not hot-started; enable and disable stay on the lifecycle API.
 
 The version must be higher than the installed one, and the addon id must match the manifest id pattern. An id already owned by another publisher is refused. `hostApi` must accept this instance's host API (`1.0.0`).
@@ -62,6 +64,7 @@ The version must be higher than the installed one, and the addon id must match t
 
 | Date | Change |
 | --- | --- |
+| 2026-10-28 | `GET /api/v1/platform/addons/installations` returns the active version, publisher, and pending staged versions for each addon id. |
 | 2026-10-28 | Package upload stages an `addon_deployment` approval and installs to `addons-installed/<id>/<version>/`. Tier 2 enables without a restart. Rollback is `POST /api/v1/platform/addons/:id/rollback`. |
 | 2026-10-28 | Runtime UI requests include `contentHash`. The host serves `/addons-ui/<id>/*` only after the signature gate, while the addon is enabled and the content-hash fingerprint still matches. |
 | 2026-10-28 | Apply `20261028_addon_publisher_trust` before a bank signing key can be stored. Revocation is immediate. |

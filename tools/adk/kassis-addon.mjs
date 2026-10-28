@@ -19,6 +19,9 @@ const COMMANDS = [
   'migrate',
   'doctor',
   'pack',
+  'package',
+  'deploy',
+  'status',
   'sign',
   'keys',
   'certify',
@@ -42,6 +45,9 @@ Commands:
   migrate       up, down, or status on the dev host database
   doctor        Check Node, registry auth, keys, instance, and hostApi
   pack          Write an evidence pack
+  package       Write a signed .addon zip
+  deploy        Upload a .addon and print the approval request id
+  status        Print installed and pending versions
   sign          Sign the manifest
   keys          generate, export-public, or register
   certify       Attestation gate
@@ -92,6 +98,18 @@ Checks the Node version, GitHub Packages login (the token is not printed), signi
 `,
   pack: `Usage: kassis-addon pack [--out <dir>] [--json]
 `,
+  package: `Usage: kassis-addon package [--out <path>] [--json]
+
+Writes <id>-<version>.addon beside the addon folder. The zip holds the signed manifest.json, the files in the content-hash scope, evidence/ when that folder exists, and sbom.json from package-sbom.mjs. Refuses a manifest with no signature or no contentHash. Does not sign and does not call the network. sbom.json is inside the content hash, so generate it and sign before package.
+`,
+  deploy: `Usage: kassis-addon deploy [--instance <url>] [<file.addon>] [--json]
+
+Uploads the .addon to POST /api/v1/addon-security/deploy and prints the approval request id. --instance <url> and --instance=<url> both work. Token: KASSIS_ADK_TOKEN. The same command works from a jump host that only has the .addon file.
+`,
+  status: `Usage: kassis-addon status --instance <url> [--json]
+
+Prints installed and pending versions from GET /api/v1/platform/addons/installations. Token: KASSIS_ADK_TOKEN. The response is the addon id, active version, publisher, and pending versions.
+`,
   sign: `Usage: kassis-addon sign [--key <path>] [--json]
 
 Inside this repository, omit --key to use the repo signer. Outside it, --key is required.
@@ -138,6 +156,25 @@ function printIssues(issues) {
   }
 }
 
+function printStatus(installations) {
+  if (!Array.isArray(installations) || installations.length === 0) {
+    process.stdout.write('No installations\n');
+    return;
+  }
+  for (const row of installations) {
+    if (!row || typeof row !== 'object') continue;
+    const id = typeof row.id === 'string' ? row.id : '';
+    if (!id) continue;
+    const version = typeof row.activeVersion === 'string' ? row.activeVersion : '-';
+    const publisher = typeof row.publisher === 'string' ? row.publisher : '-';
+    process.stdout.write(`${id} ${version} ${publisher}\n`);
+    if (!Array.isArray(row.pendingVersions)) continue;
+    for (const pending of row.pendingVersions) {
+      if (typeof pending === 'string') process.stdout.write(`pending ${pending}\n`);
+    }
+  }
+}
+
 function printLines(value) {
   if (!Array.isArray(value)) return;
   for (const line of value) {
@@ -151,6 +188,11 @@ function printSuccess(command, data) {
     process.stdout.write(`${data.path}\n`);
   }
   if (command === 'pack' && typeof data.out === 'string') process.stdout.write(`${data.out}\n`);
+  if (command === 'package' && typeof data.path === 'string' && typeof data.sha256 === 'string') {
+    process.stdout.write(`${data.path}\n${data.sha256}\n`);
+  }
+  if (command === 'deploy' && typeof data.requestId === 'string') process.stdout.write(`${data.requestId}\n`);
+  if (command === 'status') printStatus(data.installations);
   if (command === 'rules') printLines(data.files);
   if (command === 'keys' && typeof data.fingerprint === 'string') {
     process.stdout.write(`${data.fingerprint}\n${data.publicKey}\n${data.file}\n`);
