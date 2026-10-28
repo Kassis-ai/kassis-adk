@@ -57,7 +57,7 @@ async function buildServer(addonDir) {
   const entry = path.join(addonDir, sourceFile('src/server/index'));
   if (!fs.existsSync(entry)) throw new Error('src/server/index.ts is missing');
   const esbuild = await loadEsbuild(addonDir);
-  await esbuild.build({
+  const built = await esbuild.build({
     absWorkingDir: addonDir,
     entryPoints: [entry],
     outfile: path.join(addonDir, SERVER_OUT),
@@ -66,8 +66,11 @@ async function buildServer(addonDir) {
     platform: 'node',
     target: 'es2022',
     logLevel: 'silent',
+    metafile: true,
     plugins: [externalKassisPlugin()],
   });
+  fs.mkdirSync(path.dirname(path.join(addonDir, SERVER_OUT)), { recursive: true });
+  fs.writeFileSync(path.join(addonDir, 'dist', 'server', 'meta.json'), JSON.stringify(built.metafile ?? {}));
   await assertExport(addonDir, SERVER_OUT, 'initialize');
 }
 

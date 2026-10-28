@@ -44,7 +44,7 @@ node tools/adk/sign-tarball.mjs <file.tgz> --key=<private-key-hex-file>
 
 ## Addon package
 
-`kassis-addon package` writes `<id>-<version>.addon` beside the addon folder. The file is a zip. It contains the signed `manifest.json`, the files covered by `contentHash`, `evidence/` when that folder is present, and `sbom.json` produced by `tools/adk/package-sbom.mjs`. `package` does not sign the manifest and does not call the network. It refuses a manifest that has no signature or no `contentHash`. `sbom.json` is inside the content hash, so write it with `package-sbom.mjs` and run `sign` before `package`. `frontend/dist` stays outside the hash. When that folder exists, `package` still copies it into the zip so the host can serve `/addons-ui/<id>/`. A later image rebuild of first-party UI does not change `contentHash`.
+`kassis-addon package` writes `<id>-<version>.addon` beside the addon folder. The file is a zip. It contains the signed `manifest.json`, the files covered by `contentHash`, the certify evidence pack, and `sbom.json`. `kassis-addon sbom` writes that SBOM from the addon build and `package-lock.json`. `package` writes it when it is missing or older than the server build. `package` does not sign the manifest and does not call the network. It refuses a manifest that has no signature or no `contentHash`, and a folder whose certify evidence does not match `contentHash`. `sbom.json` is inside the content hash, so run `sign` after it changes and before `package`. `frontend/dist` stays outside the hash. When that folder exists, `package` still copies it into the zip so the host can serve `/addons-ui/<id>/`. A later image rebuild of first-party UI does not change `contentHash`.
 
 `kassis-addon deploy --instance=<url>` uploads that file to `POST /api/v1/addon-security/deploy` and prints the approval request id. The token is `KASSIS_ADK_TOKEN`. An optional `archiveSha256` field is the sha256 of the uploaded bytes and checks the transfer only. The same command works from a jump host that has the `.addon` file. `kassis-addon status --instance=<url>` calls `GET /api/v1/platform/addons/installations` and prints the installed version and the pending staged versions. That route uses the same admin token as deploy. The body is the addon id, the active version, the publisher, and the pending versions. It does not include secrets.
 
@@ -58,6 +58,7 @@ The install path is `addons-installed/<id>/<version>/`. The version must be high
 
 | Date | Change |
 | --- | --- |
+| 2026-10-28 | `kassis-addon sbom` writes the addon's own CycloneDX document. `package` includes the certify evidence pack and refuses a folder that has not been certified. |
 | 2026-10-28 | Public tarballs publish `dist` entry points. `ci:packages:publish-config` packs each package and checks those entries. |
 | 2026-10-28 | `kassis-addon package` writes a self-contained `.addon` zip. `deploy` uploads it and prints the approval request id. `status` lists installed and pending versions. |
 | 2026-10-28 | The instance installs a package only after signature and `contentHash` checks. `manifest.checksum` is not used. |

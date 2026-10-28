@@ -7,7 +7,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
-import { buildSbom } from '../../../tools/adk/package-sbom.mjs';
+import { writeAddonSbom } from '../../../tools/adk/addonSbom.mjs';
 import {
   computeAddonContentHash,
   isContentHash,
@@ -49,23 +49,40 @@ function outputFile(dir: string, fileName: string, out: string, cwd: string): st
   return path.join(resolved, fileName);
 }
 
-function generatedSbomText(): string {
-  return `${JSON.stringify(buildSbom(), null, 2)}\n`;
+function ensureSbom(dir: string): void {
+  const file = path.join(dir, 'sbom.json');
+  const build = path.join(dir, 'dist', 'server', 'index.js');
+  const missing = !fs.existsSync(file);
+  const stale =
+    !missing &&
+    fs.existsSync(build) &&
+    fs.statSync(file).mtimeMs < fs.statSync(build).mtimeMs;
+  if (missing || stale) writeAddonSbom(dir);
 }
 
-function sbomMatches(dir: string): CommandResult | null {
-  const file = path.join(dir, 'sbom.json');
-  if (!fs.existsSync(file)) {
+export function sbomProject(dir: string): CommandResult {
+  try {
+    writeAddonSbom(dir);
+    return commandResult([], { path: path.join(dir, 'sbom.json') });
+  } catch (error) {
+    return failure(messageOf(error), 'Run sbom in an addon folder that has a package.json.', 'ADK-PACKAGE');
+  }
+}
+
+function evidenceReady(dir: string, contentHash: string): CommandResult | null {
+  const checks = path.join(dir, '.kassis', 'evidence', 'checks.json');
+  if (!fs.existsSync(checks)) {
     return failure(
-      'sbom.json is missing',
-      'Run node tools/adk/package-sbom.mjs --out=sbom.json in the addon folder, sign, then package.',
+      'certify evidence is missing',
+      'Run kassis-addon certify, then package.',
       'ADK-PACKAGE'
     );
   }
-  if (fs.readFileSync(file, 'utf8') !== generatedSbomText()) {
+  const parsed = readJson(checks);
+  if (!isRecordValue(parsed) || parsed.contentHash !== contentHash) {
     return failure(
-      'sbom.json does not match package-sbom.mjs',
-      'Regenerate sbom.json, sign, then package. package does not sign.',
+      'certify evidence does not match contentHash',
+      'Run kassis-addon certify after sign, then package.',
       'ADK-PACKAGE'
     );
   }
@@ -98,13 +115,17 @@ async function uiBundleEntries(dir: string): Promise<ZipEntry[]> {
 }
 
 async function evidenceEntries(dir: string): Promise<ZipEntry[]> {
+  const entries: ZipEntry[] = [];
+  const certified = path.join(dir, '.kassis', 'evidence');
+  if (fs.existsSync(certified)) {
+    await walkEvidence(certified, 'evidence', entries);
+  }
   const evidenceDir = path.join(dir, 'evidence');
-  if (!fs.existsSync(evidenceDir)) return [];
+  if (!fs.existsSync(evidenceDir)) return entries;
   const stat = await fsp.lstat(evidenceDir);
   if (!stat.isDirectory()) {
     throw new Error('evidence must be a directory');
   }
-  const entries: ZipEntry[] = [];
   await walkEvidence(evidenceDir, 'evidence', entries);
   return entries;
 }
@@ -225,7 +246,8 @@ export async function packageProject(dir: string, out: string, cwd: string): Pro
         'ADK-PACKAGE'
       );
     }
-    if (!isContentHash(parsed.contentHash)) {
+    const signedHash = parsed.contentHash;
+    if (!isContentHash(signedHash)) {
       return failure(
         'manifest.json has no contentHash',
         'Run kassis-addon sign, then package. package does not sign.',
@@ -242,10 +264,11 @@ export async function packageProject(dir: string, out: string, cwd: string): Pro
         'ADK-PACKAGE'
       );
     }
-    const sbom = sbomMatches(dir);
-    if (sbom) return sbom;
+    ensureSbom(dir);
+    const evidence = evidenceReady(dir, signedHash);
+    if (evidence) return evidence;
     const actualHash = await computeAddonContentHash(dir);
-    if (actualHash !== parsed.contentHash) {
+    if (actualHash !== signedHash) {
       return failure(
         'contentHash does not match the addon files',
         'Run kassis-addon sign after the files change, then package.',

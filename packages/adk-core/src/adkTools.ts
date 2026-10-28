@@ -89,6 +89,11 @@ declare module '../../../tools/adk/publisherKeys.mjs' {
   }): Promise<string>;
 }
 
+declare module '../../../tools/adk/addonSbom.mjs' {
+  export function buildAddonSbom(dir: string): { bomFormat: string; components: { name: string; version: string }[] };
+  export function writeAddonSbom(dir: string): string;
+}
+
 declare module '../../../tools/adk/certifyChecks.mjs' {
   export function recordMachineChecks(addonDir: string): object;
 }

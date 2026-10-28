@@ -17,6 +17,7 @@ const COMMANDS = [
   'doctor',
   'pack',
   'package',
+  'sbom',
   'deploy',
   'status',
   'sign',
@@ -43,6 +44,7 @@ Commands:
   doctor        Check Node, registry auth, keys, instance, and hostApi
   pack          Write an evidence pack
   package       Write a signed .addon zip
+  sbom          Write sbom.json for this addon
   deploy        Upload a .addon and print the approval request id
   status        Print installed and pending versions
   sign          Sign the manifest
@@ -95,9 +97,13 @@ Checks the Node version, GitHub Packages login (the token is not printed), signi
 `,
   pack: `Usage: kassis-addon pack [--out <dir>] [--json]
 `,
+  sbom: `Usage: kassis-addon sbom [--json]
+
+Writes sbom.json for the libraries this addon ships.
+`,
   package: `Usage: kassis-addon package [--out <path>] [--json]
 
-Writes <id>-<version>.addon beside the addon folder. The zip holds the signed manifest.json, the files in the content-hash scope, evidence/ when that folder exists, and sbom.json from package-sbom.mjs. Refuses a manifest with no signature or no contentHash. Does not sign and does not call the network. sbom.json is inside the content hash, so generate it and sign before package.
+Writes <id>-<version>.addon beside the addon folder. The zip holds the signed manifest.json, the files in the content-hash scope, the certify evidence pack, frontend/dist when that folder exists, and sbom.json. package writes sbom.json when it is missing or older than the server build. Refuses a manifest with no signature or no contentHash, and refuses a folder that has not been certified. Does not sign and does not call the network. Sign after sbom.json changes.
 `,
   deploy: `Usage: kassis-addon deploy [--instance <url>] [<file.addon>] [--json]
 
