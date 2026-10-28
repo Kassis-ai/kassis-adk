@@ -26,6 +26,16 @@
       "properties": { "main": { "$ref": "#/$defs/packagePath" } }
     },
     "signature": { "type": "string", "pattern": "^[0-9a-f]+$", "minLength": 64 },
+    "signing": {
+      "description": "Covered by the signature. keyId is the sha256 hex of the Ed25519 SPKI DER.",
+      "type": "object",
+      "required": ["alg", "keyId"],
+      "additionalProperties": false,
+      "properties": {
+        "alg": { "const": "ed25519" },
+        "keyId": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
     "contentHash": { "type": "string", "pattern": "^sha256-[0-9a-f]{64}$" },
     "permissions": {
       "type": "array",

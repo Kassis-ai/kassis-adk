@@ -1,268 +1,308 @@
+#!/usr/bin/env node
 /**
- * kassis addon / adk commands.
- * certify reads .kassis/agent-profile.lock.json and .kassis/attestation.json
- * and exits 1 when a blocking KADK-7xx issue is present.
+ * kassis-addon command line. Argument parsing and printing live here.
+ * Command work is in @kassis/adk-core, which does not print or exit.
  */
-import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
+import { parseArgs } from 'node:util';
 import { fileURLToPath } from 'node:url';
-import { checkManifest, conformanceIssues } from './addonCheck.mjs';
-import { writeAgentRuleFiles } from './agentRules.mjs';
-import { certifyAttestation, kadkIssue } from './certifyAttestation.mjs';
-import { buildProfileLock, packEvidence } from './profileLock.mjs';
-import { downloadProfile, readBundledProfile, verifyProfileSignature } from './profileBundle.mjs';
-import { submitCertifiedRun } from './registryRun.mjs';
-import { initAddon } from './scaffold.mjs';
 
-const root = process.cwd();
 const here = path.dirname(fileURLToPath(import.meta.url));
-const packedRoot = path.resolve(here, '..');
-const repoRoot = fs.existsSync(path.join(packedRoot, 'templates/kassis-addon/manifest.json'))
-  ? packedRoot
-  : path.resolve(here, '../..');
-const lockPath = path.join(root, '.kassis', 'agent-profile.lock.json');
-const attestationPath = path.join(root, '.kassis', 'attestation.json');
+const COMMANDS = [
+  'init',
+  'build',
+  'check',
+  'conformance',
+  'test',
+  'dev',
+  'migrate',
+  'doctor',
+  'pack',
+  'package',
+  'deploy',
+  'status',
+  'sign',
+  'keys',
+  'certify',
+  'attest',
+  'explain',
+  'sync',
+  'rules',
+  'scaffold',
+];
 
-function readJson(file) {
-  if (!fs.existsSync(file)) return null;
-  return JSON.parse(fs.readFileSync(file, 'utf8'));
-}
+const HELP = {
+  '': `Usage: kassis-addon <command> [flags]
 
-function flagValue(name) {
-  const prefix = `--${name}=`;
-  const found = process.argv.find((arg) => arg.startsWith(prefix));
-  return found ? found.slice(prefix.length) : '';
-}
+Commands:
+  init          Copy the addon template
+  build         Bundle the server and, when present, the UI
+  check         Validate manifest.json
+  conformance   Import check and migration down scripts
+  test          Run node --test in ./test
+  dev           Start a configured local dev host
+  migrate       up, down, or status on the dev host database
+  doctor        Check Node, registry auth, keys, instance, and hostApi
+  pack          Write an evidence pack
+  package       Write a signed .addon zip
+  deploy        Upload a .addon and print the approval request id
+  status        Print installed and pending versions
+  sign          Sign the manifest
+  keys          generate, export-public, or register
+  certify       Attestation gate
+  attest        Write a blank attestation
+  explain       Explain a KADK code
+  sync          Pin an agent profile
+  rules         Rewrite rule files from the lock
+  scaffold      Add a route, capability, event, job, migration, or UI slot
 
-async function certify() {
-  const result = certifyAttestation({
-    lock: readJson(lockPath),
-    attestation: readJson(attestationPath),
-  });
-  if (process.argv.includes('--json')) {
-    console.log(JSON.stringify({ ok: result.ok, issues: result.issues }));
-  } else {
-    for (const issue of result.issues) {
-      console.log(`${issue.code} ${issue.message}`);
-      console.log(`  ${issue.fix}`);
-    }
-  }
-  if (!result.ok) process.exit(1);
-  const instance = process.env.KASSIS_ADK_INSTANCE || '';
-  const token = process.env.KASSIS_ADK_TOKEN || '';
-  const agentId = process.env.KASSIS_ADK_AGENT_ID || '';
-  if (instance && token && agentId) {
-    const lock = readJson(lockPath);
-    const attestation = readJson(attestationPath);
-    const submitted = await submitCertifiedRun({
-      instance,
-      token,
-      agentId,
-      profileCode: lock.profileId,
-      answers: attestation.answers,
-    });
-    console.log(submitted.runId);
-  }
-  process.exit(0);
-}
+Flags:
+  --help        Show help and exit 0
+  --version     Print the CLI version and exit 0
+  --json        Print { ok, issues, data }
 
-function attest() {
-  if (fs.existsSync(attestationPath)) {
-    console.log(attestationPath);
-    return;
-  }
-  const lock = readJson(lockPath);
-  const answers = Array.isArray(lock?.guardrails)
-    ? lock.guardrails.map((item) => ({ key: item.key, outcome: '', note: null, evidence: null }))
-    : [];
-  fs.mkdirSync(path.dirname(attestationPath), { recursive: true });
-  fs.writeFileSync(
-    attestationPath,
-    `${JSON.stringify(
-      {
-        version: lock?.version ?? '',
-        lockHash: lock?.hash ?? '',
-        runId: '',
-        answers,
-      },
-      null,
-      2
-    )}\n`
-  );
-  console.log(attestationPath);
-}
+Run kassis-addon <command> --help for that command.
+`,
+  init: `Usage: kassis-addon init --id <addon-id> [--dir <path>] [--publisher <id>] [--tier 1|2] [--rung 1|2|3] [--json]
 
-function explain(code) {
-  try {
-    const issue = kadkIssue(code);
-    console.log(`${issue.code} ${issue.message}`);
-    console.log(issue.fix);
-  } catch {
-    console.error(`Unknown code ${code ?? ''}`);
-    process.exit(1);
-  }
-}
+--id is required. --id value and --id=value both work. Publisher defaults to kassis, tier to 2, rung to 1.
+`,
+  build: `Usage: kassis-addon build [--only server|ui|all] [--json]
 
-async function sync() {
-  const from = flagValue('from');
-  const profileId = flagValue('profile') || 'addon-coding-agent';
-  const instance = flagValue('instance') || '';
-  let profile;
-  if (from) profile = JSON.parse(fs.readFileSync(from, 'utf8'));
-  else if (instance) {
-    profile = await downloadProfile(instance, profileId, process.env.KASSIS_ADK_TOKEN || '');
-  } else profile = readBundledProfile(profileId);
-  if (!verifyProfileSignature(profile)) {
-    console.error('Profile signature is not valid');
-    process.exit(1);
-  }
-  const lock = buildProfileLock(profile);
-  fs.mkdirSync(path.dirname(lockPath), { recursive: true });
-  fs.writeFileSync(lockPath, `${JSON.stringify(lock, null, 2)}\n`);
-  writeAgentRuleFiles(lock, root);
-  console.log(lockPath);
-}
+Writes dist/server/index.js and, when src/ui/index.ts exists, frontend/dist/index.js.
+`,
+  check: `Usage: kassis-addon check [--json]
 
-function pack() {
-  const outDir = flagValue('out') || path.join(root, '.kassis', 'evidence');
-  const result = packEvidence({
-    lock: readJson(lockPath),
-    attestation: readJson(attestationPath),
-    outDir,
-  });
-  for (const issue of result.issues) {
-    console.log(`${issue.code} ${issue.message}`);
-  }
-  if (!result.ok) process.exit(1);
-  console.log(outDir);
-}
+Validates manifest.json. Schema errors use KADK-1xx codes. A permission outside the addon id uses KADK-110.
+`,
+  conformance: `Usage: kassis-addon conformance [--json]
 
-async function check() {
-  const manifest = readJson(path.join(root, 'manifest.json'));
-  if (!manifest) {
-    console.error('manifest.json is missing');
-    process.exit(1);
-  }
-  const issues = await checkManifest(manifest, repoRoot);
-  for (const issue of issues) console.error(issue);
-  process.exit(issues.length === 0 ? 0 : 1);
-}
+Runs the addon-testkit import check and rejects an up script with no down script.
+`,
+  test: `Usage: kassis-addon test [--json]
 
-function conformance() {
-  const issues = conformanceIssues(root);
-  for (const issue of issues) console.error(issue);
-  process.exit(issues.length === 0 ? 0 : 1);
-}
+Runs node --test in ./test. Prints "No test directory" and exits 0 when that folder is missing.
+`,
+  dev: `Usage: kassis-addon dev [--image <name>] [--json]
 
-async function sign() {
-  const manifest = readJson(path.join(root, 'manifest.json'));
-  const id = typeof manifest?.id === 'string' ? manifest.id : '';
-  if (!id) {
-    console.error('manifest.json needs an id');
-    process.exit(1);
-  }
-  const key = flagValue('key');
-  if (!key) {
-    const bundled = path.join(repoRoot, 'tools/signing/sign-all-addons.mjs');
-    if (!fs.existsSync(bundled)) {
-      console.error('sign --key=<path> is required outside the Kassis repository');
-      process.exit(1);
-    }
-    const result = spawnSync(process.execPath, [bundled, `--only=${id}`], {
-      cwd: repoRoot,
-      stdio: 'inherit',
-    });
-    process.exit(result.status ?? 1);
-  }
-  const repoSigner = path.join(repoRoot, 'tools/signing/sign-addon.cjs');
-  if (fs.existsSync(repoSigner)) {
-    const result = spawnSync(process.execPath, [repoSigner, root, '--private-key', path.resolve(key)], {
-      cwd: repoRoot,
-      stdio: 'inherit',
-    });
-    process.exit(result.status ?? 1);
-  }
-  const { signManifestFile } = await import('./signManifest.mjs');
-  await signManifestFile(path.join(root, 'manifest.json'), path.resolve(key));
-  process.exit(0);
-}
+Starts Docker or Podman only when an image is already configured (flag, KASSIS_DEVHOST_IMAGE, or ~/.kassis/devhost.json) and already present locally. Does not build or pull an image. Does not add a publisher to the trust store. If the runtime or the image is missing, exits with an issue instead of waiting.
+`,
+  migrate: `Usage: kassis-addon migrate <up|down|status> [--target <url>] [--json]
 
-function init() {
-  const id = flagValue('id');
-  if (!id) {
-    console.error('Usage: node tools/adk/kassis-addon.mjs init --id=<addon-id> [--dir=<path>]');
-    process.exit(1);
-  }
-  const dir = path.resolve(flagValue('dir') || path.join(root, id));
-  console.log(initAddon(id, dir));
-}
+Applies migrations only to the database inside the dev host started by kassis-addon dev. Refuses when no dev host is running, and refuses any other target.
+`,
+  doctor: `Usage: kassis-addon doctor [--json]
 
-function rules() {
-  const lock = readJson(lockPath);
-  if (!lock) {
-    console.error('Run sync before rules');
-    process.exit(1);
-  }
-  for (const file of writeAgentRuleFiles(lock, root)) console.log(file);
-}
+Checks the Node version, GitHub Packages login (the token is not printed), signing key files, instance reachability, and manifest hostApi against HOST_API_VERSION.
+`,
+  pack: `Usage: kassis-addon pack [--out <dir>] [--json]
+`,
+  package: `Usage: kassis-addon package [--out <path>] [--json]
 
-function test() {
-  const tests = path.join(root, 'test');
-  if (!fs.existsSync(tests)) {
-    console.log('No test directory');
-    return;
-  }
-  const result = spawnSync(process.execPath, ['--test'], { cwd: tests, stdio: 'inherit' });
-  process.exit(result.status ?? 1);
-}
+Writes <id>-<version>.addon beside the addon folder. The zip holds the signed manifest.json, the files in the content-hash scope, evidence/ when that folder exists, and sbom.json from package-sbom.mjs. Refuses a manifest with no signature or no contentHash. Does not sign and does not call the network. sbom.json is inside the content hash, so generate it and sign before package.
+`,
+  deploy: `Usage: kassis-addon deploy [--instance <url>] [<file.addon>] [--json]
 
-function dev() {
-  const manifest = readJson(path.join(root, 'manifest.json'));
-  const id = typeof manifest?.id === 'string' ? manifest.id : '';
-  if (!id) {
-    console.error('manifest.json needs an id');
-    process.exit(1);
-  }
-  console.log(`Routes mount at /api/v1/addons/${id}`);
-  console.log(`UI loads from /addons-ui/${id}/index.js`);
-}
+Uploads the .addon to POST /api/v1/addon-security/deploy and prints the approval request id. --instance <url> and --instance=<url> both work. Token: KASSIS_ADK_TOKEN. The same command works from a jump host that only has the .addon file.
+`,
+  status: `Usage: kassis-addon status --instance <url> [--json]
 
-function migrate() {
-  const migrations = path.join(root, 'migrations');
-  if (!fs.existsSync(migrations)) {
-    console.log('No migrations');
-    return;
-  }
-  const names = fs.readdirSync(migrations).filter((name) => name.endsWith('.sql')).sort();
-  for (const name of names) console.log(name);
-  console.log('Not applied. Run the up script through the release ledger.');
-}
+Prints installed and pending versions from GET /api/v1/platform/addons/installations. Token: KASSIS_ADK_TOKEN. The response is the addon id, active version, publisher, and pending versions.
+`,
+  sign: `Usage: kassis-addon sign [--key <path>] [--json]
 
-const command = process.argv[2];
-const commands = {
-  certify,
-  attest,
-  explain: () => explain(process.argv[3]),
-  sync,
-  pack,
-  check,
-  conformance,
-  sign,
-  init,
-  rules,
-  test,
-  dev,
-  migrate,
+Inside this repository, omit --key to use the repo signer. Outside it, --key is required.
+`,
+  keys: `Usage: kassis-addon keys <generate|export-public|register> [--publisher <id>] [--key <path>] [--out <path>] [--instance <url>] [--json]
+`,
+  certify: `Usage: kassis-addon certify [--json]
+
+Runs check, conformance, build, and test, then the attestation gate. --json prints { ok, issues, data }.
+`,
+  attest: `Usage: kassis-addon attest [--json]
+
+Writes .kassis/attestation.json with null outcomes when it is missing.
+`,
+  explain: `Usage: kassis-addon explain <KADK-code> [--json]
+`,
+  sync: `Usage: kassis-addon sync [--profile <id>] [--instance <url>] [--from <file>] [--json]
+`,
+  rules: `Usage: kassis-addon rules [--json]
+`,
+  scaffold: `Usage: kassis-addon scaffold --kind <addon|route|capability|event|job|migration|ui-slot> [--id <addon-id>] [--name <kebab>] [--dir <path>] [--json]
+`,
 };
-const selected = commands[command];
-if (!selected) {
-  console.error(
-    'Usage: node tools/adk/kassis-addon.mjs <certify|attest|explain|sync|pack|check|conformance|sign|init|rules|test|dev|migrate>'
-  );
+
+function cliVersion() {
+  const file = path.resolve(here, '../../packages/addon-cli/package.json');
+  const parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
+  return typeof parsed.version === 'string' ? parsed.version : '0.0.0';
+}
+
+function helpText(command) {
+  return HELP[command] ?? HELP[''];
+}
+
+function textValue(values, name) {
+  const value = values[name];
+  return typeof value === 'string' ? value : '';
+}
+
+function printIssues(issues) {
+  for (const issue of issues) {
+    process.stderr.write(`${issue.code} ${issue.message}\n`);
+    if (issue.fix) process.stderr.write(`  ${issue.fix}\n`);
+  }
+}
+
+function printStatus(installations) {
+  if (!Array.isArray(installations) || installations.length === 0) {
+    process.stdout.write('No installations\n');
+    return;
+  }
+  for (const row of installations) {
+    if (!row || typeof row !== 'object') continue;
+    const id = typeof row.id === 'string' ? row.id : '';
+    if (!id) continue;
+    const version = typeof row.activeVersion === 'string' ? row.activeVersion : '-';
+    const publisher = typeof row.publisher === 'string' ? row.publisher : '-';
+    process.stdout.write(`${id} ${version} ${publisher}\n`);
+    if (!Array.isArray(row.pendingVersions)) continue;
+    for (const pending of row.pendingVersions) {
+      if (typeof pending === 'string') process.stdout.write(`pending ${pending}\n`);
+    }
+  }
+}
+
+function printLines(value) {
+  if (!Array.isArray(value)) return;
+  for (const line of value) {
+    if (typeof line === 'string') process.stdout.write(`${line}\n`);
+  }
+}
+
+function printSuccess(command, data) {
+  if (command === 'init' && typeof data.dir === 'string') process.stdout.write(`${data.dir}\n`);
+  if ((command === 'attest' || command === 'sync' || command === 'keys') && typeof data.path === 'string') {
+    process.stdout.write(`${data.path}\n`);
+  }
+  if (command === 'pack' && typeof data.out === 'string') process.stdout.write(`${data.out}\n`);
+  if (command === 'package' && typeof data.path === 'string' && typeof data.sha256 === 'string') {
+    process.stdout.write(`${data.path}\n${data.sha256}\n`);
+  }
+  if (command === 'deploy' && typeof data.requestId === 'string') process.stdout.write(`${data.requestId}\n`);
+  if (command === 'status') printStatus(data.installations);
+  if (command === 'rules') printLines(data.files);
+  if (command === 'keys' && typeof data.fingerprint === 'string') {
+    process.stdout.write(`${data.fingerprint}\n${data.publicKey}\n${data.file}\n`);
+  }
+  if (command === 'keys' && typeof data.response === 'string') process.stdout.write(`${data.response}\n`);
+  if (command === 'explain') process.stdout.write(`${data.message}\n${data.fix}\n`);
+  if (command === 'certify' && typeof data.runId === 'string') process.stdout.write(`${data.runId}\n`);
+  if (command === 'doctor') {
+    process.stdout.write(`Node ${data.nodeVersion}\n`);
+    process.stdout.write(data.registryOk ? `Registry ${data.registryUser}\n` : 'Registry not logged in\n');
+    process.stdout.write(`Signing keys ${data.signingKeys}\n`);
+    process.stdout.write(data.instanceReachable ? `Instance ${data.instanceUrl}\n` : 'Instance not reachable\n');
+    const range = data.hostApiRange ? data.hostApiRange : '(no manifest)';
+    process.stdout.write(`hostApi ${data.hostApiVersion} ${range}\n`);
+  }
+  if (command === 'migrate') {
+    printLines(data.lines);
+    printLines(data.applied);
+    if (typeof data.reverted === 'string') {
+      process.stdout.write(data.reverted ? `reverted ${data.reverted}\n` : 'Nothing to revert\n');
+    }
+  }
+}
+
+try {
+  const parsed = parseArgs({
+  args: process.argv.slice(2),
+  allowPositionals: true,
+  strict: true,
+  options: {
+    help: { type: 'boolean', short: 'h' },
+    version: { type: 'boolean' },
+    json: { type: 'boolean' },
+    id: { type: 'string' },
+    dir: { type: 'string' },
+    publisher: { type: 'string' },
+    tier: { type: 'string' },
+    rung: { type: 'string' },
+    only: { type: 'string' },
+    out: { type: 'string' },
+    key: { type: 'string' },
+    from: { type: 'string' },
+    profile: { type: 'string' },
+    instance: { type: 'string' },
+    image: { type: 'string' },
+    target: { type: 'string' },
+    name: { type: 'string' },
+    kind: { type: 'string' },
+  },
+});
+
+const command = parsed.positionals[0] ?? '';
+if (parsed.values.help) {
+  process.stdout.write(helpText(command));
+  process.exit(0);
+}
+if (parsed.values.version) {
+  process.stdout.write(`kassis-addon ${cliVersion()}\n`);
+  process.exit(0);
+}
+if (!COMMANDS.includes(command)) {
+  process.stderr.write(helpText(''));
   process.exit(1);
 }
-Promise.resolve(selected()).catch((error) => {
-  console.error(error instanceof Error ? error.message : String(error));
-  process.exit(1);
+
+const { runCommand } = await import('../../packages/adk-core/src/runCommand.ts');
+const json = parsed.values.json === true;
+const result = await runCommand({
+  command,
+  subcommand: parsed.positionals[1] ?? '',
+  positional: parsed.positionals[1] ?? '',
+  cwd: process.cwd(),
+  imageFlag: typeof parsed.values.image === 'string' ? parsed.values.image : undefined,
+  followLogs: command === 'dev' && !json,
+  onLog: json
+    ? undefined
+    : (event) => {
+        const stream = event.stream === 'stderr' ? process.stderr : process.stdout;
+        stream.write(event.text);
+      },
+  flags: {
+    id: textValue(parsed.values, 'id'),
+    dir: textValue(parsed.values, 'dir'),
+    publisher: textValue(parsed.values, 'publisher'),
+    tier: textValue(parsed.values, 'tier'),
+    rung: textValue(parsed.values, 'rung'),
+    only: textValue(parsed.values, 'only'),
+    out: textValue(parsed.values, 'out'),
+    key: textValue(parsed.values, 'key'),
+    from: textValue(parsed.values, 'from'),
+    profile: textValue(parsed.values, 'profile'),
+    instance: textValue(parsed.values, 'instance'),
+    target: textValue(parsed.values, 'target'),
+    name: textValue(parsed.values, 'name'),
+    kind: textValue(parsed.values, 'kind'),
+  },
 });
+
+if (json) {
+  process.stdout.write(`${JSON.stringify(result)}\n`);
+  if (command === 'certify' && typeof result.data.runId === 'string' && result.data.runId) {
+    process.stdout.write(`${result.data.runId}\n`);
+  }
+} else {
+  if (!result.ok) printIssues(result.issues);
+  else printSuccess(command, result.data);
+}
+process.exit(result.ok ? 0 : 1);
+} catch (error) {
+  const message = error instanceof Error ? error.message : 'command failed';
+  process.stderr.write(`${message}\n`);
+  process.exit(1);
+}

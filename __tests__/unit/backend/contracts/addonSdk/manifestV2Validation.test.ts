@@ -36,6 +36,12 @@ describe('validateManifestV2', () => {
     expect(validateManifestV2(validManifest)).toEqual({ ok: true, issues: [] });
   });
 
+  it('accepts a signing block and rejects a bad algorithm', () => {
+    const keyId = 'a'.repeat(64);
+    expect(validateManifestV2(manifestWith({ signing: { alg: 'ed25519', keyId } })).ok).toBe(true);
+    expectOnly(manifestWith({ signing: { alg: 'rsa', keyId } }), 'KADK-101', 'signing.alg');
+  });
+
   it('accepts a tier 1 manifest with core read access and an owned legacy table', () => {
     const manifest = tierOne({
       database: { ownedTables: ['tprm_assessments'], readAccess: ['entities'] },

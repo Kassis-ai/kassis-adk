@@ -1,14 +1,17 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const HOST_IMPORT = /(?:from\s+|import\s*\(\s*)['"](?:@\/|server\/)/;
+export { assertNoHostImports, checkAddonImports } from './checkAddonImports.mjs';
 
-export function assertNoHostImports(source, label = 'source') {
-  if (HOST_IMPORT.test(source)) {
-    throw new Error(`${label} imports the host`);
-  }
-}
+/**
+ * @typedef {object} CertifyReport
+ * @property {true} ok
+ */
 
+/**
+ * @param {string} dir
+ * @returns {CertifyReport}
+ */
 export function assertEvidencePack(dir) {
   const certifyPath = path.join(dir, 'certify.json');
   for (const name of ['attestation.json', 'agent-profile.lock.json', 'certify.json']) {
@@ -22,3 +25,5 @@ export function assertEvidencePack(dir) {
   }
   return certify;
 }
+
+export { createTestContext } from './createTestContext.mjs';
