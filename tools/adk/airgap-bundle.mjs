@@ -380,8 +380,20 @@ export function writeAirgapBundle(outDir, root = repoRoot, options = {}) {
   }
   fs.writeFileSync(path.join(packs, 'index.json'), `${JSON.stringify({ packages: index }, null, 2)}\n`);
   refusePrivateKey(outDir);
+  saveDevHostImage(outDir);
   writeChecksums(outDir);
   return outDir;
+}
+
+function saveDevHostImage(outDir) {
+  const image = process.env.KASSIS_DEVHOST_IMAGE || 'ghcr.io/equitas78/kassis-devhost:latest';
+  const inspect = spawnSync('docker', ['image', 'inspect', image], { encoding: 'utf8', windowsHide: true });
+  if (inspect.status !== 0) return;
+  const file = path.join(outDir, 'devhost.tar');
+  const saved = spawnSync('docker', ['save', '-o', file, image], { encoding: 'utf8', windowsHide: true });
+  if (saved.status !== 0) {
+    throw new Error(`docker save failed for ${image}\n${saved.stderr ?? ''}`);
+  }
 }
 
 /**

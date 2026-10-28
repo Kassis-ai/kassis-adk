@@ -85,7 +85,7 @@ Runs node --test in ./test. Prints "No test directory" and exits 0 when that fol
 `,
   dev: `Usage: kassis-addon dev [--image <name>] [--json]
 
-Starts Docker or Podman only when an image is already configured (flag, KASSIS_DEVHOST_IMAGE, or ~/.kassis/devhost.json) and already present locally. Does not build or pull an image. Does not add a publisher to the trust store. If the runtime or the image is missing, exits with an issue instead of waiting.
+Starts Docker or Podman. The image is --image, then KASSIS_DEVHOST_IMAGE, then ~/.kassis/devhost.json, then ghcr.io/equitas78/kassis-devhost:latest. Pulls the image when it is not already local. Does not build an image. The container publishes on 127.0.0.1.
 `,
   migrate: `Usage: kassis-addon migrate <up|down|status> [--target <url>] [--json]
 

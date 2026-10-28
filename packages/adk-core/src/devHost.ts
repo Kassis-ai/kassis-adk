@@ -7,6 +7,8 @@ import { commandResult, failure, isRecordValue, readJson } from './issues.ts';
 import { runProcess } from './processRun.ts';
 
 const PROBE_MS = 8000;
+const PULL_MS = 120_000;
+const DEFAULT_DEVHOST_IMAGE = 'ghcr.io/equitas78/kassis-devhost:latest';
 const LABEL = 'com.kassis.devhost';
 const STATE_NAME = 'devhost-state.json';
 const CONFIG_NAME = 'devhost.json';
@@ -36,12 +38,14 @@ function configImage(): string {
   return '';
 }
 
-/** Flag, then KASSIS_DEVHOST_IMAGE, then ~/.kassis/devhost.json. Blank means not configured. */
+/** Flag, then KASSIS_DEVHOST_IMAGE, then ~/.kassis/devhost.json, then the published dev host image. */
 export function configuredDevImage(flag: string | undefined): string {
   if (flag !== undefined) return flag.trim();
   const fromEnv = process.env.KASSIS_DEVHOST_IMAGE;
-  if (fromEnv !== undefined) return fromEnv.trim();
-  return configImage();
+  if (fromEnv !== undefined && fromEnv.trim()) return fromEnv.trim();
+  const fromFile = configImage();
+  if (fromFile) return fromFile;
+  return DEFAULT_DEVHOST_IMAGE;
 }
 
 function runtimeBinary(): { command: string; output: ReturnType<typeof runProcess> } | null {
@@ -149,12 +153,15 @@ export async function startDevHost(
     );
   }
   if (inspect.status !== 0) {
-    return failure(
-      `Image ${image} is not present locally.`,
-      'Load the image on this machine first. This command does not pull from a registry and does not build one.',
-      'ADK-DEV-MISSING',
-      { image }
-    );
+    const pulled = runProcess(runtime.command, ['pull', image], PULL_MS);
+    if (pulled.timedOut || pulled.status !== 0) {
+      return failure(
+        `Image ${image} is not present locally and could not be pulled.`,
+        'Log in to the registry that hosts the dev image, or set KASSIS_DEVHOST_IMAGE to an image already on this machine.',
+        'ADK-DEV-MISSING',
+        { image }
+      );
+    }
   }
   const id = addonId(dir);
   if (!id) {
