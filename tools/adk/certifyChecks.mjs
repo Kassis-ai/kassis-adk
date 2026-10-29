@@ -68,10 +68,10 @@ function hashTree(addonDir, relativeDirs) {
 }
 
 export function cliPackageVersion() {
-  const candidates = [
-    path.resolve(here, '../package.json'),
-    path.resolve(here, '../../packages/addon-cli/package.json'),
-  ];
+  const candidates = [path.resolve(here, '../package.json')];
+  if (globalThis.__KASSIS_ADK_PACKED__ !== true) {
+    candidates.push(path.resolve(here, '../../packages/addon-cli/package.json'));
+  }
   for (const file of candidates) {
     if (!fs.existsSync(file)) continue;
     try {

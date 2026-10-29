@@ -17,7 +17,9 @@
   },
   "files": ["dist", "schema", "codes", "README.md", "browser-externals.json"],
   "scripts": {
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc -p tsconfig.json",
+    "prepack": "npm run build && node ../../scripts/pack-publish-fields.mjs apply",
+    "postpack": "node ../../scripts/pack-publish-fields.mjs restore"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com",

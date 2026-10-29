@@ -184,6 +184,8 @@ export interface AddonManifestV2 {
   readonly signature?: string;
   readonly signing?: ManifestSigning;
   readonly contentHash?: string;
+  /** sha256 of frontend/dist. Required for a client publisher UI. */
+  readonly uiContentHash?: string;
   readonly permissions?: readonly ManifestPermission[];
   /** Permissions every route of the addon needs; each must be declared in `permissions`. */
   readonly requiredPermissions?: readonly string[];

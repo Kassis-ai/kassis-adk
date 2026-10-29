@@ -13,7 +13,9 @@
   },
   "files": ["dist"],
   "scripts": {
-    "build": "node build.mjs"
+    "build": "node build.mjs",
+    "prepack": "npm run build && node ../../scripts/pack-publish-fields.mjs apply",
+    "postpack": "node ../../scripts/pack-publish-fields.mjs restore"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com",

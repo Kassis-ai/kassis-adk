@@ -3,12 +3,9 @@
  * kassis-addon command line. Argument parsing and printing live here.
  * Command work is in @kassis/adk-core, which does not print or exit.
  */
-import fs from 'node:fs';
-import path from 'node:path';
 import { parseArgs } from 'node:util';
-import { fileURLToPath } from 'node:url';
-
-const here = path.dirname(fileURLToPath(import.meta.url));
+import { cliVersion } from '../../packages/adk-core/src/issues.ts';
+import { runCommand } from '../../packages/adk-core/src/runCommand.ts';
 const COMMANDS = [
   'init',
   'build',
@@ -20,6 +17,7 @@ const COMMANDS = [
   'doctor',
   'pack',
   'package',
+  'sbom',
   'deploy',
   'status',
   'sign',
@@ -46,6 +44,7 @@ Commands:
   doctor        Check Node, registry auth, keys, instance, and hostApi
   pack          Write an evidence pack
   package       Write a signed .addon zip
+  sbom          Write sbom.json for this addon
   deploy        Upload a .addon and print the approval request id
   status        Print installed and pending versions
   sign          Sign the manifest
@@ -86,7 +85,7 @@ Runs node --test in ./test. Prints "No test directory" and exits 0 when that fol
 `,
   dev: `Usage: kassis-addon dev [--image <name>] [--json]
 
-Starts Docker or Podman only when an image is already configured (flag, KASSIS_DEVHOST_IMAGE, or ~/.kassis/devhost.json) and already present locally. Does not build or pull an image. Does not add a publisher to the trust store. If the runtime or the image is missing, exits with an issue instead of waiting.
+Starts Docker or Podman. The image is --image, then KASSIS_DEVHOST_IMAGE, then ~/.kassis/devhost.json, then ghcr.io/equitas78/kassis-devhost:latest. Pulls the image when it is not already local. Does not build an image. The container publishes on 127.0.0.1.
 `,
   migrate: `Usage: kassis-addon migrate <up|down|status> [--target <url>] [--json]
 
@@ -98,9 +97,13 @@ Checks the Node version, GitHub Packages login (the token is not printed), signi
 `,
   pack: `Usage: kassis-addon pack [--out <dir>] [--json]
 `,
+  sbom: `Usage: kassis-addon sbom [--json]
+
+Writes sbom.json for the libraries this addon ships.
+`,
   package: `Usage: kassis-addon package [--out <path>] [--json]
 
-Writes <id>-<version>.addon beside the addon folder. The zip holds the signed manifest.json, the files in the content-hash scope, evidence/ when that folder exists, and sbom.json from package-sbom.mjs. Refuses a manifest with no signature or no contentHash. Does not sign and does not call the network. sbom.json is inside the content hash, so generate it and sign before package.
+Writes <id>-<version>.addon beside the addon folder. The zip holds the signed manifest.json, the files in the content-hash scope, the certify evidence pack (checks.json, attestation.json, and agent-profile.lock.json), frontend/dist when that folder exists, and sbom.json. package writes sbom.json when it is missing or older than the server build. Refuses a manifest with no signature or no contentHash, and refuses a folder whose certify checks did not all exit 0. Does not sign and does not call the network. Sign after sbom.json changes.
 `,
   deploy: `Usage: kassis-addon deploy [--instance <url>] [<file.addon>] [--json]
 
@@ -133,12 +136,6 @@ Writes .kassis/attestation.json with null outcomes when it is missing.
   scaffold: `Usage: kassis-addon scaffold --kind <addon|route|capability|event|job|migration|ui-slot> [--id <addon-id>] [--name <kebab>] [--dir <path>] [--json]
 `,
 };
-
-function cliVersion() {
-  const file = path.resolve(here, '../../packages/addon-cli/package.json');
-  const parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
-  return typeof parsed.version === 'string' ? parsed.version : '0.0.0';
-}
 
 function helpText(command) {
   return HELP[command] ?? HELP[''];
@@ -258,7 +255,6 @@ if (!COMMANDS.includes(command)) {
   process.exit(1);
 }
 
-const { runCommand } = await import('../../packages/adk-core/src/runCommand.ts');
 const json = parsed.values.json === true;
 const result = await runCommand({
   command,

@@ -20,7 +20,7 @@ import { startDevHost } from './devHost.ts';
 import { migrateProject } from './migrateCommand.ts';
 import { doctorProject } from './doctor.ts';
 import { scaffoldProject } from './scaffoldFeature.ts';
-import { deployProject, packageProject, statusProject } from './packageCommand.ts';
+import { deployProject, packageProject, sbomProject, statusProject } from './packageCommand.ts';
 
 function projectDir(request: CommandRequest): string {
   if (request.flags.dir) return path.resolve(request.cwd, request.flags.dir);
@@ -51,6 +51,8 @@ export async function runCommand(request: CommandRequest): Promise<CommandResult
       return packProject(dir, flags.out ? path.resolve(request.cwd, flags.out) : '');
     case 'package':
       return packageProject(dir, flags.out, request.cwd);
+    case 'sbom':
+      return sbomProject(dir);
     case 'deploy':
       return deployProject(dir, flags.instance, request.positional, request.cwd);
     case 'status':

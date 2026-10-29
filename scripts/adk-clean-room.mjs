@@ -15,8 +15,8 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { computeAddonContentHash } from '../server/core/addon-deployment/addonContentHash.mjs';
-import { buildSbom } from '../tools/adk/package-sbom.mjs';
+import { computeAddonContentHash, computeUiContentHash } from '../server/core/addon-deployment/addonContentHash.mjs';
+import { resolveManifestTrust } from '../server/core/addon-platform/trust/publisherTrust.mjs';
 import {
   AIRGAP_TOOLCHAIN,
   PUBLIC_PACKAGE_NAMES,
@@ -27,9 +27,6 @@ import {
 } from '../tools/adk/airgap-bundle.mjs';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const cliPath = path.join(repoRoot, 'tools/adk/kassis-addon.mjs');
-const bundleCliRelative = 'tools/adk/kassis-addon.mjs';
-const SIGNATURE = 'ab'.repeat(32);
 const USAGE = `Usage: node scripts/adk-clean-room.mjs [--write-bundle=<dir>]
        node scripts/adk-clean-room.mjs --airgap --bundle=<dir>`;
 
@@ -105,8 +102,19 @@ function run(command, args, cwd, env) {
  * @param {string} cwd
  * @returns {{ stdout: string, stderr: string }}
  */
-function kassis(args, cwd) {
-  return run(process.execPath, [cliPath, ...args], cwd);
+function installedCli(installDir) {
+  const bin = path.join(installDir, 'node_modules', '@kassis', 'addon-cli', 'bin', 'kassis-addon.mjs');
+  if (!fs.existsSync(bin)) throw new Error('installed kassis-addon bin is missing');
+  const resolved = fs.realpathSync(bin);
+  const relative = path.relative(repoRoot, resolved);
+  if (!relative.startsWith('..') && !path.isAbsolute(relative)) {
+    throw new Error(`installed CLI resolved inside the repository: ${resolved}`);
+  }
+  return resolved;
+}
+
+function kassis(bin, args, cwd) {
+  return run(process.execPath, [bin, ...args], cwd);
 }
 
 /**
@@ -154,9 +162,12 @@ function assertTier2Rung2(addonDir) {
   if (ui === null || typeof ui !== 'object' || Array.isArray(ui) || !('entryFile' in ui)) {
     throw new Error('init did not write a rung 2 UI entry');
   }
-  if (ui.entryFile !== 'frontend/dist/index.js') {
-    throw new Error('init did not set ui.entryFile to frontend/dist/index.js');
+  if (ui.entryFile !== 'index.js') {
+    throw new Error('init did not set ui.entryFile to index.js');
   }
+  const npmrc = fs.readFileSync(path.join(addonDir, '.npmrc'), 'utf8');
+  if (!npmrc.includes('${NODE_AUTH_TOKEN}')) throw new Error('scaffold .npmrc does not use NODE_AUTH_TOKEN');
+  if (/_authToken=(?!\$\{NODE_AUTH_TOKEN\})/.test(npmrc)) throw new Error('scaffold .npmrc contains a token');
   if (!fs.existsSync(path.join(addonDir, 'src/ui/index.ts'))) {
     throw new Error('init did not copy the rung 2 UI source');
   }
@@ -244,18 +255,21 @@ function installFileTarballs(installDir, specifiers, cacheDir) {
     if (!spec.startsWith('file:')) throw new Error(`Refusing a registry install of ${spec}`);
   }
   fs.mkdirSync(installDir, { recursive: true });
+  const dependencies = { react: '19.2.3' };
+  for (const spec of specifiers) {
+    const base = path.basename(spec.slice('file:'.length));
+    dependencies[base.replace(/\.tgz$/, '')] = spec;
+  }
+  fs.writeFileSync(path.join(installDir, 'package.json'), `${JSON.stringify({ dependencies }, null, 2)}\n`);
   runNpm(
     [
       'install',
       '--no-package-lock',
-      '--omit=peer',
-      '--legacy-peer-deps',
       '--offline',
       '--no-audit',
       '--no-fund',
       '--cache',
       cacheDir,
-      ...specifiers,
     ],
     installDir,
     'pipe',
@@ -270,38 +284,141 @@ function installFileTarballs(installDir, specifiers, cacheDir) {
 /**
  * @param {string} addonDir
  */
-async function stampSignedFixture(addonDir) {
-  fs.writeFileSync(path.join(addonDir, 'sbom.json'), `${JSON.stringify(buildSbom(), null, 2)}\n`);
-  const manifestPath = path.join(addonDir, 'manifest.json');
-  const parsed = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-  if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
-    throw new Error('manifest.json is not an object');
+function jsonResult(stdout) {
+  const parsed = JSON.parse(stdout);
+  if (parsed === null || typeof parsed !== 'object' || parsed.ok !== true) {
+    throw new Error(`command did not return ok\n${stdout}`);
   }
+  return parsed.data;
+}
+
+function fillAttestation(addonDir) {
+  const file = path.join(addonDir, '.kassis', 'attestation.json');
+  const parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
+  if (!Array.isArray(parsed.answers)) throw new Error('attestation has no answers');
+  parsed.answers = parsed.answers.map((answer) => ({ ...answer, outcome: 'followed', note: 'clean room' }));
+  fs.writeFileSync(file, `${JSON.stringify(parsed, null, 2)}\n`);
+}
+
+function usePackedDependencies(addonDir, specs) {
+  const file = path.join(addonDir, 'package.json');
+  const parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
+  parsed.dependencies = {
+    ...(parsed.dependencies ?? {}),
+    '@kassis/addon-sdk': specs['@kassis/addon-sdk'],
+    '@kassis/addon-testkit': specs['@kassis/addon-testkit'],
+  };
+  parsed.devDependencies = {
+    ...(parsed.devDependencies ?? {}),
+    '@kassis/addon-cli': specs['@kassis/addon-cli'],
+  };
+  for (const name of AIRGAP_TOOLCHAIN) {
+    if (specs[name]) parsed.devDependencies[name] = specs[name];
+  }
+  fs.writeFileSync(file, `${JSON.stringify(parsed, null, 2)}\n`);
+}
+
+async function verifyClientPackage(addonDir, archive, publicKey, fingerprint) {
+  const manifest = JSON.parse(fs.readFileSync(path.join(addonDir, 'manifest.json'), 'utf8'));
+  const snapshot = {
+    publishers: [
+      {
+        id: 'acme',
+        displayName: 'Acme',
+        allowedTiers: [2],
+        idPrefixes: ['acme-'],
+        status: 'active',
+      },
+    ],
+    keys: [
+      {
+        fingerprint,
+        publisherId: 'acme',
+        publicKeyDerHex: publicKey,
+        status: 'current',
+        notBefore: null,
+        notAfter: null,
+      },
+    ],
+  };
+  resolveManifestTrust(manifest, snapshot, '');
   const contentHash = await computeAddonContentHash(addonDir);
-  fs.writeFileSync(
-    manifestPath,
-    `${JSON.stringify({ ...parsed, contentHash, signature: SIGNATURE }, null, 2)}\n`
-  );
+  if (contentHash !== manifest.contentHash) throw new Error('contentHash does not match the signed manifest');
+  const uiContentHash = await computeUiContentHash(addonDir);
+  if (!uiContentHash || uiContentHash !== manifest.uiContentHash) {
+    throw new Error('uiContentHash does not match frontend/dist');
+  }
+  const checks = JSON.parse(fs.readFileSync(path.join(addonDir, '.kassis', 'evidence', 'checks.json'), 'utf8'));
+  if (checks.contentHash !== manifest.contentHash) throw new Error('evidence contentHash does not match the manifest');
+  const names = zipEntryNames(fs.readFileSync(archive));
+  if (!names.includes('sbom.json')) throw new Error('package zip is missing sbom.json');
+  if (!names.includes('evidence/checks.json')) throw new Error('package zip is missing evidence/checks.json');
+  if (!names.includes('evidence/attestation.json')) throw new Error('package zip is missing evidence/attestation.json');
+  if (!names.includes('evidence/agent-profile.lock.json')) {
+    throw new Error('package zip is missing evidence/agent-profile.lock.json');
+  }
+  const sbom = JSON.parse(fs.readFileSync(path.join(addonDir, 'sbom.json'), 'utf8'));
+  const componentNames = Array.isArray(sbom.components) ? sbom.components.map((item) => item.name) : [];
+  if (!componentNames.includes('@kassis/addon-sdk')) {
+    throw new Error(`SBOM does not list the addon dependency\n${componentNames.join(', ')}`);
+  }
 }
 
 /**
+ * @param {string} bin
  * @param {string} parent
- * @returns {string}
+ * @param {Record<string, string>} specs
+ * @param {{ offline?: boolean, cacheDir?: string }} [options]
  */
-function initTier2Rung2(parent) {
+async function exerciseClient(bin, parent, specs, options = {}) {
+  const generated = jsonResult(kassis(bin, ['keys', 'generate', '--publisher=acme', '--json'], parent).stdout);
   const addonDir = path.join(parent, 'addon');
   fs.mkdirSync(addonDir, { recursive: true });
   kassis(
-    ['init', '--id=clean-room', '--publisher=acme', '--tier=2', '--rung=2', `--dir=${addonDir}`],
-    repoRoot
+    bin,
+    ['init', '--id=clean-room', '--publisher=acme', '--tier=2', '--rung=3', `--dir=${addonDir}`],
+    parent
   );
   assertTier2Rung2(addonDir);
-  return addonDir;
+  if (!fs.existsSync(path.join(addonDir, 'migrations'))) throw new Error('rung 3 did not copy migrations');
+  usePackedDependencies(addonDir, specs);
+  const installArgs = ['install', '--no-package-lock', '--no-audit', '--no-fund'];
+  const env = {};
+  if (options.offline) {
+    installArgs.push('--offline', '--cache', options.cacheDir ?? '');
+    env.npm_config_offline = 'true';
+  }
+  runNpm(installArgs, addonDir, 'pipe', env);
+  kassis(bin, ['build'], addonDir);
+  if (!fs.existsSync(path.join(addonDir, 'dist', 'server', 'index.js'))) {
+    throw new Error('build did not write dist/server/index.js');
+  }
+  if (!fs.existsSync(path.join(addonDir, 'frontend', 'dist', 'index.js'))) {
+    throw new Error('build did not write frontend/dist/index.js');
+  }
+  const tested = kassis(bin, ['test'], addonDir);
+  assertTestsRan(`${tested.stdout}\n${tested.stderr}`);
+  kassis(bin, ['check'], addonDir);
+  kassis(bin, ['conformance'], addonDir);
+  kassis(bin, ['sync'], addonDir);
+  kassis(bin, ['attest'], addonDir);
+  fillAttestation(addonDir);
+  kassis(bin, ['sbom'], addonDir);
+  kassis(bin, ['certify'], addonDir);
+  kassis(bin, ['sign', `--key=${generated.file}`], addonDir);
+  const packaged = kassis(bin, ['package'], addonDir);
+  const archive = packaged.stdout.split(/\r?\n/).find((line) => line.endsWith('.addon'));
+  if (!archive || !fs.existsSync(archive)) throw new Error(`package did not write an archive\n${packaged.stdout}`);
+  await verifyClientPackage(addonDir, archive, generated.publicKey, generated.fingerprint);
 }
 
 /**
  * @param {string} writeBundle
  */
+function fileSpec(file) {
+  return `file:${path.resolve(file).split(path.sep).join('/')}`;
+}
+
 async function runOnline(writeBundle) {
   const work = fs.mkdtempSync(path.join(os.tmpdir(), 'kassis-clean-room-'));
   let passed = false;
@@ -312,49 +429,19 @@ async function runOnline(writeBundle) {
     fs.mkdirSync(installDir);
     process.stdout.write('install tarballs\n');
     runNpm(
-      [
-        'install',
-        '--no-package-lock',
-        '--omit=peer',
-        '--legacy-peer-deps',
-        '--no-audit',
-        '--no-fund',
-        ...tarballs.map((item) => item.file),
-      ],
+      ['install', '--no-package-lock', '--no-audit', '--no-fund', ...tarballs.map((item) => item.file)],
       installDir
     );
     process.stdout.write('import runtime entries\n');
     importRuntime(installDir);
-
-    process.stdout.write('init tier 2 rung 2\n');
-    const addonDir = initTier2Rung2(work);
-    process.stdout.write('install addon dependencies\n');
-    runNpm(['install', '--no-package-lock', '--no-audit', '--no-fund'], addonDir);
-    process.stdout.write('build\n');
-    kassis(['build'], addonDir);
-    const uiProduced = fs.existsSync(path.join(addonDir, 'frontend', 'dist', 'index.js'));
-    if (!uiProduced) throw new Error('rung 2 build did not write frontend/dist/index.js');
-    if (!fs.existsSync(path.join(addonDir, 'dist', 'server', 'index.js'))) {
-      throw new Error('build did not write dist/server/index.js');
+    process.stdout.write('publish dry-run\n');
+    for (const item of tarballs) {
+      const pkgDir = path.join(repoRoot, 'packages', item.name.replace('@kassis/', ''));
+      runNpm(['publish', '--dry-run'], pkgDir);
     }
-
-    process.stdout.write('test\n');
-    const tested = kassis(['test'], addonDir);
-    assertTestsRan(`${tested.stdout}\n${tested.stderr}`);
-    process.stdout.write('check\n');
-    kassis(['check'], addonDir);
-    process.stdout.write('conformance\n');
-    kassis(['conformance'], addonDir);
-
-    process.stdout.write('package signed fixture\n');
-    await stampSignedFixture(addonDir);
-    const packaged = kassis(['package'], addonDir);
-    const archive = packaged.stdout.split(/\r?\n/).find((line) => line.endsWith('.addon'));
-    if (!archive || !fs.existsSync(archive)) {
-      throw new Error(`package did not write an archive\n${packaged.stdout}`);
-    }
-    assertPackageZip(archive, uiProduced);
-
+    const specs = Object.fromEntries(tarballs.map((item) => [item.name, fileSpec(item.file)]));
+    process.stdout.write('client flow\n');
+    await exerciseClient(installedCli(installDir), work, specs);
     if (writeBundle) {
       process.stdout.write(`write air-gap bundle ${writeBundle}\n`);
       writeAirgapBundle(path.resolve(writeBundle), repoRoot, { tarballs, primeCache: true });
@@ -414,54 +501,35 @@ function useBundlePackages(addonDir, bundleDir, index) {
 /**
  * @param {string} bundleDir
  */
-function runAirgap(bundleDir) {
+async function runAirgap(bundleDir) {
   const resolved = path.resolve(bundleDir);
   const index = assertPopulatedAirgapBundle(resolved);
-  const bundleCli = path.join(resolved, bundleCliRelative);
-  const help = run(process.execPath, [bundleCli, '--help'], resolved);
-  if (!help.stdout.includes('Usage: kassis-addon')) {
-    throw new Error('bundle CLI entry did not print help');
-  }
-
   const work = fs.mkdtempSync(path.join(os.tmpdir(), 'kassis-airgap-check-'));
   let passed = false;
   try {
     const cacheDir = path.join(resolved, 'npm-cache');
     const installDir = path.join(work, 'install');
     process.stdout.write('air-gap install\n');
-    installFileTarballs(installDir, specifiersFor(resolved, index, PUBLIC_PACKAGE_NAMES, installDir), cacheDir);
-    process.stdout.write('air-gap import\n');
-    importRuntime(installDir);
-
-    process.stdout.write('air-gap init\n');
-    const addonDir = initTier2Rung2(work);
-    useBundlePackages(addonDir, resolved, index);
-    for (const name of AIRGAP_TOOLCHAIN) {
-      if (typeof index[name] !== 'string') throw new Error(`air-gap bundle has no tarball for ${name}`);
+    const names = ['@kassis/addon-sdk', '@kassis/addon-testkit', '@kassis/addon-cli', ...AIRGAP_TOOLCHAIN];
+    const dependencies = {};
+    for (const name of names) {
+      const rel = index[name];
+      if (typeof rel !== 'string') throw new Error(`air-gap bundle has no tarball for ${name}`);
+      dependencies[name] = fileSpec(path.join(resolved, rel));
     }
-    process.stdout.write('air-gap addon install\n');
-    installFileTarballs(
-      addonDir,
-      [
-        ...specifiersFor(
-          resolved,
-          index,
-          ['@kassis/addon-sdk', '@kassis/addon-testkit', '@kassis/addon-cli', ...AIRGAP_TOOLCHAIN],
-          addonDir
-        ),
-      ],
-      cacheDir
+    fs.mkdirSync(installDir, { recursive: true });
+    fs.writeFileSync(path.join(installDir, 'package.json'), `${JSON.stringify({ dependencies }, null, 2)}\n`);
+    runNpm(
+      ['install', '--no-package-lock', '--offline', '--no-audit', '--no-fund', '--cache', cacheDir],
+      installDir,
+      'pipe',
+      { npm_config_offline: 'true' }
     );
-    process.stdout.write('air-gap build\n');
-    kassis(['build'], addonDir);
-    if (!fs.existsSync(path.join(addonDir, 'dist', 'server', 'index.js'))) {
-      throw new Error('air-gap build did not write dist/server/index.js');
-    }
-    if (!fs.existsSync(path.join(addonDir, 'frontend', 'dist', 'index.js'))) {
-      throw new Error('air-gap build did not write frontend/dist/index.js');
-    }
+    const specs = { ...dependencies };
+    process.stdout.write('air-gap client flow\n');
+    await exerciseClient(installedCli(installDir), work, specs, { offline: true, cacheDir });
     passed = true;
-    process.stdout.write('air-gap install and build passed\n');
+    process.stdout.write('air-gap client flow passed\n');
   } finally {
     if (passed) fs.rmSync(work, { recursive: true, force: true });
     else process.stderr.write(`air-gap work left at ${work}\n`);
@@ -477,7 +545,7 @@ async function main() {
   if (args.airgap && args.writeBundle) throw new Error(`--airgap does not write a bundle\n${USAGE}`);
   if (args.airgap) {
     if (!args.bundle) throw new Error(`--airgap requires --bundle=<dir>\n${USAGE}`);
-    runAirgap(args.bundle);
+    await runAirgap(args.bundle);
     return;
   }
   if (args.bundle) throw new Error(`--bundle is only valid with --airgap\n${USAGE}`);

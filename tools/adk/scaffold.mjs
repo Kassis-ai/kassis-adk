@@ -46,7 +46,9 @@ function copyTree(from, to, replacements, rung) {
     const source = path.join(from, entry.name);
     const relative = path.relative(templateDir, source).split(path.sep).join('/');
     if (skipped(relative, rung)) continue;
-    const target = path.join(to, entry.name);
+    const targetName =
+      entry.name === 'npmrc' ? '.npmrc' : entry.name === 'gitignore' ? '.gitignore' : entry.name;
+    const target = path.join(to, targetName);
     if (entry.isDirectory()) {
       copyTree(source, target, replacements, rung);
       continue;
@@ -94,9 +96,13 @@ function finalizeManifest(dir, fields) {
   manifest.publisher = fields.publisher;
   manifest.tier = fields.tier;
   manifest.hostApi = '^1.0.0';
+  if (fields.tier === 2) {
+    manifest.resources = { memoryMb: 128 };
+    manifest.health = { path: '/health' };
+  }
   manifest.entrypoints = { main: 'dist/server/index.js' };
   if (fields.rung >= 2) {
-    manifest.ui = { entryFile: 'frontend/dist/index.js', runtimeLoad: true };
+    manifest.ui = { entryFile: 'index.js', runtimeLoad: true };
   } else {
     delete manifest.ui;
   }

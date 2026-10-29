@@ -40,7 +40,7 @@ export const register = registerExampleExtensions;
 
 User-visible chrome goes through the addon i18n helpers. See [Frontend i18n](../addons/frontend-i18n.md). Do not import `i18next` from an addon.
 
-An addon built outside this repository keeps `@kassis/host-sdk` and `@kassis/addon-ui` external. For rung 2 and 3, `kassis-addon init` copies `vite.config.mjs`. The UI entry is `src/ui/index.ts`. The bundle is `frontend/dist/index.js`, which is `ui.entryFile`. The config reads externals from `@kassis/addon-sdk/browser-externals.json`. The host serves those modules from `/host-sdk/`.
+An addon built outside this repository keeps `@kassis/host-sdk` and `@kassis/addon-ui` external. For rung 2 and 3, `kassis-addon init` copies `vite.config.mjs`. The UI entry is `src/ui/index.ts`. The bundle is `frontend/dist/index.js`. `ui.entryFile` is `index.js`, relative to that folder. The config reads externals from `@kassis/addon-sdk/browser-externals.json`. The host serves those modules from `/host-sdk/`.
 
 ## Template
 
@@ -48,12 +48,12 @@ An addon built outside this repository keeps `@kassis/host-sdk` and `@kassis/add
 
 | Path | Role |
 | --- | --- |
-| `manifest.json` | Tier 2 unless publisher `kassis` passes `--tier=1`. `hostApi` is `^1.0.0`. `entrypoints.main` is `dist/server/index.js`. `signing` is omitted until `sign`. A publisher other than `kassis` cannot use tier 1, and the id is prefixed with `<publisher>-` when it does not already start with that prefix. |
+| `manifest.json` | Tier 2 unless publisher `kassis` passes `--tier=1`. `hostApi` is `^1.0.0`. Tier 2 includes `resources.memoryMb` (128) and `health.path` (`/health`); the supervisor refuses a tier 2 addon without memory. `entrypoints.main` is `dist/server/index.js`. `signing` is omitted until `sign`. A publisher other than `kassis` cannot use tier 1, and the id is prefixed with `<publisher>-` when it does not already start with that prefix. |
 | `package.json` | `build`, `build:server`, `build:ui`, `test`, `check`, and `certify`. |
 | `tsconfig.json` | Typecheck for `src`. It does not emit JavaScript. |
 | `src/server/index.ts` | `initialize(ctx: AddonContext)` from `@kassis/addon-sdk`. |
 | `src/ui/index.ts` | `routes` and `register`. Copied for rung 2 and rung 3. |
-| `frontend/dist/index.js` | UI bundle. `ui.entryFile`. Present after build when the rung has a UI. |
+| `frontend/dist/index.js` | UI bundle. `ui.entryFile` is `index.js` inside this folder. Present after build when the rung has a UI. |
 | `test/server.test.ts` | Calls `createTestContext()` from `@kassis/addon-testkit`. No database. |
 | `migrations/` | Rung 3 only. Each `*.up.sql` has a `*.down.sql`. |
 | `.github/workflows/certify.yml` | Installs, builds, tests, checks, and certifies. |
@@ -65,5 +65,7 @@ Rung 1, the default, is the server only. Rung 2 adds the UI. Rung 3 adds the UI 
 
 | Date | Change |
 | --- | --- |
+| 2026-10-28 | The tier 2 template sets `resources.memoryMb` to 128 and `health.path` to `/health`. The host refuses a tier 2 addon without memory. |
 | 2026-10-28 | Manifest v2 may carry `signing.keyId`, covered by the signature. |
+| 2026-10-28 | `ui.entryFile` is `index.js`, relative to `frontend/dist`. A path with a slash is KADK-504. The catalog strips a leading `frontend/dist/`. |
 | 2026-10-28 | The template server bundle is `dist/server/index.js`. The UI bundle is `frontend/dist/index.js`. Rung 1 is server only, rung 2 adds UI, and rung 3 adds migrations. |

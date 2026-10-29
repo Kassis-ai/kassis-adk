@@ -66,10 +66,30 @@ const CLI_RELATIVE = 'tools/adk/kassis-addon.mjs';
  * @param {Record<string, string | undefined>} [env]
  * @returns {string}
  */
+function npmInvocation() {
+  const fromEnv = process.env.npm_execpath;
+  if (fromEnv && fs.existsSync(fromEnv)) return { command: process.execPath, prefix: [fromEnv] };
+  const lookup = spawnSync(process.platform === 'win32' ? 'where.exe' : 'which', ['npm'], {
+    encoding: 'utf8',
+    windowsHide: true,
+  });
+  const hit = (lookup.stdout ?? '')
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .find((line) => line.length > 0 && fs.existsSync(line));
+  if (hit) {
+    const sibling = path.join(path.dirname(hit), 'node_modules', 'npm', 'bin', 'npm-cli.js');
+    if (fs.existsSync(sibling)) return { command: process.execPath, prefix: [sibling] };
+    if (!hit.endsWith('.cmd') && !hit.endsWith('.ps1')) return { command: hit, prefix: [] };
+  }
+  const beside = path.join(path.dirname(process.execPath), 'node_modules', 'npm', 'bin', 'npm-cli.js');
+  if (fs.existsSync(beside)) return { command: process.execPath, prefix: [beside] };
+  throw new Error('npm was not found on PATH or next to node');
+}
+
 export function runNpm(args, cwd, stdio = 'pipe', env) {
-  const npmCli = path.join(path.dirname(process.execPath), 'node_modules', 'npm', 'bin', 'npm-cli.js');
-  if (!fs.existsSync(npmCli)) throw new Error('npm was not found next to node');
-  const result = spawnSync(process.execPath, [npmCli, ...args], {
+  const npm = npmInvocation();
+  const result = spawnSync(npm.command, [...npm.prefix, ...args], {
     cwd,
     encoding: 'utf8',
     windowsHide: true,
@@ -90,11 +110,25 @@ export function runNpm(args, cwd, stdio = 'pipe', env) {
  * @returns {string}
  */
 function packFilename(stdout) {
-  const start = stdout.indexOf('[');
-  const end = stdout.lastIndexOf(']');
-  if (start < 0 || end <= start) throw new Error(`npm pack did not return JSON\n${stdout}`);
-  const parsed = JSON.parse(stdout.slice(start, end + 1));
-  if (!Array.isArray(parsed) || parsed.length === 0) throw new Error('npm pack JSON was empty');
+  let end = stdout.lastIndexOf(']');
+  let parsed = null;
+  while (end >= 0 && parsed === null) {
+    let start = stdout.lastIndexOf('[', end);
+    while (start >= 0) {
+      try {
+        const candidate = JSON.parse(stdout.slice(start, end + 1));
+        if (Array.isArray(candidate) && candidate.length > 0) {
+          parsed = candidate;
+          break;
+        }
+      } catch (error) {
+        if (!(error instanceof SyntaxError)) throw error;
+      }
+      start = stdout.lastIndexOf('[', start - 1);
+    }
+    end = stdout.lastIndexOf(']', end - 1);
+  }
+  if (!Array.isArray(parsed) || parsed.length === 0) throw new Error(`npm pack did not return JSON\n${stdout}`);
   const first = parsed[0];
   if (first === null || typeof first !== 'object' || !('filename' in first) || typeof first.filename !== 'string') {
     throw new Error('npm pack JSON has no filename');
@@ -130,58 +164,6 @@ function packageName(pkgDir) {
   return parsed.name;
 }
 
-const PACK_ENTRY_KEYS = ['main', 'types', 'exports', 'bin', 'module', 'browser'];
-
-/**
- * npm pack keeps the development export map. publishConfig points the packed
- * install at dist, which is the JavaScript plain Node can import. src is not
- * in the tarball.
- * @param {string} tarball
- */
-function applyPackedPublishConfig(tarball) {
-  const staging = fs.mkdtempSync(path.join(os.tmpdir(), 'kassis-pack-fix-'));
-  const rewritten = `${tarball}.publishing.tgz`;
-  try {
-    const extracted = spawnSync('tar', ['-xzf', tarball, '-C', staging], {
-      encoding: 'utf8',
-      windowsHide: true,
-    });
-    if (extracted.error) throw extracted.error;
-    if (extracted.status !== 0) {
-      throw new Error(`tar extract failed for ${path.basename(tarball)}\n${extracted.stderr ?? ''}`);
-    }
-    const pkgPath = path.join(staging, 'package', 'package.json');
-    const parsed = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
-    if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
-      throw new Error('packed package.json is not an object');
-    }
-    const publishConfig = 'publishConfig' in parsed ? parsed.publishConfig : null;
-    if (publishConfig === null || typeof publishConfig !== 'object' || Array.isArray(publishConfig)) {
-      throw new Error(`${tarball} has no publishConfig`);
-    }
-    for (const key of PACK_ENTRY_KEYS) {
-      if (key in publishConfig) parsed[key] = publishConfig[key];
-    }
-    const main = 'main' in parsed && typeof parsed.main === 'string' ? parsed.main : '';
-    if (main.endsWith('.ts') || main.endsWith('.tsx') || main.endsWith('.mts')) {
-      throw new Error(`${tarball} still exports TypeScript after publishConfig`);
-    }
-    fs.writeFileSync(pkgPath, `${JSON.stringify(parsed, null, 2)}\n`);
-    const packed = spawnSync('tar', ['-czf', rewritten, '-C', staging, 'package'], {
-      encoding: 'utf8',
-      windowsHide: true,
-    });
-    if (packed.error) throw packed.error;
-    if (packed.status !== 0) {
-      throw new Error(`tar pack failed for ${path.basename(tarball)}\n${packed.stderr ?? ''}`);
-    }
-  } finally {
-    fs.rmSync(staging, { recursive: true, force: true });
-  }
-  fs.rmSync(tarball, { force: true });
-  fs.renameSync(rewritten, tarball);
-}
-
 /**
  * @param {string} spec
  * @returns {string}
@@ -209,7 +191,6 @@ export function packPublicPackages(root, destination) {
     process.stdout.write(`pack ${dirName}\n`);
     const stdout = runNpm(['pack', '--json', '--pack-destination', destination], pkgDir, 'pipe');
     const tarball = packedFile(destination, packFilename(stdout));
-    applyPackedPublishConfig(tarball);
     const name = packageName(pkgDir);
     if (!PUBLIC_PACKAGE_NAMES.includes(name)) {
       throw new Error(`${dirName} packed as ${name}, which is not a public package`);
@@ -275,12 +256,11 @@ function primeNpmCache(outDir, index) {
       [
         'install',
         '--no-package-lock',
-        '--omit=peer',
-        '--legacy-peer-deps',
         '--no-audit',
         '--no-fund',
         '--cache',
         path.join(outDir, 'npm-cache'),
+        'react@19.2.3',
         ...specs,
       ],
       work,
@@ -400,8 +380,20 @@ export function writeAirgapBundle(outDir, root = repoRoot, options = {}) {
   }
   fs.writeFileSync(path.join(packs, 'index.json'), `${JSON.stringify({ packages: index }, null, 2)}\n`);
   refusePrivateKey(outDir);
+  saveDevHostImage(outDir);
   writeChecksums(outDir);
   return outDir;
+}
+
+function saveDevHostImage(outDir) {
+  const image = process.env.KASSIS_DEVHOST_IMAGE || 'ghcr.io/equitas78/kassis-devhost:latest';
+  const inspect = spawnSync('docker', ['image', 'inspect', image], { encoding: 'utf8', windowsHide: true });
+  if (inspect.status !== 0) return;
+  const file = path.join(outDir, 'devhost.tar');
+  const saved = spawnSync('docker', ['save', '-o', file, image], { encoding: 'utf8', windowsHide: true });
+  if (saved.status !== 0) {
+    throw new Error(`docker save failed for ${image}\n${saved.stderr ?? ''}`);
+  }
 }
 
 /**

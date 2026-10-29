@@ -6,7 +6,8 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "bin": {
-    "kassis-addon": "./bin/kassis-addon.mjs"
+    "kassis-addon": "./bin/kassis-addon.mjs",
+    "kassis-adk-mcp": "./bin/kassis-adk-mcp.mjs"
   },
   "exports": {
     ".": {
@@ -17,11 +18,17 @@
   "files": ["bin", "dist", "lib", "templates", "schema"],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "prepack": "node prepack.mjs"
+    "prepack": "node prepack.mjs && npm run build && node ../../scripts/pack-publish-fields.mjs apply",
+    "postpack": "node ../../scripts/pack-publish-fields.mjs restore"
   },
   "dependencies": {
     "@kassis/addon-testkit": "0.1.0",
-    "ajv": "^8.17.1"
+    "@modelcontextprotocol/sdk": "1.32.1",
+    "ajv": "^8.17.1",
+    "es-module-lexer": "^2.1.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.27.2"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com",

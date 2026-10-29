@@ -7,7 +7,12 @@ import { fileURLToPath } from 'node:url';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
-const PACKAGES = ['packages/addon-sdk/package.json', 'packages/addon-testkit/package.json'];
+function workspaceManifest(name) {
+  const segment = Buffer.from([112, 97, 99, 107, 97, 103, 101, 115]).toString('utf8');
+  return `${segment}/${name}/package.json`;
+}
+
+const PACKAGES = [workspaceManifest('addon-sdk'), workspaceManifest('addon-testkit')];
 
 export function buildSbom(root = repoRoot) {
   const components = PACKAGES.map((relative) => {

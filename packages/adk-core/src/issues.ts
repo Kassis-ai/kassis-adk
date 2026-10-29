@@ -3,6 +3,10 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { AdkIssue, CommandResult, IssueSeverity, JsonObject } from './types.ts';
 
+declare global {
+  var __KASSIS_ADK_PACKED__: boolean | undefined;
+}
+
 interface CatalogEntry {
   readonly code: string;
   readonly severity: IssueSeverity;
@@ -10,10 +14,20 @@ interface CatalogEntry {
   readonly fix: string;
 }
 
-const catalogPath = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  '../../addon-sdk/codes/kadk-codes.json'
-);
+function moduleDir(): string {
+  return path.dirname(fileURLToPath(import.meta.url));
+}
+
+/** True only inside the esbuild bundle written by addon-cli prepack. */
+export function packedCli(): boolean {
+  return globalThis.__KASSIS_ADK_PACKED__ === true;
+}
+
+function catalogPath(): string {
+  const here = moduleDir();
+  if (packedCli()) return path.join(here, 'kadk-codes.json');
+  return path.resolve(here, '../../addon-sdk/codes/kadk-codes.json');
+}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -24,7 +38,7 @@ function isSeverity(value: unknown): value is IssueSeverity {
 }
 
 function loadCatalog(): ReadonlyMap<string, CatalogEntry> {
-  const parsed: unknown = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
+  const parsed: unknown = JSON.parse(fs.readFileSync(catalogPath(), 'utf8'));
   if (!isRecord(parsed) || !Array.isArray(parsed.codes)) {
     throw new Error('kadk-codes.json is missing its codes array');
   }
@@ -45,18 +59,29 @@ function loadCatalog(): ReadonlyMap<string, CatalogEntry> {
 const catalog = loadCatalog();
 
 export function repoRoot(): string {
-  return path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
+  const here = moduleDir();
+  if (packedCli()) return path.resolve(here, '..');
+  return path.resolve(here, '../../..');
 }
 
-export function cliVersion(): string {
-  const file = path.join(repoRoot(), 'packages/addon-cli/package.json');
+function readCliPackageVersion(file: string): string {
   try {
     const parsed: unknown = JSON.parse(fs.readFileSync(file, 'utf8'));
-    if (isRecord(parsed) && typeof parsed.version === 'string') return parsed.version;
+    if (isRecord(parsed) && parsed.name === '@kassis/addon-cli' && typeof parsed.version === 'string') {
+      return parsed.version;
+    }
   } catch (error) {
     if (!(error instanceof SyntaxError) && !(error instanceof Error)) throw error;
   }
-  return '0.0.0';
+  return '';
+}
+
+export function cliVersion(): string {
+  const home = repoRoot();
+  const direct = readCliPackageVersion(path.join(home, 'package.json'));
+  if (direct) return direct;
+  if (globalThis.__KASSIS_ADK_PACKED__ === true) return '0.0.0';
+  return readCliPackageVersion(path.join(home, 'packages/addon-cli/package.json')) || '0.0.0';
 }
 
 function fill(template: string, values: Readonly<Record<string, string>>): string {

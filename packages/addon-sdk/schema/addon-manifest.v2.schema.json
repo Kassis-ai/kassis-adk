@@ -37,6 +37,7 @@
       }
     },
     "contentHash": { "type": "string", "pattern": "^sha256-[0-9a-f]{64}$" },
+    "uiContentHash": { "type": "string", "pattern": "^sha256-[0-9a-f]{64}$" },
     "permissions": {
       "type": "array",
       "items": {

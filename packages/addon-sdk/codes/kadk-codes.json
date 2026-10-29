@@ -335,6 +335,15 @@
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-216"
     },
     {
+      "code": "KADK-217",
+      "category": "boundaries",
+      "severity": "error",
+      "title": "Tool path is outside the project",
+      "message": "{path} is outside the project root",
+      "fix": "Pass a dir inside the directory where kassis-adk-mcp was started, or set --root to that directory.",
+      "docs": "docs/developer/technical/adk/cli-reference.md"
+    },
+    {
       "code": "KADK-301",
       "category": "data",
       "severity": "error",
@@ -486,6 +495,15 @@
       "message": "Component '{component}' in slot '{slot}' threw while rendering: {detail}",
       "fix": "Fix the render error; the host shows an error state in the slot until then.",
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-503"
+    },
+    {
+      "code": "KADK-504",
+      "category": "ui",
+      "severity": "warning",
+      "title": "UI entry file includes a directory",
+      "message": "ui.entryFile '{value}' includes a slash",
+      "fix": "Set ui.entryFile to the file name inside frontend/dist, for example index.js.",
+      "docs": "docs/developer/technical/adk/addon-anatomy.md"
     },
     {
       "code": "KADK-601",

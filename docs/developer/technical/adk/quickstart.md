@@ -22,7 +22,7 @@ Exit 0. `<scratch>/manifest.json` exists. `--publisher` defaults to `kassis`. `-
 | 2 | Server and UI. No `migrations/`. |
 | 3 | Server, UI, and `migrations/`. |
 
-A publisher other than `kassis` gets an id prefix. `--publisher=acme --id=widget` writes id `acme-widget`. An id that already starts with `acme-` is kept. `kassis` keeps the id you pass. `hostApi` is `^1.0.0`. `entrypoints.main` is `dist/server/index.js`. `signing` is omitted until `sign`. When the rung has a UI, `ui.entryFile` is `frontend/dist/index.js`.
+A publisher other than `kassis` gets an id prefix. `--publisher=acme --id=widget` writes id `acme-widget`. An id that already starts with `acme-` is kept. `kassis` keeps the id you pass. `hostApi` is `^1.0.0`. `entrypoints.main` is `dist/server/index.js`. `signing` is omitted until `sign`. When the rung has a UI, `ui.entryFile` is `index.js`, relative to `frontend/dist`.
 
 Inside this repository, init points `@kassis/addon-sdk`, `@kassis/addon-testkit`, and `@kassis/addon-cli` at the local packages. A published CLI writes the semver ranges instead.
 
@@ -98,5 +98,6 @@ Use `npm test` for the template. The CLI `test` command runs `node --test` in `.
 
 | Date | Change |
 | --- | --- |
+| 2026-10-28 | The template `.npmrc` points `@kassis` at GitHub Packages and reads `NODE_AUTH_TOKEN`. The certify workflow uses Node 24 and that secret. |
 | 2026-10-28 | `dev` starts a configured local image and does not pull or build. `migrate` targets that dev host only. `check --json` includes KADK codes. `--id value` and `--id=value` both work. |
 | 2026-10-28 | `init` accepts `--publisher`, `--tier`, and `--rung`. `npm run build` writes `dist/server/index.js` and, for a rung with UI, `frontend/dist/index.js`. |

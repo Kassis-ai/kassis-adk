@@ -49,12 +49,19 @@ export async function signManifestFile(manifestPath, keyPath) {
     alg: 'ed25519',
     keyId: crypto.createHash('sha256').update(publicDer).digest('hex'),
   };
-  const { computeAddonContentHash } = await loadSignerModule(
+  const { computeAddonContentHash, computeUiContentHash } = await loadSignerModule(
     'addonContentHash.mjs',
     '../../server/core/addon-deployment/addonContentHash.mjs'
   );
+  const addonDir = path.dirname(manifestPath);
   // manifest.json is outside the hash scope, so writing this field does not change the digest.
-  body.contentHash = await computeAddonContentHash(path.dirname(manifestPath));
+  body.contentHash = await computeAddonContentHash(addonDir);
+  const publisher = typeof body.publisher === 'string' ? body.publisher : '';
+  if (publisher !== 'kassis') {
+    const uiContentHash = await computeUiContentHash(addonDir);
+    if (uiContentHash) body.uiContentHash = uiContentHash;
+    else delete body.uiContentHash;
+  }
   const signature = crypto.sign(null, Buffer.from(await canonicalString(body)), key).toString('hex');
   fs.writeFileSync(manifestPath, `${JSON.stringify({ ...body, signature }, null, 2)}\n`);
   process.stdout.write(`${path.resolve(manifestPath)}\n`);
