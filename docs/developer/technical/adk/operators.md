@@ -61,7 +61,7 @@ A valid package creates a `platform_addon_deployments` row in `staged` and an `a
 
 The version must be higher than the installed one, and the addon id must match the manifest id pattern. An id already owned by another publisher is refused. `hostApi` must accept this instance's host API (`1.0.0`).
 
-`POST /api/v1/platform/addons/:id/rollback` with `{ "targetVersion": "<version>" }` switches `active.json` back to a kept folder and is audited. It asks for approval only when that version adds permissions, egress hosts, or data access. `addons-installed` is a volume on the compose stacks and a persistent volume claim in `k8s/production/deployment.yaml`. The loader looks in `addons/` first, then the active folder under `addons-installed`.
+`POST /api/v1/platform/addons/:id/rollback` with `{ "targetVersion": "<version>" }` switches `active.json` back to a kept folder and is audited. It asks for approval only when that version adds permissions, egress hosts, or data access. `addons-installed` is a volume on the compose stacks and a persistent volume claim in `deploy/k8s/production/deployment.yaml`. The loader looks in `addons/` first, then the active folder under `addons-installed`.
 
 ## Changelog
 
