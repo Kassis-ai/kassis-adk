@@ -127,9 +127,24 @@ function failures() {
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
-  const sdk = JSON.parse(fs.readFileSync(path.join(packagesDir, 'addon-sdk', 'package.json'), 'utf8'));
-  if (sdk.main !== './src/index.ts') {
-    found.push('addon-sdk workspace main was not restored after pack');
+  for (const name of fs.readdirSync(packagesDir)) {
+    const manifestPath = path.join(packagesDir, name, 'package.json');
+    if (!fs.existsSync(manifestPath)) continue;
+    const committed = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    if (typeof committed.name !== 'string' || !committed.name.startsWith('@kassis/')) continue;
+    if (committed.private === true) continue;
+    const entries = [];
+    collectEntries(committed.main, entries);
+    collectEntries(committed.types, entries);
+    collectEntries(committed.exports, entries);
+    if (entries.length === 0) continue;
+    const pointsAtSource = entries.some((entry) => entry.includes('/src/') || entry.startsWith('./src'));
+    if (!pointsAtSource) {
+      found.push(`${committed.name} committed package.json does not point at src/`);
+    }
+    if (entries.some((entry) => entry.includes('/dist/') || entry.startsWith('./dist'))) {
+      found.push(`${committed.name} committed package.json points at dist/`);
+    }
   }
   return found;
 }

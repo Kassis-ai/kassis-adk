@@ -99,6 +99,10 @@ const templateNpmrc = path.join(pkgRoot, 'templates/kassis-addon/.npmrc');
 if (fs.existsSync(templateNpmrc)) {
   fs.copyFileSync(templateNpmrc, path.join(pkgRoot, 'templates/kassis-addon/npmrc'));
 }
+const templateGitignore = path.join(pkgRoot, 'templates/kassis-addon/.gitignore');
+if (fs.existsSync(templateGitignore)) {
+  fs.copyFileSync(templateGitignore, path.join(pkgRoot, 'templates/kassis-addon/gitignore'));
+}
 fs.mkdirSync(path.join(pkgRoot, 'schema'), { recursive: true });
 fs.copyFileSync(
   path.join(repoRoot, 'packages/addon-sdk/schema/addon-manifest.v2.schema.json'),

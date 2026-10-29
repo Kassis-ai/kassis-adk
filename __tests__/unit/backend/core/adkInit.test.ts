@@ -28,6 +28,8 @@ describe('kassis-addon init', () => {
       expect(manifest.id).toBe('sample-tprm-check');
       expect(manifest.tier).toBe(2);
       expect(manifest.hostApi).toBe('^1.0.0');
+      expect(manifest.resources).toEqual({ memoryMb: 128 });
+      expect(manifest.health).toEqual({ path: '/health' });
       expect(manifest.entrypoints.main).toBe('dist/server/index.js');
       expect(manifest.ui).toBeUndefined();
       expect(manifest.signing).toBeUndefined();
@@ -35,6 +37,8 @@ describe('kassis-addon init', () => {
       expect(fs.existsSync(path.join(dir, 'src/ui/index.ts'))).toBe(false);
       expect(fs.existsSync(path.join(dir, 'migrations'))).toBe(false);
       expect(fs.existsSync(path.join(dir, 'test/server.test.ts'))).toBe(true);
+      expect(fs.existsSync(path.join(dir, '.gitignore'))).toBe(true);
+      expect(fs.existsSync(path.join(dir, '.npmrc'))).toBe(true);
       const pkg = JSON.parse(fs.readFileSync(path.join(dir, 'package.json'), 'utf8'));
       expect(pkg.scripts.build).toContain('build');
       expect(pkg.scripts['build:server']).toContain('--only=server');

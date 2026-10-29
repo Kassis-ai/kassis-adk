@@ -103,7 +103,7 @@ Writes sbom.json for the libraries this addon ships.
 `,
   package: `Usage: kassis-addon package [--out <path>] [--json]
 
-Writes <id>-<version>.addon beside the addon folder. The zip holds the signed manifest.json, the files in the content-hash scope, the certify evidence pack, frontend/dist when that folder exists, and sbom.json. package writes sbom.json when it is missing or older than the server build. Refuses a manifest with no signature or no contentHash, and refuses a folder that has not been certified. Does not sign and does not call the network. Sign after sbom.json changes.
+Writes <id>-<version>.addon beside the addon folder. The zip holds the signed manifest.json, the files in the content-hash scope, the certify evidence pack (checks.json, attestation.json, and agent-profile.lock.json), frontend/dist when that folder exists, and sbom.json. package writes sbom.json when it is missing or older than the server build. Refuses a manifest with no signature or no contentHash, and refuses a folder whose certify checks did not all exit 0. Does not sign and does not call the network. Sign after sbom.json changes.
 `,
   deploy: `Usage: kassis-addon deploy [--instance <url>] [<file.addon>] [--json]
 

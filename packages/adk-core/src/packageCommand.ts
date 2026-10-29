@@ -71,9 +71,18 @@ export function sbomProject(dir: string): CommandResult {
 
 function evidenceReady(dir: string, contentHash: string): CommandResult | null {
   const checks = path.join(dir, '.kassis', 'evidence', 'checks.json');
+  const attestation = path.join(dir, '.kassis', 'attestation.json');
+  const lock = path.join(dir, '.kassis', 'agent-profile.lock.json');
   if (!fs.existsSync(checks)) {
     return failure(
       'certify evidence is missing',
+      'Run kassis-addon certify, then package.',
+      'ADK-PACKAGE'
+    );
+  }
+  if (!fs.existsSync(attestation) || !fs.existsSync(lock)) {
+    return failure(
+      'certify attestation or lock is missing',
       'Run kassis-addon certify, then package.',
       'ADK-PACKAGE'
     );
@@ -83,6 +92,21 @@ function evidenceReady(dir: string, contentHash: string): CommandResult | null {
     return failure(
       'certify evidence does not match contentHash',
       'Run kassis-addon certify after sign, then package.',
+      'ADK-PACKAGE'
+    );
+  }
+  const rows = parsed.checks;
+  if (!Array.isArray(rows) || rows.length === 0) {
+    return failure(
+      'certify evidence has no checks',
+      'Run kassis-addon certify, then package.',
+      'ADK-PACKAGE'
+    );
+  }
+  if (!rows.every((row) => isRecordValue(row) && row.exitCode === 0)) {
+    return failure(
+      'certify checks did not all pass',
+      'Fix the failing checks, run kassis-addon certify, then package.',
       'ADK-PACKAGE'
     );
   }
@@ -119,6 +143,12 @@ async function evidenceEntries(dir: string): Promise<ZipEntry[]> {
   const certified = path.join(dir, '.kassis', 'evidence');
   if (fs.existsSync(certified)) {
     await walkEvidence(certified, 'evidence', entries);
+  }
+  for (const name of ['attestation.json', 'agent-profile.lock.json']) {
+    const file = path.join(dir, '.kassis', name);
+    const zipName = `evidence/${name}`;
+    if (!fs.existsSync(file) || entries.some((entry) => entry.name === zipName)) continue;
+    entries.push({ name: zipPath(zipName), data: await fsp.readFile(file) });
   }
   const evidenceDir = path.join(dir, 'evidence');
   if (!fs.existsSync(evidenceDir)) return entries;

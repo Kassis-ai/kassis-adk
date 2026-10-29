@@ -36,6 +36,12 @@ describe('validateManifestV2', () => {
     expect(validateManifestV2(validManifest)).toEqual({ ok: true, issues: [] });
   });
 
+  it('accepts uiContentHash next to contentHash', () => {
+    const hash = `sha256-${'ab'.repeat(32)}`;
+    expect(validateManifestV2(manifestWith({ contentHash: hash, uiContentHash: hash })).ok).toBe(true);
+    expectOnly(manifestWith({ uiContentHash: 'sha256-zz' }), 'KADK-101', 'uiContentHash');
+  });
+
   it('accepts a signing block and rejects a bad algorithm', () => {
     const keyId = 'a'.repeat(64);
     expect(validateManifestV2(manifestWith({ signing: { alg: 'ed25519', keyId } })).ok).toBe(true);

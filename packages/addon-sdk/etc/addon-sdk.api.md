@@ -322,6 +322,7 @@ export interface AddonManifestV2 {
     readonly tier: AddonTier;
     // (undocumented)
     readonly ui?: ManifestUi;
+    readonly uiContentHash?: string;
     // (undocumented)
     readonly version: string;
 }

@@ -353,6 +353,10 @@ async function verifyClientPackage(addonDir, archive, publicKey, fingerprint) {
   const names = zipEntryNames(fs.readFileSync(archive));
   if (!names.includes('sbom.json')) throw new Error('package zip is missing sbom.json');
   if (!names.includes('evidence/checks.json')) throw new Error('package zip is missing evidence/checks.json');
+  if (!names.includes('evidence/attestation.json')) throw new Error('package zip is missing evidence/attestation.json');
+  if (!names.includes('evidence/agent-profile.lock.json')) {
+    throw new Error('package zip is missing evidence/agent-profile.lock.json');
+  }
   const sbom = JSON.parse(fs.readFileSync(path.join(addonDir, 'sbom.json'), 'utf8'));
   const componentNames = Array.isArray(sbom.components) ? sbom.components.map((item) => item.name) : [];
   if (!componentNames.includes('@kassis/addon-sdk')) {
