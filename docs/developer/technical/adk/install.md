@@ -3,7 +3,7 @@
 **Status:** GA
 **Version checked:** 2026-10-28
 **Technical owner:** Unassigned
-**Last reviewed:** 2026-10-28
+**Last reviewed:** 2026-10-30
 
 
 ## Prerequisites
@@ -13,7 +13,7 @@
 
 ## Packages
 
-The public packages are `@kassis/addon-sdk`, `@kassis/addon-testkit`, `@kassis/addon-ui`, `@kassis/host-sdk`, `@kassis/agent-kit`, and `@kassis/addon-cli`. They publish to GitHub Packages (`publishConfig.registry` is `https://npm.pkg.github.com`). Copy [`.npmrc.example`](../../../../.npmrc.example) to `.npmrc` and set `NODE_AUTH_TOKEN` in the environment. Do not commit a token.
+The public packages are `@kassis/addon-sdk`, `@kassis/addon-testkit`, `@kassis/addon-ui`, `@kassis/host-sdk`, `@kassis/agent-kit`, and `@kassis/addon-cli`. They publish to GitHub Packages (`publishConfig.registry` is `https://npm.pkg.github.com`). Copy `.npmrc.example` to `.npmrc` and set `NODE_AUTH_TOKEN` in the environment. Do not commit a token.
 
 Each package builds to `dist`. `@kassis/addon-sdk`, `@kassis/addon-testkit`, `@kassis/agent-kit`, and `@kassis/addon-cli` publish JavaScript. `@kassis/host-sdk` and `@kassis/addon-ui` publish type declarations plus a small JavaScript shim so plain Node can import the package. The shim does not contain the host UI. The running host serves `@kassis/host-sdk` at `/host-sdk/index.js` and `@kassis/addon-ui` at `/host-sdk/addon-ui.js`. An addon frontend build leaves those imports external.
 
@@ -65,6 +65,7 @@ The bundle contains the SDK, the testkit, the template, the public verification 
 
 | Date | Change |
 | --- | --- |
+| 2026-10-30 | The `.npmrc.example` path is text. The docs site does not publish files outside `docs/`. |
 | 2026-10-28 | `prepack` puts `dist` entry points in each public tarball. The workspace `exports` stay on source so the server image still loads them. |
 | 2026-10-28 | The packed `@kassis/addon-cli` bundles the CLI and the MCP server. An install outside the repository runs `init`, `check`, and `kassis-adk-mcp` without the checkout. |
 | 2026-10-28 | `node scripts/adk-clean-room.mjs` packs the six public packages, installs the tarballs, imports them, and runs init, build, test, check, conformance, and package for a tier 2 rung 2 addon. The air-gap bundle adds those tarballs, adk-core sources, the CLI entry, and checksums. |
