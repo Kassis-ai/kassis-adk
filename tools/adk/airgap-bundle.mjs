@@ -386,7 +386,7 @@ export function writeAirgapBundle(outDir, root = repoRoot, options = {}) {
 }
 
 function saveDevHostImage(outDir) {
-  const image = process.env.KASSIS_DEVHOST_IMAGE || 'ghcr.io/equitas78/kassis-devhost:latest';
+  const image = process.env.KASSIS_DEVHOST_IMAGE || 'ghcr.io/kassis-ai/kassis-devhost:latest';
   const inspect = spawnSync('docker', ['image', 'inspect', image], { encoding: 'utf8', windowsHide: true });
   if (inspect.status !== 0) return;
   const file = path.join(outDir, 'devhost.tar');

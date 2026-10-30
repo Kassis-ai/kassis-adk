@@ -3,7 +3,7 @@
 **Status:** GA
 **Version checked:** 2026-10-28
 **Technical owner:** Unassigned
-**Last reviewed:** 2026-10-28
+**Last reviewed:** 2026-10-30
 
 
 Run `npx kassis-addon <command>` after installing `@kassis/addon-cli`, or `node tools/adk/kassis-addon.mjs <command>` from this repository. The packed CLI is a bundle. `npx kassis-adk-mcp` starts the MCP server from the same package. Help and errors name the command `kassis-addon`. `--help` exits 0. `--version` prints the CLI version and exits 0. `--flag value` and `--flag=value` both work. `--json` on every command prints `{ "ok", "issues", "data" }`. An issue is `{ "code", "severity", "message", "fix", "file", "line" }`. An unknown command prints usage and exits 1. Exit 0 is success.
@@ -15,7 +15,7 @@ Run `npx kassis-addon <command>` after installing `@kassis/addon-cli`, or `node 
 | `check` | `--json` | Validates `manifest.json` against manifest v2. Schema errors use the existing KADK-1xx codes. A permission outside `<id>.` is KADK-110. |
 | `conformance` | `--json` | Runs the addon-testkit import check on `src/`, `frontend/`, and built `dist/server/index.js` and `frontend/dist/index.js` when those files exist. Also rejects an up script with no down script. |
 | `test` | `--json` | Runs `node --test` in `./test`. Prints `No test directory` and exits 0 when that folder is missing. |
-| `dev` | `--image` `--json` | Starts a local container with Docker or Podman. The image is `--image`, then `KASSIS_DEVHOST_IMAGE`, then `~/.kassis/devhost.json`, then `ghcr.io/equitas78/kassis-devhost:latest`. It pulls that image when it is not local. The addon directory is mounted read-only at `/opt/kassis/dev-addon` and the port is published on 127.0.0.1. It does not build an image. |
+| `dev` | `--image` `--json` | Starts a local container with Docker or Podman. The image is `--image`, then `KASSIS_DEVHOST_IMAGE`, then `~/.kassis/devhost.json`, then `ghcr.io/kassis-ai/kassis-devhost:latest`. It pulls that image when it is not local. The addon directory is mounted read-only at `/opt/kassis/dev-addon` and the port is published on 127.0.0.1. It does not build an image. |
 | `migrate` | `up` `down` `status` `--target` `--json` | Runs only against the database of the dev host started by `dev`. If that host is not running, it refuses. `--target` is refused unless it is that same database. |
 | `doctor` | `--json` | Checks that Node is 20 or newer, that `npm whoami` succeeds for `https://npm.pkg.github.com` (the token is not printed), that a key file exists under `~/.kassis/keys`, that `KASSIS_ADK_INSTANCE` answers `GET /api/v1/adk/version`, and that `manifest.hostApi` accepts `HOST_API_VERSION`. |
 | `scaffold` | `--kind` `--id` `--name` `--dir` | `--kind=addon` is init. The other kinds add a route, capability, event, job, migration, or UI slot in the current addon. |
@@ -47,6 +47,7 @@ node tools/adk/kassis-addon.mjs certify --json
 
 | Date | Change |
 | --- | --- |
+| 2026-10-30 | The default `dev` image is `ghcr.io/kassis-ai/kassis-devhost:latest`. The repository moved to the Kassis-ai organization. Publish a new `devhost/v*` tag so the image exists there; until then set `KASSIS_DEVHOST_IMAGE` to the old image. |
 | 2026-10-28 | `package` refuses a failed certify and packs attestation and lock with `checks.json`. |
 | 2026-10-28 | `dev` pulls `ghcr.io/equitas78/kassis-devhost:latest` when no image is configured and publishes the container on 127.0.0.1. The published image tags are `v*` and `latest`; git tag `devhost/v*` is stripped because Docker tags cannot contain `/`. |
 | 2026-10-28 | `sbom` writes the addon's CycloneDX file. `package` includes certify evidence and refuses a folder that has not been certified. |

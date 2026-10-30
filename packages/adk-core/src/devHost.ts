@@ -8,7 +8,7 @@ import { runProcess } from './processRun.ts';
 
 const PROBE_MS = 8000;
 const PULL_MS = 120_000;
-const DEFAULT_DEVHOST_IMAGE = 'ghcr.io/equitas78/kassis-devhost:latest';
+const DEFAULT_DEVHOST_IMAGE = 'ghcr.io/kassis-ai/kassis-devhost:latest';
 const LABEL = 'com.kassis.devhost';
 const STATE_NAME = 'devhost-state.json';
 const CONFIG_NAME = 'devhost.json';
