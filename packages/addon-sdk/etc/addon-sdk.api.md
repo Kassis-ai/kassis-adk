@@ -319,6 +319,8 @@ export interface AddonManifestV2 {
     // (undocumented)
     readonly signature?: string;
     // (undocumented)
+    readonly signing?: ManifestSigning;
+    // (undocumented)
     readonly tier: AddonTier;
     // (undocumented)
     readonly ui?: ManifestUi;
@@ -1823,6 +1825,16 @@ export interface ManifestSettingsTab {
     readonly label: string;
     // (undocumented)
     readonly order?: number;
+}
+
+// Warning: (ae-missing-release-tag) "ManifestSigning" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export interface ManifestSigning {
+    // (undocumented)
+    readonly alg: 'ed25519';
+    // (undocumented)
+    readonly keyId: string;
 }
 
 // Warning: (ae-missing-release-tag) "ManifestSubscribedEvents" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
