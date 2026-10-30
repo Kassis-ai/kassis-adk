@@ -1,0 +1,19 @@
+{
+  "name": "@kassis-ai/adk",
+  "version": "0.1.0",
+  "description": "Kassis Addon Development Kit",
+  "license": "UNLICENSED",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Kassis-ai/kassis-adk.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "echo \"TODO: add build once ADK code is moved in\"",
+    "test": "echo \"TODO: add tests\""
+  }
+}
