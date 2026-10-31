@@ -5,7 +5,6 @@
 **Technical owner:** Unassigned
 **Last reviewed:** 2026-10-30
 
-
 ## Prerequisites
 
 - Node.js 24 (the server image is `node:24.18.1`). The CLI itself runs on the Node that ships with the repo.
@@ -63,10 +62,10 @@ The bundle contains the SDK, the testkit, the template, the public verification 
 
 ## Changelog
 
-| Date | Change |
-| --- | --- |
-| 2026-10-30 | The `.npmrc.example` path is text. The docs site does not publish files outside `docs/`. |
-| 2026-10-28 | `prepack` puts `dist` entry points in each public tarball. The workspace `exports` stay on source so the server image still loads them. |
-| 2026-10-28 | The packed `@kassis/addon-cli` bundles the CLI and the MCP server. An install outside the repository runs `init`, `check`, and `kassis-adk-mcp` without the checkout. |
+| Date       | Change                                                                                                                                                                                                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2026-10-30 | The `.npmrc.example` path is text. The docs site does not publish files outside `docs/`.                                                                                                                                                                                             |
+| 2026-10-28 | `prepack` puts `dist` entry points in each public tarball. The workspace `exports` stay on source so the server image still loads them.                                                                                                                                              |
+| 2026-10-28 | The packed `@kassis/addon-cli` bundles the CLI and the MCP server. An install outside the repository runs `init`, `check`, and `kassis-adk-mcp` without the checkout.                                                                                                                |
 | 2026-10-28 | `node scripts/adk-clean-room.mjs` packs the six public packages, installs the tarballs, imports them, and runs init, build, test, check, conformance, and package for a tier 2 rung 2 addon. The air-gap bundle adds those tarballs, adk-core sources, the CLI entry, and checksums. |
-| 2026-10-28 | The six public packages build to `dist` and publish to GitHub Packages. `host-sdk` and `addon-ui` publish types and a Node shim. The host still serves the runtime. |
+| 2026-10-28 | The six public packages build to `dist` and publish to GitHub Packages. `host-sdk` and `addon-ui` publish types and a Node shim. The host still serves the runtime.                                                                                                                  |

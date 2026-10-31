@@ -15,7 +15,13 @@
     "./codes/kadk-codes.json": "./codes/kadk-codes.json",
     "./package.json": "./package.json"
   },
-  "files": ["dist", "schema", "codes", "README.md", "browser-externals.json"],
+  "files": [
+    "dist",
+    "schema",
+    "codes",
+    "README.md",
+    "browser-externals.json"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "prepack": "npm run build && node ../../scripts/pack-publish-fields.mjs apply",

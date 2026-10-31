@@ -27,7 +27,12 @@ function fieldNames(list, field) {
   const names = [];
   for (const item of list) {
     if (typeof item === 'string' && item.length > 0) names.push(item);
-    else if (item && typeof item === 'object' && typeof item[field] === 'string' && item[field].length > 0) {
+    else if (
+      item &&
+      typeof item === 'object' &&
+      typeof item[field] === 'string' &&
+      item[field].length > 0
+    ) {
       names.push(item[field]);
     }
   }
@@ -59,7 +64,8 @@ function emptySurface() {
 export function manifestSurface(manifest) {
   if (!manifest || typeof manifest !== 'object') return emptySurface();
   const events = manifest.events && typeof manifest.events === 'object' ? manifest.events : {};
-  const database = manifest.database && typeof manifest.database === 'object' ? manifest.database : {};
+  const database =
+    manifest.database && typeof manifest.database === 'object' ? manifest.database : {};
   const egress = manifest.egress && typeof manifest.egress === 'object' ? manifest.egress : {};
   const publishes = fieldNames(events.publishes, 'name').map((name) => `publish:${name}`);
   const subscribes = stringsFrom(events.subscribes).map((name) => `subscribe:${name}`);
@@ -107,7 +113,8 @@ function answerLabel(verification) {
 
 export function summarizeDeploymentEvidence(input) {
   const answers = Array.isArray(input.answers) ? input.answers : [];
-  const clientContentHash = typeof input.clientContentHash === 'string' ? input.clientContentHash : null;
+  const clientContentHash =
+    typeof input.clientContentHash === 'string' ? input.clientContentHash : null;
   const hostContentHash = typeof input.hostContentHash === 'string' ? input.hostContentHash : '';
   return {
     contentHash: {

@@ -67,7 +67,11 @@ export function repoRoot(): string {
 function readCliPackageVersion(file: string): string {
   try {
     const parsed: unknown = JSON.parse(fs.readFileSync(file, 'utf8'));
-    if (isRecord(parsed) && parsed.name === '@kassis/addon-cli' && typeof parsed.version === 'string') {
+    if (
+      isRecord(parsed) &&
+      parsed.name === '@kassis/addon-cli' &&
+      typeof parsed.version === 'string'
+    ) {
       return parsed.version;
     }
   } catch (error) {
@@ -112,7 +116,14 @@ export function kadkIssue(
 ): AdkIssue {
   const entry = catalog.get(code);
   if (!entry) {
-    return operationalIssue('ADK-CODE', 'error', `Unknown code ${code}`, 'Use a code from kadk-codes.json.', file, line);
+    return operationalIssue(
+      'ADK-CODE',
+      'error',
+      `Unknown code ${code}`,
+      'Use a code from kadk-codes.json.',
+      file,
+      line
+    );
   }
   const pathValue = values.path || 'manifest';
   const filledValues = { ...values, path: pathValue };
@@ -141,6 +152,11 @@ export function commandResult(issues: readonly AdkIssue[], data: JsonObject = {}
   return { ok: issues.every((issue) => issue.severity !== 'error'), issues, data };
 }
 
-export function failure(message: string, fix: string, code = 'ADK-USAGE', data: JsonObject = {}): CommandResult {
+export function failure(
+  message: string,
+  fix: string,
+  code = 'ADK-USAGE',
+  data: JsonObject = {}
+): CommandResult {
   return commandResult([operationalIssue(code, 'error', message, fix)], data);
 }

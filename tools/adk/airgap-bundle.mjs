@@ -82,7 +82,13 @@ function npmInvocation() {
     if (fs.existsSync(sibling)) return { command: process.execPath, prefix: [sibling] };
     if (!hit.endsWith('.cmd') && !hit.endsWith('.ps1')) return { command: hit, prefix: [] };
   }
-  const beside = path.join(path.dirname(process.execPath), 'node_modules', 'npm', 'bin', 'npm-cli.js');
+  const beside = path.join(
+    path.dirname(process.execPath),
+    'node_modules',
+    'npm',
+    'bin',
+    'npm-cli.js'
+  );
   if (fs.existsSync(beside)) return { command: process.execPath, prefix: [beside] };
   throw new Error('npm was not found on PATH or next to node');
 }
@@ -100,7 +106,9 @@ export function runNpm(args, cwd, stdio = 'pipe', env) {
   if (result.error) throw result.error;
   if (result.status !== 0) {
     const detail = stdio === 'pipe' ? `${result.stdout ?? ''}\n${result.stderr ?? ''}`.trim() : '';
-    throw new Error(`npm ${args.join(' ')} failed (${result.status ?? 'signal'})${detail ? `\n${detail}` : ''}`);
+    throw new Error(
+      `npm ${args.join(' ')} failed (${result.status ?? 'signal'})${detail ? `\n${detail}` : ''}`
+    );
   }
   return result.stdout ?? '';
 }
@@ -128,9 +136,15 @@ function packFilename(stdout) {
     }
     end = stdout.lastIndexOf(']', end - 1);
   }
-  if (!Array.isArray(parsed) || parsed.length === 0) throw new Error(`npm pack did not return JSON\n${stdout}`);
+  if (!Array.isArray(parsed) || parsed.length === 0)
+    throw new Error(`npm pack did not return JSON\n${stdout}`);
   const first = parsed[0];
-  if (first === null || typeof first !== 'object' || !('filename' in first) || typeof first.filename !== 'string') {
+  if (
+    first === null ||
+    typeof first !== 'object' ||
+    !('filename' in first) ||
+    typeof first.filename !== 'string'
+  ) {
     throw new Error('npm pack JSON has no filename');
   }
   return first.filename;
@@ -214,7 +228,11 @@ function toolchainSpecs(root) {
     throw new Error('templates/kassis-addon/package.json is not an object');
   }
   const devDependencies = 'devDependencies' in parsed ? parsed.devDependencies : null;
-  if (devDependencies === null || typeof devDependencies !== 'object' || Array.isArray(devDependencies)) {
+  if (
+    devDependencies === null ||
+    typeof devDependencies !== 'object' ||
+    Array.isArray(devDependencies)
+  ) {
     return [];
   }
   /** @type {string[]} */
@@ -235,7 +253,11 @@ function toolchainSpecs(root) {
 function packSpec(spec, destination) {
   fs.mkdirSync(destination, { recursive: true });
   process.stdout.write(`pack ${spec}\n`);
-  const stdout = runNpm(['pack', spec, '--json', '--pack-destination', destination], destination, 'pipe');
+  const stdout = runNpm(
+    ['pack', spec, '--json', '--pack-destination', destination],
+    destination,
+    'pipe'
+  );
   return packedFile(destination, packFilename(stdout));
 }
 
@@ -378,7 +400,10 @@ export function writeAirgapBundle(outDir, root = repoRoot, options = {}) {
     }
     primeNpmCache(outDir, index);
   }
-  fs.writeFileSync(path.join(packs, 'index.json'), `${JSON.stringify({ packages: index }, null, 2)}\n`);
+  fs.writeFileSync(
+    path.join(packs, 'index.json'),
+    `${JSON.stringify({ packages: index }, null, 2)}\n`
+  );
   refusePrivateKey(outDir);
   saveDevHostImage(outDir);
   writeChecksums(outDir);
@@ -387,10 +412,16 @@ export function writeAirgapBundle(outDir, root = repoRoot, options = {}) {
 
 function saveDevHostImage(outDir) {
   const image = process.env.KASSIS_DEVHOST_IMAGE || 'ghcr.io/kassis-ai/kassis-devhost:latest';
-  const inspect = spawnSync('docker', ['image', 'inspect', image], { encoding: 'utf8', windowsHide: true });
+  const inspect = spawnSync('docker', ['image', 'inspect', image], {
+    encoding: 'utf8',
+    windowsHide: true,
+  });
   if (inspect.status !== 0) return;
   const file = path.join(outDir, 'devhost.tar');
-  const saved = spawnSync('docker', ['save', '-o', file, image], { encoding: 'utf8', windowsHide: true });
+  const saved = spawnSync('docker', ['save', '-o', file, image], {
+    encoding: 'utf8',
+    windowsHide: true,
+  });
   if (saved.status !== 0) {
     throw new Error(`docker save failed for ${image}\n${saved.stderr ?? ''}`);
   }
@@ -402,7 +433,10 @@ function saveDevHostImage(outDir) {
 export function verifyAirgapChecksums(bundleDir) {
   const file = path.join(bundleDir, 'checksums.txt');
   if (!fs.existsSync(file)) throw new Error('checksums.txt is missing');
-  const lines = fs.readFileSync(file, 'utf8').split('\n').filter((line) => line.length > 0);
+  const lines = fs
+    .readFileSync(file, 'utf8')
+    .split('\n')
+    .filter((line) => line.length > 0);
   if (lines.length === 0) throw new Error('checksums.txt is empty');
   for (const line of lines) {
     const match = /^([0-9a-f]{64}) {2}(.+)$/.exec(line);
@@ -446,7 +480,12 @@ function readPackIndex(bundleDir) {
 export function assertPopulatedAirgapBundle(bundleDir) {
   if (!fs.existsSync(bundleDir)) throw new Error('Air-gap bundle directory is not populated');
   verifyAirgapChecksums(bundleDir);
-  for (const rel of [CLI_RELATIVE, 'packages/adk-core/src/index.ts', 'packs/index.json', 'npm-cache']) {
+  for (const rel of [
+    CLI_RELATIVE,
+    'packages/adk-core/src/index.ts',
+    'packs/index.json',
+    'npm-cache',
+  ]) {
     if (!fs.existsSync(path.join(bundleDir, rel))) {
       throw new Error(`Air-gap bundle is not populated: missing ${rel}`);
     }

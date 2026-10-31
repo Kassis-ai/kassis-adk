@@ -25,7 +25,10 @@ function namesFromMeta(dir) {
   const file = path.join(dir, 'dist', 'server', 'meta.json');
   if (!fs.existsSync(file)) return [];
   const meta = readJson(file);
-  const inputs = meta && typeof meta === 'object' && meta.inputs && typeof meta.inputs === 'object' ? meta.inputs : {};
+  const inputs =
+    meta && typeof meta === 'object' && meta.inputs && typeof meta.inputs === 'object'
+      ? meta.inputs
+      : {};
   return Object.keys(inputs).map(packageNameFromInput).filter(Boolean);
 }
 
@@ -48,7 +51,8 @@ function namesFromPackage(dir) {
   const file = path.join(dir, 'package.json');
   if (!fs.existsSync(file)) return [];
   const manifest = readJson(file);
-  const dependencies = manifest && typeof manifest.dependencies === 'object' ? manifest.dependencies : {};
+  const dependencies =
+    manifest && typeof manifest.dependencies === 'object' ? manifest.dependencies : {};
   return Object.keys(dependencies);
 }
 

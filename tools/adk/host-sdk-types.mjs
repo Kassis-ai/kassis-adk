@@ -20,7 +20,13 @@ const specifier = /(?<=from\s+|import\s*\(\s*)['"](@\/[^'"]+|\.[^'"]+)['"]/g;
 
 const tsc = spawnSync(
   process.execPath,
-  [path.join(repoRoot, 'node_modules/typescript/lib/tsc.js'), '-p', path.join(pkgRoot, 'tsconfig.build.json'), '--pretty', 'false'],
+  [
+    path.join(repoRoot, 'node_modules/typescript/lib/tsc.js'),
+    '-p',
+    path.join(pkgRoot, 'tsconfig.build.json'),
+    '--pretty',
+    'false',
+  ],
   { stdio: 'inherit' }
 );
 if (tsc.status !== 0) process.exit(tsc.status ?? 1);
@@ -47,9 +53,16 @@ function destFor(abs) {
   return path.join(distRoot, '_host', rel);
 }
 
-const entries = ['index', 'registries', 'routes', 'entities', 'caseWorkspace', 'i18n', 'risk', 'riskLevel'].map((name) =>
-  path.join(tempRoot, 'packages/host-sdk/src', `${name}.d.ts`)
-);
+const entries = [
+  'index',
+  'registries',
+  'routes',
+  'entities',
+  'caseWorkspace',
+  'i18n',
+  'risk',
+  'riskLevel',
+].map((name) => path.join(tempRoot, 'packages/host-sdk/src', `${name}.d.ts`));
 
 const wanted = new Set();
 const queue = [...entries];
@@ -69,14 +82,19 @@ fs.rmSync(distRoot, { recursive: true, force: true });
 for (const file of wanted) {
   const dest = destFor(file);
   fs.mkdirSync(path.dirname(dest), { recursive: true });
-  const rewritten = fs.readFileSync(file, 'utf8').replace(specifier, (whole, spec) => {
-    const target = resolveDts(file, spec);
-    let next = path.relative(path.dirname(dest), destFor(target)).replace(/\\/g, '/');
-    if (!next.startsWith('.')) next = `./${next}`;
-    next = next.replace(/\.d\.ts$/, '');
-    return whole.replace(spec, next);
-  }).replace(/(^\s*(?:\/\*|\*|\/\/).*)$/gm, (line) => line.replaceAll('@/', 'host/'));
+  const rewritten = fs
+    .readFileSync(file, 'utf8')
+    .replace(specifier, (whole, spec) => {
+      const target = resolveDts(file, spec);
+      let next = path.relative(path.dirname(dest), destFor(target)).replace(/\\/g, '/');
+      if (!next.startsWith('.')) next = `./${next}`;
+      next = next.replace(/\.d\.ts$/, '');
+      return whole.replace(spec, next);
+    })
+    .replace(/(^\s*(?:\/\*|\*|\/\/).*)$/gm, (line) => line.replaceAll('@/', 'host/'));
   fs.writeFileSync(dest, rewritten);
 }
 
-process.stdout.write(`host-sdk types: ${wanted.size} declarations in ${path.relative(repoRoot, distRoot)}\n`);
+process.stdout.write(
+  `host-sdk types: ${wanted.size} declarations in ${path.relative(repoRoot, distRoot)}\n`
+);

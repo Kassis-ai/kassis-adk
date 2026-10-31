@@ -5,7 +5,6 @@
 **Technical owner:** Unassigned
 **Last reviewed:** 2026-10-28
 
-
 These steps were run in a folder outside the repository. Replace `<repo>` with the checkout path and `<scratch>` with an empty directory that is not inside the checkout.
 
 ## Create
@@ -16,11 +15,11 @@ node <repo>/tools/adk/kassis-addon.mjs init --id=sample-tprm-check --publisher=k
 
 Exit 0. `<scratch>/manifest.json` exists. `--publisher` defaults to `kassis`. `--tier` defaults to 2. Publisher `kassis` may pass `--tier=1`. Any other publisher is tier 2, and `--tier=1` exits 1. `--rung` defaults to 1.
 
-| Rung | What init writes |
-| --- | --- |
-| 1 | Server only. No `src/ui` and no `migrations/`. |
-| 2 | Server and UI. No `migrations/`. |
-| 3 | Server, UI, and `migrations/`. |
+| Rung | What init writes                               |
+| ---- | ---------------------------------------------- |
+| 1    | Server only. No `src/ui` and no `migrations/`. |
+| 2    | Server and UI. No `migrations/`.               |
+| 3    | Server, UI, and `migrations/`.                 |
 
 A publisher other than `kassis` gets an id prefix. `--publisher=acme --id=widget` writes id `acme-widget`. An id that already starts with `acme-` is kept. `kassis` keeps the id you pass. `hostApi` is `^1.0.0`. `entrypoints.main` is `dist/server/index.js`. `signing` is omitted until `sign`. When the rung has a UI, `ui.entryFile` is `index.js`, relative to `frontend/dist`.
 
@@ -66,7 +65,7 @@ node <repo>/tools/adk/kassis-addon.mjs certify --json
 Expected when the attestation matches the lock:
 
 ```json
-{"ok":true,"issues":[]}
+{ "ok": true, "issues": [] }
 ```
 
 Exit 0. A failing certify still prints JSON and exits 1.
@@ -96,8 +95,8 @@ Use `npm test` for the template. The CLI `test` command runs `node --test` in `.
 
 ## Changelog
 
-| Date | Change |
-| --- | --- |
-| 2026-10-28 | The template `.npmrc` points `@kassis` at GitHub Packages and reads `NODE_AUTH_TOKEN`. The certify workflow uses Node 24 and that secret. |
+| Date       | Change                                                                                                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2026-10-28 | The template `.npmrc` points `@kassis` at GitHub Packages and reads `NODE_AUTH_TOKEN`. The certify workflow uses Node 24 and that secret.                                            |
 | 2026-10-28 | `dev` starts a configured local image and does not pull or build. `migrate` targets that dev host only. `check --json` includes KADK codes. `--id value` and `--id=value` both work. |
-| 2026-10-28 | `init` accepts `--publisher`, `--tier`, and `--rung`. `npm run build` writes `dist/server/index.js` and, for a rung with UI, `frontend/dist/index.js`. |
+| 2026-10-28 | `init` accepts `--publisher`, `--tier`, and `--rung`. `npm run build` writes `dist/server/index.js` and, for a rung with UI, `frontend/dist/index.js`.                               |

@@ -70,7 +70,10 @@ async function buildServer(addonDir) {
     plugins: [externalKassisPlugin()],
   });
   fs.mkdirSync(path.dirname(path.join(addonDir, SERVER_OUT)), { recursive: true });
-  fs.writeFileSync(path.join(addonDir, 'dist', 'server', 'meta.json'), JSON.stringify(built.metafile ?? {}));
+  fs.writeFileSync(
+    path.join(addonDir, 'dist', 'server', 'meta.json'),
+    JSON.stringify(built.metafile ?? {})
+  );
   await assertExport(addonDir, SERVER_OUT, 'initialize');
 }
 
@@ -87,7 +90,8 @@ function buildUi(addonDir, options) {
   if (!fs.existsSync(entry)) throw new Error('src/ui/index.ts is missing');
   const vitePackage = resolveInstalled(addonDir, 'vite/package.json');
   const viteBin = vitePackage ? path.join(path.dirname(vitePackage), 'bin/vite.js') : '';
-  if (!viteBin || !fs.existsSync(viteBin)) throw new Error('vite is not installed. Run npm install.');
+  if (!viteBin || !fs.existsSync(viteBin))
+    throw new Error('vite is not installed. Run npm install.');
   const result = spawnSync(process.execPath, [viteBin, 'build'], {
     cwd: addonDir,
     encoding: 'utf8',

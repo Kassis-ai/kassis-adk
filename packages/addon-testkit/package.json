@@ -15,7 +15,9 @@
       "default": "./src/index.mjs"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "node build.mjs",
     "prepack": "node build.mjs && node ../../scripts/pack-publish-fields.mjs apply",

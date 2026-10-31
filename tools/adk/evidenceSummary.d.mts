@@ -70,4 +70,6 @@ export function diffManifestSurface(
   next: ManifestSnapshot | null
 ): ManifestSurfaceDiff;
 
-export function summarizeDeploymentEvidence(input: DeploymentEvidenceInput): DeploymentEvidenceSummary;
+export function summarizeDeploymentEvidence(
+  input: DeploymentEvidenceInput
+): DeploymentEvidenceSummary;

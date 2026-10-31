@@ -9,7 +9,11 @@ const repo = path.resolve(import.meta.dirname, '../../../..');
 const cli = path.join(repo, 'tools/adk/kassis-addon.mjs');
 const mcp = path.join(repo, 'tools/adk/kassis-adk-mcp.mjs');
 
-function run(args: string[], cwd: string, env?: NodeJS.ProcessEnv): { status: number | null; stdout: string; stderr: string } {
+function run(
+  args: string[],
+  cwd: string,
+  env?: NodeJS.ProcessEnv
+): { status: number | null; stdout: string; stderr: string } {
   const result = spawnSync(process.execPath, [cli, ...args], { cwd, encoding: 'utf8', env });
   return { status: result.status, stdout: result.stdout, stderr: result.stderr };
 }
@@ -82,8 +86,12 @@ describe('adk phase H', () => {
       const byEquals = run(['init', '--id=sample-tprm-check', `--dir=${equals}`], repo);
       expect(bySpace.status, bySpace.stderr).toBe(0);
       expect(byEquals.status, byEquals.stderr).toBe(0);
-      const spacedManifest = JSON.parse(fs.readFileSync(path.join(spaced, 'manifest.json'), 'utf8')) as { id: string };
-      const equalsManifest = JSON.parse(fs.readFileSync(path.join(equals, 'manifest.json'), 'utf8')) as { id: string };
+      const spacedManifest = JSON.parse(
+        fs.readFileSync(path.join(spaced, 'manifest.json'), 'utf8')
+      ) as { id: string };
+      const equalsManifest = JSON.parse(
+        fs.readFileSync(path.join(equals, 'manifest.json'), 'utf8')
+      ) as { id: string };
       expect(spacedManifest.id).toBe('sample-tprm-check');
       expect(equalsManifest.id).toBe(spacedManifest.id);
     } finally {
@@ -95,7 +103,10 @@ describe('adk phase H', () => {
   it('prints a KADK code from check --json', () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'kassis-check-json-'));
     try {
-      fs.writeFileSync(path.join(dir, 'manifest.json'), `${JSON.stringify({ manifestVersion: 1 })}\n`);
+      fs.writeFileSync(
+        path.join(dir, 'manifest.json'),
+        `${JSON.stringify({ manifestVersion: 1 })}\n`
+      );
       const result = run(['check', '--json'], dir);
       expect(result.status).toBe(1);
       const body = JSON.parse(result.stdout) as { ok: boolean; issues: Array<{ code: string }> };
@@ -113,7 +124,10 @@ describe('adk phase H', () => {
       const env = { ...process.env, HOME: home, USERPROFILE: home };
       const result = run(['migrate', 'status', '--json'], dir, env);
       expect(result.status).toBe(1);
-      const body = JSON.parse(result.stdout) as { ok: boolean; issues: Array<{ code: string; message: string }> };
+      const body = JSON.parse(result.stdout) as {
+        ok: boolean;
+        issues: Array<{ code: string; message: string }>;
+      };
       expect(body.ok).toBe(false);
       expect(body.issues[0]?.code).toBe('ADK-MIGRATE');
       expect(body.issues[0]?.message).toContain('No dev host');

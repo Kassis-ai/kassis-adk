@@ -2,7 +2,11 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { blankAttestation, buildProfileLock, packEvidence } from '../../../../tools/adk/profileLock.mjs';
+import {
+  blankAttestation,
+  buildProfileLock,
+  packEvidence,
+} from '../../../../tools/adk/profileLock.mjs';
 
 const profile = {
   profileId: 'addon-coding-agent',
@@ -93,8 +97,14 @@ describe('profile lock and evidence pack', () => {
     fs.mkdirSync(path.join(dir, 'migrations'));
     fs.writeFileSync(path.join(dir, 'migrations', '001_init.up.sql'), 'select 1;\n');
     fs.writeFileSync(path.join(dir, 'migrations', '001_init.down.sql'), 'select 1;\n');
-    fs.writeFileSync(path.join(dir, 'migrations', '002_keep.up.sql'), '-- irreversible: keep the column\n');
-    fs.writeFileSync(path.join(dir, 'package.json'), `${JSON.stringify({ name: 'sample', version: '0.1.0', dependencies: { leftpad: '1.0.0' } })}\n`);
+    fs.writeFileSync(
+      path.join(dir, 'migrations', '002_keep.up.sql'),
+      '-- irreversible: keep the column\n'
+    );
+    fs.writeFileSync(
+      path.join(dir, 'package.json'),
+      `${JSON.stringify({ name: 'sample', version: '0.1.0', dependencies: { leftpad: '1.0.0' } })}\n`
+    );
     const outDir = path.join(dir, 'evidence');
     const result = packEvidence({
       lock,
@@ -110,12 +120,19 @@ describe('profile lock and evidence pack', () => {
     expect(result.ok).toBe(true);
     const index = JSON.parse(fs.readFileSync(path.join(outDir, 'index.json'), 'utf8')) as {
       changeSummary: { reference: string | null; rung: string | null; why: string | null };
-      manifestDiff: { tier: { from: number | null; to: number | null }; permissions: { added: string[]; removed: string[] } };
+      manifestDiff: {
+        tier: { from: number | null; to: number | null };
+        permissions: { added: string[]; removed: string[] };
+      };
       migrations: Array<{ name: string; up: string; down: string }>;
       signerFingerprint: string | null;
       sbom: { components: Array<{ name: string }> };
     };
-    expect(index.changeSummary).toMatchObject({ reference: 'T-1', rung: '2', why: 'a route is enough' });
+    expect(index.changeSummary).toMatchObject({
+      reference: 'T-1',
+      rung: '2',
+      why: 'a route is enough',
+    });
     expect(index.manifestDiff.tier).toEqual({ from: 1, to: 2 });
     expect(index.manifestDiff.permissions.added).toEqual(['sample.edit']);
     expect(index.migrations).toEqual([

@@ -5,13 +5,7 @@
 import catalog from '../../codes/kadk-codes.json' with { type: 'json' };
 
 export type KadkCategory =
-  | 'manifest'
-  | 'boundaries'
-  | 'data'
-  | 'events'
-  | 'ui'
-  | 'security'
-  | 'attestation';
+  'manifest' | 'boundaries' | 'data' | 'events' | 'ui' | 'security' | 'attestation';
 
 export type KadkSeverity = 'error' | 'warning';
 

@@ -103,9 +103,16 @@ export function createTestContext(options = {}) {
   if (options.tier !== undefined && options.tier !== 1 && options.tier !== 2) {
     throw new Error('tier must be 1 or 2');
   }
-  const addonId = typeof options.addonId === 'string' && options.addonId.length > 0 ? options.addonId : 'sample-addon';
-  const version = typeof options.version === 'string' && options.version.length > 0 ? options.version : '0.1.0';
-  const tenantId = typeof options.tenantId === 'string' && options.tenantId.length > 0 ? options.tenantId : 'tenant';
+  const addonId =
+    typeof options.addonId === 'string' && options.addonId.length > 0
+      ? options.addonId
+      : 'sample-addon';
+  const version =
+    typeof options.version === 'string' && options.version.length > 0 ? options.version : '0.1.0';
+  const tenantId =
+    typeof options.tenantId === 'string' && options.tenantId.length > 0
+      ? options.tenantId
+      : 'tenant';
   const tier = options.tier === 1 ? 1 : 2;
   /** @type {RecordedAudit[]} */
   const audit = [];
@@ -134,12 +141,15 @@ export function createTestContext(options = {}) {
        */
       async record(principal, action, detail) {
         requireText(action, 'audit action is required');
-        if (!detail?.subject?.type || !detail.subject.id) throw new Error('audit subject is required');
+        if (!detail?.subject?.type || !detail.subject.id)
+          throw new Error('audit subject is required');
         audit.push({ principal, action, detail, occurredAt: new Date().toISOString() });
       },
       async search(_principal, query) {
         const actions = query && Array.isArray(query.actions) ? query.actions : [];
-        const matched = audit.filter((entry) => actions.length === 0 || actions.includes(entry.action));
+        const matched = audit.filter(
+          (entry) => actions.length === 0 || actions.includes(entry.action)
+        );
         return {
           entries: matched.map((entry, index) => ({
             id: String(index + 1),
@@ -194,7 +204,8 @@ export function createTestContext(options = {}) {
           if (existing && existing.kind === 'enqueue') return { id: existing.id };
         }
         const enqueued = jobs.filter((job) => job.kind === 'enqueue').length;
-        const id = typeof requested === 'string' && requested.length > 0 ? requested : `job-${enqueued + 1}`;
+        const id =
+          typeof requested === 'string' && requested.length > 0 ? requested : `job-${enqueued + 1}`;
         jobs.push({ kind: 'enqueue', id, principal, type, data: data ?? {} });
         return { id };
       },

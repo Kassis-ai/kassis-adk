@@ -27,10 +27,13 @@ fs.mkdirSync(lib, { recursive: true });
 const externalPlugin = {
   name: 'external-cli-deps',
   setup(build) {
-    build.onResolve({ filter: /^(ajv|@modelcontextprotocol\/sdk|es-module-lexer|@kassis\/addon-testkit)(\/|$)/ }, (args) => ({
-      path: args.path,
-      external: true,
-    }));
+    build.onResolve(
+      { filter: /^(ajv|@modelcontextprotocol\/sdk|es-module-lexer|@kassis\/addon-testkit)(\/|$)/ },
+      (args) => ({
+        path: args.path,
+        external: true,
+      })
+    );
   },
 };
 
@@ -67,7 +70,10 @@ await esbuild.build({
 });
 
 function stripFileComments(file) {
-  const lines = fs.readFileSync(file, 'utf8').split(/\r?\n/).filter((line) => !line.startsWith('//'));
+  const lines = fs
+    .readFileSync(file, 'utf8')
+    .split(/\r?\n/)
+    .filter((line) => !line.startsWith('//'));
   fs.writeFileSync(file, `${lines.join('\n')}\n`);
 }
 stripFileComments(path.join(lib, 'kassis-addon.mjs'));
@@ -77,7 +83,10 @@ const profiles = path.join(lib, 'profiles');
 fs.mkdirSync(profiles, { recursive: true });
 for (const profile of fs.readdirSync(path.join(repoRoot, 'tools/adk/profiles'))) {
   if (profile.endsWith('.json')) {
-    fs.copyFileSync(path.join(repoRoot, 'tools/adk/profiles', profile), path.join(profiles, profile));
+    fs.copyFileSync(
+      path.join(repoRoot, 'tools/adk/profiles', profile),
+      path.join(profiles, profile)
+    );
   }
 }
 
@@ -85,16 +94,38 @@ function copyIntoLib(source, name) {
   fs.copyFileSync(source, path.join(lib, name));
 }
 
-copyIntoLib(path.join(repoRoot, 'server/core/addon-deployment/canonicalJson.mjs'), 'canonicalJson.mjs');
-copyIntoLib(path.join(repoRoot, 'server/core/addon-deployment/addonContentHash.mjs'), 'addonContentHash.mjs');
-copyIntoLib(path.join(repoRoot, 'server/core/addon-deployment/addonContentHash.config.json'), 'addonContentHash.config.json');
-copyIntoLib(path.join(repoRoot, 'server/core/addon-platform/trust/publisherTrust.mjs'), 'publisherTrust.mjs');
-copyIntoLib(path.join(repoRoot, 'server/core/addon-platform/trust/publisher-trust.json'), 'publisher-trust.json');
-copyIntoLib(path.join(repoRoot, 'server/keys/addon_verification_public.key'), 'addon_verification_public.key');
+copyIntoLib(
+  path.join(repoRoot, 'server/core/addon-deployment/canonicalJson.mjs'),
+  'canonicalJson.mjs'
+);
+copyIntoLib(
+  path.join(repoRoot, 'server/core/addon-deployment/addonContentHash.mjs'),
+  'addonContentHash.mjs'
+);
+copyIntoLib(
+  path.join(repoRoot, 'server/core/addon-deployment/addonContentHash.config.json'),
+  'addonContentHash.config.json'
+);
+copyIntoLib(
+  path.join(repoRoot, 'server/core/addon-platform/trust/publisherTrust.mjs'),
+  'publisherTrust.mjs'
+);
+copyIntoLib(
+  path.join(repoRoot, 'server/core/addon-platform/trust/publisher-trust.json'),
+  'publisher-trust.json'
+);
+copyIntoLib(
+  path.join(repoRoot, 'server/keys/addon_verification_public.key'),
+  'addon_verification_public.key'
+);
 copyIntoLib(path.join(repoRoot, 'packages/addon-sdk/codes/kadk-codes.json'), 'kadk-codes.json');
-fs.cpSync(path.join(repoRoot, 'templates/kassis-addon'), path.join(pkgRoot, 'templates/kassis-addon'), {
-  recursive: true,
-});
+fs.cpSync(
+  path.join(repoRoot, 'templates/kassis-addon'),
+  path.join(pkgRoot, 'templates/kassis-addon'),
+  {
+    recursive: true,
+  }
+);
 const templateNpmrc = path.join(pkgRoot, 'templates/kassis-addon/.npmrc');
 if (fs.existsSync(templateNpmrc)) {
   fs.copyFileSync(templateNpmrc, path.join(pkgRoot, 'templates/kassis-addon/npmrc'));

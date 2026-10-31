@@ -165,13 +165,7 @@ export type QuestionnaireReopenContext = {
 export type QuestionnaireExtensionField = {
   key: string;
   type:
-    | 'string'
-    | 'string_list'
-    | 'number'
-    | 'boolean'
-    | 'option_ref'
-    | 'pack_ref'
-    | 'flag_type_ref';
+    'string' | 'string_list' | 'number' | 'boolean' | 'option_ref' | 'pack_ref' | 'flag_type_ref';
   labelKey: string;
   label: string;
 };

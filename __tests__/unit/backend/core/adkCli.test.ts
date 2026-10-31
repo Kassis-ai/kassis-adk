@@ -4,14 +4,20 @@ import os from 'node:os';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { assertNoHostImports } from '../../../../packages/addon-testkit/src/index.mjs';
-import { verifyProfileSignature, readBundledProfile } from '../../../../tools/adk/profileBundle.mjs';
+import {
+  verifyProfileSignature,
+  readBundledProfile,
+} from '../../../../tools/adk/profileBundle.mjs';
 import { submitCertifiedRun } from '../../../../tools/adk/registryRun.mjs';
 
 const repo = path.resolve(import.meta.dirname, '../../../..');
 const cli = path.join(repo, 'tools/adk/kassis-addon.mjs');
 const mcp = path.join(repo, 'tools/adk/kassis-adk-mcp.mjs');
 
-function run(args: string[], cwd: string): { status: number | null; stdout: string; stderr: string } {
+function run(
+  args: string[],
+  cwd: string
+): { status: number | null; stdout: string; stderr: string } {
   const result = spawnSync(process.execPath, [cli, ...args], { cwd, encoding: 'utf8' });
   return { status: result.status, stdout: result.stdout, stderr: result.stderr };
 }
@@ -77,11 +83,15 @@ describe('addon CLI', () => {
       expect(run(['sync', '--profile=addon-coding-agent'], dir).status).toBe(0);
       expect(fs.existsSync(path.join(dir, 'AGENTS.md'))).toBe(true);
       expect(run(['attest'], dir).status).toBe(0);
-      const attested = JSON.parse(fs.readFileSync(path.join(dir, '.kassis/attestation.json'), 'utf8')) as {
+      const attested = JSON.parse(
+        fs.readFileSync(path.join(dir, '.kassis/attestation.json'), 'utf8')
+      ) as {
         answers: Array<{ outcome: string | null }>;
       };
       expect(attested.answers.every((answer) => answer.outcome === null)).toBe(true);
-      const lock = JSON.parse(fs.readFileSync(path.join(dir, '.kassis/agent-profile.lock.json'), 'utf8'));
+      const lock = JSON.parse(
+        fs.readFileSync(path.join(dir, '.kassis/agent-profile.lock.json'), 'utf8')
+      );
       const blankAnswers = lock.guardrails.map((item: { key: string }) => ({
         key: item.key,
         outcome: '',
@@ -94,7 +104,9 @@ describe('addon CLI', () => {
       );
       const blank = run(['certify', '--json'], dir);
       expect(blank.status).toBe(1);
-      expect(JSON.parse(blank.stdout).issues.map((issue: { code: string }) => issue.code)).toContain('KADK-714');
+      expect(
+        JSON.parse(blank.stdout).issues.map((issue: { code: string }) => issue.code)
+      ).toContain('KADK-714');
       const answers = lock.guardrails.map((item: { key: string; verification?: string }) => ({
         key: item.key,
         outcome: 'followed',
@@ -106,15 +118,26 @@ describe('addon CLI', () => {
         `${JSON.stringify({ version: lock.version, lockHash: lock.hash, runId: 'rehearsal', answers }, null, 2)}\n`
       );
       const certified = run(['certify', '--json'], dir);
-      const certifiedBody = JSON.parse(certified.stdout) as { ok: boolean; issues: Array<{ code: string }> };
+      const certifiedBody = JSON.parse(certified.stdout) as {
+        ok: boolean;
+        issues: Array<{ code: string }>;
+      };
       expect(certified.status).toBe(1);
       expect(certifiedBody.ok).toBe(false);
       expect(certifiedBody.issues.map((issue) => issue.code)).toEqual(['KADK-715', 'KADK-707']);
-      const checks = JSON.parse(fs.readFileSync(path.join(dir, '.kassis/evidence/checks.json'), 'utf8')) as {
+      const checks = JSON.parse(
+        fs.readFileSync(path.join(dir, '.kassis/evidence/checks.json'), 'utf8')
+      ) as {
         cliVersion: string;
         nodeVersion: string;
         contentHash: string;
-        checks: Array<{ id: string; exitCode: number; inputHash: string; outputDigest: string; durationMs: number }>;
+        checks: Array<{
+          id: string;
+          exitCode: number;
+          inputHash: string;
+          outputDigest: string;
+          durationMs: number;
+        }>;
       };
       expect(checks.cliVersion).toMatch(/^\d+\.\d+\.\d+$/);
       expect(checks.nodeVersion).toBe(process.version);
@@ -127,13 +150,19 @@ describe('addon CLI', () => {
       ]);
       expect(
         checks.checks.every(
-          (item) => item.inputHash.startsWith('sha256-') && item.outputDigest.startsWith('sha256-') && item.durationMs >= 0
+          (item) =>
+            item.inputHash.startsWith('sha256-') &&
+            item.outputDigest.startsWith('sha256-') &&
+            item.durationMs >= 0
         )
       ).toBe(true);
       const packed = run(['pack', `--out=${path.join(dir, 'evidence')}`], dir);
       expect(packed.status).toBe(1);
       expect(fs.existsSync(path.join(dir, 'evidence', 'index.json'))).toBe(false);
-      assertNoHostImports(fs.readFileSync(path.join(dir, 'src/server/index.ts'), 'utf8'), 'src/server/index.ts');
+      assertNoHostImports(
+        fs.readFileSync(path.join(dir, 'src/server/index.ts'), 'utf8'),
+        'src/server/index.ts'
+      );
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }

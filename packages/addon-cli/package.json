@@ -15,7 +15,13 @@
       "default": "./src/index.ts"
     }
   },
-  "files": ["bin", "dist", "lib", "templates", "schema"],
+  "files": [
+    "bin",
+    "dist",
+    "lib",
+    "templates",
+    "schema"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "prepack": "node prepack.mjs && npm run build && node ../../scripts/pack-publish-fields.mjs apply",

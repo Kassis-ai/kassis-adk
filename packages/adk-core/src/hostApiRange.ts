@@ -56,6 +56,10 @@ export function hostApiSatisfies(range: string, version: SemVer): boolean {
   const floor = { major: Number(bounded[1]), minor: Number(bounded[2]), patch: Number(bounded[3]) };
   if (!atLeast(version, floor)) return false;
   if (bounded[4] === undefined) return true;
-  const ceiling = { major: Number(bounded[4]), minor: Number(bounded[5]), patch: Number(bounded[6]) };
+  const ceiling = {
+    major: Number(bounded[4]),
+    minor: Number(bounded[5]),
+    patch: Number(bounded[6]),
+  };
   return compare(version, ceiling) < 0;
 }

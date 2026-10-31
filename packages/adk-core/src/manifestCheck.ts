@@ -126,7 +126,10 @@ function stringParam(error: SchemaError, name: string): string {
 }
 
 function unknownFieldIssue(dotted: string, field: string): AdkIssue {
-  if (dotted === '' && (field === 'routing' || field === 'entry' || field === 'permissionNamespaceWaiver')) {
+  if (
+    dotted === '' &&
+    (field === 'routing' || field === 'entry' || field === 'permissionNamespaceWaiver')
+  ) {
     return kadkIssue(REMOVED_FIELDS[field], 'manifest.json', null, { path: field });
   }
   const home = dotted === '' ? V1_HOMES[field] : undefined;
@@ -193,14 +196,23 @@ export function checkManifestDirectory(dir: string): AdkIssue[] {
     parsed = JSON.parse(fs.readFileSync(file, 'utf8')) as unknown;
   } catch (error) {
     if (!(error instanceof SyntaxError)) throw error;
-    return [kadkIssue('KADK-101', 'manifest.json', null, { path: 'manifest.json', detail: 'is not valid JSON' })];
+    return [
+      kadkIssue('KADK-101', 'manifest.json', null, {
+        path: 'manifest.json',
+        detail: 'is not valid JSON',
+      }),
+    ];
   }
   if (!isRecordValue(parsed)) {
-    return [kadkIssue('KADK-101', 'manifest.json', null, { path: '', detail: 'must be a JSON object' })];
+    return [
+      kadkIssue('KADK-101', 'manifest.json', null, { path: '', detail: 'must be a JSON object' }),
+    ];
   }
   const validate = manifestValidator();
   const matches = validate(parsed);
-  const schemaIssues = matches ? [] : (validate.errors ?? []).flatMap((error) => schemaIssue(error) ?? []);
+  const schemaIssues = matches
+    ? []
+    : (validate.errors ?? []).flatMap((error) => schemaIssue(error) ?? []);
   return [...schemaIssues, ...permissionIssues(parsed), ...entryFileIssues(parsed)];
 }
 

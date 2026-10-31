@@ -2,14 +2,29 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { checkAddonImports } from '@kassis/addon-testkit';
 import { initAddon } from '../../../tools/adk/scaffold.mjs';
-import { certifyAttestation, kadkIssue as catalogIssue } from '../../../tools/adk/certifyAttestation.mjs';
-import { blankAttestation, buildProfileLock, packEvidence } from '../../../tools/adk/profileLock.mjs';
+import {
+  certifyAttestation,
+  kadkIssue as catalogIssue,
+} from '../../../tools/adk/certifyAttestation.mjs';
+import {
+  blankAttestation,
+  buildProfileLock,
+  packEvidence,
+} from '../../../tools/adk/profileLock.mjs';
 import { writeAgentRuleFiles } from '../../../tools/adk/agentRules.mjs';
-import { downloadProfile, readBundledProfile, verifyProfileSignature } from '../../../tools/adk/profileBundle.mjs';
+import {
+  downloadProfile,
+  readBundledProfile,
+  verifyProfileSignature,
+} from '../../../tools/adk/profileBundle.mjs';
 import { submitCertifiedRun } from '../../../tools/adk/registryRun.mjs';
 import { buildAddon } from '../../../tools/adk/addonBuild.mjs';
 import { signManifestFile } from '../../../tools/adk/signManifest.mjs';
-import { exportPublicKey, generatePublisherKey, registerPublisherKey } from '../../../tools/adk/publisherKeys.mjs';
+import {
+  exportPublicKey,
+  generatePublisherKey,
+  registerPublisherKey,
+} from '../../../tools/adk/publisherKeys.mjs';
 import { recordMachineChecks } from '../../../tools/adk/certifyChecks.mjs';
 import type { AdkIssue, CommandResult, JsonObject, LogListener } from './types.ts';
 import { checkManifestDirectory } from './manifestCheck.ts';
@@ -29,7 +44,12 @@ function messageOf(error: unknown): string {
   return error instanceof Error ? error.message : 'command failed';
 }
 
-function fromCatalog(issue: { code: string; severity: string; message: string; fix: string }): AdkIssue {
+function fromCatalog(issue: {
+  code: string;
+  severity: string;
+  message: string;
+  fix: string;
+}): AdkIssue {
   return {
     code: issue.code,
     severity: issue.severity === 'warning' ? 'warning' : 'error',
@@ -45,7 +65,13 @@ function optionalNumber(text: string): number | undefined {
   return Number(text);
 }
 
-export function initProject(id: string, dir: string, publisher: string, tier: string, rung: string): CommandResult {
+export function initProject(
+  id: string,
+  dir: string,
+  publisher: string,
+  tier: string,
+  rung: string
+): CommandResult {
   if (!id) {
     return failure('init --id is required', 'Pass --id <addon-id> or --id=<addon-id>.');
   }
@@ -58,17 +84,28 @@ export function initProject(id: string, dir: string, publisher: string, tier: st
   try {
     return commandResult([], { dir: initAddon(id, dir, options) });
   } catch (error) {
-    return failure(messageOf(error), 'Fix the id, directory, publisher, tier, or rung and run init again.', 'ADK-USAGE', {
-      dir,
-    });
+    return failure(
+      messageOf(error),
+      'Fix the id, directory, publisher, tier, or rung and run init again.',
+      'ADK-USAGE',
+      {
+        dir,
+      }
+    );
   }
 }
 
 export function checkProject(dir: string): CommandResult {
   try {
-    return commandResult(checkManifestDirectory(dir), { manifest: path.join(dir, 'manifest.json') });
+    return commandResult(checkManifestDirectory(dir), {
+      manifest: path.join(dir, 'manifest.json'),
+    });
   } catch (error) {
-    return failure(messageOf(error), 'Install ajv and keep the manifest schema in the repository.', 'ADK-USAGE');
+    return failure(
+      messageOf(error),
+      'Install ajv and keep the manifest schema in the repository.',
+      'ADK-USAGE'
+    );
   }
 }
 
@@ -100,7 +137,8 @@ export function conformanceProject(dir: string): CommandResult {
 }
 
 export function explainProject(code: string): CommandResult {
-  if (!code) return failure('explain requires a KADK code', 'Pass the code: kassis-addon explain KADK-101.');
+  if (!code)
+    return failure('explain requires a KADK code', 'Pass the code: kassis-addon explain KADK-101.');
   try {
     const issue = catalogIssue(code);
     return commandResult([], {
@@ -167,7 +205,8 @@ export function attestProject(dir: string): CommandResult {
 
 export function rulesProject(dir: string): CommandResult {
   const lock = readObject(path.join(dir, '.kassis', 'agent-profile.lock.json'));
-  if (!lock) return failure('Run sync before rules', 'Run kassis-addon sync --profile=addon-coding-agent.');
+  if (!lock)
+    return failure('Run sync before rules', 'Run kassis-addon sync --profile=addon-coding-agent.');
   return commandResult([], { files: writeAgentRuleFiles(lock, dir) });
 }
 
@@ -235,7 +274,11 @@ export async function certifyProject(dir: string): Promise<CommandResult> {
   return { ok: true, issues: result.issues.map((issue) => fromCatalog(issue)), data };
 }
 
-export async function buildProject(dir: string, only: string, onLog?: LogListener): Promise<CommandResult> {
+export async function buildProject(
+  dir: string,
+  only: string,
+  onLog?: LogListener
+): Promise<CommandResult> {
   try {
     const outputs = await buildAddon(dir, {
       only: only || 'all',
@@ -248,9 +291,14 @@ export async function buildProject(dir: string, only: string, onLog?: LogListene
     for (const output of outputs) onLog?.({ stream: 'stdout', text: `${output}\n` });
     return commandResult([], { outputs });
   } catch (error) {
-    return failure(messageOf(error), 'Install the addon dependencies, then run build again.', 'ADK-USAGE', {
-      outputs: [],
-    });
+    return failure(
+      messageOf(error),
+      'Install the addon dependencies, then run build again.',
+      'ADK-USAGE',
+      {
+        outputs: [],
+      }
+    );
   }
 }
 
@@ -266,12 +314,23 @@ export function testProject(dir: string, onLog?: LogListener): CommandResult {
   const status = result.status ?? 1;
   if (status === 0) return commandResult([], { status });
   return commandResult(
-    [operationalIssue('ADK-TEST', 'error', 'node --test failed', 'Fix the tests in ./test and run test again.')],
+    [
+      operationalIssue(
+        'ADK-TEST',
+        'error',
+        'node --test failed',
+        'Fix the tests in ./test and run test again.'
+      ),
+    ],
     { status }
   );
 }
 
-export async function signProject(dir: string, key: string, onLog?: LogListener): Promise<CommandResult> {
+export async function signProject(
+  dir: string,
+  key: string,
+  onLog?: LogListener
+): Promise<CommandResult> {
   const manifestPath = path.join(dir, 'manifest.json');
   const manifest = readObject(manifestPath);
   const id = manifest ? stringField(manifest, 'id') : '';
@@ -285,14 +344,23 @@ export async function signProject(dir: string, key: string, onLog?: LogListener)
         'ADK-KEY'
       );
     }
-    const result = runProcess(process.execPath, [bundled, `--only=${id}`], 120000, { cwd: repoRoot() });
+    const result = runProcess(process.execPath, [bundled, `--only=${id}`], 120000, {
+      cwd: repoRoot(),
+    });
     if (result.stdout) onLog?.({ stream: 'stdout', text: result.stdout });
     if (result.stderr) onLog?.({ stream: 'stderr', text: result.stderr });
     if (result.timedOut) {
-      return failure('sign did not finish', 'Run the repo signer again for this addon id.', 'ADK-USAGE');
+      return failure(
+        'sign did not finish',
+        'Run the repo signer again for this addon id.',
+        'ADK-USAGE'
+      );
     }
     if (result.status !== 0) {
-      return failure(redactSecrets(result.stderr.trim() || 'sign failed'), 'Fix the signer error and run sign again.');
+      return failure(
+        redactSecrets(result.stderr.trim() || 'sign failed'),
+        'Fix the signer error and run sign again.'
+      );
     }
     return commandResult([], { id });
   }
@@ -300,7 +368,11 @@ export async function signProject(dir: string, key: string, onLog?: LogListener)
     await signManifestFile(manifestPath, path.resolve(key));
     return commandResult([], { id });
   } catch (error) {
-    return failure(messageOf(error), 'Pass a publisher private key that is outside the addon folder.', 'ADK-KEY');
+    return failure(
+      messageOf(error),
+      'Pass a publisher private key that is outside the addon folder.',
+      'ADK-KEY'
+    );
   }
 }
 
@@ -313,7 +385,8 @@ export async function keysProject(
 ): Promise<CommandResult> {
   try {
     if (subcommand === 'generate') {
-      if (!publisher) return failure('keys generate --publisher=<id> is required', 'Pass --publisher.');
+      if (!publisher)
+        return failure('keys generate --publisher=<id> is required', 'Pass --publisher.');
       const created = generatePublisherKey(publisher);
       return commandResult([], {
         fingerprint: created.fingerprint,
@@ -323,7 +396,10 @@ export async function keysProject(
     }
     if (subcommand === 'export-public') {
       if (!key || !out) {
-        return failure('keys export-public --key=<path> --out=<path> is required', 'Pass --key and --out.');
+        return failure(
+          'keys export-public --key=<path> --out=<path> is required',
+          'Pass --key and --out.'
+        );
       }
       exportPublicKey(path.resolve(key), path.resolve(out));
       return commandResult([], { path: path.resolve(out) });
@@ -348,6 +424,10 @@ export async function keysProject(
       'Run kassis-addon keys --help.'
     );
   } catch (error) {
-    return failure(messageOf(error), 'Check the publisher id, key path, and instance URL.', 'ADK-KEY');
+    return failure(
+      messageOf(error),
+      'Check the publisher id, key path, and instance URL.',
+      'ADK-KEY'
+    );
   }
 }

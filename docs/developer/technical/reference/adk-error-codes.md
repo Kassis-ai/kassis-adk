@@ -11,7 +11,6 @@ sidebar_label: ADK error codes
 **Technical owner:** Unassigned
 **Last reviewed:** 2026-10-28
 
-
 Every check of the addon development kit reports a stable `KADK-NNN` code with a message, a fix hint and a link to this page. The catalog is data: `packages/addon-sdk/codes/kadk-codes.json`, read through `listKadkCodes()` and `getKadkCode()` in `@kassis/addon-sdk`. A test keeps this page and the catalog in step (one anchor per code, no extra anchors).
 
 A published code keeps its number, category and meaning. A retired code is marked as retired here and in the catalog; its number is never reused. Text in braces, such as `{path}`, is filled in by the reporter.
@@ -816,6 +815,6 @@ A published code keeps its number, category and meaning. A retired code is marke
 
 ## Changelog
 
-| Date | Change |
-| --- | --- |
+| Date       | Change                                                                                                                                                                                                                      |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-10-28 | KADK-714 blocks an outcome that is not followed, violated or not_applicable. KADK-715 warns when machine evidence is typed into the attestation. KADK-707 still means the checks file has no passing result for that check. |

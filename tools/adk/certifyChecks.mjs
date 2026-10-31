@@ -76,7 +76,8 @@ export function cliPackageVersion() {
     if (!fs.existsSync(file)) continue;
     try {
       const parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
-      if (parsed.name === '@kassis/addon-cli' && typeof parsed.version === 'string') return parsed.version;
+      if (parsed.name === '@kassis/addon-cli' && typeof parsed.version === 'string')
+        return parsed.version;
     } catch (error) {
       if (!(error instanceof SyntaxError)) throw error;
     }
@@ -97,7 +98,9 @@ function contentHashOf(addonDir) {
     `const loaded = await import(pathToFileURL(${JSON.stringify(modulePath)}).href);`,
     `process.stdout.write(await loaded.computeAddonContentHash(${JSON.stringify(addonDir)}));`,
   ].join('\n');
-  const result = spawnSync(process.execPath, ['--input-type=module', '--eval', script], { encoding: 'utf8' });
+  const result = spawnSync(process.execPath, ['--input-type=module', '--eval', script], {
+    encoding: 'utf8',
+  });
   if (result.status !== 0) return null;
   const value = (result.stdout ?? '').trim();
   return value.startsWith('sha256-') ? value : null;
@@ -117,7 +120,9 @@ function runAddonCommand(addonDir, command, inputHash) {
 }
 
 function buildInputHash(addonDir) {
-  return sha256Text(`${readText(path.join(addonDir, 'package.json'))}\n${hashTree(addonDir, ['src', 'frontend'])}`);
+  return sha256Text(
+    `${readText(path.join(addonDir, 'package.json'))}\n${hashTree(addonDir, ['src', 'frontend'])}`
+  );
 }
 
 /**

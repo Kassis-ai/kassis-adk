@@ -5,7 +5,6 @@
 **Technical owner:** Unassigned
 **Last reviewed:** 2026-10-28
 
-
 ## Coding-agent profile
 
 The signed profile is `tools/adk/profiles/addon-coding-agent.json` (version 2). `sync --profile=addon-coding-agent` checks that signature and writes:
@@ -38,19 +37,19 @@ Autonomy is read from the agent profile. If it cannot be read, the level is the 
 
 ## Settings
 
-| Key | Meaning |
-| --- | --- |
-| `agents.autonomy.levels` | Per-agent autonomy. Unreadable values fall back to suggest. |
-| `agents.autonomy.attestationFailureThreshold` | Failures inside the window that downgrade the agent to suggest. |
-| `agents.autonomy.windowMinutes` | Window for the failure count. The count is stored in the agent registry, not in one process. |
-| `agents.autonomy.budgetLimit` | Spend limit for an agent principal. |
-| `agents.autonomy.callCost` | Cost reserved before a tool call. |
+| Key                                           | Meaning                                                                                      |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `agents.autonomy.levels`                      | Per-agent autonomy. Unreadable values fall back to suggest.                                  |
+| `agents.autonomy.attestationFailureThreshold` | Failures inside the window that downgrade the agent to suggest.                              |
+| `agents.autonomy.windowMinutes`               | Window for the failure count. The count is stored in the agent registry, not in one process. |
+| `agents.autonomy.budgetLimit`                 | Spend limit for an agent principal.                                                          |
+| `agents.autonomy.callCost`                    | Cost reserved before a tool call.                                                            |
 
 `agent_config_draft` returns a proposed settings change with `applied: false`. It does not write. A person publishes configuration.
 
 ## Changelog
 
-| Date | Change |
-| --- | --- |
-| 2026-10-28 | The dev MCP server speaks newline-delimited JSON and exposes `validate_manifest`, `run_checks`, `explain_error`, and `scaffold`. |
+| Date       | Change                                                                                                                                        |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-28 | The dev MCP server speaks newline-delimited JSON and exposes `validate_manifest`, `run_checks`, `explain_error`, and `scaffold`.              |
 | 2026-10-28 | Coding profile version 2 replaces the `kassis-addon-certify` machine check with check, conformance, build and test. Version 1 stays readable. |

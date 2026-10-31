@@ -1,4 +1,4 @@
-# __ADDON_NAME__
+# **ADDON_NAME**
 
 Addon `__ADDON_ID__`, publisher `__PUBLISHER__`. Routes mount at `/api/v1/addons/__ADDON_ID__`.
 

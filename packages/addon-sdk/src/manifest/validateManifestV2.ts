@@ -91,7 +91,8 @@ function schemaIssue(error: ErrorObject): KadkIssue | null {
   switch (error.keyword) {
     case 'required': {
       const field = stringParam(error, 'missingProperty');
-      if (path === '' && field === 'manifestVersion') return createKadkIssue('KADK-104', 'manifestVersion');
+      if (path === '' && field === 'manifestVersion')
+        return createKadkIssue('KADK-104', 'manifestVersion');
       return createKadkIssue('KADK-102', path, { field });
     }
     case 'additionalProperties':

@@ -94,7 +94,11 @@ export function projectDirWithinRoot(rootDir: string, requested: string): string
   return resolved;
 }
 
-export function runContainedTool(rootDir: string, name: string, args: Record<string, unknown>): CommandResult {
+export function runContainedTool(
+  rootDir: string,
+  name: string,
+  args: Record<string, unknown>
+): CommandResult {
   const requested = argString(args, 'dir') || rootDir;
   const dir = projectDirWithinRoot(rootDir, requested);
   if (!dir) {
@@ -119,10 +123,16 @@ function callTool(name: string, args: Record<string, unknown>): CommandResult {
       rung: argString(args, 'rung'),
     });
   }
-  return failure(`Unknown tool ${name}`, 'Use validate_manifest, run_checks, explain_error, or scaffold.');
+  return failure(
+    `Unknown tool ${name}`,
+    'Use validate_manifest, run_checks, explain_error, or scaffold.'
+  );
 }
 
-function toolPayload(result: CommandResult): { content: { type: 'text'; text: string }[]; isError: boolean } {
+function toolPayload(result: CommandResult): {
+  content: { type: 'text'; text: string }[];
+  isError: boolean;
+} {
   return {
     content: [{ type: 'text', text: JSON.stringify(result) }],
     isError: !result.ok,
@@ -139,7 +149,11 @@ export async function startAdkMcpServer(): Promise<void> {
   );
   server.setRequestHandler(ListToolsRequestSchema, () => ({ tools: TOOLS }));
   server.setRequestHandler(CallToolRequestSchema, (request) => {
-    const result = runContainedTool(projectRoot, request.params.name, toolArguments(request.params.arguments));
+    const result = runContainedTool(
+      projectRoot,
+      request.params.name,
+      toolArguments(request.params.arguments)
+    );
     return toolPayload(result);
   });
   const transport = new StdioServerTransport();
