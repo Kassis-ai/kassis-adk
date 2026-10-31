@@ -5,7 +5,6 @@
 **Technical owner:** Unassigned
 **Last reviewed:** 2026-10-30
 
-
 Version rules are in the [semver policy](../addons/semver-policy.md). Do not bump a public export of `@kassis/addon-sdk` without a matching report change.
 
 ## API Extractor
@@ -56,11 +55,11 @@ The install path is `addons-installed/<id>/<version>/`. The version must be high
 
 ## Changelog
 
-| Date | Change |
-| --- | --- |
-| 2026-10-30 | `host-sdk.api.md` matches a clean API Extractor run (`React_2.JSX.Element`). `addon-sdk.api.md` lists `ManifestSigning`, which the source already exported. |
+| Date       | Change                                                                                                                                                                                         |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-30 | `host-sdk.api.md` matches a clean API Extractor run (`React_2.JSX.Element`). `addon-sdk.api.md` lists `ManifestSigning`, which the source already exported.                                    |
 | 2026-10-28 | `package` refuses a failed certify and includes attestation and lock in the evidence pack. `ci:packages:publish-config` also checks that committed `package.json` files still point at `src/`. |
-| 2026-10-28 | Public tarballs publish `dist` entry points. `ci:packages:publish-config` packs each package and checks those entries. |
-| 2026-10-28 | `kassis-addon package` writes a self-contained `.addon` zip. `deploy` uploads it and prints the approval request id. `status` lists installed and pending versions. |
-| 2026-10-28 | The instance installs a package only after signature and `contentHash` checks. `manifest.checksum` is not used. |
-| 2026-10-28 | All six public packages publish to GitHub Packages. API Extractor also checks `host-sdk.api.md`. |
+| 2026-10-28 | Public tarballs publish `dist` entry points. `ci:packages:publish-config` packs each package and checks those entries.                                                                         |
+| 2026-10-28 | `kassis-addon package` writes a self-contained `.addon` zip. `deploy` uploads it and prints the approval request id. `status` lists installed and pending versions.                            |
+| 2026-10-28 | The instance installs a package only after signature and `contentHash` checks. `manifest.checksum` is not used.                                                                                |
+| 2026-10-28 | All six public packages publish to GitHub Packages. API Extractor also checks `host-sdk.api.md`.                                                                                               |

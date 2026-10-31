@@ -24,7 +24,8 @@ import { deployProject, packageProject, sbomProject, statusProject } from './pac
 
 function projectDir(request: CommandRequest): string {
   if (request.flags.dir) return path.resolve(request.cwd, request.flags.dir);
-  if (request.command === 'init' && request.flags.id) return path.resolve(request.cwd, request.flags.id);
+  if (request.command === 'init' && request.flags.id)
+    return path.resolve(request.cwd, request.flags.id);
   return path.resolve(request.cwd);
 }
 
@@ -42,7 +43,12 @@ export async function runCommand(request: CommandRequest): Promise<CommandResult
     case 'explain':
       return explainProject(request.positional);
     case 'sync':
-      return syncProject(dir, flags.profile, flags.instance, flags.from ? path.resolve(request.cwd, flags.from) : '');
+      return syncProject(
+        dir,
+        flags.profile,
+        flags.instance,
+        flags.from ? path.resolve(request.cwd, flags.from) : ''
+      );
     case 'attest':
       return attestProject(dir);
     case 'rules':
@@ -90,9 +96,6 @@ export async function runCommand(request: CommandRequest): Promise<CommandResult
         rung: flags.rung,
       });
     default:
-      return failure(
-        `Unknown command ${request.command}`,
-        'Run kassis-addon --help.'
-      );
+      return failure(`Unknown command ${request.command}`, 'Run kassis-addon --help.');
   }
 }

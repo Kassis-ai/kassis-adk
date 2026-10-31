@@ -51,7 +51,12 @@ function stringsAt(source: ManifestRecord, key: string, basePath: string): Entry
   );
 }
 
-function fieldsAt(source: ManifestRecord, key: string, field: string, basePath: string): Entry<string>[] {
+function fieldsAt(
+  source: ManifestRecord,
+  key: string,
+  field: string,
+  basePath: string
+): Entry<string>[] {
   const list = source[key];
   if (!Array.isArray(list)) return [];
   return list.flatMap((item: unknown, index) => {
@@ -70,7 +75,11 @@ function checkReservedId(id: string, options: ManifestValidationOptions): KadkIs
   return namespace ? [createKadkIssue('KADK-109', 'id', { id, namespace })] : [];
 }
 
-function namespaceIssues(code: KadkCode, entries: Entry<string>[], prefixes: string[]): KadkIssue[] {
+function namespaceIssues(
+  code: KadkCode,
+  entries: Entry<string>[],
+  prefixes: string[]
+): KadkIssue[] {
   const label = prefixes.map((prefix) => `'${prefix}'`).join(' or ');
   return entries
     .filter((entry) => !prefixes.some((prefix) => entry.value.startsWith(prefix)))
@@ -80,16 +89,36 @@ function namespaceIssues(code: KadkCode, entries: Entry<string>[], prefixes: str
 function checkNamespaces(manifest: ManifestRecord, id: string): KadkIssue[] {
   const dotted = addonNamespacePrefixes(id);
   return [
-    ...namespaceIssues('KADK-110', fieldsAt(manifest, 'permissions', 'name', 'permissions'), dotted),
-    ...namespaceIssues('KADK-111', stringsAt(recordAt(manifest, 'jobs'), 'types', 'jobs.types'), dotted),
-    ...namespaceIssues('KADK-112', stringsAt(recordAt(manifest, 'prompts'), 'keys', 'prompts.keys'), dotted),
-    ...namespaceIssues('KADK-113', stringsAt(recordAt(manifest, 'secrets'), 'keys', 'secrets.keys'), [`${id}:`]),
+    ...namespaceIssues(
+      'KADK-110',
+      fieldsAt(manifest, 'permissions', 'name', 'permissions'),
+      dotted
+    ),
+    ...namespaceIssues(
+      'KADK-111',
+      stringsAt(recordAt(manifest, 'jobs'), 'types', 'jobs.types'),
+      dotted
+    ),
+    ...namespaceIssues(
+      'KADK-112',
+      stringsAt(recordAt(manifest, 'prompts'), 'keys', 'prompts.keys'),
+      dotted
+    ),
+    ...namespaceIssues(
+      'KADK-113',
+      stringsAt(recordAt(manifest, 'secrets'), 'keys', 'secrets.keys'),
+      [`${id}:`]
+    ),
     ...namespaceIssues(
       'KADK-114',
       fieldsAt(recordAt(manifest, 'events'), 'publishes', 'name', 'events.publishes'),
       dotted
     ),
-    ...namespaceIssues('KADK-115', stringsAt(recordAt(manifest, 'audit'), 'actions', 'audit.actions'), dotted),
+    ...namespaceIssues(
+      'KADK-115',
+      stringsAt(recordAt(manifest, 'audit'), 'actions', 'audit.actions'),
+      dotted
+    ),
   ];
 }
 
@@ -134,7 +163,10 @@ function checkDuplicates(manifest: ManifestRecord): KadkIssue[] {
     [stringsAt(database, 'ownedTables', 'database.ownedTables'), 'database.ownedTables'],
     [stringsAt(database, 'readAccess', 'database.readAccess'), 'database.readAccess'],
     [fieldsAt(manifest, 'legacyTables', 'tableName', 'legacyTables'), 'legacyTables'],
-    [stringsAt(recordAt(manifest, 'contributions.mcp'), 'tools', 'contributions.mcp.tools'), 'contributions.mcp.tools'],
+    [
+      stringsAt(recordAt(manifest, 'contributions.mcp'), 'tools', 'contributions.mcp.tools'),
+      'contributions.mcp.tools',
+    ],
     [fieldsAt(manifest, 'resourceTypes', 'type', 'resourceTypes'), 'resourceTypes'],
     [slotKeys(manifest), 'ui.slots'],
   ];
@@ -142,21 +174,29 @@ function checkDuplicates(manifest: ManifestRecord): KadkIssue[] {
 }
 
 function checkCapabilityOverlap(manifest: ManifestRecord): KadkIssue[] {
-  const required = new Set(fieldsAt(manifest, 'requires', 'capability', 'requires').map((entry) => entry.value));
+  const required = new Set(
+    fieldsAt(manifest, 'requires', 'capability', 'requires').map((entry) => entry.value)
+  );
   return fieldsAt(manifest, 'optional', 'capability', 'optional')
     .filter((entry) => required.has(entry.value))
     .map((entry) => createKadkIssue('KADK-117', entry.path, { value: entry.value }));
 }
 
 function checkRequiredPermissions(manifest: ManifestRecord): KadkIssue[] {
-  const declared = new Set(fieldsAt(manifest, 'permissions', 'name', 'permissions').map((entry) => entry.value));
+  const declared = new Set(
+    fieldsAt(manifest, 'permissions', 'name', 'permissions').map((entry) => entry.value)
+  );
   return stringsAt(manifest, 'requiredPermissions', 'requiredPermissions')
     .filter((entry) => !declared.has(entry.value))
     .map((entry) => createKadkIssue('KADK-118', entry.path, { value: entry.value }));
 }
 
 function leavesPackage(path: string): boolean {
-  return path.startsWith('/') || path.includes('\\') || path.split('/').some((segment) => segment === '..');
+  return (
+    path.startsWith('/') ||
+    path.includes('\\') ||
+    path.split('/').some((segment) => segment === '..')
+  );
 }
 
 function packagePaths(manifest: ManifestRecord): Entry<string>[] {
@@ -164,7 +204,10 @@ function packagePaths(manifest: ManifestRecord): Entry<string>[] {
     const value = recordAt(manifest, parent)[key];
     return typeof value === 'string' ? [{ value, path: `${parent}.${key}` }] : [];
   });
-  return [...direct, ...fieldsAt(recordAt(manifest, 'events'), 'publishes', 'schema', 'events.publishes')];
+  return [
+    ...direct,
+    ...fieldsAt(recordAt(manifest, 'events'), 'publishes', 'schema', 'events.publishes'),
+  ];
 }
 
 function checkPackagePaths(manifest: ManifestRecord): KadkIssue[] {
@@ -183,7 +226,9 @@ function checkRuntimeLoadedUi(manifest: ManifestRecord): KadkIssue[] {
   const ui = recordAt(manifest, 'ui');
   const entryFile = ui['entryFile'];
   const hasEntry = typeof entryFile === 'string' && entryFile.length > 0;
-  return ui['runtimeLoad'] === true && !hasEntry ? [createKadkIssue('KADK-501', 'ui.entryFile')] : [];
+  return ui['runtimeLoad'] === true && !hasEntry
+    ? [createKadkIssue('KADK-501', 'ui.entryFile')]
+    : [];
 }
 
 function checkDataSchemaName(manifest: ManifestRecord, id: string): KadkIssue[] {
@@ -198,7 +243,8 @@ function checkTierTwoData(manifest: ManifestRecord): KadkIssue[] {
   const issues: KadkIssue[] = [];
   const database = recordAt(manifest, 'database');
   if (hasKey(manifest, 'legacyTables')) issues.push(createKadkIssue('KADK-301', 'legacyTables'));
-  if (hasKey(database, 'readAccess')) issues.push(createKadkIssue('KADK-302', 'database.readAccess'));
+  if (hasKey(database, 'readAccess'))
+    issues.push(createKadkIssue('KADK-302', 'database.readAccess'));
 
   const owned = stringsAt(database, 'ownedTables', 'database.ownedTables');
   const schema = recordAt(manifest, 'data')['schema'];
@@ -214,15 +260,22 @@ function checkTierTwoData(manifest: ManifestRecord): KadkIssue[] {
 
 /** 0b S7: a legacy entry must name an owned table, and a rename must land in the addon prefix. */
 function checkLegacyTables(manifest: ManifestRecord, id: string): KadkIssue[] {
-  const owned = new Set(stringsAt(recordAt(manifest, 'database'), 'ownedTables', '').map((entry) => entry.value));
+  const owned = new Set(
+    stringsAt(recordAt(manifest, 'database'), 'ownedTables', '').map((entry) => entry.value)
+  );
   const schema = recordAt(manifest, 'data')['schema'];
-  const prefixes = [`${id.replace(/-/g, '_')}_`, ...(typeof schema === 'string' ? [`${schema}.`] : [])];
+  const prefixes = [
+    `${id.replace(/-/g, '_')}_`,
+    ...(typeof schema === 'string' ? [`${schema}.`] : []),
+  ];
   const label = prefixes.map((prefix) => `'${prefix}'`).join(' or ');
   const issues = fieldsAt(manifest, 'legacyTables', 'tableName', 'legacyTables')
     .filter((entry) => !owned.has(entry.value))
     .map((entry) => createKadkIssue('KADK-306', entry.path, { value: entry.value }));
   const renames = fieldsAt(manifest, 'legacyTables', 'newName', 'legacyTables');
-  for (const entry of renames.filter((rename) => !prefixes.some((prefix) => rename.value.startsWith(prefix)))) {
+  for (const entry of renames.filter(
+    (rename) => !prefixes.some((prefix) => rename.value.startsWith(prefix))
+  )) {
     issues.push(createKadkIssue('KADK-307', entry.path, { value: entry.value, prefixes: label }));
   }
   return issues;
@@ -234,7 +287,8 @@ export function checkManifestV2Rules(
   id: string,
   options: ManifestValidationOptions
 ): KadkIssue[] {
-  const tierRules = manifest['tier'] === 2 ? checkTierTwoData(manifest) : checkLegacyTables(manifest, id);
+  const tierRules =
+    manifest['tier'] === 2 ? checkTierTwoData(manifest) : checkLegacyTables(manifest, id);
   return [
     ...checkReservedId(id, options),
     ...checkNamespaces(manifest, id),

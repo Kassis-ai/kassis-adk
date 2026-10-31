@@ -5,7 +5,6 @@
 **Technical owner:** Unassigned
 **Last reviewed:** 2026-10-28
 
-
 The Addon Development Kit (ADK) is how a Kassis addon is created, checked, signed, and loaded. It is also how an AI coding agent is given a signed profile, and how an operator turns an addon on.
 
 ## Who it is for

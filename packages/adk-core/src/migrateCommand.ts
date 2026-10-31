@@ -40,11 +40,20 @@ export function devDatabaseHost(hostname: string): boolean {
 }
 
 function refuse(message: string, data: JsonObject = {}): CommandResult {
-  return failure(message, 'Start the dev host with kassis-addon dev. migrate does not use any other database.', 'ADK-MIGRATE', data);
+  return failure(
+    message,
+    'Start the dev host with kassis-addon dev. migrate does not use any other database.',
+    'ADK-MIGRATE',
+    data
+  );
 }
 
 function containerRunning(runtime: string, containerId: string): boolean {
-  const inspected = runProcess(runtime, ['inspect', '--format', '{{.State.Running}}', containerId], PROBE_MS);
+  const inspected = runProcess(
+    runtime,
+    ['inspect', '--format', '{{.State.Running}}', containerId],
+    PROBE_MS
+  );
   if (inspected.timedOut || inspected.missing || inspected.status !== 0) return false;
   return inspected.stdout.trim() === 'true';
 }
@@ -61,7 +70,12 @@ function readDatabase(runtime: string, containerId: string): DatabaseIdentity | 
   return null;
 }
 
-function psql(runtime: string, containerId: string, variable: string, sql: string): { ok: boolean; stdout: string; stderr: string } {
+function psql(
+  runtime: string,
+  containerId: string,
+  variable: string,
+  sql: string
+): { ok: boolean; stdout: string; stderr: string } {
   const result = runProcess(
     runtime,
     ['exec', '-i', containerId, 'sh', '-c', `psql "$${variable}" -q -t -A -v ON_ERROR_STOP=1 -f -`],
@@ -78,7 +92,10 @@ function psql(runtime: string, containerId: string, variable: string, sql: strin
 function migrationFiles(dir: string): string[] {
   const folder = path.join(dir, 'migrations');
   if (!fs.existsSync(folder)) return [];
-  return fs.readdirSync(folder).filter((name) => UP_FILE.test(name)).sort();
+  return fs
+    .readdirSync(folder)
+    .filter((name) => UP_FILE.test(name))
+    .sort();
 }
 
 function appliedNames(stdout: string): string[] {
@@ -93,7 +110,11 @@ const LEDGER = `CREATE TABLE IF NOT EXISTS _kassis_devhost_migrations (
   applied_at timestamptz NOT NULL DEFAULT now()
 );`;
 
-function resolveTarget(runtime: string, containerId: string, target: string): CommandResult | DatabaseIdentity {
+function resolveTarget(
+  runtime: string,
+  containerId: string,
+  target: string
+): CommandResult | DatabaseIdentity {
   if (!containerRunning(runtime, containerId)) {
     return refuse('No dev host is running.');
   }
@@ -128,7 +149,12 @@ export function migrateProject(dir: string, action: string, target: string): Com
   return down(dir, state.runtime, state.containerId, resolved, files);
 }
 
-function status(runtime: string, containerId: string, identity: DatabaseIdentity, files: readonly string[]): CommandResult {
+function status(
+  runtime: string,
+  containerId: string,
+  identity: DatabaseIdentity,
+  files: readonly string[]
+): CommandResult {
   const listed = psql(
     runtime,
     containerId,
@@ -156,7 +182,9 @@ function up(
 ): CommandResult {
   const current = status(runtime, containerId, identity, files);
   if (!current.ok) return current;
-  const lines = Array.isArray(current.data.lines) ? current.data.lines.filter((line) => typeof line === 'string') : [];
+  const lines = Array.isArray(current.data.lines)
+    ? current.data.lines.filter((line) => typeof line === 'string')
+    : [];
   const pending = lines
     .filter((line) => line.startsWith('pending '))
     .map((line) => line.slice('pending '.length));
@@ -201,9 +229,13 @@ function down(
     return refuse(`Could not read the dev host ledger. ${listed.stderr.trim()}`.trim());
   }
   const name = appliedNames(listed.stdout)[0] ?? '';
-  if (!name) return commandResult([], { host: identity.host, database: identity.name, reverted: '' });
+  if (!name)
+    return commandResult([], { host: identity.host, database: identity.name, reverted: '' });
   if (!files.includes(name)) {
-    return refuse(`${name} is not an up script in this addon.`, { host: identity.host, database: identity.name });
+    return refuse(`${name} is not an up script in this addon.`, {
+      host: identity.host,
+      database: identity.name,
+    });
   }
   const downName = name.replace(/\.up\.sql$/, '.down.sql');
   const downFile = path.join(dir, 'migrations', downName);

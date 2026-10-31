@@ -62,7 +62,9 @@ export async function signManifestFile(manifestPath, keyPath) {
     if (uiContentHash) body.uiContentHash = uiContentHash;
     else delete body.uiContentHash;
   }
-  const signature = crypto.sign(null, Buffer.from(await canonicalString(body)), key).toString('hex');
+  const signature = crypto
+    .sign(null, Buffer.from(await canonicalString(body)), key)
+    .toString('hex');
   fs.writeFileSync(manifestPath, `${JSON.stringify({ ...body, signature }, null, 2)}\n`);
   process.stdout.write(`${path.resolve(manifestPath)}\n`);
 }

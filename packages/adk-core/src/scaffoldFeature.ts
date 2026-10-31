@@ -19,10 +19,15 @@ function pascal(name: string): string {
     .join('');
 }
 
-function loadManifest(dir: string): { file: string; manifest: Record<string, unknown> } | CommandResult {
+function loadManifest(
+  dir: string
+): { file: string; manifest: Record<string, unknown> } | CommandResult {
   const file = path.join(dir, 'manifest.json');
   if (!fs.existsSync(file)) {
-    return commandResult([kadkIssue('KADK-102', 'manifest.json', null, { path: '', field: 'manifest.json' })], {});
+    return commandResult(
+      [kadkIssue('KADK-102', 'manifest.json', null, { path: '', field: 'manifest.json' })],
+      {}
+    );
   }
   let parsed: unknown;
   try {
@@ -30,7 +35,12 @@ function loadManifest(dir: string): { file: string; manifest: Record<string, unk
   } catch (error) {
     if (!(error instanceof SyntaxError)) throw error;
     return commandResult(
-      [kadkIssue('KADK-101', 'manifest.json', null, { path: 'manifest.json', detail: 'is not valid JSON' })],
+      [
+        kadkIssue('KADK-101', 'manifest.json', null, {
+          path: 'manifest.json',
+          detail: 'is not valid JSON',
+        }),
+      ],
       {}
     );
   }
@@ -79,7 +89,11 @@ function addPermission(manifest: Record<string, unknown>, permission: string): v
   manifest.permissions = permissions;
 }
 
-function scaffoldRoute(dir: string, loaded: { file: string; manifest: Record<string, unknown> }, name: string): CommandResult {
+function scaffoldRoute(
+  dir: string,
+  loaded: { file: string; manifest: Record<string, unknown> },
+  name: string
+): CommandResult {
   const id = String(loaded.manifest.id);
   const permission = `${id}.${name}`;
   addPermission(loaded.manifest, permission);
@@ -88,7 +102,10 @@ function scaffoldRoute(dir: string, loaded: { file: string; manifest: Record<str
   return commandResult([], { kind: 'route', name: permission, files: [file, 'manifest.json'] });
 }
 
-function scaffoldCapability(loaded: { file: string; manifest: Record<string, unknown> }, name: string): CommandResult {
+function scaffoldCapability(
+  loaded: { file: string; manifest: Record<string, unknown> },
+  name: string
+): CommandResult {
   const capability = `${String(loaded.manifest.id)}.${name}`;
   const provides = ensureArray(loaded.manifest, 'provides');
   const exists = provides.some((item) => isRecordValue(item) && item.capability === capability);
@@ -98,7 +115,11 @@ function scaffoldCapability(loaded: { file: string; manifest: Record<string, unk
   return commandResult([], { kind: 'capability', name: capability, files: ['manifest.json'] });
 }
 
-function scaffoldEvent(dir: string, loaded: { file: string; manifest: Record<string, unknown> }, name: string): CommandResult {
+function scaffoldEvent(
+  dir: string,
+  loaded: { file: string; manifest: Record<string, unknown> },
+  name: string
+): CommandResult {
   const eventName = `${String(loaded.manifest.id)}.${name}`;
   const schema = `schemas/${name}.schema.json`;
   const events = isRecordValue(loaded.manifest.events) ? { ...loaded.manifest.events } : {};
@@ -111,12 +132,18 @@ function scaffoldEvent(dir: string, loaded: { file: string; manifest: Record<str
   const schemaPath = path.join(dir, schema);
   if (!fs.existsSync(schemaPath)) {
     fs.mkdirSync(path.dirname(schemaPath), { recursive: true });
-    fs.writeFileSync(schemaPath, `${JSON.stringify({ $schema: 'https://json-schema.org/draft/2020-12/schema', type: 'object' }, null, 2)}\n`);
+    fs.writeFileSync(
+      schemaPath,
+      `${JSON.stringify({ $schema: 'https://json-schema.org/draft/2020-12/schema', type: 'object' }, null, 2)}\n`
+    );
   }
   return commandResult([], { kind: 'event', name: eventName, files: ['manifest.json', schema] });
 }
 
-function scaffoldJob(loaded: { file: string; manifest: Record<string, unknown> }, name: string): CommandResult {
+function scaffoldJob(
+  loaded: { file: string; manifest: Record<string, unknown> },
+  name: string
+): CommandResult {
   const job = `${String(loaded.manifest.id)}.${name}`;
   const jobs = isRecordValue(loaded.manifest.jobs) ? { ...loaded.manifest.jobs } : {};
   const types = Array.isArray(jobs.types) ? [...jobs.types] : [];
@@ -148,7 +175,10 @@ function scaffoldMigration(dir: string, name: string): CommandResult {
   });
 }
 
-function scaffoldSlot(loaded: { file: string; manifest: Record<string, unknown> }, name: string): CommandResult {
+function scaffoldSlot(
+  loaded: { file: string; manifest: Record<string, unknown> },
+  name: string
+): CommandResult {
   if (!isRecordValue(loaded.manifest.ui)) {
     return failure(
       'This addon has no UI entry.',
@@ -182,7 +212,10 @@ export function scaffoldProject(input: {
   readonly rung: string;
 }): CommandResult {
   if (!isKind(input.kind)) {
-    return failure(`scaffold kind must be one of ${KINDS.join(', ')}`, 'Pass kind addon, route, capability, event, job, migration, or ui-slot.');
+    return failure(
+      `scaffold kind must be one of ${KINDS.join(', ')}`,
+      'Pass kind addon, route, capability, event, job, migration, or ui-slot.'
+    );
   }
   if (input.kind === 'addon') {
     const dir = input.dir || (input.id ? path.resolve(input.id) : '');

@@ -5,7 +5,6 @@
 **Technical owner:** Unassigned
 **Last reviewed:** 2026-10-28
 
-
 `@kassis/addon-testkit` checks an evidence pack. `checkAddonImports` is the import boundary used by `assertNoHostImports` and by the CLI `conformance` command. JavaScript is read with `es-module-lexer` (static `import`, dynamic `import()`, and `export ... from`). `require()` is not an ECMAScript import, so the TypeScript scanner records it. `.ts` files use that scanner for every form.
 
 An import is allowed when the specifier is a relative path that stays inside the addon folder, one of `@kassis/addon-sdk`, `@kassis/host-sdk`, `@kassis/addon-ui`, or `@kassis/agent-kit`, a package named in `dependencies`, `optionalDependencies`, or `peerDependencies`, or a Node built-in in server code. Server code is every checked file except `src/ui/` and `frontend/`. Anything else fails with a KADK-2xx code, the file, and the line: KADK-201 for the host alias `@/`, KADK-202 for Kassis core (`server/`), KADK-203 for the core capability registry, KADK-204 for a relative path outside the package, and KADK-205 for an undeclared package or a Node built-in in UI code.
@@ -44,7 +43,7 @@ node tools/adk/kassis-addon.mjs pack --out=evidence
 
 ## Changelog
 
-| Date | Change |
-| --- | --- |
-| 2026-10-28 | Conformance uses one import checker. Forbidden imports fail with KADK-201 through KADK-205, including `dist/server/index.js` and `frontend/dist/index.js` when those files exist. |
+| Date       | Change                                                                                                                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-28 | Conformance uses one import checker. Forbidden imports fail with KADK-201 through KADK-205, including `dist/server/index.js` and `frontend/dist/index.js` when those files exist.                             |
 | 2026-10-28 | Certify records check, conformance, build and test in `.kassis/evidence/checks.json`. A blank outcome is KADK-714. Typed machine evidence is KADK-715. The evidence pack writes `index.json` and `README.md`. |

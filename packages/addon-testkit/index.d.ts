@@ -146,7 +146,10 @@ export interface TestAddonContext {
   };
   readonly audit: {
     record(principal: TestPrincipal, action: string, detail: AuditDetailInput): Promise<void>;
-    search(principal: TestPrincipal, query?: { readonly actions?: readonly string[] }): Promise<AuditPage>;
+    search(
+      principal: TestPrincipal,
+      query?: { readonly actions?: readonly string[] }
+    ): Promise<AuditPage>;
   };
   readonly events: {
     publish(principal: TestPrincipal, name: string, payload: JsonObject): Promise<void>;

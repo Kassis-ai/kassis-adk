@@ -6,10 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildCanonicalManifestString } from './canonicalJson.mjs';
-import {
-  keyIsTrusted,
-  loadPublisherTrustPolicy,
-} from './publisherTrust.mjs';
+import { keyIsTrusted, loadPublisherTrustPolicy } from './publisherTrust.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const profilesDir = path.join(here, 'profiles');
@@ -52,7 +49,8 @@ export function verifyProfileSignature(profile, policy = loadPublisherTrustPolic
   );
   if (!verified) return false;
   try {
-    const publisher = typeof profile.publisher === 'string' && profile.publisher ? profile.publisher : '*';
+    const publisher =
+      typeof profile.publisher === 'string' && profile.publisher ? profile.publisher : '*';
     keyIsTrusted(fs.readFileSync(publicKeyPath, 'utf8'), publisher, policy);
     return true;
   } catch {

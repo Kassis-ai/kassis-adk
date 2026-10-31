@@ -59,7 +59,9 @@ function registryIssue(): { issue: AdkIssue | null; user: string } {
 
 function signingIssue(): { issue: AdkIssue | null; count: number } {
   const dir = path.join(os.homedir(), '.kassis', 'keys');
-  const count = fs.existsSync(dir) ? fs.readdirSync(dir).filter((name) => name.endsWith('.key')).length : 0;
+  const count = fs.existsSync(dir)
+    ? fs.readdirSync(dir).filter((name) => name.endsWith('.key')).length
+    : 0;
   if (count > 0) return { count, issue: null };
   return {
     count: 0,
@@ -74,7 +76,11 @@ function signingIssue(): { issue: AdkIssue | null; count: number } {
   };
 }
 
-async function instanceIssue(): Promise<{ issue: AdkIssue | null; url: string; reachable: boolean }> {
+async function instanceIssue(): Promise<{
+  issue: AdkIssue | null;
+  url: string;
+  reachable: boolean;
+}> {
   const url = (process.env.KASSIS_ADK_INSTANCE ?? '').trim();
   if (!url) {
     return {
@@ -95,7 +101,18 @@ async function instanceIssue(): Promise<{ issue: AdkIssue | null; url: string; r
     target = new URL('/api/v1/adk/version', url);
   } catch (error) {
     if (!(error instanceof TypeError)) throw error;
-    return { url: '', reachable: false, issue: operationalIssue('ADK-INSTANCE', 'error', 'KASSIS_ADK_INSTANCE is not a URL.', 'Set an http or https URL.', '', null) };
+    return {
+      url: '',
+      reachable: false,
+      issue: operationalIssue(
+        'ADK-INSTANCE',
+        'error',
+        'KASSIS_ADK_INSTANCE is not a URL.',
+        'Set an http or https URL.',
+        '',
+        null
+      ),
+    };
   }
   try {
     target.username = '';
@@ -146,7 +163,10 @@ function hostApiIssue(dir: string): { issue: AdkIssue | null; range: string; com
     return {
       range: '',
       compatible: false,
-      issue: kadkIssue('KADK-101', 'manifest.json', null, { path: 'manifest.json', detail: 'is not valid JSON' }),
+      issue: kadkIssue('KADK-101', 'manifest.json', null, {
+        path: 'manifest.json',
+        detail: 'is not valid JSON',
+      }),
     };
   }
   if (!range) return { issue: null, range: '', compatible: true };

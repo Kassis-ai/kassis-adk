@@ -16,6 +16,11 @@ export { configuredDevImage, startDevHost } from './devHost.ts';
 export { devDatabaseHost, migrateProject } from './migrateCommand.ts';
 export { doctorProject } from './doctor.ts';
 export { hostApiSatisfies, parseSemVer } from './hostApiRange.ts';
-export { checkProject, conformanceProject, explainProject, initProject } from './projectCommands.ts';
+export {
+  checkProject,
+  conformanceProject,
+  explainProject,
+  initProject,
+} from './projectCommands.ts';
 export { deployProject, packageProject, statusProject } from './packageCommand.ts';
 export { scaffoldProject } from './scaffoldFeature.ts';

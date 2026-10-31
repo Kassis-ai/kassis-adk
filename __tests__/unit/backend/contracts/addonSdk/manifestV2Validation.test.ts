@@ -38,7 +38,9 @@ describe('validateManifestV2', () => {
 
   it('accepts uiContentHash next to contentHash', () => {
     const hash = `sha256-${'ab'.repeat(32)}`;
-    expect(validateManifestV2(manifestWith({ contentHash: hash, uiContentHash: hash })).ok).toBe(true);
+    expect(validateManifestV2(manifestWith({ contentHash: hash, uiContentHash: hash })).ok).toBe(
+      true
+    );
     expectOnly(manifestWith({ uiContentHash: 'sha256-zz' }), 'KADK-101', 'uiContentHash');
   });
 

@@ -66,7 +66,9 @@ function localPackageDir(packageName) {
     path.resolve(templateDir, '../../packages', packageName),
     path.resolve(templateDir, '../../../', packageName),
   ];
-  return candidates.find((candidate) => fs.existsSync(path.join(candidate, 'package.json'))) ?? null;
+  return (
+    candidates.find((candidate) => fs.existsSync(path.join(candidate, 'package.json'))) ?? null
+  );
 }
 
 function fileSpec(fromDir, packageDir) {

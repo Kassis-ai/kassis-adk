@@ -23,7 +23,9 @@ describe('ADK package distribution', () => {
   it('writes an SBOM and an air-gap bundle without the private key', () => {
     const sbom = buildSbom();
     expect(sbom.bomFormat).toBe('CycloneDX');
-    expect(sbom.components.map((item: { name: string }) => item.name)).toContain('@kassis/addon-sdk');
+    expect(sbom.components.map((item: { name: string }) => item.name)).toContain(
+      '@kassis/addon-sdk'
+    );
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'kassis-airgap-'));
     try {
       writeAirgapBundle(dir);
@@ -33,7 +35,9 @@ describe('ADK package distribution', () => {
       expect(fs.existsSync(path.join(dir, 'packages/adk-core/src/index.ts'))).toBe(true);
       expect(fs.existsSync(path.join(dir, 'tools/adk/kassis-addon.mjs'))).toBe(true);
       expect(fs.existsSync(path.join(dir, 'checksums.txt'))).toBe(true);
-      expect(fs.readFileSync(path.join(dir, 'checksums.txt'), 'utf8')).toContain('tools/adk/kassis-addon.mjs');
+      expect(fs.readFileSync(path.join(dir, 'checksums.txt'), 'utf8')).toContain(
+        'tools/adk/kassis-addon.mjs'
+      );
       verifyAirgapChecksums(dir);
       expect(() => assertPopulatedAirgapBundle(dir)).toThrow(/not populated/);
       expect(fs.existsSync(path.join(dir, 'server/keys/addon_signing_private.key'))).toBe(false);
@@ -56,7 +60,9 @@ describe('ADK package distribution', () => {
       expect(fs.readFileSync(path.join(out, 'packs/fake.tgz'), 'utf8')).toBe('not-a-tarball');
       verifyAirgapChecksums(out);
       fs.appendFileSync(path.join(out, 'tools/adk/kassis-addon.mjs'), '\n');
-      expect(() => verifyAirgapChecksums(out)).toThrow(/checksum mismatch: tools\/adk\/kassis-addon.mjs/);
+      expect(() => verifyAirgapChecksums(out)).toThrow(
+        /checksum mismatch: tools\/adk\/kassis-addon.mjs/
+      );
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }

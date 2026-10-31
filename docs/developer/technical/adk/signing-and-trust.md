@@ -5,7 +5,6 @@
 **Technical owner:** Unassigned
 **Last reviewed:** 2026-10-28
 
-
 ## Publisher keys
 
 The instance trust store is the database (`platform_addon_publishers` and `platform_addon_publisher_keys`), merged with `server/core/addon-platform/trust/publisher-trust.json`. That file seeds publisher `kassis` so boot and unit tests can verify first-party addons before the database is up.
@@ -48,8 +47,8 @@ The runtime UI catalog entry carries `contentHash`. The loader appends it as a q
 
 ## Changelog
 
-| Date | Change |
-| --- | --- |
-| 2026-10-28 | First-party publishers (`kassis`, `kassis-corp`, empty) do not need `uiContentHash`. A client UI package signs it over `frontend/dist`. A missing or mismatched client hash is refused, and the UI route returns 404. The UI gate reuses a stat fingerprint cache. |
+| Date       | Change                                                                                                                                                                                                                                                                                                                              |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-28 | First-party publishers (`kassis`, `kassis-corp`, empty) do not need `uiContentHash`. A client UI package signs it over `frontend/dist`. A missing or mismatched client hash is refused, and the UI route returns 404. The UI gate reuses a stat fingerprint cache.                                                                  |
 | 2026-10-28 | Tool, evidence, test, and `frontend/dist/**` folders are outside `contentHash`. The server image builds `frontend/dist` after signing. Runtime UI is served only after a passing signature gate while the addon stays enabled and the content-hash fingerprint still matches. The catalog `contentHash` is the loader query string. |
-| 2026-10-28 | Trust is the database plus the seeded file and optional `KASSIS_PUBLISHER_TRUST_FILE`. Revoked wins. Bank publishers are always strict, cannot use tier 1, and their id prefixes must start with the publisher id and a hyphen. A key or scope change is refused when no approval policy is published. |
+| 2026-10-28 | Trust is the database plus the seeded file and optional `KASSIS_PUBLISHER_TRUST_FILE`. Revoked wins. Bank publishers are always strict, cannot use tier 1, and their id prefixes must start with the publisher id and a hyphen. A key or scope change is refused when no approval policy is published.                              |

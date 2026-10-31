@@ -181,27 +181,37 @@ function printLines(value) {
 
 function printSuccess(command, data) {
   if (command === 'init' && typeof data.dir === 'string') process.stdout.write(`${data.dir}\n`);
-  if ((command === 'attest' || command === 'sync' || command === 'keys') && typeof data.path === 'string') {
+  if (
+    (command === 'attest' || command === 'sync' || command === 'keys') &&
+    typeof data.path === 'string'
+  ) {
     process.stdout.write(`${data.path}\n`);
   }
   if (command === 'pack' && typeof data.out === 'string') process.stdout.write(`${data.out}\n`);
   if (command === 'package' && typeof data.path === 'string' && typeof data.sha256 === 'string') {
     process.stdout.write(`${data.path}\n${data.sha256}\n`);
   }
-  if (command === 'deploy' && typeof data.requestId === 'string') process.stdout.write(`${data.requestId}\n`);
+  if (command === 'deploy' && typeof data.requestId === 'string')
+    process.stdout.write(`${data.requestId}\n`);
   if (command === 'status') printStatus(data.installations);
   if (command === 'rules') printLines(data.files);
   if (command === 'keys' && typeof data.fingerprint === 'string') {
     process.stdout.write(`${data.fingerprint}\n${data.publicKey}\n${data.file}\n`);
   }
-  if (command === 'keys' && typeof data.response === 'string') process.stdout.write(`${data.response}\n`);
+  if (command === 'keys' && typeof data.response === 'string')
+    process.stdout.write(`${data.response}\n`);
   if (command === 'explain') process.stdout.write(`${data.message}\n${data.fix}\n`);
-  if (command === 'certify' && typeof data.runId === 'string') process.stdout.write(`${data.runId}\n`);
+  if (command === 'certify' && typeof data.runId === 'string')
+    process.stdout.write(`${data.runId}\n`);
   if (command === 'doctor') {
     process.stdout.write(`Node ${data.nodeVersion}\n`);
-    process.stdout.write(data.registryOk ? `Registry ${data.registryUser}\n` : 'Registry not logged in\n');
+    process.stdout.write(
+      data.registryOk ? `Registry ${data.registryUser}\n` : 'Registry not logged in\n'
+    );
     process.stdout.write(`Signing keys ${data.signingKeys}\n`);
-    process.stdout.write(data.instanceReachable ? `Instance ${data.instanceUrl}\n` : 'Instance not reachable\n');
+    process.stdout.write(
+      data.instanceReachable ? `Instance ${data.instanceUrl}\n` : 'Instance not reachable\n'
+    );
     const range = data.hostApiRange ? data.hostApiRange : '(no manifest)';
     process.stdout.write(`hostApi ${data.hostApiVersion} ${range}\n`);
   }
@@ -216,87 +226,87 @@ function printSuccess(command, data) {
 
 try {
   const parsed = parseArgs({
-  args: process.argv.slice(2),
-  allowPositionals: true,
-  strict: true,
-  options: {
-    help: { type: 'boolean', short: 'h' },
-    version: { type: 'boolean' },
-    json: { type: 'boolean' },
-    id: { type: 'string' },
-    dir: { type: 'string' },
-    publisher: { type: 'string' },
-    tier: { type: 'string' },
-    rung: { type: 'string' },
-    only: { type: 'string' },
-    out: { type: 'string' },
-    key: { type: 'string' },
-    from: { type: 'string' },
-    profile: { type: 'string' },
-    instance: { type: 'string' },
-    image: { type: 'string' },
-    target: { type: 'string' },
-    name: { type: 'string' },
-    kind: { type: 'string' },
-  },
-});
+    args: process.argv.slice(2),
+    allowPositionals: true,
+    strict: true,
+    options: {
+      help: { type: 'boolean', short: 'h' },
+      version: { type: 'boolean' },
+      json: { type: 'boolean' },
+      id: { type: 'string' },
+      dir: { type: 'string' },
+      publisher: { type: 'string' },
+      tier: { type: 'string' },
+      rung: { type: 'string' },
+      only: { type: 'string' },
+      out: { type: 'string' },
+      key: { type: 'string' },
+      from: { type: 'string' },
+      profile: { type: 'string' },
+      instance: { type: 'string' },
+      image: { type: 'string' },
+      target: { type: 'string' },
+      name: { type: 'string' },
+      kind: { type: 'string' },
+    },
+  });
 
-const command = parsed.positionals[0] ?? '';
-if (parsed.values.help) {
-  process.stdout.write(helpText(command));
-  process.exit(0);
-}
-if (parsed.values.version) {
-  process.stdout.write(`kassis-addon ${cliVersion()}\n`);
-  process.exit(0);
-}
-if (!COMMANDS.includes(command)) {
-  process.stderr.write(helpText(''));
-  process.exit(1);
-}
-
-const json = parsed.values.json === true;
-const result = await runCommand({
-  command,
-  subcommand: parsed.positionals[1] ?? '',
-  positional: parsed.positionals[1] ?? '',
-  cwd: process.cwd(),
-  imageFlag: typeof parsed.values.image === 'string' ? parsed.values.image : undefined,
-  followLogs: command === 'dev' && !json,
-  onLog: json
-    ? undefined
-    : (event) => {
-        const stream = event.stream === 'stderr' ? process.stderr : process.stdout;
-        stream.write(event.text);
-      },
-  flags: {
-    id: textValue(parsed.values, 'id'),
-    dir: textValue(parsed.values, 'dir'),
-    publisher: textValue(parsed.values, 'publisher'),
-    tier: textValue(parsed.values, 'tier'),
-    rung: textValue(parsed.values, 'rung'),
-    only: textValue(parsed.values, 'only'),
-    out: textValue(parsed.values, 'out'),
-    key: textValue(parsed.values, 'key'),
-    from: textValue(parsed.values, 'from'),
-    profile: textValue(parsed.values, 'profile'),
-    instance: textValue(parsed.values, 'instance'),
-    target: textValue(parsed.values, 'target'),
-    name: textValue(parsed.values, 'name'),
-    kind: textValue(parsed.values, 'kind'),
-  },
-});
-
-if (json) {
-  process.stdout.write(`${JSON.stringify(result)}\n`);
-  if (command === 'certify' && typeof result.data.runId === 'string' && result.data.runId) {
-    process.stdout.write(`${result.data.runId}\n`);
+  const command = parsed.positionals[0] ?? '';
+  if (parsed.values.help) {
+    process.stdout.write(helpText(command));
+    process.exit(0);
   }
-} else {
-  if (!result.ok) printIssues(result.issues);
-  else printSuccess(command, result.data);
-}
-process.exit(result.ok ? 0 : 1);
+  if (parsed.values.version) {
+    process.stdout.write(`kassis-addon ${cliVersion()}\n`);
+    process.exit(0);
+  }
+  if (!COMMANDS.includes(command)) {
+    process.stderr.write(helpText(''));
+    process.exit(1);
+  }
+
+  const json = parsed.values.json === true;
+  const result = await runCommand({
+    command,
+    subcommand: parsed.positionals[1] ?? '',
+    positional: parsed.positionals[1] ?? '',
+    cwd: process.cwd(),
+    imageFlag: typeof parsed.values.image === 'string' ? parsed.values.image : undefined,
+    followLogs: command === 'dev' && !json,
+    onLog: json
+      ? undefined
+      : (event) => {
+          const stream = event.stream === 'stderr' ? process.stderr : process.stdout;
+          stream.write(event.text);
+        },
+    flags: {
+      id: textValue(parsed.values, 'id'),
+      dir: textValue(parsed.values, 'dir'),
+      publisher: textValue(parsed.values, 'publisher'),
+      tier: textValue(parsed.values, 'tier'),
+      rung: textValue(parsed.values, 'rung'),
+      only: textValue(parsed.values, 'only'),
+      out: textValue(parsed.values, 'out'),
+      key: textValue(parsed.values, 'key'),
+      from: textValue(parsed.values, 'from'),
+      profile: textValue(parsed.values, 'profile'),
+      instance: textValue(parsed.values, 'instance'),
+      target: textValue(parsed.values, 'target'),
+      name: textValue(parsed.values, 'name'),
+      kind: textValue(parsed.values, 'kind'),
+    },
+  });
+
+  if (json) {
+    process.stdout.write(`${JSON.stringify(result)}\n`);
+    if (command === 'certify' && typeof result.data.runId === 'string' && result.data.runId) {
+      process.stdout.write(`${result.data.runId}\n`);
+    }
+  } else {
+    if (!result.ok) printIssues(result.issues);
+    else printSuccess(command, result.data);
+  }
+  process.exit(result.ok ? 0 : 1);
 } catch (error) {
   const message = error instanceof Error ? error.message : 'command failed';
   process.stderr.write(`${message}\n`);

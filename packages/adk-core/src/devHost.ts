@@ -50,10 +50,12 @@ export function configuredDevImage(flag: string | undefined): string {
 
 function runtimeBinary(): { command: string; output: ReturnType<typeof runProcess> } | null {
   const docker = runProcess('docker', ['version', '--format', '{{.Server.Version}}'], PROBE_MS);
-  if (!docker.missing && !docker.timedOut && docker.status === 0) return { command: 'docker', output: docker };
+  if (!docker.missing && !docker.timedOut && docker.status === 0)
+    return { command: 'docker', output: docker };
   if (docker.timedOut) return { command: 'docker', output: docker };
   const podman = runProcess('podman', ['version', '--format', '{{.Server.Version}}'], PROBE_MS);
-  if (!podman.missing && !podman.timedOut && podman.status === 0) return { command: 'podman', output: podman };
+  if (!podman.missing && !podman.timedOut && podman.status === 0)
+    return { command: 'podman', output: podman };
   if (!docker.missing) return { command: 'docker', output: docker };
   if (!podman.missing) return { command: 'podman', output: podman };
   return null;
@@ -93,9 +95,15 @@ function mappedUrl(runtime: string, containerId: string, port: string): string {
 
 function followLogs(runtime: string, containerId: string, onLog: LogListener): Promise<void> {
   return new Promise((resolve) => {
-    const child = spawn(runtime, ['logs', '-f', '--tail', '50', containerId], { windowsHide: true });
-    child.stdout.on('data', (chunk: Buffer) => onLog({ stream: 'stdout', text: chunk.toString('utf8') }));
-    child.stderr.on('data', (chunk: Buffer) => onLog({ stream: 'stderr', text: chunk.toString('utf8') }));
+    const child = spawn(runtime, ['logs', '-f', '--tail', '50', containerId], {
+      windowsHide: true,
+    });
+    child.stdout.on('data', (chunk: Buffer) =>
+      onLog({ stream: 'stdout', text: chunk.toString('utf8') })
+    );
+    child.stderr.on('data', (chunk: Buffer) =>
+      onLog({ stream: 'stderr', text: chunk.toString('utf8') })
+    );
     child.on('error', () => resolve());
     child.on('close', () => resolve());
   });
@@ -120,7 +128,11 @@ export async function startDevHost(
     );
   }
   if (!IMAGE_PATTERN.test(image)) {
-    return failure('The dev host image name is not valid.', 'Use an image reference without spaces.', 'ADK-DEV-IMAGE');
+    return failure(
+      'The dev host image name is not valid.',
+      'Use an image reference without spaces.',
+      'ADK-DEV-IMAGE'
+    );
   }
   const runtime = runtimeBinary();
   if (!runtime || runtime.output.missing) {
@@ -144,7 +156,11 @@ export async function startDevHost(
       'ADK-DEV-RUNTIME'
     );
   }
-  const inspect = runProcess(runtime.command, ['image', 'inspect', '--format', '{{.Id}}', image], PROBE_MS);
+  const inspect = runProcess(
+    runtime.command,
+    ['image', 'inspect', '--format', '{{.Id}}', image],
+    PROBE_MS
+  );
   if (inspect.timedOut) {
     return failure(
       'Checking the local image did not finish.',
@@ -165,7 +181,11 @@ export async function startDevHost(
   }
   const id = addonId(dir);
   if (!id) {
-    return failure('manifest.json needs an id', 'Run dev from an addon directory that has manifest.json.', 'ADK-USAGE');
+    return failure(
+      'manifest.json needs an id',
+      'Run dev from an addon directory that has manifest.json.',
+      'ADK-USAGE'
+    );
   }
   const port = containerPort();
   const name = `kassis-devhost-${id}`;
@@ -197,7 +217,12 @@ export async function startDevHost(
   }
   const containerId = started.stdout.trim().slice(0, 12);
   const url = mappedUrl(runtime.command, containerId || name, port);
-  const state: DevHostState = { runtime: runtime.command, containerId: containerId || name, image, url };
+  const state: DevHostState = {
+    runtime: runtime.command,
+    containerId: containerId || name,
+    image,
+    url,
+  };
   writeState(state);
   const data: JsonObject = { url, containerId: state.containerId, image, mount: ADDON_MOUNT };
   if (!url) {

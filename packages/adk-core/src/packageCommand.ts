@@ -38,7 +38,8 @@ function messageOf(error: unknown): string {
 
 function packageFileName(id: string, version: string): string {
   const segment = /^[a-zA-Z0-9][a-zA-Z0-9.+_-]*$/;
-  if (!segment.test(id) || !segment.test(version) || id.includes('..') || version.includes('..')) return '';
+  if (!segment.test(id) || !segment.test(version) || id.includes('..') || version.includes('..'))
+    return '';
   return `${id}-${version}.addon`;
 }
 
@@ -54,9 +55,7 @@ function ensureSbom(dir: string): void {
   const build = path.join(dir, 'dist', 'server', 'index.js');
   const missing = !fs.existsSync(file);
   const stale =
-    !missing &&
-    fs.existsSync(build) &&
-    fs.statSync(file).mtimeMs < fs.statSync(build).mtimeMs;
+    !missing && fs.existsSync(build) && fs.statSync(file).mtimeMs < fs.statSync(build).mtimeMs;
   if (missing || stale) writeAddonSbom(dir);
 }
 
@@ -65,7 +64,11 @@ export function sbomProject(dir: string): CommandResult {
     writeAddonSbom(dir);
     return commandResult([], { path: path.join(dir, 'sbom.json') });
   } catch (error) {
-    return failure(messageOf(error), 'Run sbom in an addon folder that has a package.json.', 'ADK-PACKAGE');
+    return failure(
+      messageOf(error),
+      'Run sbom in an addon folder that has a package.json.',
+      'ADK-PACKAGE'
+    );
   }
 }
 
@@ -259,15 +262,27 @@ function storeZip(entries: readonly ZipEntry[]): Buffer {
 }
 
 /** Writes `<id>-<version>.addon` beside the addon folder unless --out is set. */
-export async function packageProject(dir: string, out: string, cwd: string): Promise<CommandResult> {
+export async function packageProject(
+  dir: string,
+  out: string,
+  cwd: string
+): Promise<CommandResult> {
   try {
     const manifestPath = path.join(dir, 'manifest.json');
     if (!fs.existsSync(manifestPath)) {
-      return failure('manifest.json was not found', 'Run package in an addon folder.', 'ADK-PACKAGE');
+      return failure(
+        'manifest.json was not found',
+        'Run package in an addon folder.',
+        'ADK-PACKAGE'
+      );
     }
     const parsed = readJson(manifestPath);
     if (!isRecordValue(parsed)) {
-      return failure('manifest.json is not an object', 'Fix manifest.json and sign it.', 'ADK-PACKAGE');
+      return failure(
+        'manifest.json is not an object',
+        'Fix manifest.json and sign it.',
+        'ADK-PACKAGE'
+      );
     }
     if (typeof parsed.signature !== 'string' || parsed.signature.trim() === '') {
       return failure(
@@ -369,7 +384,12 @@ function parseBody(text: string): unknown {
 
 function errorText(status: number, text: string, label: string): string {
   const body = parseBody(text);
-  if (isRecordValue(body) && typeof body.error === 'string' && body.error.length > 0 && body.error.length < 300) {
+  if (
+    isRecordValue(body) &&
+    typeof body.error === 'string' &&
+    body.error.length > 0 &&
+    body.error.length < 300
+  ) {
     return `${label} failed (${status}): ${body.error}`;
   }
   return `${label} failed (${status})`;
@@ -388,7 +408,9 @@ function responseData(body: unknown): Record<string, unknown> | null {
 
 function soleAddon(directory: string): string {
   if (!fs.existsSync(directory)) return '';
-  const names = fs.readdirSync(directory).filter((name) => name.endsWith('.addon') && !name.startsWith('.'));
+  const names = fs
+    .readdirSync(directory)
+    .filter((name) => name.endsWith('.addon') && !name.startsWith('.'));
   if (names.length !== 1) return '';
   return path.join(directory, names[0] ?? '');
 }
@@ -413,7 +435,11 @@ function addonPackagePath(dir: string, cwd: string, positional: string): Command
   if (positional) {
     const resolved = path.resolve(cwd, positional);
     if (!fs.existsSync(resolved) || !fs.statSync(resolved).isFile()) {
-      return failure(`Addon package was not found: ${positional}`, 'Pass the path to the .addon file.', 'ADK-DEPLOY');
+      return failure(
+        `Addon package was not found: ${positional}`,
+        'Pass the path to the .addon file.',
+        'ADK-DEPLOY'
+      );
     }
     return resolved;
   }
@@ -443,12 +469,20 @@ async function postPackage(url: URL, token: string, filePath: string): Promise<C
   });
   const text = await response.text();
   if (response.status !== 202) {
-    return failure(errorText(response.status, text, 'Deploy'), 'Check the token, the instance URL, and system.admin.', 'ADK-DEPLOY');
+    return failure(
+      errorText(response.status, text, 'Deploy'),
+      'Check the token, the instance URL, and system.admin.',
+      'ADK-DEPLOY'
+    );
   }
   const data = responseData(parseBody(text));
   const requestId = data ? stringField(data, 'requestId') : '';
   if (!requestId) {
-    return failure('Deploy did not return a request id', 'The instance should return 202 with requestId.', 'ADK-DEPLOY');
+    return failure(
+      'Deploy did not return a request id',
+      'The instance should return 202 with requestId.',
+      'ADK-DEPLOY'
+    );
   }
   return commandResult([], {
     requestId,
@@ -537,7 +571,11 @@ export async function statusProject(instance: string): Promise<CommandResult> {
     });
     const text = await response.text();
     if (response.status !== 200) {
-      return failure(errorText(response.status, text, 'Status'), 'Check the token, the instance URL, and system.admin.', 'ADK-STATUS');
+      return failure(
+        errorText(response.status, text, 'Status'),
+        'Check the token, the instance URL, and system.admin.',
+        'ADK-STATUS'
+      );
     }
     const rows = installationsFrom(parseBody(text));
     if (!rows) {

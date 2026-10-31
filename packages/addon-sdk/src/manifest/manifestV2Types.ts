@@ -121,14 +121,7 @@ export interface ManifestUi {
 }
 
 export type ResourceTypeAbility =
-  | 'pin'
-  | 'follow'
-  | 'anchor'
-  | 'search'
-  | 'preview'
-  | 'share'
-  | 'linkToCase'
-  | 'workItems';
+  'pin' | 'follow' | 'anchor' | 'search' | 'preview' | 'share' | 'linkToCase' | 'workItems';
 
 export interface ManifestResourceRelation {
   readonly id: string;

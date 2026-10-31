@@ -298,7 +298,9 @@ function isExportDeclaration(token) {
  * @returns {boolean}
  */
 function isStringToken(token) {
-  return token === ts.SyntaxKind.StringLiteral || token === ts.SyntaxKind.NoSubstitutionTemplateLiteral;
+  return (
+    token === ts.SyntaxKind.StringLiteral || token === ts.SyntaxKind.NoSubstitutionTemplateLiteral
+  );
 }
 
 /**
@@ -319,7 +321,8 @@ function classifySpecifier(input) {
   if (specifier.startsWith('.') || path.isAbsolute(specifier)) {
     const target = path.resolve(path.dirname(input.absoluteFile), specifier);
     if (isInside(input.addonDir, target)) return null;
-    if (isCapabilityRegistry(specifier) || isCapabilityRegistry(target)) return issue(input, 'KADK-203');
+    if (isCapabilityRegistry(specifier) || isCapabilityRegistry(target))
+      return issue(input, 'KADK-203');
     const fromParent = path.relative(path.dirname(input.addonDir), target);
     if (fromParent.split(path.sep).includes('server')) return issue(input, 'KADK-202');
     return issue(input, 'KADK-204');
@@ -424,7 +427,9 @@ function isServerCode(relativeFile) {
  */
 function isTypeScriptFile(relativeFile) {
   const extension = path.posix.extname(relativeFile);
-  return extension === '.ts' || extension === '.tsx' || extension === '.mts' || extension === '.cts';
+  return (
+    extension === '.ts' || extension === '.tsx' || extension === '.mts' || extension === '.cts'
+  );
 }
 
 /**
@@ -475,7 +480,12 @@ function walk(dir, out) {
       continue;
     }
     if (!entry.isFile() || !SOURCE_EXTENSIONS.has(path.extname(entry.name))) continue;
-    if (entry.name.endsWith('.d.ts') || entry.name.endsWith('.d.mts') || entry.name.endsWith('.d.cts')) continue;
+    if (
+      entry.name.endsWith('.d.ts') ||
+      entry.name.endsWith('.d.mts') ||
+      entry.name.endsWith('.d.cts')
+    )
+      continue;
     out.push(path.join(dir, entry.name));
   }
 }

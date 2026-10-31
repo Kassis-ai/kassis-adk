@@ -1,10 +1,4 @@
-export type McpJson =
-  | string
-  | number
-  | boolean
-  | null
-  | McpJson[]
-  | { [key: string]: McpJson };
+export type McpJson = string | number | boolean | null | McpJson[] | { [key: string]: McpJson };
 
 /** JSON Schema object used as an MCP tool input or output schema. */
 export type McpJsonSchema = { [key: string]: McpJson | McpJsonSchema };
@@ -52,8 +46,7 @@ export type McpContext = {
 };
 
 export type McpToolOutcome<TOutput> =
-  | { summary: string; data?: TOutput }
-  | { error: string; hint?: string };
+  { summary: string; data?: TOutput } | { error: string; hint?: string };
 
 export type McpToolDefinition<TInput, TOutput> = {
   name: string;

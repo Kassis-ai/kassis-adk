@@ -50,13 +50,19 @@ function requiredCheckIds(guardrail) {
     const ids = guardrail.checkIds.filter((id) => typeof id === 'string' && id.length > 0);
     if (ids.length > 0) return ids;
   }
-  if (typeof guardrail.checkId === 'string' && guardrail.checkId.length > 0) return [guardrail.checkId];
+  if (typeof guardrail.checkId === 'string' && guardrail.checkId.length > 0)
+    return [guardrail.checkId];
   return [];
 }
 
 function typedEvidence(answer) {
   const evidence = answer.evidence;
-  return Boolean(evidence) && typeof evidence === 'object' && !Array.isArray(evidence) && Object.keys(evidence).length > 0;
+  return (
+    Boolean(evidence) &&
+    typeof evidence === 'object' &&
+    !Array.isArray(evidence) &&
+    Object.keys(evidence).length > 0
+  );
 }
 
 function checkPassed(checks, id) {

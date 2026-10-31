@@ -5,22 +5,21 @@
 **Technical owner:** Unassigned
 **Last reviewed:** 2026-10-28
 
-
 ## Manifest
 
 `manifest.json` is validated as manifest v2 by `kassis-addon check`. The fields an addon author sets most often:
 
-| Field | Role |
-| --- | --- |
-| `id` | Addon id. Routes mount at `/api/v1/addons/<id>`. |
-| `signing` | Optional `{ alg: "ed25519", keyId }`. `keyId` is the sha256 hex of the Ed25519 SPKI DER. It is inside the signed body. A first-party manifest that still has no `signing` block verifies with the kassis current key. |
-| `tier` | `1` (default) or `2`. See [Tiers](./tiers.md). |
-| `routing.mountPath` | Path the host passes into `initialize()`. |
-| `database.ownedTables` / `database.readAccess` | Tables this addon owns or may read. Do not use a wildcard for a new addon. |
-| `permissions` | Names in the addon permission namespace. See [Permission namespaces](../addons/permission-namespaces.md). |
-| `ui.entryFile` | Frontend bundle entry, usually `index.js`. |
-| `ui.runtimeLoad` | When true, the host loads the page from the runtime catalog instead of a static import. |
-| `mcp.tools` | Tool names. Tier 2 tools are forwarded. They are not imported into the host. |
+| Field                                          | Role                                                                                                                                                                                                                  |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                                           | Addon id. Routes mount at `/api/v1/addons/<id>`.                                                                                                                                                                      |
+| `signing`                                      | Optional `{ alg: "ed25519", keyId }`. `keyId` is the sha256 hex of the Ed25519 SPKI DER. It is inside the signed body. A first-party manifest that still has no `signing` block verifies with the kassis current key. |
+| `tier`                                         | `1` (default) or `2`. See [Tiers](./tiers.md).                                                                                                                                                                        |
+| `routing.mountPath`                            | Path the host passes into `initialize()`.                                                                                                                                                                             |
+| `database.ownedTables` / `database.readAccess` | Tables this addon owns or may read. Do not use a wildcard for a new addon.                                                                                                                                            |
+| `permissions`                                  | Names in the addon permission namespace. See [Permission namespaces](../addons/permission-namespaces.md).                                                                                                             |
+| `ui.entryFile`                                 | Frontend bundle entry, usually `index.js`.                                                                                                                                                                            |
+| `ui.runtimeLoad`                               | When true, the host loads the page from the runtime catalog instead of a static import.                                                                                                                               |
+| `mcp.tools`                                    | Tool names. Tier 2 tools are forwarded. They are not imported into the host.                                                                                                                                          |
 
 ## initialize()
 
@@ -46,26 +45,26 @@ An addon built outside this repository keeps `@kassis/host-sdk` and `@kassis/add
 
 `kassis-addon init` copies `templates/kassis-addon` and fills `publisher`, the addon id, and tier.
 
-| Path | Role |
-| --- | --- |
-| `manifest.json` | Tier 2 unless publisher `kassis` passes `--tier=1`. `hostApi` is `^1.0.0`. Tier 2 includes `resources.memoryMb` (128) and `health.path` (`/health`); the supervisor refuses a tier 2 addon without memory. `entrypoints.main` is `dist/server/index.js`. `signing` is omitted until `sign`. A publisher other than `kassis` cannot use tier 1, and the id is prefixed with `<publisher>-` when it does not already start with that prefix. |
-| `package.json` | `build`, `build:server`, `build:ui`, `test`, `check`, and `certify`. |
-| `tsconfig.json` | Typecheck for `src`. It does not emit JavaScript. |
-| `src/server/index.ts` | `initialize(ctx: AddonContext)` from `@kassis/addon-sdk`. |
-| `src/ui/index.ts` | `routes` and `register`. Copied for rung 2 and rung 3. |
-| `frontend/dist/index.js` | UI bundle. `ui.entryFile` is `index.js` inside this folder. Present after build when the rung has a UI. |
-| `test/server.test.ts` | Calls `createTestContext()` from `@kassis/addon-testkit`. No database. |
-| `migrations/` | Rung 3 only. Each `*.up.sql` has a `*.down.sql`. |
-| `.github/workflows/certify.yml` | Installs, builds, tests, checks, and certifies. |
-| `.gitignore` | `dist`, `frontend/dist`, `.kassis/evidence`, `node_modules`. |
+| Path                            | Role                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `manifest.json`                 | Tier 2 unless publisher `kassis` passes `--tier=1`. `hostApi` is `^1.0.0`. Tier 2 includes `resources.memoryMb` (128) and `health.path` (`/health`); the supervisor refuses a tier 2 addon without memory. `entrypoints.main` is `dist/server/index.js`. `signing` is omitted until `sign`. A publisher other than `kassis` cannot use tier 1, and the id is prefixed with `<publisher>-` when it does not already start with that prefix. |
+| `package.json`                  | `build`, `build:server`, `build:ui`, `test`, `check`, and `certify`.                                                                                                                                                                                                                                                                                                                                                                       |
+| `tsconfig.json`                 | Typecheck for `src`. It does not emit JavaScript.                                                                                                                                                                                                                                                                                                                                                                                          |
+| `src/server/index.ts`           | `initialize(ctx: AddonContext)` from `@kassis/addon-sdk`.                                                                                                                                                                                                                                                                                                                                                                                  |
+| `src/ui/index.ts`               | `routes` and `register`. Copied for rung 2 and rung 3.                                                                                                                                                                                                                                                                                                                                                                                     |
+| `frontend/dist/index.js`        | UI bundle. `ui.entryFile` is `index.js` inside this folder. Present after build when the rung has a UI.                                                                                                                                                                                                                                                                                                                                    |
+| `test/server.test.ts`           | Calls `createTestContext()` from `@kassis/addon-testkit`. No database.                                                                                                                                                                                                                                                                                                                                                                     |
+| `migrations/`                   | Rung 3 only. Each `*.up.sql` has a `*.down.sql`.                                                                                                                                                                                                                                                                                                                                                                                           |
+| `.github/workflows/certify.yml` | Installs, builds, tests, checks, and certifies.                                                                                                                                                                                                                                                                                                                                                                                            |
+| `.gitignore`                    | `dist`, `frontend/dist`, `.kassis/evidence`, `node_modules`.                                                                                                                                                                                                                                                                                                                                                                               |
 
 Rung 1, the default, is the server only. Rung 2 adds the UI. Rung 3 adds the UI and `migrations/`. `npm run build` prints `dist/server/index.js` and, when the UI entry exists, `frontend/dist/index.js`. The build fails when `initialize` is missing, and when the UI was built and `register` is missing. The server bundle is ESM and leaves `@kassis/*` external. The UI bundle leaves the modules in `browser-externals.json` external.
 
 ## Changelog
 
-| Date | Change |
-| --- | --- |
-| 2026-10-28 | The tier 2 template sets `resources.memoryMb` to 128 and `health.path` to `/health`. The host refuses a tier 2 addon without memory. |
-| 2026-10-28 | Manifest v2 may carry `signing.keyId`, covered by the signature. |
-| 2026-10-28 | `ui.entryFile` is `index.js`, relative to `frontend/dist`. A path with a slash is KADK-504. The catalog strips a leading `frontend/dist/`. |
+| Date       | Change                                                                                                                                                              |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-28 | The tier 2 template sets `resources.memoryMb` to 128 and `health.path` to `/health`. The host refuses a tier 2 addon without memory.                                |
+| 2026-10-28 | Manifest v2 may carry `signing.keyId`, covered by the signature.                                                                                                    |
+| 2026-10-28 | `ui.entryFile` is `index.js`, relative to `frontend/dist`. A path with a slash is KADK-504. The catalog strips a leading `frontend/dist/`.                          |
 | 2026-10-28 | The template server bundle is `dist/server/index.js`. The UI bundle is `frontend/dist/index.js`. Rung 1 is server only, rung 2 adds UI, and rung 3 adds migrations. |

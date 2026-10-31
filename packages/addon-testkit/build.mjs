@@ -11,9 +11,13 @@ const repoRoot = path.resolve(pkgRoot, '../..');
 const tsc = path.join(repoRoot, 'node_modules/typescript/lib/tsc.js');
 const dist = path.join(pkgRoot, 'dist');
 
-const compiled = spawnSync(process.execPath, [tsc, '-p', path.join(pkgRoot, 'tsconfig.json'), '--pretty', 'false'], {
-  stdio: 'inherit',
-});
+const compiled = spawnSync(
+  process.execPath,
+  [tsc, '-p', path.join(pkgRoot, 'tsconfig.json'), '--pretty', 'false'],
+  {
+    stdio: 'inherit',
+  }
+);
 if (compiled.status !== 0) process.exit(compiled.status ?? 1);
 
 function move(fromName, toName) {

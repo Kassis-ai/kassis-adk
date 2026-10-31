@@ -70,7 +70,8 @@ function changeSummaryFrom(source) {
 
 function readChangeSummary(addonDir, attestation) {
   const file = addonDir ? readJson(path.join(addonDir, '.kassis', 'change-summary.json')) : null;
-  const embedded = attestation && typeof attestation.changeSummary === 'object' ? attestation.changeSummary : null;
+  const embedded =
+    attestation && typeof attestation.changeSummary === 'object' ? attestation.changeSummary : null;
   return changeSummaryFrom(file ?? embedded);
 }
 
@@ -79,7 +80,10 @@ function migrationReport(addonDir) {
   const dir = path.join(addonDir, 'migrations');
   if (!fs.existsSync(dir)) return [];
   const reports = [];
-  for (const name of fs.readdirSync(dir).filter((entry) => entry.endsWith('.sql')).sort()) {
+  for (const name of fs
+    .readdirSync(dir)
+    .filter((entry) => entry.endsWith('.sql'))
+    .sort()) {
     if (name.endsWith('.down.sql')) continue;
     if (!name.endsWith('.up.sql')) {
       reports.push({ name, up: 'present', down: 'unknown' });
@@ -88,7 +92,11 @@ function migrationReport(addonDir) {
     const down = name.replace(/\.up\.sql$/, '.down.sql');
     const upText = fs.readFileSync(path.join(dir, name), 'utf8');
     const hasDown = fs.existsSync(path.join(dir, down));
-    const downStatus = hasDown ? 'present' : upText.includes('irreversible:') ? 'irreversible' : 'missing';
+    const downStatus = hasDown
+      ? 'present'
+      : upText.includes('irreversible:')
+        ? 'irreversible'
+        : 'missing';
     reports.push({ name, up: 'present', down: downStatus });
   }
   return reports;
@@ -96,8 +104,12 @@ function migrationReport(addonDir) {
 
 function addonSbom(addonDir) {
   const pkg = addonDir ? readJson(path.join(addonDir, 'package.json')) : null;
-  const dependencies = pkg && typeof pkg.dependencies === 'object' && pkg.dependencies ? pkg.dependencies : {};
-  const devDependencies = pkg && typeof pkg.devDependencies === 'object' && pkg.devDependencies ? pkg.devDependencies : {};
+  const dependencies =
+    pkg && typeof pkg.dependencies === 'object' && pkg.dependencies ? pkg.dependencies : {};
+  const devDependencies =
+    pkg && typeof pkg.devDependencies === 'object' && pkg.devDependencies
+      ? pkg.devDependencies
+      : {};
   const declared = { ...dependencies, ...devDependencies };
   const components = Object.keys(declared)
     .sort()
@@ -148,7 +160,8 @@ function listDiffLines(title, diff) {
 
 function renderEvidenceReadme(index) {
   const summary = index.changeSummary;
-  const tierFrom = index.manifestDiff.tier.from === null ? 'none' : String(index.manifestDiff.tier.from);
+  const tierFrom =
+    index.manifestDiff.tier.from === null ? 'none' : String(index.manifestDiff.tier.from);
   const tierTo = index.manifestDiff.tier.to === null ? 'none' : String(index.manifestDiff.tier.to);
   const lines = [
     '# Evidence pack',
@@ -235,12 +248,19 @@ export function packEvidence(input) {
     sbom: addonSbom(addonDir),
     contentHash: checks && typeof checks.contentHash === 'string' ? checks.contentHash : null,
     signerFingerprint: signerFingerprint(currentManifest),
-    cliVersion: checks && typeof checks.cliVersion === 'string' ? checks.cliVersion : cliPackageVersion(),
+    cliVersion:
+      checks && typeof checks.cliVersion === 'string' ? checks.cliVersion : cliPackageVersion(),
   };
 
   fs.mkdirSync(input.outDir, { recursive: true });
-  fs.writeFileSync(path.join(input.outDir, 'attestation.json'), `${JSON.stringify(input.attestation, null, 2)}\n`);
-  fs.writeFileSync(path.join(input.outDir, 'agent-profile.lock.json'), `${JSON.stringify(input.lock, null, 2)}\n`);
+  fs.writeFileSync(
+    path.join(input.outDir, 'attestation.json'),
+    `${JSON.stringify(input.attestation, null, 2)}\n`
+  );
+  fs.writeFileSync(
+    path.join(input.outDir, 'agent-profile.lock.json'),
+    `${JSON.stringify(input.lock, null, 2)}\n`
+  );
   fs.writeFileSync(
     path.join(input.outDir, 'certify.json'),
     `${JSON.stringify({ ok: true, issues: result.issues }, null, 2)}\n`

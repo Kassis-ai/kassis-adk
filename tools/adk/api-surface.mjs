@@ -49,7 +49,10 @@ function main() {
   const args = ['run', '--config', path.join(repoRoot, 'packages/addon-sdk/api-extractor.json')];
   const write = process.argv.includes('--write');
   if (write) args.push('--local');
-  const result = spawnSync(process.execPath, [extractor, ...args], { cwd: repoRoot, stdio: 'inherit' });
+  const result = spawnSync(process.execPath, [extractor, ...args], {
+    cwd: repoRoot,
+    stdio: 'inherit',
+  });
   if (result.status !== 0) process.exit(result.status ?? 1);
   const hostArgs = [path.join(repoRoot, 'packages/host-sdk/build.mjs')];
   if (write) hostArgs.push('--write');

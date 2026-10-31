@@ -5,7 +5,6 @@
 **Technical owner:** Unassigned
 **Last reviewed:** 2026-10-28
 
-
 ## Tier 1
 
 A tier 1 addon is loaded in the host process. `initialize()` runs there. This is the right tier for the first-party addons that ship with Kassis.
@@ -42,17 +41,17 @@ The method list is `TIER2_FACADE_METHODS` in `server/core/addon-platform/tier2/t
 
 These keys are read from Settings. A missing or invalid value refuses to start the child.
 
-| Key | Meaning |
-| --- | --- |
-| `addons.tier2.restartBackoffMs` | Delay before a restart |
-| `addons.tier2.maxRestarts` | Restarts before the addon is disabled |
-| `addons.tier2.healthIntervalMs` | Time between health probes |
-| `addons.tier2.healthFailureLimit` | Consecutive failures before disable |
-| `addons.egress.timeoutMs` | Fetch timeout |
-| `addons.egress.maxResponseBytes` | Fetch response cap |
+| Key                               | Meaning                               |
+| --------------------------------- | ------------------------------------- |
+| `addons.tier2.restartBackoffMs`   | Delay before a restart                |
+| `addons.tier2.maxRestarts`        | Restarts before the addon is disabled |
+| `addons.tier2.healthIntervalMs`   | Time between health probes            |
+| `addons.tier2.healthFailureLimit` | Consecutive failures before disable   |
+| `addons.egress.timeoutMs`         | Fetch timeout                         |
+| `addons.egress.maxResponseBytes`  | Fetch response cap                    |
 
 ## Changelog
 
-| Date | Change |
-| --- | --- |
+| Date       | Change                                                                                                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-10-28 | Tier 2 calls the host facades over RPC. Events and jobs are delivered to the child and retried on the existing queues. The child cannot call `approvals.applyRegistered`. |

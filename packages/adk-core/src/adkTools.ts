@@ -32,7 +32,11 @@ declare module '../../../tools/adk/certifyAttestation.mjs' {
 }
 
 declare module '../../../tools/adk/profileLock.mjs' {
-  export function buildProfileLock(profile: object): { version: string; hash: string; profileId: string };
+  export function buildProfileLock(profile: object): {
+    version: string;
+    hash: string;
+    profileId: string;
+  };
   export function blankAttestation(lock: object | null): object;
   export function packEvidence(input: {
     lock: object | null;
@@ -49,7 +53,11 @@ declare module '../../../tools/adk/agentRules.mjs' {
 declare module '../../../tools/adk/profileBundle.mjs' {
   export function readBundledProfile(profileId: string): object;
   export function verifyProfileSignature(profile: object): boolean;
-  export function downloadProfile(instance: string, profileId: string, token: string): Promise<object>;
+  export function downloadProfile(
+    instance: string,
+    profileId: string,
+    token: string
+  ): Promise<object>;
 }
 
 declare module '../../../tools/adk/registryRun.mjs' {
@@ -90,7 +98,10 @@ declare module '../../../tools/adk/publisherKeys.mjs' {
 }
 
 declare module '../../../tools/adk/addonSbom.mjs' {
-  export function buildAddonSbom(dir: string): { bomFormat: string; components: { name: string; version: string }[] };
+  export function buildAddonSbom(dir: string): {
+    bomFormat: string;
+    components: { name: string; version: string }[];
+  };
   export function writeAddonSbom(dir: string): string;
 }
 

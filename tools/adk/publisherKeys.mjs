@@ -61,7 +61,13 @@ export function exportPublicKey(keyPath, outPath) {
   return publicDer.toString('hex');
 }
 
-export async function registerPublisherKey({ instance, publisher, keyPath, token, fetchImpl = globalThis.fetch }) {
+export async function registerPublisherKey({
+  instance,
+  publisher,
+  keyPath,
+  token,
+  fetchImpl = globalThis.fetch,
+}) {
   if (!token) throw new Error('KASSIS_ADK_TOKEN is required');
   if (!instance) throw new Error('keys register --instance=<url> is required');
   if (!PUBLISHER_ID.test(publisher)) throw new Error('publisher must be a lowercase id');
