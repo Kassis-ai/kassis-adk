@@ -29,12 +29,12 @@
   },
   "dependencies": {
     "@kassis/addon-testkit": "0.1.0",
-    "@modelcontextprotocol/sdk": "1.32.1",
+    "@modelcontextprotocol/sdk": "1.32.2",
     "ajv": "^8.17.1",
     "es-module-lexer": "^2.1.0"
   },
   "devDependencies": {
-    "esbuild": "0.27.2"
+    "esbuild": "0.28.2"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com",
