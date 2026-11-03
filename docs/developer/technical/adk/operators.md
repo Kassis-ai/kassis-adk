@@ -3,7 +3,7 @@
 **Status:** GA
 **Version checked:** 2026-10-28
 **Technical owner:** Unassigned
-**Last reviewed:** 2026-10-28
+**Last reviewed:** 2026-11-03
 
 ## Enable and disable
 
@@ -11,7 +11,7 @@ Enable and disable go through the platform lifecycle API (`system.admin`), not a
 
 The UI kill switch is `@kassis/addon-ui`. A killed addon renders the killed slot and does not mount its page. A thrown slot shows the failed-slot message and the rest of the host stays up.
 
-Addon pages that set `ui.runtimeLoad` load from `/runtime-addons.json` (hashed files, not cached) or, in dev, from `/addons-ui/<id>/<file>?contentHash=<hash>`. The host serves that URL only after the addon passed the signature gate on its last load and is still enabled, and only while the content-hash and UI-hash fingerprints still match. First-party addons (`kassis`, `kassis-corp`, or an empty publisher) do not need `uiContentHash`. The loader skips a disabled addon. Before it keeps a module, it runs the same license and health gates as `enableAddon`.
+Addon pages that set `ui.runtimeLoad` load from `/runtime-addons.json` (hashed files, not cached) or, in dev, from `/addons-ui/<id>/<file>?contentHash=<hash>`. The host serves that URL only after the addon passed the signature gate on its last load and is still enabled, and only while the content-hash and UI-hash fingerprints still match. First-party addons (`kassis`, `kassis-corp`, or an empty publisher) do not need `uiContentHash`. The browser imports addon entries by URL, so Vite does not link their CSS. Each `/runtime-addons.json` entry is `{ js, css }`, where `css` lists the stylesheets of the entry chunk and of the chunks it imports statically. In dev, the library build writes all addon CSS to `frontend/dist/index.css`, and the `addons/ui-catalog` endpoint lists the CSS files at the root of `frontend/dist` as `styleFiles`. The loader links those stylesheets and waits for them before it imports the entry. Unload removes them. The loader skips a disabled addon. Before it keeps a module, it runs the same license and health gates as `enableAddon`.
 
 ## Release steps and seeds
 
@@ -64,11 +64,12 @@ The version must be higher than the installed one, and the addon id must match t
 
 ## Changelog
 
-| Date       | Change                                                                                                                                                                                                                                                      |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-10-28 | The `addon_publisher_key` add policy uses id `…026` so it does not collide with `mcp_final_decision`. Existing databases apply `20261028-addon-publisher-key-add-policy`. Deploy sniffs zip/gzip magic when the upload temp file has no extension.          |
-| 2026-10-28 | The production backend image copies `tools/adk/evidenceSummary.mjs` and links `/tools` so host approval evidence can load after `server/` is flattened onto `/app`. MCP HTTP falls back to the seeded publisher-trust file when Prisma is not in the image. |
-| 2026-10-28 | `GET /api/v1/platform/addons/installations` returns the active version, publisher, and pending staged versions for each addon id.                                                                                                                           |
-| 2026-10-28 | Package upload stages an `addon_deployment` approval and installs to `addons-installed/<id>/<version>/`. Tier 2 enables without a restart. Rollback is `POST /api/v1/platform/addons/:id/rollback`.                                                         |
-| 2026-10-28 | Runtime UI requests include `contentHash`. The host serves `/addons-ui/<id>/*` only after the signature gate, while the addon is enabled and the content-hash and UI-hash fingerprints still match. First-party publishers do not need `uiContentHash`.     |
-| 2026-10-28 | Apply `20261028_addon_publisher_trust` before a bank signing key can be stored. Revocation is immediate.                                                                                                                                                    |
+| Date       | Change                                                                                                                                                                                                                                                                 |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-03 | Runtime addon CSS loads again. `/runtime-addons.json` entries are `{ js, css }`, the ui-catalog lists `styleFiles`, and the loader links them before the import. Addon settings pages had rendered without their stylesheets since the 2026-10-27 runtime-load change. |
+| 2026-10-28 | The `addon_publisher_key` add policy uses id `…026` so it does not collide with `mcp_final_decision`. Existing databases apply `20261028-addon-publisher-key-add-policy`. Deploy sniffs zip/gzip magic when the upload temp file has no extension.                     |
+| 2026-10-28 | The production backend image copies `tools/adk/evidenceSummary.mjs` and links `/tools` so host approval evidence can load after `server/` is flattened onto `/app`. MCP HTTP falls back to the seeded publisher-trust file when Prisma is not in the image.            |
+| 2026-10-28 | `GET /api/v1/platform/addons/installations` returns the active version, publisher, and pending staged versions for each addon id.                                                                                                                                      |
+| 2026-10-28 | Package upload stages an `addon_deployment` approval and installs to `addons-installed/<id>/<version>/`. Tier 2 enables without a restart. Rollback is `POST /api/v1/platform/addons/:id/rollback`.                                                                    |
+| 2026-10-28 | Runtime UI requests include `contentHash`. The host serves `/addons-ui/<id>/*` only after the signature gate, while the addon is enabled and the content-hash and UI-hash fingerprints still match. First-party publishers do not need `uiContentHash`.                |
+| 2026-10-28 | Apply `20261028_addon_publisher_trust` before a bank signing key can be stored. Revocation is immediate.                                                                                                                                                               |
