@@ -22,8 +22,9 @@ on:
       - 'docs/developer/technical/adk/**'
       - 'scripts/adk-clean-room.mjs'
       - '.github/workflows/adk-clean-room.yml'
+  # Weekly catches registry drift; pull requests that touch the ADK run it as well.
   schedule:
-    - cron: '0 5 * * *'
+    - cron: '0 5 * * 1'
 
 permissions:
   contents: read
@@ -35,7 +36,7 @@ concurrency:
 jobs:
   adk-clean-room:
     name: ADK clean room
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.CI_SELF_HOSTED == 'true' && !startsWith(github.head_ref, 'dependabot/') && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && fromJSON('["self-hosted","linux","kassis-ci"]') || 'ubuntu-latest' }}
     timeout-minutes: 60
     steps:
       - name: Checkout code
