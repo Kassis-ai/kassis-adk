@@ -283,7 +283,7 @@ function isExportDeclaration(token) {
  * @returns {boolean}
  */
 function isStringToken(token) {
-    return token === ts.SyntaxKind.StringLiteral || token === ts.SyntaxKind.NoSubstitutionTemplateLiteral;
+    return (token === ts.SyntaxKind.StringLiteral || token === ts.SyntaxKind.NoSubstitutionTemplateLiteral);
 }
 /**
  * @param {object} input
@@ -413,7 +413,7 @@ function isServerCode(relativeFile) {
  */
 function isTypeScriptFile(relativeFile) {
     const extension = path.posix.extname(relativeFile);
-    return extension === '.ts' || extension === '.tsx' || extension === '.mts' || extension === '.cts';
+    return (extension === '.ts' || extension === '.tsx' || extension === '.mts' || extension === '.cts');
 }
 /**
  * @param {string} relativeFile
@@ -470,7 +470,9 @@ function walk(dir, out) {
         }
         if (!entry.isFile() || !SOURCE_EXTENSIONS.has(path.extname(entry.name)))
             continue;
-        if (entry.name.endsWith('.d.ts') || entry.name.endsWith('.d.mts') || entry.name.endsWith('.d.cts'))
+        if (entry.name.endsWith('.d.ts') ||
+            entry.name.endsWith('.d.mts') ||
+            entry.name.endsWith('.d.cts'))
             continue;
         out.push(path.join(dir, entry.name));
     }

@@ -91,9 +91,13 @@ export function createTestContext(options = {}) {
     if (options.tier !== undefined && options.tier !== 1 && options.tier !== 2) {
         throw new Error('tier must be 1 or 2');
     }
-    const addonId = typeof options.addonId === 'string' && options.addonId.length > 0 ? options.addonId : 'sample-addon';
+    const addonId = typeof options.addonId === 'string' && options.addonId.length > 0
+        ? options.addonId
+        : 'sample-addon';
     const version = typeof options.version === 'string' && options.version.length > 0 ? options.version : '0.1.0';
-    const tenantId = typeof options.tenantId === 'string' && options.tenantId.length > 0 ? options.tenantId : 'tenant';
+    const tenantId = typeof options.tenantId === 'string' && options.tenantId.length > 0
+        ? options.tenantId
+        : 'tenant';
     const tier = options.tier === 1 ? 1 : 2;
     /** @type {RecordedAudit[]} */
     const audit = [];
