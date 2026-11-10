@@ -91,6 +91,8 @@ export interface ManifestSettingsTab {
   readonly group?: string;
   readonly order?: number;
   readonly keywords?: readonly string[];
+  /** Any of these shows the tab; none means system administrators only. */
+  readonly permissions?: readonly string[];
 }
 
 export interface ManifestUiContributions {
