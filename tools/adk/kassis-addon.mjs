@@ -40,7 +40,7 @@ Commands:
   conformance   Import check and migration down scripts
   test          Run node --test in ./test
   dev           Start a configured local dev host
-  migrate       up, down, or status on the dev host database
+  migrate       up, down, status or claim on the dev host database
   doctor        Check Node, registry auth, keys, instance, and hostApi
   pack          Write an evidence pack
   package       Write a signed .addon zip
@@ -87,9 +87,11 @@ Runs node --test in ./test. Prints "No test directory" and exits 0 when that fol
 
 Starts Docker or Podman. The image is --image, then KASSIS_DEVHOST_IMAGE, then ~/.kassis/devhost.json, then ghcr.io/kassis-ai/kassis-devhost:latest. Pulls the image when it is not already local. Does not build an image. The container publishes on 127.0.0.1.
 `,
-  migrate: `Usage: kassis-addon migrate <up|down|status> [--target <url>] [--json]
+  migrate: `Usage: kassis-addon migrate <up|down|status|claim> [--target <url>] [--json]
 
 Applies migrations only to the database inside the dev host started by kassis-addon dev. Refuses when no dev host is running, and refuses any other target.
+History is kept per addon id (manifest.json). Each script runs in one transaction with its history row, so a failure keeps nothing. A script edited after it was applied stops up and down.
+claim assigns history rows written by an older ADK (no addon id) to this addon, for its own script names.
 `,
   doctor: `Usage: kassis-addon doctor [--json]
 
@@ -218,6 +220,10 @@ function printSuccess(command, data) {
   if (command === 'migrate') {
     printLines(data.lines);
     printLines(data.applied);
+    printLines(data.problems);
+    printLines(
+      Array.isArray(data.claimed) ? data.claimed.map((name) => `claimed ${name}`) : undefined
+    );
     if (typeof data.reverted === 'string') {
       process.stdout.write(data.reverted ? `reverted ${data.reverted}\n` : 'Nothing to revert\n');
     }

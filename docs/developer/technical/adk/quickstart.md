@@ -80,7 +80,11 @@ Prints `evidence` and exits 0.
 
 `dev` starts a container only when a dev host image is already configured and already present locally. Set `KASSIS_DEVHOST_IMAGE`, pass `--image`, or write `{ "image": "<name>" }` to `~/.kassis/devhost.json`. The command uses Docker or Podman. It does not build an image and does not pull one. The addon directory is mounted read-only at `/opt/kassis/dev-addon`. It prints a `http://127.0.0.1` URL and follows the container logs. If the runtime or the image is missing, it exits 1 with an issue.
 
-`migrate up`, `migrate down`, and `migrate status` run only against that dev host database. With no dev host, they exit 1.
+`migrate up`, `migrate down`, `migrate status` and `migrate claim` run only against that dev host database. With no dev host, they exit 1.
+
+History is kept per addon id from `manifest.json`, so two addons can both ship `001_init.up.sql`. Each script runs in one transaction together with its history row: a failing script leaves no schema change and no row, and `up` can simply run again. Runs for the same addon wait for each other. A script edited after it was applied stops `up` and `down`; restore it or add a new migration. A script may contain its own `BEGIN;` … `COMMIT;`, but not statements that cannot run in a transaction (`CREATE INDEX CONCURRENTLY`, `VACUUM`).
+
+A dev host database used with an older ADK has history rows without an addon id. `status` lists them as `unclaimed`, and `up` stops on them because they could belong to another addon. In the addon that owns them, run `migrate claim`.
 
 ```bash
 node <repo>/tools/adk/kassis-addon.mjs dev
@@ -97,6 +101,7 @@ Use `npm test` for the template. The CLI `test` command runs `node --test` in `.
 
 | Date       | Change                                                                                                                                                                               |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2026-11-11 | `migrate` keeps history per addon, applies each script with its history row in one transaction, detects edited scripts, and adds `claim` (F024, F025).                               |
 | 2026-10-28 | The template `.npmrc` points `@kassis` at GitHub Packages and reads `NODE_AUTH_TOKEN`. The certify workflow uses Node 24 and that secret.                                            |
 | 2026-10-28 | `dev` starts a configured local image and does not pull or build. `migrate` targets that dev host only. `check --json` includes KADK codes. `--id value` and `--id=value` both work. |
 | 2026-10-28 | `init` accepts `--publisher`, `--tier`, and `--rung`. `npm run build` writes `dist/server/index.js` and, for a rung with UI, `frontend/dist/index.js`.                               |
