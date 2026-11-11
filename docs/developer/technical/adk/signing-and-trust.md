@@ -3,7 +3,7 @@
 **Status:** GA
 **Version checked:** 2026-10-28
 **Technical owner:** Unassigned
-**Last reviewed:** 2026-10-28
+**Last reviewed:** 2026-11-11
 
 ## Publisher keys
 
@@ -43,12 +43,15 @@ This writes `<file.tgz>.sig`. The default key path is `server/keys/addon_signing
 
 `GET /addons-ui/<id>/*` is served only when that addon passed the signature gate on its last load and is enabled. Each response re-checks the content-hash and UI-hash cache fingerprints (file size, mtime and ctime) and does not re-read file bytes when those fingerprints still match. Any other case is 404.
 
+Loading an addon runs this gate before the host registers anything for it, so a package refused for its signature or `contentHash` leaves no frontend, table-prefix or license-feature entry. Install and update run the same gate on the staged copy before it is promoted or committed ([Managing addons](../addons/managing-addons.md#install-and-update-one-folder-per-attempt)).
+
 The runtime UI catalog entry carries `contentHash`. The loader appends it as a query string (`?contentHash=`), so a browser cache does not mix versions.
 
 ## Changelog
 
 | Date       | Change                                                                                                                                                                                                                                                                                                                              |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-11 | The signature and `contentHash` gate runs before any host registration when an addon loads; a failed load disposes the addon's registrations. Install and update run the same gate on the staged package before promotion.                                                                                                          |
 | 2026-10-28 | First-party publishers (`kassis`, `kassis-corp`, empty) do not need `uiContentHash`. A client UI package signs it over `frontend/dist`. A missing or mismatched client hash is refused, and the UI route returns 404. The UI gate reuses a stat fingerprint cache.                                                                  |
 | 2026-10-28 | Tool, evidence, test, and `frontend/dist/**` folders are outside `contentHash`. The server image builds `frontend/dist` after signing. Runtime UI is served only after a passing signature gate while the addon stays enabled and the content-hash fingerprint still matches. The catalog `contentHash` is the loader query string. |
 | 2026-10-28 | Trust is the database plus the seeded file and optional `KASSIS_PUBLISHER_TRUST_FILE`. Revoked wins. Bank publishers are always strict, cannot use tier 1, and their id prefixes must start with the publisher id and a hyphen. A key or scope change is refused when no approval policy is published.                              |
