@@ -42,6 +42,9 @@ const WRAPPABLE_META = new Set([
   'g',
 ]);
 
+/** Transaction-control keywords, for psql variables whose value could run them. */
+const TRANSACTION_WORD = /\b(BEGIN|START|COMMIT|END|ROLLBACK|ABORT|PREPARE)\b/i;
+
 /** Meta-commands that end the SQL statement currently being collected. */
 const META_TERMINATES_QUERY = new Set(['g', 'gset', 'gx', 'gexec', 'gdesc', 'crosstabview']);
 
@@ -226,6 +229,23 @@ export function planTransaction(script: string): TransactionPlan {
     }
   }
 
+  for (const item of items) {
+    if (item.type !== 'meta') continue;
+    // `\echo x \\ COMMIT;`: psql reads what follows \\ as SQL, which this scan does not see.
+    if (item.text.includes('\\\\')) {
+      reasons.push(`psql meta-command line with \\\\ cannot be checked: ${item.text.slice(0, 60)}`);
+    }
+    // `\set fin 'COMMIT'` then `:fin;` would run transaction control the scan cannot see.
+    if (item.command === 'set' && TRANSACTION_WORD.test(item.text.replace(/^\\set\s+\S+/, ''))) {
+      reasons.push(`psql variable holds transaction control: ${item.text.slice(0, 60)}`);
+    }
+  }
+  for (const item of sqlItems) {
+    if (item.text.startsWith(':')) {
+      reasons.push(`statement is a psql variable, so its content cannot be checked: ${item.text.slice(0, 60)}`);
+    }
+  }
+
   for (const item of sqlItems) {
     const words = leadingWords(item.text);
     if (NON_TRANSACTIONAL.some((pattern) => pattern.test(words))) {
@@ -255,10 +275,16 @@ export function planTransaction(script: string): TransactionPlan {
     } else {
       ownTransaction = true;
       for (const entry of [first, second]) {
-        const semicolon = source.indexOf(';', entry.item.end);
+        // Only the statement and its own semicolon (or the end of the file). `BEGIN \g` ends at the
+        // meta-command; searching on for a ';' would delete the next statement.
+        const endsWithSemicolon = source[entry.item.end] === ';';
+        const atEnd = source.slice(entry.item.end).trim() === '';
+        if (!endsWithSemicolon && !atEnd) {
+          reasons.push(`${leadingWords(entry.item.text).split(' ')[0]} must end with a semicolon`);
+        }
         remove.push({
           start: entry.item.start,
-          end: semicolon === -1 ? entry.item.end : semicolon + 1,
+          end: endsWithSemicolon ? entry.item.end + 1 : entry.item.end,
         });
       }
     }
