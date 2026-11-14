@@ -162,10 +162,26 @@ export type QuestionnaireReopenContext = {
   actor: QuestionnaireRegistryActor;
 };
 
+export type QuestionnaireDryRunLine = { code: string; detail: string | null };
+
+export type QuestionnaireDryRunContext = {
+  domain: string;
+  subject: QuestionnaireRegistrySubject;
+  responseId: string;
+  questionnaireId: string | null;
+};
+
 export type QuestionnaireExtensionField = {
   key: string;
   type:
-    'string' | 'string_list' | 'number' | 'boolean' | 'option_ref' | 'pack_ref' | 'flag_type_ref';
+    | 'string'
+    | 'string_list'
+    | 'number'
+    | 'boolean'
+    | 'option_ref'
+    | 'pack_ref'
+    | 'flag_type_ref'
+    | 'schema_path_ref';
   labelKey: string;
   label: string;
 };
@@ -178,6 +194,8 @@ export type QuestionnaireSubjectAccessContext = {
 export type QuestionnaireDomainAdapter = {
   onResponseOpened?: (ctx: QuestionnaireOpenContext) => Promise<void>;
   onAnswerCommitted?: (ctx: QuestionnaireCommitContext) => Promise<void>;
+  /** Read-only explanation. Must not write party, case, or clearance state. */
+  dryRun?: (ctx: QuestionnaireDryRunContext) => Promise<QuestionnaireDryRunLine[]>;
   /** Addon subjects (anything other than entity, party, case, investigation). */
   canAccessSubject?: (ctx: QuestionnaireSubjectAccessContext) => Promise<boolean>;
   extensionFields?: QuestionnaireExtensionField[];
