@@ -3,7 +3,7 @@
 **Status:** GA
 **Version checked:** 2026-10-28
 **Technical owner:** Unassigned
-**Last reviewed:** 2026-11-03
+**Last reviewed:** 2026-11-14
 
 ## Enable and disable
 
@@ -41,7 +41,8 @@ On-prem uses `docker-compose.onprem.yml`. Air-gapped install uses the bundle fro
 | -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Addon page is blank and the console says `register` is missing       | Export `register` from `frontend/index.ts`.                                                                                                                                                                                                          |
 | `{"ok":false,"issues":[...]}` from `certify --json`                  | The `issues` array names the KADK codes. KADK-709 is a missing lock (`sync` first). KADK-701 is a missing attestation (`attest`, then fill the answers).                                                                                             |
-| Tier 2 addon does not start                                          | Check `addons.tier2.*` and `addons.egress.*` in Settings. An invalid value refuses the start.                                                                                                                                                        |
+| Tier 2 addon does not start                                          | Check `addons.tier2.*` and `addons.egress.*` in Settings, including `addons.tier2.stopTimeoutMs`. An invalid or missing value refuses the start.                                                                                                     |
+| Tier 2 child still running after disable                             | Disable, update and uninstall signal the child through the host disposer and kill it if it has not exited within `addons.tier2.stopTimeoutMs`. Host shutdown waits for that stop.                                                                  |
 | Revoked key still in `previous`                                      | Revoke it with `POST /api/v1/platform/addon-publishers/:id/keys/:fp/revoke`, or set status `revoked` in `KASSIS_PUBLISHER_TRUST_FILE`. A revoked row in either source wins. Listing it as `previous` does not keep it trusted.                       |
 | Fresh prod database has roles and no tables                          | Expected. Restore or run `npm run release:apply`. Do not expect the prod compose file to create the schema.                                                                                                                                          |
 | Agent tool returns an approval id instead of changing the case       | The tool is a final decision and the run is not attested, or autonomy is not `act`. Approve it in the Approvals UI.                                                                                                                                  |
@@ -66,6 +67,7 @@ The version must be higher than the installed one, and the addon id must match t
 
 | Date       | Change                                                                                                                                                                                                                                                                 |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-14 | Disable, update and uninstall stop a tier 2 child. The wait before the process is killed is `addons.tier2.stopTimeoutMs` (release step `20261114-tier2-stop-timeout`). Host shutdown waits for the same stop.                                                         |
 | 2026-11-03 | Runtime addon CSS loads again. `/runtime-addons.json` entries are `{ js, css }`, the ui-catalog lists `styleFiles`, and the loader links them before the import. Addon settings pages had rendered without their stylesheets since the 2026-10-27 runtime-load change. |
 | 2026-10-28 | The `addon_publisher_key` add policy uses id `…026` so it does not collide with `mcp_final_decision`. Existing databases apply `20261028-addon-publisher-key-add-policy`. Deploy sniffs zip/gzip magic when the upload temp file has no extension.                     |
 | 2026-10-28 | The production backend image copies `tools/adk/evidenceSummary.mjs` and links `/tools` so host approval evidence can load after `server/` is flattened onto `/app`. MCP HTTP falls back to the seeded publisher-trust file when Prisma is not in the image.            |
