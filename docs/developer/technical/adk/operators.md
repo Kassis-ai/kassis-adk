@@ -63,10 +63,16 @@ The version must be higher than the installed one, and the addon id must match t
 
 `POST /api/v1/platform/addons/:id/rollback` with `{ "targetVersion": "<version>" }` switches `active.json` back to a kept folder and is audited. It asks for approval only when that version adds permissions, egress hosts, or data access. `addons-installed` is a volume on the compose stacks and a persistent volume claim in `deploy/k8s/production/deployment.yaml`. The loader looks in `addons/` first, then the active folder under `addons-installed`.
 
+`kassis-addon dev` publishes the container on `127.0.0.1`. Set `KASSIS_DEVHOST_ATTACH` to a running backend container name when that image needs the stack network and secrets. The dev process uses `RUN_MODE=api`, so it does not take the background jobs.
+
+MCP discovery lists a tier 2 tool from `contributions.mcp` on an active installed addon when that addon's signature still verifies. A revoked signing key removes the tool from the next discovery load. The MCP container image does not ship a database client, so that load on the MCP container still reads the trust file. The backend discovery load reads the database.
+
 ## Changelog
 
 | Date       | Change                                                                                                                                                                                                                                                                 |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-14 | `KASSIS_DEVHOST_ATTACH` makes `kassis-addon dev` join that container's network and secrets and run as `RUN_MODE=api`.                                                                                                                                                    |
+| 2026-11-14 | Installed tier 2 MCP tools are listed only while the signing key still verifies. A revoked key drops the tool on the next discovery load.                                                                                                                              |
 | 2026-11-14 | Disable, update and uninstall stop a tier 2 child. The wait before the process is killed is `addons.tier2.stopTimeoutMs` (release step `20261114-tier2-stop-timeout`). Host shutdown waits for the same stop.                                                         |
 | 2026-11-03 | Runtime addon CSS loads again. `/runtime-addons.json` entries are `{ js, css }`, the ui-catalog lists `styleFiles`, and the loader links them before the import. Addon settings pages had rendered without their stylesheets since the 2026-10-27 runtime-load change. |
 | 2026-10-28 | The `addon_publisher_key` add policy uses id `…026` so it does not collide with `mcp_final_decision`. Existing databases apply `20261028-addon-publisher-key-add-policy`. Deploy sniffs zip/gzip magic when the upload temp file has no extension.                     |

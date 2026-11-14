@@ -4,6 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import type { CommandResult, JsonObject, LogListener } from './types.ts';
 import { commandResult, failure, isRecordValue, readJson } from './issues.ts';
+import { devHostAttachArgs } from './devHostAttach.ts';
 import { runProcess } from './processRun.ts';
 
 const PROBE_MS = 8000;
@@ -189,6 +190,15 @@ export async function startDevHost(
   }
   const port = containerPort();
   const name = `kassis-devhost-${id}`;
+  const attached = devHostAttachArgs(runtime.command);
+  if (!attached.ok) {
+    return failure(
+      attached.message,
+      'Start the stack container named by KASSIS_DEVHOST_ATTACH, then run dev again.',
+      'ADK-DEV-RUNTIME'
+    );
+  }
+  runProcess(runtime.command, ['rm', '-f', name], PROBE_MS);
   const started = runProcess(
     runtime.command,
     [
@@ -202,9 +212,10 @@ export async function startDevHost(
       `127.0.0.1::${port}`,
       '-v',
       `${path.resolve(dir)}:${ADDON_MOUNT}:ro`,
+      ...attached.args,
       image,
     ],
-    PROBE_MS
+    attached.args.length > 0 ? 30_000 : PROBE_MS
   );
   if (started.timedOut || started.status !== 0) {
     const detail = started.timedOut ? 'did not finish' : started.stderr.trim() || 'failed';
