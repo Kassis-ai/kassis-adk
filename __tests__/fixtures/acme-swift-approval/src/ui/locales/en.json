@@ -1,0 +1,53 @@
+{
+  "pages": {
+    "approvals": {
+      "title": "SWIFT approvals",
+      "empty": "No messages waiting for release",
+      "receivedAt": "Received",
+      "messageType": "Type",
+      "reference": "Reference",
+      "senderBic": "Sender BIC",
+      "receiverBic": "Receiver BIC",
+      "valueDate": "Value date",
+      "currency": "Currency",
+      "amount": "Amount",
+      "highValue": "High value",
+      "status": "Status",
+      "filterStatus": "Status",
+      "filterType": "Message type",
+      "filterCurrency": "Currency",
+      "filterFrom": "Value date from",
+      "filterTo": "Value date to",
+      "applyFilters": "Apply filters",
+      "previous": "Previous page",
+      "next": "Next page",
+      "close": "Close",
+      "rawText": "Raw message",
+      "copy": "Copy raw message",
+      "copied": "Copied",
+      "approve": "Approve",
+      "reject": "Reject",
+      "comment": "Comment",
+      "rejectCommentShort": "Reject needs a comment of at least 10 characters",
+      "approveCommentRequired": "Approve needs a comment of at least 10 characters",
+      "orderingCustomer": "Ordering customer",
+      "beneficiary": "Beneficiary",
+      "remittanceInfo": "Remittance",
+      "loadError": "The list could not be loaded"
+    }
+  },
+  "settings": {
+    "title": "SWIFT approval settings",
+    "allowedMessageTypes": "Allowed message types",
+    "mt103": "MT103",
+    "mt202": "MT202",
+    "thresholds": "High value thresholds",
+    "maxAmount": "Maximum amount per message",
+    "expiryHours": "Expiry hours",
+    "requireApproveComment": "Require a comment on approve",
+    "notifyApprovers": "Notify approvers",
+    "save": "Save settings",
+    "saved": "Settings saved",
+    "saveError": "Settings could not be saved"
+  }
+}

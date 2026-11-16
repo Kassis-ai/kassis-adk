@@ -78,7 +78,7 @@ Prints `evidence` and exits 0.
 
 ## Dev and test
 
-`dev` starts a container only when a dev host image is already configured and already present locally. Set `KASSIS_DEVHOST_IMAGE`, pass `--image`, or write `{ "image": "<name>" }` to `~/.kassis/devhost.json`. The command uses Docker or Podman. It does not build an image and does not pull one. The addon directory is mounted read-only at `/opt/kassis/dev-addon`. It prints a `http://127.0.0.1` URL and follows the container logs. If the runtime or the image is missing, it exits 1 with an issue.
+`dev` starts a container only when a dev host image is already configured and already present locally. Set `KASSIS_DEVHOST_IMAGE`, pass `--image`, or write `{ "image": "<name>" }` to `~/.kassis/devhost.json`. The command uses Docker or Podman. It does not build an image and does not pull one. The addon directory is mounted read-only at `/opt/kassis/dev-addon`. It also starts a tier 2 runner container on an internal network and does not mount a Docker socket into the backend. It prints a `http://127.0.0.1` URL and follows the container logs. If the runtime or the image is missing, it exits 1 with an issue.
 
 `migrate up`, `migrate down`, `migrate status` and `migrate claim` run only against that dev host database. With no dev host, they exit 1.
 
@@ -101,6 +101,7 @@ Use `npm test` for the template. The CLI `test` command runs `node --test` in `.
 
 | Date       | Change                                                                                                                                                                               |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2026-11-16 | `dev` starts a tier 2 runner container on an internal network. The backend container does not receive a Docker socket.                                                                |
 | 2026-11-11 | `migrate` keeps history per addon, applies each script with its history row in one transaction, detects edited scripts, and adds `claim` (F024, F025).                               |
 | 2026-10-28 | The template `.npmrc` points `@kassis` at GitHub Packages and reads `NODE_AUTH_TOKEN`. The certify workflow uses Node 24 and that secret.                                            |
 | 2026-10-28 | `dev` starts a configured local image and does not pull or build. `migrate` targets that dev host only. `check --json` includes KADK codes. `--id value` and `--id=value` both work. |

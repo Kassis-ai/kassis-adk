@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 export { assertNoHostImports, checkAddonImports } from './checkAddonImports.mjs';
+export { checkAddonTierRefusals } from './checkAddonTierRefusals.mjs';
 
 /**
  * @typedef {object} CertifyReport

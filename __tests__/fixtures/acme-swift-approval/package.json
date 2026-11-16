@@ -1,0 +1,28 @@
+{
+  "name": "acme-swift-approval",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "kassis-addon build",
+    "build:server": "kassis-addon build --only=server",
+    "build:ui": "kassis-addon build --only=ui",
+    "test": "node --experimental-strip-types --test \"test/**/*.test.ts\"",
+    "check": "kassis-addon check",
+    "certify": "kassis-addon certify"
+  },
+  "dependencies": {
+    "@kassis/addon-sdk": "^1.0.0",
+    "@kassis/addon-testkit": "^0.1.0",
+    "@kassis/host-sdk": "^0.1.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@kassis/addon-cli": "^0.1.0",
+    "@types/react": "^19.2.0",
+    "esbuild": "^0.27.2",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.7"
+  }
+}

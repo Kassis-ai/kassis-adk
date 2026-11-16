@@ -25,6 +25,9 @@ export function buildProfileLock(profile) {
     version,
     guardrails,
   };
+  if (Array.isArray(profile.skills)) {
+    body.skills = profile.skills;
+  }
   const hash = createHash('sha256').update(canonicalJsonStringify(body)).digest('hex');
   return { ...body, hash };
 }

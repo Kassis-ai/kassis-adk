@@ -1,13 +1,8 @@
 /**
- * @param {{ addonId?: string, version?: string, tier?: 1 | 2, tenantId?: string }} [options]
+ * @param {CreateTestContextOptions} [options]
  * @returns {TestAddonContext}
  */
-export function createTestContext(options?: {
-    addonId?: string;
-    version?: string;
-    tier?: 1 | 2;
-    tenantId?: string;
-}): TestAddonContext;
+export function createTestContext(options?: CreateTestContextOptions): TestAddonContext;
 export type TestPrincipal = {
     kind: "user" | "service";
     userId: number | null;
@@ -68,6 +63,21 @@ export type RecordedLlmCall = {
         };
     };
 };
+export type RecordedSecretRead = {
+    key: string;
+};
+export type RecordedHttpFetch = {
+    url: string;
+};
+export type CreateTestContextOptions = {
+    addonId?: string | undefined;
+    version?: string | undefined;
+    tier?: 1 | 2 | undefined;
+    tenantId?: string | undefined;
+    config?: Record<string, unknown> | undefined;
+    manifest?: Record<string, unknown> | undefined;
+    manifestPath?: string | undefined;
+};
 export type TestAddonContext = {
     addon: {
         id: string;
@@ -83,11 +93,21 @@ export type TestAddonContext = {
         warn: Function;
         error: Function;
     };
+    config: Readonly<Record<string, unknown>>;
     recorded: {
         audit: RecordedAudit[];
         events: RecordedEvent[];
         jobs: RecordedJob[];
         llm: RecordedLlmCall[];
+        secrets: RecordedSecretRead[];
+        http: RecordedHttpFetch[];
+        settings: object[];
+        flags: object[];
+        notify: object[];
+        risk: object[];
+        core: object[];
+        prompts: object[];
+        routes: object[];
     };
     audit: {
         record: Function;
@@ -107,4 +127,21 @@ export type TestAddonContext = {
         invoke: Function;
         estimateTokens: Function;
     };
+    secrets: {
+        get: Function;
+    };
+    http: {
+        fetch: Function;
+    };
+    routes: object;
+    settings: object;
+    flags: object;
+    notify: object;
+    risk: object;
+    core: object;
+    prompts: object;
+    capabilities: object;
+    locks: object;
+    extend: object;
+    data: object;
 };

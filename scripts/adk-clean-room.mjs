@@ -21,10 +21,15 @@ import {
   AIRGAP_TOOLCHAIN,
   PUBLIC_PACKAGE_NAMES,
   assertPopulatedAirgapBundle,
+  packMcpContractTarball,
   packPublicPackages,
   runNpm,
   writeAirgapBundle,
 } from '../tools/adk/airgap-bundle.mjs';
+import {
+  CLEAN_ROOM_SCAFFOLD_REFUSALS,
+  CLEAN_ROOM_SCAFFOLD_SUCCESS,
+} from './adk-clean-room-scaffold.mjs';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const USAGE = `Usage: node scripts/adk-clean-room.mjs [--write-bundle=<dir>]
@@ -255,7 +260,7 @@ function installFileTarballs(installDir, specifiers, cacheDir) {
     if (!spec.startsWith('file:')) throw new Error(`Refusing a registry install of ${spec}`);
   }
   fs.mkdirSync(installDir, { recursive: true });
-  const dependencies = { react: '19.2.3' };
+  const dependencies = { react: '19.3.1', 'react-dom': '19.3.1' };
   for (const spec of specifiers) {
     const base = path.basename(spec.slice('file:'.length));
     dependencies[base.replace(/\.tgz$/, '')] = spec;
@@ -290,6 +295,113 @@ function jsonResult(stdout) {
     throw new Error(`command did not return ok\n${stdout}`);
   }
   return parsed.data;
+}
+
+/**
+ * @param {string} stdout
+ * @returns {{ ok: boolean, issues?: Array<{ code?: string }> }}
+ */
+function parseCliJson(stdout) {
+  const line =
+    stdout
+      .trim()
+      .split(/\r?\n/)
+      .find((entry) => entry.startsWith('{')) ?? stdout.trim();
+  const parsed = JSON.parse(line);
+  if (parsed === null || typeof parsed !== 'object') {
+    throw new Error(`CLI JSON was not an object\n${stdout}`);
+  }
+  return parsed;
+}
+
+/**
+ * @param {string} bin
+ * @param {readonly string[]} args
+ * @param {string} cwd
+ * @returns {{ stdout: string, stderr: string, status: number | null }}
+ */
+function runCli(bin, args, cwd) {
+  const result = spawnSync(process.execPath, [bin, ...args], {
+    cwd,
+    env: process.env,
+    encoding: 'utf8',
+    windowsHide: true,
+    maxBuffer: 32 * 1024 * 1024,
+  });
+  if (result.error) throw result.error;
+  return {
+    stdout: result.stdout ?? '',
+    stderr: result.stderr ?? '',
+    status: result.status ?? null,
+  };
+}
+
+/**
+ * @param {string} addonDir
+ * @param {Record<string, string>} specs
+ */
+function alignPackedKassisDeps(addonDir, specs) {
+  const file = path.join(addonDir, 'package.json');
+  const parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
+  if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    throw new Error('addon package.json is not an object');
+  }
+  for (const field of ['dependencies', 'devDependencies']) {
+    const deps = field in parsed ? parsed[field] : null;
+    if (deps === null || typeof deps !== 'object' || Array.isArray(deps)) continue;
+    for (const name of Object.keys(deps)) {
+      const spec = specs[name];
+      if (typeof spec === 'string' && spec.startsWith('file:')) {
+        deps[name] = spec;
+      }
+    }
+  }
+  fs.writeFileSync(file, `${JSON.stringify(parsed, null, 2)}\n`);
+}
+
+/**
+ * @param {string} bin
+ * @param {string} parent
+ * @param {string} addonDir
+ */
+function exerciseScaffoldKinds(bin, parent, addonDir) {
+  process.stdout.write('scaffold kinds\n');
+  for (const item of CLEAN_ROOM_SCAFFOLD_SUCCESS) {
+    const ran = runCli(
+      bin,
+      ['scaffold', `--kind=${item.kind}`, `--name=${item.name}`, `--dir=${addonDir}`, '--json'],
+      parent
+    );
+    if (ran.status !== 0) {
+      throw new Error(
+        `scaffold ${item.kind} ${item.name} failed (${ran.status ?? 'signal'})\n${ran.stdout}\n${ran.stderr}`.trim()
+      );
+    }
+    const parsed = parseCliJson(ran.stdout);
+    if (parsed.ok !== true) {
+      throw new Error(`scaffold ${item.kind} ${item.name} did not return ok\n${ran.stdout}`);
+    }
+  }
+  for (const item of CLEAN_ROOM_SCAFFOLD_REFUSALS) {
+    const ran = runCli(
+      bin,
+      ['scaffold', `--kind=${item.kind}`, `--name=${item.name}`, `--dir=${addonDir}`, '--json'],
+      parent
+    );
+    if (ran.status === 0) {
+      throw new Error(`scaffold ${item.kind} should refuse for tier 2\n${ran.stdout}`);
+    }
+    const parsed = parseCliJson(ran.stdout);
+    if (parsed.ok !== false) {
+      throw new Error(`scaffold ${item.kind} should return ok=false\n${ran.stdout}`);
+    }
+    const codes = Array.isArray(parsed.issues)
+      ? parsed.issues.map((issue) => (issue && typeof issue.code === 'string' ? issue.code : ''))
+      : [];
+    if (!codes.includes(item.code)) {
+      throw new Error(`scaffold ${item.kind} should emit ${item.code}; got ${codes.join(', ')}\n${ran.stdout}`);
+    }
+  }
 }
 
 function fillAttestation(addonDir) {
@@ -389,6 +501,9 @@ async function exerciseClient(bin, parent, specs, options = {}) {
     env.npm_config_offline = 'true';
   }
   runNpm(installArgs, addonDir, 'pipe', env);
+  exerciseScaffoldKinds(bin, parent, addonDir);
+  alignPackedKassisDeps(addonDir, specs);
+  runNpm(installArgs, addonDir, 'pipe', env);
   kassis(bin, ['build'], addonDir);
   if (!fs.existsSync(path.join(addonDir, 'dist', 'server', 'index.js'))) {
     throw new Error('build did not write dist/server/index.js');
@@ -439,12 +554,17 @@ async function runOnline(writeBundle) {
       const pkgDir = path.join(repoRoot, 'packages', item.name.replace('@kassis/', ''));
       runNpm(['publish', '--dry-run'], pkgDir);
     }
+    const mcpTarball = packMcpContractTarball(repoRoot, path.join(work, 'packs'));
     const specs = Object.fromEntries(tarballs.map((item) => [item.name, fileSpec(item.file)]));
+    specs['@kassis/mcp-contract'] = fileSpec(mcpTarball.file);
     process.stdout.write('client flow\n');
     await exerciseClient(installedCli(installDir), work, specs);
     if (writeBundle) {
       process.stdout.write(`write air-gap bundle ${writeBundle}\n`);
-      writeAirgapBundle(path.resolve(writeBundle), repoRoot, { tarballs, primeCache: true });
+      writeAirgapBundle(path.resolve(writeBundle), repoRoot, {
+        tarballs: [...tarballs, mcpTarball],
+        primeCache: true,
+      });
     }
     passed = true;
     process.stdout.write('clean-room passed\n');
@@ -510,11 +630,22 @@ async function runAirgap(bundleDir) {
     const cacheDir = path.join(resolved, 'npm-cache');
     const installDir = path.join(work, 'install');
     process.stdout.write('air-gap install\n');
-    const names = ['@kassis/addon-sdk', '@kassis/addon-testkit', '@kassis/addon-cli', ...AIRGAP_TOOLCHAIN];
+    const names = [
+      '@kassis/addon-sdk',
+      '@kassis/addon-testkit',
+      '@kassis/addon-cli',
+      '@kassis/mcp-contract',
+      ...AIRGAP_TOOLCHAIN,
+    ];
     const dependencies = {};
     for (const name of names) {
       const rel = index[name];
-      if (typeof rel !== 'string') throw new Error(`air-gap bundle has no tarball for ${name}`);
+      if (typeof rel !== 'string') {
+        if (name === '@kassis/mcp-contract') {
+          throw new Error('air-gap bundle has no tarball for @kassis/mcp-contract (rebuild bundle after S1.20)');
+        }
+        throw new Error(`air-gap bundle has no tarball for ${name}`);
+      }
       dependencies[name] = fileSpec(path.join(resolved, rel));
     }
     fs.mkdirSync(installDir, { recursive: true });

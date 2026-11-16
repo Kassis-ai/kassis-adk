@@ -1,0 +1,9 @@
+{
+  "key": "acme-underwriting.case.application",
+  "kind": "case-template",
+  "name": "Application",
+  "references": ["acme-underwriting.flow.application"],
+  "permissions": ["acme-underwriting.case.read"],
+  "resourceTypes": ["acme-underwriting:application"],
+  "body": {}
+}

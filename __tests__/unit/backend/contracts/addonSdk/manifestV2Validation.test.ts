@@ -1,6 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { ADDON_MANIFEST_V2_SCHEMA, validateManifestV2, type KadkCode } from '@kassis/addon-sdk';
+import {
+  ADDON_MANIFEST_V2_SCHEMA,
+  MANIFEST_EXTEND_POINT_IDS,
+  MANIFEST_RESOURCE_SENSITIVITY_LEVELS,
+  validateManifestV2,
+  type KadkCode,
+} from '@kassis/addon-sdk';
 import { describe, expect, it } from 'vitest';
 
 import { MANIFEST_V2_KEYS, validManifest } from './fixtures/manifestV2.fixture.js';
@@ -14,10 +20,12 @@ function manifestWith(changes: MutableManifest, remove: string[] = []): MutableM
 }
 
 function tierOne(changes: MutableManifest = {}): MutableManifest {
-  return manifestWith(
-    { tier: 1, data: undefined, database: { ownedTables: ['tprm_assessments'] }, ...changes },
-    ['data']
-  );
+  return manifestWith({
+    tier: 1,
+    data: { schema: 'addon_sample_tprm_check', retention: 'retain' },
+    database: { ownedTables: ['tprm_assessments'] },
+    ...changes,
+  });
 }
 
 function codesOf(manifest: unknown): string[] {
@@ -34,6 +42,20 @@ function expectOnly(manifest: unknown, code: KadkCode, pathPrefix?: string): voi
 describe('validateManifestV2', () => {
   it('accepts the reference manifest', () => {
     expect(validateManifestV2(validManifest)).toEqual({ ok: true, issues: [] });
+  });
+
+  it('accepts a process pack list and rejects a path outside process/', () => {
+    const pack = {
+      key: 'sample-tprm-check.case.application',
+      kind: 'case-template',
+      file: 'process/application.json',
+    };
+    expect(validateManifestV2(manifestWith({ process: { packs: [pack] } })).ok).toBe(true);
+    expectOnly(
+      manifestWith({ process: { packs: [{ ...pack, file: 'process/../secret.json' }] } }),
+      'KADK-101',
+      'process.packs[0].file'
+    );
   });
 
   it('accepts uiContentHash next to contentHash', () => {
@@ -161,6 +183,24 @@ describe('validateManifestV2', () => {
         'events.publishes[0].name',
       ],
       ['KADK-115', { audit: { actions: ['user.login'] } }, 'audit.actions[0]'],
+      [
+        'KADK-122',
+        {
+          groups: [
+            {
+              name: 'cases-reviewer',
+              displayName: 'Reviewers',
+              permissions: ['sample-tprm-check.view'],
+            },
+          ],
+        },
+        'groups[0].name',
+      ],
+      [
+        'KADK-220',
+        { provides: [{ capability: 'tprm.assessment', version: '1.0.0' }] },
+        'provides[0].capability',
+      ],
     ] as const)('rejects a name outside the addon namespace (%s)', (code, changes, issuePath) => {
       expectOnly(manifestWith(changes), code, issuePath);
     });
@@ -200,6 +240,44 @@ describe('validateManifestV2', () => {
       );
     });
 
+    it('accepts a manifest group in the addon namespace', () => {
+      const groups = [
+        {
+          name: 'sample-tprm-check-reviewers',
+          displayName: 'TPRM reviewers',
+          permissions: ['sample-tprm-check.view', 'sample-tprm-check.run'],
+        },
+      ];
+      expect(codesOf(manifestWith({ groups }))).toEqual([]);
+    });
+
+    it('rejects a group permission that is not declared (KADK-123)', () => {
+      const groups = [
+        {
+          name: 'sample-tprm-check.reviewers',
+          displayName: 'TPRM reviewers',
+          permissions: ['sample-tprm-check.admin'],
+        },
+      ];
+      expectOnly(manifestWith({ groups }), 'KADK-123', 'groups[0].permissions[0]');
+    });
+
+    it('rejects duplicate group names (KADK-116)', () => {
+      const groups = [
+        {
+          name: 'sample-tprm-check.reviewers',
+          displayName: 'A',
+          permissions: ['sample-tprm-check.view'],
+        },
+        {
+          name: 'sample-tprm-check.reviewers',
+          displayName: 'B',
+          permissions: ['sample-tprm-check.run'],
+        },
+      ];
+      expectOnly(manifestWith({ groups }), 'KADK-116', 'groups');
+    });
+
     it('rejects a package path that leaves the package (KADK-120)', () => {
       expectOnly(
         manifestWith({ entrypoints: { main: 'dist/../../server/index.js' } }),
@@ -220,6 +298,58 @@ describe('validateManifestV2', () => {
 
     it('rejects runtime-loaded UI without an entry file (KADK-501)', () => {
       expectOnly(manifestWith({ ui: { runtimeLoad: true } }), 'KADK-501', 'ui.entryFile');
+    });
+
+    it('rejects an unknown extends entry (KADK-101)', () => {
+      expectOnly(manifestWith({ extends: ['notAnExtensionPoint'] }), 'KADK-101', 'extends[0]');
+    });
+
+    it('rejects duplicate extends entries (KADK-116)', () => {
+      expectOnly(
+        manifestWith({ extends: ['documentable', 'documentable'] }),
+        'KADK-116',
+        'extends'
+      );
+    });
+
+    it('accepts declared extends entries', () => {
+      expect(validateManifestV2(manifestWith({ extends: ['documentable', 'auditSubject'] })).ok).toBe(
+        true
+      );
+    });
+
+    it('rejects a free-text resource sensitivity value (KADK-101)', () => {
+      const resourceTypes = [
+        {
+          type: 'tprm:assessment',
+          label: 'TPRM assessment',
+          abilities: { preview: true },
+          sensitivity: 'public',
+        },
+      ];
+      expectOnly(manifestWith({ resourceTypes }), 'KADK-101', 'resourceTypes[0].sensitivity');
+    });
+
+    it('requires sensitivity on each resource type when the addon owns tables (KADK-124)', () => {
+      const resourceTypes = [
+        {
+          type: 'tprm:assessment',
+          label: 'TPRM assessment',
+          abilities: { preview: true },
+        },
+      ];
+      expectOnly(manifestWith({ resourceTypes }), 'KADK-124', 'resourceTypes[0].sensitivity');
+    });
+
+    it('keeps schema enums aligned with manifest catalog constants', () => {
+      const defs = ADDON_MANIFEST_V2_SCHEMA['$defs'];
+      expect(defs && typeof defs === 'object').toBe(true);
+      const extendEnum = (defs as Record<string, unknown>)['manifestExtendPointId'];
+      const sensitivityEnum = (defs as Record<string, unknown>)['resourceSensitivityLevel'];
+      expect((extendEnum as { enum: string[] }).enum).toEqual([...MANIFEST_EXTEND_POINT_IDS]);
+      expect((sensitivityEnum as { enum: string[] }).enum).toEqual([
+        ...MANIFEST_RESOURCE_SENSITIVITY_LEVELS,
+      ]);
     });
   });
 
@@ -249,14 +379,60 @@ describe('validateManifestV2', () => {
 
     it('rejects a data.schema that does not match the id (KADK-304)', () => {
       const changes = {
-        data: { schema: 'addon_other' },
+        data: { schema: 'addon_other', retention: 'retain' },
         database: { ownedTables: ['addon_other.assessments'] },
       };
       expectOnly(manifestWith(changes), 'KADK-304', 'data.schema');
     });
 
     it('rejects tier 2 tables without data.schema (KADK-305)', () => {
-      expectOnly(manifestWith({}, ['data']), 'KADK-305', 'data.schema');
+      const { ok, issues } = validateManifestV2(
+        manifestWith({ database: { ownedTables: ['addon_sample_tprm_check.assessments'] } }, [
+          'data',
+        ])
+      );
+      expect(ok).toBe(false);
+      expect(issues.map((issue) => issue.code)).toEqual(['KADK-309', 'KADK-305']);
+    });
+
+    it('rejects owned tables without data.retention (KADK-309)', () => {
+      expectOnly(
+        manifestWith({ data: { schema: 'addon_sample_tprm_check' } }),
+        'KADK-309',
+        'data.retention'
+      );
+    });
+
+    it.each(['retain', 'archive', 'purge'] as const)(
+      'accepts data.retention %s when owned tables are declared',
+      (retention) => {
+        const database = { ownedTables: ['addon_sample_tprm_check.assessments'] };
+        const data = { schema: 'addon_sample_tprm_check', retention };
+        expect(validateManifestV2(manifestWith({ data, database })).ok).toBe(true);
+      }
+    );
+
+    it('accepts database.tableNotes for an owned table', () => {
+      const database = {
+        ownedTables: ['addon_sample_tprm_check.assessments'],
+        tableNotes: [
+          {
+            table: 'addon_sample_tprm_check.assessments',
+            notCoreRecord: 'case',
+            why: 'Assessment rows are not cases',
+          },
+        ],
+      };
+      const data = { schema: 'addon_sample_tprm_check', retention: 'retain' };
+      expect(validateManifestV2(manifestWith({ data, database })).ok).toBe(true);
+    });
+
+    it('rejects an invalid data.retention value (KADK-101)', () => {
+      const data = {
+        schema: 'addon_sample_tprm_check',
+        retention: 'delete',
+      };
+      expectOnly(manifestWith({ data, database: {} }), 'KADK-101', 'data.retention');
     });
 
     it('rejects a legacy table the addon does not own (KADK-306)', () => {

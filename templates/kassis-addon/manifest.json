@@ -10,6 +10,17 @@
   "health": { "path": "/health" },
   "entrypoints": { "main": "dist/server/index.js" },
   "permissions": [{ "name": "__ADDON_ID__.view", "displayName": "View" }],
+  "audit": { "actions": ["__ADDON_ID__.started"] },
+  "events": {
+    "publishes": [
+      {
+        "name": "__ADDON_ID__.started",
+        "schema": "events/started.schema.json"
+      }
+    ]
+  },
+  "jobs": { "types": ["__ADDON_ID__.refresh"] },
+  "prompts": { "keys": ["__ADDON_ID__.summary"] },
   "ui": { "entryFile": "index.js", "runtimeLoad": true },
   "metadata": { "description": "__ADDON_NAME__" }
 }

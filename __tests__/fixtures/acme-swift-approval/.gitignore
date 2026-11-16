@@ -1,0 +1,6 @@
+dist
+frontend/dist
+.kassis
+node_modules
+sbom.json
+*.addon

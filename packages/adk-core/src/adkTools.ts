@@ -31,6 +31,22 @@ declare module '../../../tools/adk/certifyAttestation.mjs' {
   export function certifyAttestation(input: CertifyInput): { ok: boolean; issues: CatalogIssue[] };
 }
 
+declare module '../../../tools/adk/processPacks.mjs' {
+  export function auditProcessPacks(addonDir: string): {
+    ok: boolean;
+    issues: CatalogIssue[];
+  };
+}
+
+declare module '../../../tools/adk/reuseCore.mjs' {
+  export function auditReuseCore(addonDir: string): {
+    ok: boolean;
+    issues: CatalogIssue[];
+    report: object;
+  };
+  export function writeReuseCoreEvidence(addonDir: string, report: object): void;
+}
+
 declare module '../../../tools/adk/profileLock.mjs' {
   export function buildProfileLock(profile: object): {
     version: string;
@@ -103,6 +119,75 @@ declare module '../../../tools/adk/addonSbom.mjs' {
     components: { name: string; version: string }[];
   };
   export function writeAddonSbom(dir: string): string;
+}
+
+declare module '../../../tools/adk/requirementPlan.mjs' {
+  export function auditRequirementPlan(addonDir: string): {
+    ok: boolean;
+    issues: CatalogIssue[];
+    mapping: {
+      requirementIds?: string[];
+      unmapped?: string[];
+      split?: object;
+    } | null;
+  };
+  export function writeRequirementMapping(addonDir: string, mapping: object | null): void;
+}
+
+declare module '../../../tools/adk/requirementsTrace.mjs' {
+  export function auditRequirementsTracing(addonDir: string): {
+    ok: boolean;
+    issues: CatalogIssue[];
+    coverage: object | null;
+  };
+  export function writeRequirementsCoverage(addonDir: string, coverage: object | null): void;
+}
+
+declare module '../../../tools/adk/thinAddonBudgets.mjs' {
+  export const SOFT_BUDGETS: {
+    ownedTables: number;
+    routes: number;
+    dependencies: number;
+    serverSourceBytes: number;
+  };
+  export function auditThinAddonBudgets(addonDir: string): {
+    ok: boolean;
+    issues: CatalogIssue[];
+    evidence: {
+      overages?: Array<{
+        metric: string;
+        count: number;
+        limit: number;
+        reason: string | null;
+      }>;
+      counts?: object;
+      version?: number;
+    };
+  };
+  export function writeThinAddonBudgetsEvidence(addonDir: string, evidence: object): void;
+}
+
+declare module '../../../tools/adk/engineeringPractice.mjs' {
+  export function auditEngineeringPractice(addonDir: string): {
+    ok: boolean;
+    issues: CatalogIssue[];
+    evidence: object;
+    checkResults: Record<string, { ok: boolean; findings: object[] }>;
+  };
+  export function writeEngineeringPracticeEvidence(addonDir: string, evidence: object): void;
+}
+
+declare module '../../../tools/adk/mandatoryContract.mjs' {
+  export function auditMandatoryContract(addonDir: string): {
+    ok: boolean;
+    issues: CatalogIssue[];
+    evidence: object;
+  };
+  export function mandatoryContractRefusal(audit: {
+    ok: boolean;
+    issues: CatalogIssue[];
+  }): { code: string; message: string } | null;
+  export function writeMandatoryContractEvidence(addonDir: string, evidence: object): void;
 }
 
 declare module '../../../tools/adk/certifyChecks.mjs' {

@@ -7,6 +7,7 @@
  * @returns {CertifyReport}
  */
 export function assertEvidencePack(dir: string): CertifyReport;
+export { checkAddonTierRefusals } from "./checkAddonTierRefusals.mjs";
 export { createTestContext } from "./createTestContext.mjs";
 export type CertifyReport = {
     ok: true;

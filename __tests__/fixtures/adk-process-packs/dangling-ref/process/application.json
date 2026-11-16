@@ -1,0 +1,7 @@
+{
+  "key": "acme-underwriting.case.application",
+  "kind": "case-template",
+  "name": "Application",
+  "references": ["acme-underwriting.flow.missing", "42"],
+  "body": {}
+}

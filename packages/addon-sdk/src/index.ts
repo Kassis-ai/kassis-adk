@@ -23,7 +23,19 @@ export type {
   ManifestSecretKeys,
   ManifestSubscribedEvents,
 } from './context/addonDeclarations.js';
-export type { AddonDataClient, SqlValue } from './context/dataClient.js';
+export type {
+  AddonDataBatchResult,
+  AddonDataBatchStatement,
+  AddonDataClient,
+  AddonDataExecuteResult,
+  AddonDataQueryResult,
+  AddonDataReadOptions,
+  AddonDataReadResult,
+  AddonSqlParam,
+  AddonTier1DataClient,
+  AddonTier2DataClient,
+  SqlValue,
+} from './context/dataClient.js';
 export type {
   AddonEvent,
   AddonFetchInit,
@@ -99,6 +111,12 @@ export type {
   CaseEntityLink,
   CaseRecord,
   CasesFacade,
+  CommunicationAccessCheck,
+  CommunicationFacade,
+  CommunicationListQuery,
+  CommunicationMessage,
+  CommunicationSendInput,
+  CommunicationSendResult,
   CoreFacades,
   DocumentCreateInput,
   DocumentIndexInput,
@@ -120,13 +138,30 @@ export type {
 } from './context/coreFacades.js';
 export type { AddonContext, AddonModule } from './context/addonContext.js';
 
+export {
+  defineAddon,
+  defineRecordType,
+  type AddonManifestContract,
+  type DefinedAddon,
+  type DefineAddonInput,
+  type RecordTypeAuditSubject,
+  type RecordTypeDefinition,
+} from './define/defineAddon.js';
+
 export type { AddonExtensionPoints } from './extend/addonExtensionPoints.js';
 export type * from './extend/extensionContributions.js';
 
 export type * from './manifest/manifestV2Types.js';
+export {
+  MANIFEST_EXTEND_POINT_IDS,
+  MANIFEST_RESOURCE_SENSITIVITY_LEVELS,
+  type ManifestExtendPointId,
+  type ManifestResourceSensitivity,
+} from './manifest/manifestV2Catalog.js';
 export { ADDON_MANIFEST_V2_SCHEMA } from './manifest/manifestV2Schema.js';
 export {
   addonDataSchemaName,
+  addonGroupNamespacePrefixes,
   addonNamespacePrefixes,
   type ManifestValidationOptions,
 } from './manifest/manifestV2Rules.js';
@@ -149,3 +184,15 @@ export {
   type KadkSeverity,
   type KadkTemplateValues,
 } from './codes/kadkCodes.js';
+
+export {
+  GUARDRAIL_GROUP_LABELS,
+  GUARDRAIL_LEVEL_LABELS,
+  formatGuardrailCheck,
+  getGuardrailCatalogEntry,
+  listGuardrailCatalogEntries,
+  requireGuardrailCatalogEntry,
+  type GuardrailCatalogEntry,
+  type GuardrailGroup,
+  type GuardrailLevel,
+} from './guardrails/guardrailCatalog.js';

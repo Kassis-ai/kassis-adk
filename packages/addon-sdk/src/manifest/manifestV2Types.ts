@@ -5,6 +5,33 @@
  */
 import type { AddonTier } from '../context/addonIdentity.js';
 import type { JsonSchema } from '../json.js';
+import type {
+  ManifestExtendPointId,
+  ManifestResourceSensitivity,
+} from './manifestV2Catalog.js';
+
+/** One process pack file. The body schema, when the host has one, is named in process-pack-kinds.json. */
+export interface ManifestProcessPack {
+  /** Stable key in the addon namespace, for example `<id>.case.application`. */
+  readonly key: string;
+  /** Kind id from process-pack-kinds.json, for example `case-template`. */
+  readonly kind: string;
+  /** Path under `process/`, relative to the addon root. */
+  readonly file: string;
+}
+
+export interface ManifestProcess {
+  readonly packs: readonly ManifestProcessPack[];
+}
+
+export interface ManifestGroup {
+  /** Slug in the addon namespace, for example `<id>.reviewers` or `<id>-reviewers`. */
+  readonly name: string;
+  readonly displayName: string;
+  readonly description?: string;
+  /** Permissions this group grants; each must appear in `permissions`. */
+  readonly permissions: readonly string[];
+}
 
 export interface ManifestPermission {
   /** `<id>.<resource>.<action>` (or the id with underscores). */
@@ -49,6 +76,9 @@ export interface ManifestDatabase {
   /** Core tables a tier 1 addon may read during the migration to its own schema. */
   readonly readAccess?: readonly string[];
 }
+
+/** Uninstall handling for data in `data.schema`. Required when `database.ownedTables` is non-empty. */
+export type DataRetentionPolicy = 'retain' | 'archive' | 'purge';
 
 export type LegacyTableStrategy = 'retain' | 'rename';
 
@@ -137,7 +167,7 @@ export interface ManifestResourceType {
   readonly label: string;
   readonly abilities: { readonly [ability in ResourceTypeAbility]?: boolean };
   readonly icon?: string;
-  readonly sensitivity?: string;
+  readonly sensitivity?: ManifestResourceSensitivity;
   readonly viewPermissions?: readonly string[];
   readonly access?: string;
   readonly table?: string;
@@ -184,6 +214,10 @@ export interface AddonManifestV2 {
   readonly permissions?: readonly ManifestPermission[];
   /** Permissions every route of the addon needs; each must be declared in `permissions`. */
   readonly requiredPermissions?: readonly string[];
+  /** RBAC groups carrying only this manifest's permissions; created empty at install. */
+  readonly groups?: readonly ManifestGroup[];
+  /** Signed process configuration. `kassis-addon check` validates it offline; install is later. */
+  readonly process?: ManifestProcess;
   readonly requires?: readonly CapabilityRequirement[];
   readonly optional?: readonly CapabilityRequirement[];
   readonly provides?: readonly CapabilityOffer[];
@@ -198,10 +232,12 @@ export interface AddonManifestV2 {
   readonly prompts?: { readonly keys: readonly string[] };
   readonly secrets?: { readonly keys: readonly string[] };
   readonly config?: { readonly schema: JsonSchema };
-  readonly data?: { readonly schema: string };
+  readonly data?: { readonly schema: string; readonly retention?: DataRetentionPolicy };
   readonly database?: ManifestDatabase;
   readonly legacyTables?: readonly LegacyTableDeclaration[];
   readonly contributions?: { readonly mcp?: McpContributionDeclaration };
+  /** `ctx.extend` registrations the addon uses; undeclared registration is refused at run time. */
+  readonly extends?: readonly ManifestExtendPointId[];
   readonly resourceTypes?: readonly ManifestResourceType[];
   readonly ui?: ManifestUi;
   readonly metadata?: ManifestMetadata;

@@ -1,0 +1,8 @@
+{
+  "key": "acme-underwriting.case.application",
+  "kind": "case-template",
+  "name": "Application",
+  "settings": {},
+  "users": [],
+  "secrets": {}
+}

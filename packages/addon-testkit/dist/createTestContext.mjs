@@ -1,6 +1,13 @@
 /**
  * In-memory AddonContext recorders. No database and no model provider.
+ * Declared-name refusals mirror the host AddonContext facades (KADK-606, 401, 610, 608, 605, 607).
  */
+import fs from 'node:fs';
+import path from 'node:path';
+import { createConfigFake, createCoreFacadesFake, createFlagsFake, createNotifyFake, createPromptsFake, createRiskFake, createRoutesFake, createSettingsFake, } from './contextAreaFakes.mjs';
+import { manifestPolicyFromManifest } from './manifestPolicy.mjs';
+import { TestContextError } from './testContextError.mjs';
+import { createTierGuardedCapabilities, createTierGuardedData, createTierGuardedExtend, createTierGuardedLocks, } from './tierGuardedFacades.mjs';
 /**
  * @typedef {object} TestPrincipal
  * @property {'user' | 'service'} kind
@@ -62,15 +69,47 @@
  * @property {{ text: string, json: null, model: string, provider: string, usage: null, prompt: { key: string, hash: null } }} result
  */
 /**
+ * @typedef {object} RecordedSecretRead
+ * @property {string} key
+ */
+/**
+ * @typedef {object} RecordedHttpFetch
+ * @property {string} url
+ */
+/**
+ * @typedef {object} CreateTestContextOptions
+ * @property {string} [addonId]
+ * @property {string} [version]
+ * @property {1 | 2} [tier]
+ * @property {string} [tenantId]
+ * @property {Record<string, unknown>} [config]
+ * @property {Record<string, unknown>} [manifest]
+ * @property {string} [manifestPath]
+ */
+/**
  * @typedef {object} TestAddonContext
  * @property {{ id: string, version: string, tier: 1 | 2 }} addon
  * @property {{ id: string }} tenant
  * @property {{ debug: Function, info: Function, warn: Function, error: Function }} logger
- * @property {{ audit: RecordedAudit[], events: RecordedEvent[], jobs: RecordedJob[], llm: RecordedLlmCall[] }} recorded
+ * @property {Readonly<Record<string, unknown>>} config
+ * @property {{ audit: RecordedAudit[], events: RecordedEvent[], jobs: RecordedJob[], llm: RecordedLlmCall[], secrets: RecordedSecretRead[], http: RecordedHttpFetch[], settings: object[], flags: object[], notify: object[], risk: object[], core: object[], prompts: object[], routes: object[] }} recorded
  * @property {{ record: Function, search: Function }} audit
  * @property {{ publish: Function, subscribe: Function }} events
  * @property {{ register: Function, enqueue: Function, schedule: Function, status: Function }} jobs
  * @property {{ invoke: Function, estimateTokens: Function }} llm
+ * @property {{ get: Function }} secrets
+ * @property {{ fetch: Function }} http
+ * @property {object} routes
+ * @property {object} settings
+ * @property {object} flags
+ * @property {object} notify
+ * @property {object} risk
+ * @property {object} core
+ * @property {object} prompts
+ * @property {object} capabilities
+ * @property {object} locks
+ * @property {object} extend
+ * @property {object} data
  */
 function disposable() {
     return {
@@ -84,7 +123,67 @@ function requireText(value, message) {
         throw new Error(message);
 }
 /**
- * @param {{ addonId?: string, version?: string, tier?: 1 | 2, tenantId?: string }} [options]
+ * @param {CreateTestContextOptions} options
+ * @returns {Record<string, unknown> | null}
+ */
+function resolveManifest(options) {
+    if (options.manifest && typeof options.manifest === 'object') {
+        return options.manifest;
+    }
+    const manifestPath = typeof options.manifestPath === 'string' && options.manifestPath.length > 0
+        ? options.manifestPath
+        : fs.existsSync(path.join(process.cwd(), 'manifest.json'))
+            ? path.join(process.cwd(), 'manifest.json')
+            : null;
+    if (!manifestPath)
+        return null;
+    return JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+}
+/**
+ * @param {string} host
+ * @returns {string}
+ */
+function normaliseHost(host) {
+    return host.toLowerCase().replace(/\.$/, '');
+}
+/**
+ * @param {string} host
+ * @param {string} pattern
+ * @returns {boolean}
+ */
+function matchesEgressHost(host, pattern) {
+    if (!pattern.startsWith('*.'))
+        return host === pattern;
+    const suffix = pattern.slice(1);
+    return (host.endsWith(suffix) &&
+        !host.slice(0, -suffix.length).includes('.') &&
+        host.length > suffix.length);
+}
+/**
+ * @param {readonly string[]} allowed
+ * @param {string} url
+ * @returns {URL}
+ */
+function assertEgressAllowed(addonId, allowed, url) {
+    let target;
+    try {
+        target = new URL(url);
+    }
+    catch {
+        throw new Error(`ctx.http.fetch: '${url}' is not an absolute URL`);
+    }
+    const host = normaliseHost(target.hostname);
+    const patterns = allowed.map(normaliseHost);
+    if (target.protocol !== 'https:' ||
+        target.username ||
+        target.password ||
+        !patterns.some((pattern) => matchesEgressHost(host, pattern))) {
+        throw new TestContextError('KADK-607', 'egress.hosts', { id: addonId, host: target.host });
+    }
+    return target;
+}
+/**
+ * @param {CreateTestContextOptions} [options]
  * @returns {TestAddonContext}
  */
 export function createTestContext(options = {}) {
@@ -99,6 +198,8 @@ export function createTestContext(options = {}) {
         ? options.tenantId
         : 'tenant';
     const tier = options.tier === 1 ? 1 : 2;
+    const manifest = resolveManifest(options);
+    const policy = manifestPolicyFromManifest(manifest);
     /** @type {RecordedAudit[]} */
     const audit = [];
     /** @type {RecordedEvent[]} */
@@ -107,6 +208,24 @@ export function createTestContext(options = {}) {
     const jobs = [];
     /** @type {RecordedLlmCall[]} */
     const llm = [];
+    /** @type {RecordedSecretRead[]} */
+    const secrets = [];
+    /** @type {RecordedHttpFetch[]} */
+    const http = [];
+    /** @type {object[]} */
+    const settings = [];
+    /** @type {object[]} */
+    const flags = [];
+    /** @type {object[]} */
+    const notify = [];
+    /** @type {object[]} */
+    const risk = [];
+    /** @type {object[]} */
+    const core = [];
+    /** @type {object[]} */
+    const prompts = [];
+    /** @type {object[]} */
+    const routes = [];
     return {
         addon: { id: addonId, version, tier },
         tenant: { id: tenantId },
@@ -116,7 +235,22 @@ export function createTestContext(options = {}) {
             warn() { },
             error() { },
         },
-        recorded: { audit, events, jobs, llm },
+        config: createConfigFake(manifest, options.config),
+        recorded: {
+            audit,
+            events,
+            jobs,
+            llm,
+            secrets,
+            http,
+            settings,
+            flags,
+            notify,
+            risk,
+            core,
+            prompts,
+            routes,
+        },
         audit: {
             /**
              * @param {TestPrincipal} principal
@@ -125,6 +259,9 @@ export function createTestContext(options = {}) {
              */
             async record(principal, action, detail) {
                 requireText(action, 'audit action is required');
+                if (!policy.auditActions.has(action)) {
+                    throw new TestContextError('KADK-606', 'audit.actions', { id: addonId, value: action });
+                }
                 if (!detail?.subject?.type || !detail.subject.id)
                     throw new Error('audit subject is required');
                 audit.push({ principal, action, detail, occurredAt: new Date().toISOString() });
@@ -154,6 +291,9 @@ export function createTestContext(options = {}) {
              */
             async publish(principal, name, payload) {
                 requireText(name, 'event name is required');
+                if (!policy.publishes.has(name)) {
+                    throw new TestContextError('KADK-401', 'events.publishes', { id: addonId, event: name });
+                }
                 events.push({
                     principal,
                     name,
@@ -164,12 +304,26 @@ export function createTestContext(options = {}) {
                     occurredAt: new Date().toISOString(),
                 });
             },
-            subscribe() {
+            /**
+             * @param {string} name
+             */
+            subscribe(name) {
+                requireText(name, 'event name is required');
+                if (!policy.subscribes.has(name)) {
+                    throw new TestContextError('KADK-403', 'events.subscribes', { id: addonId, event: name });
+                }
                 return disposable();
             },
         },
         jobs: {
-            register() {
+            /**
+             * @param {string} type
+             */
+            register(type) {
+                requireText(type, 'job type is required');
+                if (!policy.jobTypes.has(type)) {
+                    throw new TestContextError('KADK-610', 'jobs.types', { id: addonId, value: type });
+                }
                 return disposable();
             },
             /**
@@ -180,6 +334,9 @@ export function createTestContext(options = {}) {
              */
             async enqueue(principal, type, data, enqueueOptions) {
                 requireText(type, 'job type is required');
+                if (!policy.jobTypes.has(type)) {
+                    throw new TestContextError('KADK-610', 'jobs.types', { id: addonId, value: type });
+                }
                 const requested = enqueueOptions?.jobId;
                 if (typeof requested === 'string' && requested.length > 0) {
                     const existing = jobs.find((job) => job.kind === 'enqueue' && job.id === requested);
@@ -194,6 +351,9 @@ export function createTestContext(options = {}) {
             schedule(type, cron, data) {
                 requireText(type, 'job type is required');
                 requireText(cron, 'cron is required');
+                if (!policy.jobTypes.has(type)) {
+                    throw new TestContextError('KADK-610', 'jobs.types', { id: addonId, value: type });
+                }
                 jobs.push({ kind: 'schedule', type, cron, data: data ?? {} });
                 return disposable();
             },
@@ -220,6 +380,9 @@ export function createTestContext(options = {}) {
              */
             async invoke(principal, promptKey, variables, invokeOptions) {
                 requireText(promptKey, 'prompt key is required');
+                if (!policy.promptKeys.has(promptKey)) {
+                    throw new TestContextError('KADK-608', 'prompts.keys', { id: addonId, value: promptKey });
+                }
                 const result = {
                     text: '',
                     json: null,
@@ -245,5 +408,51 @@ export function createTestContext(options = {}) {
                 return Math.ceil(text.length / 4);
             },
         },
+        secrets: {
+            /**
+             * @param {string} key
+             */
+            async get(key) {
+                requireText(key, 'secret key is required');
+                if (!policy.secretKeys.has(key)) {
+                    throw new TestContextError('KADK-605', 'secrets.keys', { id: addonId, value: key });
+                }
+                secrets.push({ key });
+                return `fake-secret:${key}`;
+            },
+        },
+        http: {
+            /**
+             * @param {string} url
+             */
+            async fetch(url) {
+                requireText(url, 'url is required');
+                assertEgressAllowed(addonId, policy.egressHosts, url);
+                http.push({ url });
+                return {
+                    ok: true,
+                    status: 200,
+                    statusText: 'OK',
+                    headers: {},
+                    async json() {
+                        return {};
+                    },
+                    async text() {
+                        return '';
+                    },
+                };
+            },
+        },
+        routes: createRoutesFake(routes),
+        settings: createSettingsFake(settings),
+        flags: createFlagsFake(flags),
+        notify: createNotifyFake(notify),
+        risk: createRiskFake(risk),
+        core: createCoreFacadesFake(tier, core),
+        prompts: createPromptsFake(prompts),
+        capabilities: createTierGuardedCapabilities(tier),
+        locks: createTierGuardedLocks(tier),
+        extend: createTierGuardedExtend(tier),
+        data: createTierGuardedData(tier),
     };
 }

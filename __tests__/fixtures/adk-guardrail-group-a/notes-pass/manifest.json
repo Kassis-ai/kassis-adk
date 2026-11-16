@@ -1,0 +1,12 @@
+{
+  "database": {
+    "ownedTables": ["addon_acme.quotes"],
+    "tableNotes": [
+      {
+        "table": "addon_acme.quotes",
+        "notCoreRecord": "case",
+        "why": "Quote lines are not cases"
+      }
+    ]
+  }
+}

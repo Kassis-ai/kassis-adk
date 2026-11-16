@@ -7,7 +7,7 @@
 import type { JsonObject, JsonValue } from '../json.js';
 import type { AddonPrincipal } from '../context/addonIdentity.js';
 import type { ApprovalOutcome } from '../context/coreFacades.js';
-import type { AddonDataClient } from '../context/dataClient.js';
+import type { AddonTier1DataClient } from '../context/dataClient.js';
 
 /** Host-specific: the host keys `promptKeys` by its own prompt-owner list. */
 export type InvestigationDomainContribution = {
@@ -238,6 +238,13 @@ export type LinkableContribution = {
   allowedRoles?: string[];
 };
 
+export type CommunicableContribution = {
+  /** One of the addon's manifest resourceTypes (email owner type). */
+  type: string;
+  viewPermissions: readonly string[];
+  sendPermissions: readonly string[];
+};
+
 export type LifecycleIdCast = 'integer' | 'string';
 
 export type LifecycleFlagMode = 'deleted_at' | 'status' | 'is_active';
@@ -395,7 +402,14 @@ export type RiskSubscriberRegistration = {
   subscriptions?: JsonObject[];
 };
 
+/** Tier 2 names the registration with `id` and an owned record. Tier 1 ignores both. */
+export type Tier2OwnedRecord = {
+  resourceType: string;
+};
+
 export type RiskFactorsContribution = {
+  id?: string;
+  record?: Tier2OwnedRecord;
   request: RiskSubscriberRegistration;
 };
 
@@ -407,6 +421,8 @@ export type AnalyticsPullArgs = {
 
 /** Host-specific: the host types rows and filters as untyped maps. */
 export type AnalyticsContributorContribution = {
+  id?: string;
+  record?: Tier2OwnedRecord;
   contributor: {
     contributorId: string;
     datasets: Array<{ datasetId: string; grain: string }>;
@@ -427,9 +443,11 @@ export type GraphRiskMirrorInput = {
 
 /** Host-specific: in process the host passes its own Prisma transaction as `tx`. */
 export type GraphRiskMirrorContribution = {
+  id?: string;
+  record?: Tier2OwnedRecord;
   providerId: string;
   writer: (
-    tx: AddonDataClient,
+    tx: AddonTier1DataClient,
     input: GraphRiskMirrorInput,
     mirrorPayload: JsonObject
   ) => Promise<void>;
@@ -460,6 +478,8 @@ export type PredictionCapability = {
 
 /** Host-specific: the host takes the capability as an untyped value. */
 export type PredictionCapabilityContribution = {
+  id?: string;
+  record?: Tier2OwnedRecord;
   capability: PredictionCapability;
 };
 

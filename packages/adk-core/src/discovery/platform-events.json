@@ -1,0 +1,901 @@
+{
+  "schemaVersion": 1,
+  "description": "Platform event schemas for offline ADK MCP discovery (list_events / get_event_schema).",
+  "events": [
+    {
+      "name": "addon.lifecycle.changed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "addon.lifecycle.changed",
+        "type": "object",
+        "required": [
+          "addonName",
+          "state",
+          "timestamp"
+        ],
+        "properties": {
+          "addonName": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "number"
+          },
+          "metadata": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "control-room.alert.updated",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "control-room.alert.updated",
+        "type": "object",
+        "required": [
+          "alertId",
+          "status"
+        ],
+        "properties": {
+          "alertId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "control-room.breach.escalated",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "control-room.breach.escalated",
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "control-room.clearance.approved",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "control-room.clearance.approved",
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "control-room.deal.created",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "control-room.deal.created",
+        "type": "object",
+        "required": [
+          "dealId",
+          "deal_code",
+          "issuer_name"
+        ],
+        "properties": {
+          "dealId": {
+            "type": "number"
+          },
+          "deal_code": {
+            "type": "string"
+          },
+          "issuer_name": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "control-room.deal.phase_changed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "control-room.deal.phase_changed",
+        "type": "object",
+        "required": [
+          "dealId",
+          "from_phase",
+          "to_phase"
+        ],
+        "properties": {
+          "dealId": {
+            "type": "number"
+          },
+          "from_phase": {
+            "type": "string"
+          },
+          "to_phase": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "control-room.deal.updated",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "control-room.deal.updated",
+        "type": "object",
+        "required": [
+          "dealId",
+          "fields"
+        ],
+        "properties": {
+          "dealId": {
+            "type": "number"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "control-room.wallcross.approved",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "control-room.wallcross.approved",
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "entity.adverse_media_hit",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "entity.adverse_media_hit",
+        "type": "object",
+        "required": [
+          "entityId",
+          "events"
+        ],
+        "properties": {
+          "entityId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "events": {
+            "type": "array"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "entity.link_discovered",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "entity.link_discovered",
+        "type": "object",
+        "required": [
+          "sourceEntityId",
+          "targetEntityId",
+          "candidateId",
+          "detector"
+        ],
+        "properties": {
+          "entityId": {
+            "type": "string"
+          },
+          "sourceEntityId": {
+            "type": "string"
+          },
+          "targetEntityId": {
+            "type": "string"
+          },
+          "candidateId": {
+            "type": "string"
+          },
+          "detector": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "correlationId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "entity.pep_hit",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "entity.pep_hit",
+        "type": "object",
+        "required": [
+          "entityId",
+          "hits"
+        ],
+        "properties": {
+          "entityId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "hits": {
+            "type": "array"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "entity.sanctions_hit",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "entity.sanctions_hit",
+        "type": "object",
+        "required": [
+          "entityId",
+          "hits"
+        ],
+        "properties": {
+          "entityId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "hits": {
+            "type": "array"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "graph.analyzed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "graph.analyzed",
+        "type": "object",
+        "required": [
+          "graphId",
+          "userId",
+          "userEmail",
+          "summary"
+        ],
+        "properties": {
+          "graphId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "caseId": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "userEmail": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "graph.case_linked",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "graph.case_linked",
+        "type": "object",
+        "required": [
+          "graphId",
+          "caseId",
+          "userId",
+          "userEmail"
+        ],
+        "properties": {
+          "graphId": {
+            "type": "string"
+          },
+          "caseId": {
+            "type": "number"
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "userEmail": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "graph.completed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "graph.completed",
+        "type": "object",
+        "required": [
+          "graphId",
+          "caseId",
+          "userId",
+          "userEmail"
+        ],
+        "properties": {
+          "graphId": {
+            "type": "string"
+          },
+          "caseId": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "userEmail": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "graph.created",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "graph.created",
+        "type": "object",
+        "required": [
+          "graphId",
+          "caseId",
+          "userId",
+          "userEmail",
+          "summary"
+        ],
+        "properties": {
+          "graphId": {
+            "type": "string"
+          },
+          "caseId": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "userEmail": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "graph.deleted",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "graph.deleted",
+        "type": "object",
+        "required": [
+          "graphId",
+          "caseId",
+          "userId",
+          "userEmail",
+          "summary"
+        ],
+        "properties": {
+          "graphId": {
+            "type": "string"
+          },
+          "caseId": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "userEmail": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "graph.generated",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "graph.generated",
+        "type": "object",
+        "required": [
+          "graphId",
+          "caseId",
+          "investigationId",
+          "userId",
+          "userEmail",
+          "source",
+          "at"
+        ],
+        "properties": {
+          "graphId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "caseId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "investigationId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "userEmail": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "source": {
+            "type": "string"
+          },
+          "at": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "graph.updated",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "graph.updated",
+        "type": "object",
+        "required": [
+          "graphId",
+          "caseId",
+          "userId",
+          "userEmail",
+          "summary"
+        ],
+        "properties": {
+          "graphId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "caseId": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "userEmail": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "auto": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "investigation.graph.generation_requested",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "investigation.graph.generation_requested",
+        "type": "object",
+        "anyOf": [
+          {
+            "required": [
+              "investigationId"
+            ]
+          },
+          {
+            "required": [
+              "investigation_id"
+            ]
+          },
+          {
+            "required": [
+              "caseId"
+            ]
+          },
+          {
+            "required": [
+              "case_id"
+            ]
+          }
+        ],
+        "properties": {
+          "investigationId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "investigation_id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "caseId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "case_id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "user_id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "userEmail": {
+            "type": "string"
+          },
+          "analysisOptions": {
+            "type": "object"
+          },
+          "correlationId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "party.adverse_media.analyzed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "party.adverse_media.analyzed",
+        "type": "object",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "entityId",
+          "articleIds",
+          "runId"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "entityId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "articleIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "runId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "party.adverse_media_hit",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "party.adverse_media_hit",
+        "type": "object",
+        "required": [
+          "entityId",
+          "events"
+        ],
+        "properties": {
+          "entityId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "events": {
+            "type": "array"
+          },
+          "previousEventsCount": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "party.pep_hit",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "party.pep_hit",
+        "type": "object",
+        "required": [
+          "entityId",
+          "hits"
+        ],
+        "properties": {
+          "entityId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "hits": {
+            "type": "array"
+          },
+          "previousHitsCount": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "party.sanctions_hit",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "party.sanctions_hit",
+        "type": "object",
+        "required": [
+          "entityId",
+          "hits"
+        ],
+        "properties": {
+          "entityId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "hits": {
+            "type": "array"
+          },
+          "previousHitsCount": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "party.screening.resolved",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "party.screening.resolved",
+        "type": "object",
+        "required": [
+          "entityId",
+          "userId",
+          "datasets",
+          "counts"
+        ],
+        "properties": {
+          "entityId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "datasets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "counts": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "risk.calculated",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "risk.calculated",
+        "type": "object",
+        "required": [
+          "graphId",
+          "userId",
+          "userEmail",
+          "score",
+          "level"
+        ],
+        "properties": {
+          "graphId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "caseId": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "userEmail": {
+            "type": "string"
+          },
+          "score": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "level": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  ]
+}

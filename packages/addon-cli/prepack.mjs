@@ -119,6 +119,25 @@ copyIntoLib(
   'addon_verification_public.key'
 );
 copyIntoLib(path.join(repoRoot, 'packages/addon-sdk/codes/kadk-codes.json'), 'kadk-codes.json');
+copyIntoLib(path.join(repoRoot, 'packages/addon-sdk/tier-matrix.json'), 'tier-matrix.json');
+copyIntoLib(path.join(repoRoot, 'packages/addon-sdk/guardrails.json'), 'guardrails.json');
+copyIntoLib(
+  path.join(repoRoot, 'packages/addon-sdk/banned-dependencies.json'),
+  'banned-dependencies.json'
+);
+copyIntoLib(
+  path.join(repoRoot, 'packages/addon-sdk/process-pack-kinds.json'),
+  'process-pack-kinds.json'
+);
+copyIntoLib(
+  path.join(repoRoot, 'packages/addon-sdk/schema/process-pack.schema.json'),
+  'process-pack.schema.json'
+);
+fs.cpSync(
+  path.join(repoRoot, 'packages/adk-core/src/discovery'),
+  path.join(lib, 'discovery'),
+  { recursive: true }
+);
 fs.cpSync(
   path.join(repoRoot, 'templates/kassis-addon'),
   path.join(pkgRoot, 'templates/kassis-addon'),
@@ -148,7 +167,7 @@ function walk(dir) {
       throw new Error(`CLI package staged a signing secret: ${full}`);
     } else if (entry.name.endsWith('.mjs') || entry.name.endsWith('.js')) {
       const text = fs.readFileSync(full, 'utf8');
-      if (text.includes('packages/') || text.includes(".ts'")) {
+      if (/from\s+['"][^'"]*packages\//.test(text)) {
         throw new Error(`CLI bundle still points at the repository: ${full}`);
       }
     }

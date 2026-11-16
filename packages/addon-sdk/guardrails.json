@@ -1,0 +1,242 @@
+{
+  "schemaVersion": 1,
+  "description": "Machine-readable ADK guardrail catalogue (groups A–F, levels L1–L5). Profiles, certify, the dev MCP server and docs read this file.",
+  "groupLabels": {
+    "A": "Reuse core, no private copies",
+    "B": "Lowest rung first",
+    "C": "Gap protocol",
+    "D": "Thin-addon budgets",
+    "E": "Engineering practice",
+    "F": "Governance"
+  },
+  "levelLabels": {
+    "L1": "Cannot — host refuses at run time",
+    "L2": "Will not build — type error or check failure",
+    "L3": "Will not ship — certify fails or host refuses enable",
+    "L4": "Needs a person — evidence-pack diff acknowledgement",
+    "L5": "Agent says so — self-attested advisory"
+  },
+  "entries": [
+    {
+      "id": "adk.work-in-own-repo",
+      "group": "F",
+      "level": "L5",
+      "check": "self-attestation",
+      "kadkCode": "KADK-703",
+      "fixHint": "Advisory: a machine cannot see which repository the agent edited. Work only in this addon repository. Import Kassis as @kassis/* packages; never edit core or host paths.",
+      "inProfile": true
+    },
+    {
+      "id": "adk.sdk-imports-only",
+      "group": "A",
+      "level": "L2",
+      "check": "kassis-addon-conformance",
+      "kadkCode": "KADK-201",
+      "fixHint": "Import only from @kassis/* and this addon's src/. kassis-addon conformance fails host paths and undeclared packages (KADK-201 to KADK-205).",
+      "inProfile": true
+    },
+    {
+      "id": "adk.banned-dependencies",
+      "group": "A",
+      "level": "L2",
+      "check": "kassis-addon-check",
+      "kadkCode": "KADK-221",
+      "fixHint": "Remove mail, scheduler, upload, auth, ORM, alternate UI kit, or LLM provider SDKs from package.json; use ctx facades.",
+      "inProfile": false
+    },
+    {
+      "id": "adk.no-private-mechanism-tables",
+      "group": "A",
+      "level": "L3",
+      "check": "kassis-addon-check",
+      "kadkCode": "KADK-310",
+      "fixHint": "Do not add private approval, notification, audit, or user tables; use core facades and record types.",
+      "inProfile": false
+    },
+    {
+      "id": "adk.owned-table-core-alternative",
+      "group": "A",
+      "level": "L4",
+      "check": "kassis-addon-check",
+      "kadkCode": "KADK-312",
+      "fixHint": "State in the manifest or evidence pack which core record type each owned table replaces and why.",
+      "inProfile": false
+    },
+    {
+      "id": "adk.lowest-rung",
+      "group": "B",
+      "level": "L5",
+      "check": "self-attestation",
+      "kadkCode": "KADK-712",
+      "fixHint": "Prefer configuration, then declarative addon features, then code. Record the rung and reason in the change summary.",
+      "inProfile": true
+    },
+    {
+      "id": "adk.requirement-plan-mapped",
+      "group": "B",
+      "level": "L3",
+      "check": "adk.requirement-plan-mapped",
+      "kadkCode": "KADK-720",
+      "fixHint": "Run kassis-addon plan so every FR-* and NFR-* row in REQUIREMENTS.md has a rung in PLAN.md (KADK-720, KADK-721, KADK-722).",
+      "inProfile": true
+    },
+    {
+      "id": "adk.requirements-traced",
+      "group": "B",
+      "level": "L3",
+      "check": "adk.requirements-traced",
+      "kadkCode": "KADK-718",
+      "fixHint": "Run kassis-addon requirements so every Must row is named by a test under test/ or an entry in GAPS.md.",
+      "inProfile": true
+    },
+    {
+      "id": "adk.gap-protocol-file",
+      "group": "C",
+      "level": "L3",
+      "check": "self-attestation",
+      "kadkCode": "KADK-703",
+      "fixHint": "When core lacks a feature, stop and record the smallest facade or extension point in GAPS.md; do not build a private copy.",
+      "inProfile": false
+    },
+    {
+      "id": "adk.thin-addon-budgets",
+      "group": "D",
+      "level": "L4",
+      "check": "adk.thin-addon-budgets",
+      "kadkCode": "KADK-723",
+      "fixHint": "When over a soft budget (tables, routes, dependencies, code size), add a BUDGETS.md reason the approver acknowledges.",
+      "inProfile": false
+    },
+    {
+      "id": "adk.declared-permissions-and-audit",
+      "group": "F",
+      "level": "L5",
+      "check": "self-attestation",
+      "kadkCode": "KADK-703",
+      "fixHint": "Advisory: check does not see route handlers or write sites. Declare a permission per route and record every write through ctx.data or a facade with a manifest audit action.",
+      "inProfile": true
+    },
+    {
+      "id": "adk.event-schemas-and-null-capabilities",
+      "group": "E",
+      "level": "L3",
+      "check": "kassis-addon-check",
+      "kadkCode": "KADK-703",
+      "fixHint": "kassis-addon check requires each published event schema path to end in .schema.json (KADK-406). It does not scan source for null when a consumed capability is absent.",
+      "inProfile": true
+    },
+    {
+      "id": "adk.reversible-migrations",
+      "group": "E",
+      "level": "L3",
+      "check": "kassis-addon-conformance",
+      "kadkCode": "KADK-703",
+      "fixHint": "Ship a down script for every up script or mark the migration irreversible with a reason in the SQL.",
+      "inProfile": true
+    },
+    {
+      "id": "adk.outbound-timeouts",
+      "group": "E",
+      "level": "L3",
+      "check": "adk.outbound-timeouts",
+      "kadkCode": "KADK-724",
+      "fixHint": "Give every outbound HTTP call a timeout, AbortSignal or signal option.",
+      "inProfile": false
+    },
+    {
+      "id": "adk.pagination-and-query-caps",
+      "group": "E",
+      "level": "L3",
+      "check": "adk.pagination-and-query-caps",
+      "kadkCode": "KADK-725",
+      "fixHint": "Cap every findMany with take or skip.",
+      "inProfile": false
+    },
+    {
+      "id": "adk.ui-i18n",
+      "group": "E",
+      "level": "L3",
+      "check": "adk.ui-i18n",
+      "kadkCode": "KADK-726",
+      "fixHint": "Put UI chrome in host-sdk translation keys; do not import i18next from addon UI.",
+      "inProfile": false
+    },
+    {
+      "id": "adk.idempotent-handlers",
+      "group": "E",
+      "level": "L3",
+      "check": "adk.idempotent-handlers",
+      "kadkCode": "KADK-727",
+      "fixHint": "Make job and event handlers safe to run twice (idempotent key, upsert, or prior find).",
+      "inProfile": false
+    },
+    {
+      "id": "adk.no-module-state",
+      "group": "E",
+      "level": "L3",
+      "check": "adk.no-module-state",
+      "kadkCode": "KADK-728",
+      "fixHint": "Do not keep mutable let/var state at module scope; hot toggle must not retain stale values.",
+      "inProfile": false
+    },
+    {
+      "id": "adk.declare-widened-access",
+      "group": "F",
+      "level": "L4",
+      "check": "evidence-pack:change-summary",
+      "kadkCode": "KADK-703",
+      "fixHint": "Advisory in the profile: a machine cannot detect widened access. Describe wider permissions, egress hosts, or data access in the change summary. The approver reads that summary in the evidence pack (L4).",
+      "inProfile": true
+    },
+    {
+      "id": "adk.certify",
+      "group": "F",
+      "level": "L3",
+      "check": [
+        "kassis-addon-check",
+        "kassis-addon-conformance",
+        "kassis-addon-build",
+        "kassis-addon-test"
+      ],
+      "kadkCode": "KADK-707",
+      "fixHint": "Run kassis-addon certify and fix every error so checks.json records exit 0 for each machine check.",
+      "inProfile": true
+    },
+    {
+      "id": "adk.document-changes",
+      "group": "E",
+      "level": "L5",
+      "check": "self-attestation",
+      "kadkCode": "KADK-713",
+      "fixHint": "Update Kassisdoc business and/or technical pages, README.md, and CHANGELOG.md when the change affects them.",
+      "inProfile": true
+    },
+    {
+      "id": "adk.no-unrequested-refactors",
+      "group": "F",
+      "level": "L5",
+      "check": "self-attestation",
+      "kadkCode": "KADK-703",
+      "fixHint": "Advisory: a machine cannot tell which edits were requested. Limit edits to files and behaviour the task asked for; revert drive-by refactors.",
+      "inProfile": true
+    },
+    {
+      "id": "adk.attest-pinned-profile",
+      "group": "F",
+      "level": "L3",
+      "check": "adk.attest-pinned-profile",
+      "kadkCode": "KADK-702",
+      "fixHint": "Run kassis adk sync, then kassis-addon attest and answer every pinned guardrail. Certify records check adk.attest-pinned-profile. Reading the rules at the start of a run is not observable.",
+      "inProfile": true
+    },
+    {
+      "id": "adk.mandatory-contract-intact",
+      "group": "F",
+      "level": "L3",
+      "check": "adk.mandatory-contract-intact",
+      "kadkCode": "KADK-730",
+      "fixHint": "Replace record-type scaffold stubs before certify. canAccess must not return true or only throw (KADK-730). onDelete must not be empty or only throw (KADK-732). A declared record type needs canAccess (KADK-729). Owned tables need onDelete (KADK-731). The host refuses enable with the same check. This guardrail stays on the unsigned v3 draft until it is signed.",
+      "inProfile": true
+    }
+  ]
+}

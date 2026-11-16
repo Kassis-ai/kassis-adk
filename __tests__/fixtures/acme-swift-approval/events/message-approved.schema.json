@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "eventName": "acme-swift-approval.message.approved",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "messageId",
+    "reference",
+    "senderBic",
+    "receiverBic",
+    "currency",
+    "amount",
+    "valueDate",
+    "decidedBy",
+    "decidedAt",
+    "comment"
+  ],
+  "properties": {
+    "messageId": { "type": "string" },
+    "reference": { "type": "string" },
+    "senderBic": { "type": "string" },
+    "receiverBic": { "type": "string" },
+    "currency": { "type": "string" },
+    "amount": { "type": "string" },
+    "valueDate": { "type": "string" },
+    "decidedBy": { "type": "string" },
+    "decidedAt": { "type": "string" },
+    "comment": { "type": "string" }
+  }
+}

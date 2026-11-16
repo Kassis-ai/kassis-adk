@@ -9,6 +9,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const SERVER_OUT = 'dist/server/index.js';
+const MCP_OUT = 'dist/mcp/contribution.js';
 const UI_OUT = 'frontend/dist/index.js';
 
 function sourceFile(stem) {
@@ -20,6 +21,7 @@ function externalKassisPlugin() {
     name: 'external-kassis',
     setup(build) {
       build.onResolve({ filter: /^@kassis\// }, (args) => ({ path: args.path, external: true }));
+      build.onResolve({ filter: /^express$/ }, (args) => ({ path: args.path, external: true }));
     },
   };
 }
@@ -40,7 +42,28 @@ async function loadEsbuild(addonDir) {
   return import(pathToFileURL(esbuildPath).href);
 }
 
+function assertExportText(addonDir, relative, exportName) {
+  const file = path.join(addonDir, relative);
+  if (!fs.existsSync(file)) {
+    const folder = path.dirname(file);
+    const listing = fs.existsSync(folder) ? fs.readdirSync(folder).join(', ') : 'directory missing';
+    throw new Error(`${relative} was not written (${listing})`);
+  }
+  const text = fs.readFileSync(file, 'utf8');
+  const patterns = [
+    new RegExp(`export\\s+(async\\s+)?function\\s+${exportName}\\b`),
+    new RegExp(`\\bas\\s+${exportName}\\b`),
+  ];
+  if (!patterns.some((pattern) => pattern.test(text))) {
+    throw new Error(`${relative} does not export ${exportName}`);
+  }
+}
+
 async function assertExport(addonDir, relative, exportName) {
+  if (relative.startsWith('frontend/dist/')) {
+    assertExportText(addonDir, relative, exportName);
+    return;
+  }
   const file = path.join(addonDir, relative);
   if (!fs.existsSync(file)) {
     const folder = path.dirname(file);
@@ -75,6 +98,24 @@ async function buildServer(addonDir) {
     JSON.stringify(built.metafile ?? {})
   );
   await assertExport(addonDir, SERVER_OUT, 'initialize');
+}
+
+async function buildMcp(addonDir) {
+  const entry = path.join(addonDir, sourceFile('src/mcp/contribution'));
+  if (!fs.existsSync(entry)) return false;
+  const esbuild = await loadEsbuild(addonDir);
+  await esbuild.build({
+    absWorkingDir: addonDir,
+    entryPoints: [entry],
+    outfile: path.join(addonDir, MCP_OUT),
+    bundle: true,
+    format: 'esm',
+    platform: 'node',
+    target: 'es2022',
+    logLevel: 'silent',
+    plugins: [externalKassisPlugin()],
+  });
+  return true;
 }
 
 /**
@@ -118,6 +159,7 @@ export async function buildAddon(addonDir, options = {}) {
   if (only === 'all' || only === 'server') {
     await buildServer(addonDir);
     built.push(SERVER_OUT);
+    if (await buildMcp(addonDir)) built.push(MCP_OUT);
   }
   if (only === 'all' || only === 'ui') {
     const uiEntry = path.join(addonDir, sourceFile('src/ui/index'));

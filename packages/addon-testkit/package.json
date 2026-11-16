@@ -4,6 +4,7 @@
   "type": "module",
   "description": "Assertions a coding agent uses to prove an addon pack and that source stays off the host.",
   "dependencies": {
+    "@kassis/addon-sdk": "1.0.0",
     "es-module-lexer": "^2.1.0",
     "typescript": "^5.9.3"
   },

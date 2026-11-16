@@ -4,6 +4,7 @@
  * a manifest that also failed the schema and every problem is reported in one pass.
  */
 import { createKadkIssue, type KadkCode, type KadkIssue } from '../codes/kadkCodes.js';
+import { MANIFEST_RESOURCE_SENSITIVITY_LEVELS } from './manifestV2Catalog.js';
 
 /** An untrusted manifest object; values are narrowed before use. */
 type ManifestRecord = Readonly<Record<string, unknown>>;
@@ -24,6 +25,12 @@ const PACKAGE_PATH_FIELDS: ReadonlyArray<readonly [string, string]> = [
 /** `ubo-panel` → `['ubo-panel.', 'ubo_panel.']`, the prefixes 0b accepts for published names. */
 export function addonNamespacePrefixes(addonId: string): string[] {
   return [...new Set([`${addonId}.`, `${addonId.replace(/-/g, '_')}.`])];
+}
+
+/** Slug prefixes for manifest `groups[].name` (dotted or hyphenated). */
+export function addonGroupNamespacePrefixes(addonId: string): string[] {
+  const underscored = addonId.replace(/-/g, '_');
+  return [...new Set([`${addonId}.`, `${underscored}.`, `${addonId}-`, `${underscored}-`])];
 }
 
 /** `ubo-panel` → `addon_ubo_panel`, the Postgres schema and role of the addon. */
@@ -119,6 +126,16 @@ function checkNamespaces(manifest: ManifestRecord, id: string): KadkIssue[] {
       stringsAt(recordAt(manifest, 'audit'), 'actions', 'audit.actions'),
       dotted
     ),
+    ...namespaceIssues(
+      'KADK-122',
+      fieldsAt(manifest, 'groups', 'name', 'groups'),
+      addonGroupNamespacePrefixes(id)
+    ),
+    ...namespaceIssues(
+      'KADK-220',
+      fieldsAt(manifest, 'provides', 'capability', 'provides'),
+      dotted
+    ),
   ];
 }
 
@@ -132,6 +149,21 @@ function duplicateIssues(entries: Entry<string>[], listPath: string): KadkIssue[
     seen.add(entry.value);
   }
   return issues;
+}
+
+function groupPermissionEntries(manifest: ManifestRecord): Entry<string>[] {
+  const list = manifest['groups'];
+  if (!Array.isArray(list)) return [];
+  return list.flatMap((item: unknown, index) => {
+    if (!isRecord(item)) return [];
+    const permissions = item['permissions'];
+    if (!Array.isArray(permissions)) return [];
+    return permissions.flatMap((value: unknown, permIndex) =>
+      typeof value === 'string'
+        ? [{ value, path: `groups[${index}].permissions[${permIndex}]` }]
+        : []
+    );
+  });
 }
 
 function slotKeys(manifest: ManifestRecord): Entry<string>[] {
@@ -149,6 +181,8 @@ function checkDuplicates(manifest: ManifestRecord): KadkIssue[] {
   const database = recordAt(manifest, 'database');
   const lists: Array<readonly [Entry<string>[], string]> = [
     [fieldsAt(manifest, 'permissions', 'name', 'permissions'), 'permissions'],
+    [fieldsAt(manifest, 'groups', 'name', 'groups'), 'groups'],
+    [groupPermissionEntries(manifest), 'groups'],
     [stringsAt(manifest, 'requiredPermissions', 'requiredPermissions'), 'requiredPermissions'],
     [fieldsAt(manifest, 'requires', 'capability', 'requires'), 'requires'],
     [fieldsAt(manifest, 'optional', 'capability', 'optional'), 'optional'],
@@ -168,6 +202,7 @@ function checkDuplicates(manifest: ManifestRecord): KadkIssue[] {
       'contributions.mcp.tools',
     ],
     [fieldsAt(manifest, 'resourceTypes', 'type', 'resourceTypes'), 'resourceTypes'],
+    [stringsAt(manifest, 'extends', 'extends'), 'extends'],
     [slotKeys(manifest), 'ui.slots'],
   ];
   return lists.flatMap(([entries, listPath]) => duplicateIssues(entries, listPath));
@@ -189,6 +224,15 @@ function checkRequiredPermissions(manifest: ManifestRecord): KadkIssue[] {
   return stringsAt(manifest, 'requiredPermissions', 'requiredPermissions')
     .filter((entry) => !declared.has(entry.value))
     .map((entry) => createKadkIssue('KADK-118', entry.path, { value: entry.value }));
+}
+
+function checkGroupPermissions(manifest: ManifestRecord): KadkIssue[] {
+  const declared = new Set(
+    fieldsAt(manifest, 'permissions', 'name', 'permissions').map((entry) => entry.value)
+  );
+  return groupPermissionEntries(manifest)
+    .filter((entry) => !declared.has(entry.value))
+    .map((entry) => createKadkIssue('KADK-123', entry.path, { value: entry.value }));
 }
 
 function leavesPackage(path: string): boolean {
@@ -237,6 +281,37 @@ function checkDataSchemaName(manifest: ManifestRecord, id: string): KadkIssue[] 
   return typeof schema === 'string' && schema !== expected
     ? [createKadkIssue('KADK-304', 'data.schema', { value: schema, expected })]
     : [];
+}
+
+/** Required when the addon declares any owned table (tier 1 or 2). */
+function checkDataRetention(manifest: ManifestRecord): KadkIssue[] {
+  const owned = stringsAt(recordAt(manifest, 'database'), 'ownedTables', 'database.ownedTables');
+  if (owned.length === 0) return [];
+  const retention = recordAt(manifest, 'data')['retention'];
+  return typeof retention === 'string' &&
+    (retention === 'retain' || retention === 'archive' || retention === 'purge')
+    ? []
+    : [createKadkIssue('KADK-309', 'data.retention')];
+}
+
+/** When the addon owns tables, every resourceTypes entry must declare a seal level. */
+function checkResourceSensitivityWhenOwnedTables(manifest: ManifestRecord): KadkIssue[] {
+  const owned = stringsAt(recordAt(manifest, 'database'), 'ownedTables', 'database.ownedTables');
+  if (owned.length === 0) return [];
+  const list = manifest['resourceTypes'];
+  if (!Array.isArray(list)) return [];
+  const issues: KadkIssue[] = [];
+  const levels = MANIFEST_RESOURCE_SENSITIVITY_LEVELS.join(', ');
+  for (let index = 0; index < list.length; index += 1) {
+    const item = list[index];
+    if (!isRecord(item)) continue;
+    const path = `resourceTypes[${index}].sensitivity`;
+    const sensitivity = item['sensitivity'];
+    if (typeof sensitivity !== 'string' || sensitivity.length === 0) {
+      issues.push(createKadkIssue('KADK-124', path, { levels }));
+    }
+  }
+  return issues;
 }
 
 function checkTierTwoData(manifest: ManifestRecord): KadkIssue[] {
@@ -295,10 +370,13 @@ export function checkManifestV2Rules(
     ...checkDuplicates(manifest),
     ...checkCapabilityOverlap(manifest),
     ...checkRequiredPermissions(manifest),
+    ...checkGroupPermissions(manifest),
     ...checkPackagePaths(manifest),
     ...checkEventSchemaFiles(manifest),
+    ...checkDataRetention(manifest),
     ...checkRuntimeLoadedUi(manifest),
     ...checkDataSchemaName(manifest, id),
+    ...checkResourceSensitivityWhenOwnedTables(manifest),
     ...tierRules,
   ];
 }

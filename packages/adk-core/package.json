@@ -20,9 +20,9 @@
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
+    "@kassis/addon-sdk": "1.0.0",
     "@kassis/addon-testkit": "0.1.0",
-    "@modelcontextprotocol/sdk": "1.32.2",
-    "ajv": "^8.17.1"
+    "@modelcontextprotocol/sdk": "1.32.2"
   },
   "publishConfig": {
     "main": "./dist/index.js",

@@ -20,7 +20,7 @@ export const validManifest = {
   requiredPermissions: ['sample-tprm-check.view'],
   requires: [{ capability: 'party.lookup', range: '^1.0.0' }],
   optional: [{ capability: 'aml.screening', range: '>=1.0.0 <2.0.0' }],
-  provides: [{ capability: 'tprm.assessment', version: '1.0.0' }],
+  provides: [{ capability: 'sample-tprm-check.assessment', version: '1.0.0' }],
   events: {
     publishes: [
       {
@@ -38,7 +38,7 @@ export const validManifest = {
   config: {
     schema: { type: 'object', properties: { batchSize: { type: 'integer', minimum: 1 } } },
   },
-  data: { schema: 'addon_sample_tprm_check' },
+  data: { schema: 'addon_sample_tprm_check', retention: 'retain' },
   database: { ownedTables: ['addon_sample_tprm_check.assessments'] },
   contributions: { mcp: { entry: 'dist/mcp/contribution.js', tools: ['tprm_assessment_get'] } },
   resourceTypes: [
@@ -46,6 +46,7 @@ export const validManifest = {
       type: 'tprm:assessment',
       label: 'TPRM assessment',
       abilities: { preview: true, search: true },
+      sensitivity: 'confidential',
       viewPermissions: ['sample-tprm-check.view'],
     },
   ],
@@ -82,6 +83,8 @@ export const MANIFEST_V2_KEYS = {
   uiContentHash: true,
   permissions: true,
   requiredPermissions: true,
+  groups: true,
+  process: true,
   requires: true,
   optional: true,
   provides: true,
@@ -98,6 +101,7 @@ export const MANIFEST_V2_KEYS = {
   database: true,
   legacyTables: true,
   contributions: true,
+  extends: true,
   resourceTypes: true,
   ui: true,
   metadata: true,

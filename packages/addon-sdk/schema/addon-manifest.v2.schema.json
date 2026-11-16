@@ -56,6 +56,25 @@
       }
     },
     "requiredPermissions": { "type": "array", "items": { "$ref": "#/$defs/permissionName" } },
+    "groups": {
+      "description": "RBAC groups the addon provides. The host creates them with no members; each lists only this manifest's permissions.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "displayName", "permissions"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "$ref": "#/$defs/groupSlug" },
+          "displayName": { "type": "string", "minLength": 1, "maxLength": 120 },
+          "description": { "type": "string" },
+          "permissions": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "#/$defs/permissionName" }
+          }
+        }
+      }
+    },
     "requires": { "type": "array", "items": { "$ref": "#/$defs/capabilityRequirement" } },
     "optional": { "type": "array", "items": { "$ref": "#/$defs/capabilityRequirement" } },
     "provides": {
@@ -67,6 +86,39 @@
         "properties": {
           "capability": { "$ref": "#/$defs/capabilityId" },
           "version": { "$ref": "#/$defs/semver" }
+        }
+      }
+    },
+    "process": {
+      "description": "Process packs. Each item is one JSON file under process/. The host install of those files is a later step. kassis-addon check validates the list offline.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["packs"],
+      "properties": {
+        "packs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["key", "kind", "file"],
+            "additionalProperties": false,
+            "properties": {
+              "key": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9_-]*(?:\\.[a-z0-9_-]+)+$",
+                "maxLength": 255
+              },
+              "kind": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
+                "maxLength": 64
+              },
+              "file": {
+                "type": "string",
+                "pattern": "^process/(?:[A-Za-z0-9_-]+/)*[A-Za-z0-9_-]+\\.json$",
+                "maxLength": 255
+              }
+            }
+          }
         }
       }
     },
@@ -169,6 +221,11 @@
           "type": "string",
           "pattern": "^addon_[a-z0-9_]+$",
           "maxLength": 63
+        },
+        "retention": {
+          "description": "What happens to the addon schema and owned tables on uninstall.",
+          "type": "string",
+          "enum": ["retain", "archive", "purge"]
         }
       }
     },
@@ -177,7 +234,21 @@
       "additionalProperties": false,
       "properties": {
         "ownedTables": { "type": "array", "items": { "$ref": "#/$defs/tableName" } },
-        "readAccess": { "type": "array", "items": { "$ref": "#/$defs/tableName" } }
+        "readAccess": { "type": "array", "items": { "$ref": "#/$defs/tableName" } },
+        "tableNotes": {
+          "description": "For each owned table, the core record it could not be and why.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["table", "notCoreRecord", "why"],
+            "additionalProperties": false,
+            "properties": {
+              "table": { "$ref": "#/$defs/tableName" },
+              "notCoreRecord": { "type": "string", "minLength": 1, "maxLength": 80 },
+              "why": { "type": "string", "minLength": 15, "maxLength": 500 }
+            }
+          }
+        }
       }
     },
     "legacyTables": {
@@ -215,6 +286,11 @@
         }
       }
     },
+    "extends": {
+      "description": "Extension points the addon registers through ctx.extend; undeclared registration is refused by the host.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/manifestExtendPointId" }
+    },
     "resourceTypes": {
       "type": "array",
       "items": {
@@ -239,7 +315,7 @@
             }
           },
           "icon": { "type": "string" },
-          "sensitivity": { "type": "string" },
+          "sensitivity": { "$ref": "#/$defs/resourceSensitivityLevel" },
           "viewPermissions": { "type": "array", "items": { "type": "string" } },
           "access": { "type": "string" },
           "table": { "$ref": "#/$defs/tableName" },
@@ -376,6 +452,12 @@
       "pattern": "^[a-z0-9_-]+(?:\\.[a-z0-9_*-]+)+$",
       "maxLength": 128
     },
+    "groupSlug": {
+      "description": "Slug in the addon namespace (checked by validateManifestV2).",
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_.-]*$",
+      "maxLength": 128
+    },
     "dottedName": {
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9_-]*(?:\\.[a-zA-Z0-9_-]+)+$",
@@ -405,6 +487,40 @@
       "type": "string",
       "pattern": "^[A-Za-z0-9_][A-Za-z0-9_./-]*$",
       "maxLength": 255
+    },
+    "manifestExtendPointId": {
+      "type": "string",
+      "enum": [
+        "analyticsContributor",
+        "approvable",
+        "approvableFields",
+        "auditSubject",
+        "automationAction",
+        "automationFields",
+        "automationTrigger",
+        "communicable",
+        "deletable",
+        "documentable",
+        "echoStrategy",
+        "employeeDirectory",
+        "flaggable",
+        "graphRiskMirror",
+        "importQuestionnairePack",
+        "investigationDomain",
+        "investigationTemplate",
+        "licenseFeatures",
+        "linkable",
+        "predictionCapability",
+        "questionnaireDomain",
+        "questionnaireDomainAdapter",
+        "recordAccess",
+        "riskFactors",
+        "shutdownHook"
+      ]
+    },
+    "resourceSensitivityLevel": {
+      "type": "string",
+      "enum": ["standard", "confidential", "mnpi"]
     }
   }
 }

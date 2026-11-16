@@ -3,8 +3,14 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import {
+  formatGuardrailCheck,
+  getGuardrailCatalogEntry,
+  loadGuardrailCatalog,
+} from './guardrailCatalog.mjs';
 
 function ruleText(lock) {
+  loadGuardrailCatalog();
   const lines = [
     `# ${lock.profileId} ${lock.version}`,
     '',
@@ -16,8 +22,33 @@ function ruleText(lock) {
   for (const item of lock.guardrails) {
     lines.push(`## ${item.key} (${item.severity})`);
     lines.push('');
+    const catalogue = getGuardrailCatalogEntry(item.key);
+    if (catalogue) {
+      lines.push(
+        `Catalogue: group ${catalogue.group}, ${catalogue.level}. Check: ${formatGuardrailCheck(catalogue.check)}. Primary code: ${catalogue.kadkCode}.`
+      );
+      lines.push(catalogue.fixHint);
+      lines.push('');
+    }
     lines.push(item.rule);
     lines.push('');
+  }
+  const skills = Array.isArray(lock.skills) ? lock.skills : [];
+  if (skills.length > 0) {
+    lines.push('## Skills');
+    lines.push('');
+    lines.push('Read the skill that matches the work before you scaffold or edit that kind.');
+    lines.push('');
+    for (const skill of skills) {
+      const key = typeof skill.key === 'string' ? skill.key : 'skill';
+      const title = typeof skill.title === 'string' ? skill.title : key;
+      const description =
+        typeof skill.description === 'string' ? skill.description : 'See the pinned profile skill body.';
+      lines.push(`### ${key}: ${title}`);
+      lines.push('');
+      lines.push(description);
+      lines.push('');
+    }
   }
   return `${lines.join('\n')}`;
 }

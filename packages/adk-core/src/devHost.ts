@@ -5,6 +5,12 @@ import path from 'node:path';
 import type { CommandResult, JsonObject, LogListener } from './types.ts';
 import { commandResult, failure, isRecordValue, readJson } from './issues.ts';
 import { devHostAttachArgs } from './devHostAttach.ts';
+import {
+  connectDevHostTier2,
+  devHostTier2Plan,
+  removeDevHostTier2,
+  startDevHostTier2Runner,
+} from './devHostTier2.ts';
 import { runProcess } from './processRun.ts';
 
 const PROBE_MS = 8000;
@@ -198,6 +204,15 @@ export async function startDevHost(
       'ADK-DEV-RUNTIME'
     );
   }
+  const tier2 = devHostTier2Plan(id, image, path.resolve(dir), ADDON_MOUNT);
+  const runnerStarted = startDevHostTier2Runner(runtime.command, tier2);
+  if (!runnerStarted.ok) {
+    return failure(
+      runnerStarted.message,
+      'The dev host backend does not receive a Docker socket. The runner is a separate container on an internal network.',
+      'ADK-DEV-RUNTIME'
+    );
+  }
   runProcess(runtime.command, ['rm', '-f', name], PROBE_MS);
   const started = runProcess(
     runtime.command,
@@ -212,12 +227,14 @@ export async function startDevHost(
       `127.0.0.1::${port}`,
       '-v',
       `${path.resolve(dir)}:${ADDON_MOUNT}:ro`,
+      ...tier2.backendEnvArgs,
       ...attached.args,
       image,
     ],
     attached.args.length > 0 ? 30_000 : PROBE_MS
   );
   if (started.timedOut || started.status !== 0) {
+    removeDevHostTier2(runtime.command, tier2);
     const detail = started.timedOut ? 'did not finish' : started.stderr.trim() || 'failed';
     return failure(
       `The dev host container ${detail}.`,
@@ -227,6 +244,16 @@ export async function startDevHost(
     );
   }
   const containerId = started.stdout.trim().slice(0, 12);
+  const connected = connectDevHostTier2(runtime.command, tier2, containerId || name);
+  if (!connected.ok) {
+    runProcess(runtime.command, ['rm', '-f', name], PROBE_MS);
+    removeDevHostTier2(runtime.command, tier2);
+    return failure(
+      connected.message,
+      'The dev host backend does not receive a Docker socket. The runner is a separate container on an internal network.',
+      'ADK-DEV-RUNTIME'
+    );
+  }
   const url = mappedUrl(runtime.command, containerId || name, port);
   const state: DevHostState = {
     runtime: runtime.command,
@@ -237,6 +264,8 @@ export async function startDevHost(
   writeState(state);
   const data: JsonObject = { url, containerId: state.containerId, image, mount: ADDON_MOUNT };
   if (!url) {
+    runProcess(runtime.command, ['rm', '-f', name], PROBE_MS);
+    removeDevHostTier2(runtime.command, tier2);
     return failure(
       'The dev host container started but no host port was published.',
       `Check ${runtime.command} port ${state.containerId} ${port}/tcp. The image was not pulled.`,

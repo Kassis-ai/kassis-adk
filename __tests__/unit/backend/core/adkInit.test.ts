@@ -2,6 +2,7 @@ import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { validateManifestV2 } from '@kassis/addon-sdk';
 import { describe, expect, it } from 'vitest';
 
 const repo = path.resolve(import.meta.dirname, '../../../..');
@@ -31,6 +32,17 @@ describe('kassis-addon init', () => {
       expect(manifest.resources).toEqual({ memoryMb: 128 });
       expect(manifest.health).toEqual({ path: '/health' });
       expect(manifest.entrypoints.main).toBe('dist/server/index.js');
+      expect(manifest.audit).toEqual({ actions: ['sample-tprm-check.started'] });
+      expect(manifest.events).toEqual({
+        publishes: [
+          { name: 'sample-tprm-check.started', schema: 'events/started.schema.json' },
+        ],
+      });
+      expect(manifest.jobs).toEqual({ types: ['sample-tprm-check.refresh'] });
+      expect(manifest.prompts).toEqual({ keys: ['sample-tprm-check.summary'] });
+      expect(fs.existsSync(path.join(dir, 'events/started.schema.json'))).toBe(true);
+      const checked = validateManifestV2(manifest);
+      expect(checked.ok, JSON.stringify(checked.issues)).toBe(true);
       expect(manifest.ui).toBeUndefined();
       expect(manifest.signing).toBeUndefined();
       expect(fs.existsSync(path.join(dir, 'src/server/index.ts'))).toBe(true);
