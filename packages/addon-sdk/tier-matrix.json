@@ -1,0 +1,541 @@
+{
+  "schemaVersion": 1,
+  "description": "Machine-readable ctx facade availability by addon tier. Tier 2 RPC allow-list rows must match TIER2_FACADE_METHODS.",
+  "methods": [
+    {
+      "method": "ctx.analytics",
+      "tier1": false,
+      "tier2": false,
+      "permission": null,
+      "availability": "reserved"
+    },
+    {
+      "method": "ctx.audit.record",
+      "tier1": true,
+      "tier2": true,
+      "permission": "audit.actions"
+    },
+    {
+      "method": "ctx.audit.search",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.capabilities.consume",
+      "tier1": true,
+      "tier2": true,
+      "permission": "requires.optional"
+    },
+    {
+      "method": "ctx.capabilities.get",
+      "tier1": true,
+      "tier2": true,
+      "permission": "requires.optional"
+    },
+    {
+      "method": "ctx.capabilities.provide",
+      "tier1": true,
+      "tier2": false,
+      "permission": "requires.optional"
+    },
+    {
+      "method": "ctx.capabilities.register",
+      "tier1": true,
+      "tier2": false,
+      "permission": "capabilities.provide",
+      "note": "host-internal registration alias"
+    },
+    {
+      "method": "ctx.core.approvals.applyRegistered",
+      "tier1": true,
+      "tier2": false,
+      "permission": "principal",
+      "note": "refused for tier 2; host delivers on approval"
+    },
+    {
+      "method": "ctx.core.approvals.guard",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.core.approvals.isEnforced",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.core.approvals.registerApplier",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.core.cases.attachEntity",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.core.cases.create",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.core.cases.get",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.core.cases.update",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.core.documents.create",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.core.documents.extractText",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.core.documents.indexText",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.core.documents.mapTags",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.core.entities.link",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.core.entities.search",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.core.parties.ensureRiskLaneSeeded",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.core.parties.findDuplicates",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.core.users.get",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.core.users.getPreference",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.core.users.hasPermission",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.core.users.setPreference",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.data.$executeRaw",
+      "tier1": true,
+      "tier2": false,
+      "permission": "database.ownedTables",
+      "note": "planned for tier 2 in phase 3"
+    },
+    {
+      "method": "ctx.data.$queryRaw",
+      "tier1": true,
+      "tier2": false,
+      "permission": "database.ownedTables",
+      "note": "planned for tier 2 in phase 3"
+    },
+    {
+      "method": "ctx.data.$transaction",
+      "tier1": true,
+      "tier2": false,
+      "permission": "database.ownedTables",
+      "note": "planned for tier 2 in phase 3"
+    },
+    {
+      "method": "ctx.data.read",
+      "tier1": true,
+      "tier2": true,
+      "permission": "database.ownedTables"
+    },
+    {
+      "method": "ctx.describe",
+      "tier1": true,
+      "tier2": true,
+      "permission": null
+    },
+    {
+      "method": "ctx.events.publish",
+      "tier1": true,
+      "tier2": true,
+      "permission": "events.publishes"
+    },
+    {
+      "method": "ctx.events.subscribe",
+      "tier1": true,
+      "tier2": true,
+      "permission": "events.subscribes"
+    },
+    {
+      "method": "ctx.extend.importQuestionnairePack",
+      "tier1": true,
+      "tier2": false,
+      "permission": "extends",
+      "note": "planned for tier 2 in phase 5d"
+    },
+    {
+      "method": "ctx.extend.registerAnalyticsContributor",
+      "tier1": true,
+      "tier2": false,
+      "permission": "extends",
+      "note": "planned for tier 2 in phase 5d"
+    },
+    {
+      "method": "ctx.extend.registerApprovable",
+      "tier1": true,
+      "tier2": false,
+      "permission": "extends",
+      "note": "planned for tier 2 in phase 5d"
+    },
+    {
+      "method": "ctx.extend.registerApprovableFields",
+      "tier1": true,
+      "tier2": false,
+      "permission": "extends",
+      "note": "planned for tier 2 in phase 5d"
+    },
+    {
+      "method": "ctx.extend.registerAuditSubject",
+      "tier1": true,
+      "tier2": false,
+      "permission": "extends",
+      "note": "planned for tier 2 in phase 5d"
+    },
+    {
+      "method": "ctx.extend.registerAutomationAction",
+      "tier1": true,
+      "tier2": false,
+      "permission": "extends",
+      "note": "planned for tier 2 in phase 5d"
+    },
+    {
+      "method": "ctx.extend.registerAutomationFields",
+      "tier1": true,
+      "tier2": false,
+      "permission": "extends",
+      "note": "planned for tier 2 in phase 5d"
+    },
+    {
+      "method": "ctx.extend.registerAutomationTrigger",
+      "tier1": true,
+      "tier2": false,
+      "permission": "extends",
+      "note": "planned for tier 2 in phase 5d"
+    },
+    {
+      "method": "ctx.extend.registerDeletable",
+      "tier1": true,
+      "tier2": false,
+      "permission": "extends",
+      "note": "planned for tier 2 in phase 5d"
+    },
+    {
+      "method": "ctx.extend.registerDocumentable",
+      "tier1": true,
+      "tier2": false,
+      "permission": "extends",
+      "note": "planned for tier 2 in phase 5d"
+    },
+    {
+      "method": "ctx.extend.registerEchoStrategy",
+      "tier1": true,
+      "tier2": false,
+      "permission": "extends",
+      "note": "planned for tier 2 in phase 5d"
+    },
+    {
+      "method": "ctx.extend.registerEmployeeDirectory",
+      "tier1": true,
+      "tier2": false,
+      "permission": "extends",
+      "note": "planned for tier 2 in phase 5d"
+    },
+    {
+      "method": "ctx.extend.registerFlaggable",
+      "tier1": true,
+      "tier2": false,
+      "permission": "extends",
+      "note": "planned for tier 2 in phase 5d"
+    },
+    {
+      "method": "ctx.extend.registerGraphRiskMirror",
+      "tier1": true,
+      "tier2": false,
+      "permission": "extends",
+      "note": "planned for tier 2 in phase 5d"
+    },
+    {
+      "method": "ctx.extend.registerInvestigationDomain",
+      "tier1": true,
+      "tier2": false,
+      "permission": "extends",
+      "note": "planned for tier 2 in phase 5d"
+    },
+    {
+      "method": "ctx.extend.registerInvestigationTemplate",
+      "tier1": true,
+      "tier2": false,
+      "permission": "extends",
+      "note": "planned for tier 2 in phase 5d"
+    },
+    {
+      "method": "ctx.extend.registerLicenseFeatures",
+      "tier1": true,
+      "tier2": false,
+      "permission": "extends",
+      "note": "planned for tier 2 in phase 5d"
+    },
+    {
+      "method": "ctx.extend.registerLinkable",
+      "tier1": true,
+      "tier2": false,
+      "permission": "extends",
+      "note": "planned for tier 2 in phase 5d"
+    },
+    {
+      "method": "ctx.extend.registerPredictionCapability",
+      "tier1": true,
+      "tier2": false,
+      "permission": "extends",
+      "note": "planned for tier 2 in phase 5d"
+    },
+    {
+      "method": "ctx.extend.registerQuestionnaireDomain",
+      "tier1": true,
+      "tier2": false,
+      "permission": "extends",
+      "note": "planned for tier 2 in phase 5d"
+    },
+    {
+      "method": "ctx.extend.registerRiskFactors",
+      "tier1": true,
+      "tier2": false,
+      "permission": "extends",
+      "note": "planned for tier 2 in phase 5d"
+    },
+    {
+      "method": "ctx.extend.registerShutdownHook",
+      "tier1": true,
+      "tier2": false,
+      "permission": "extends",
+      "note": "planned for tier 2 in phase 5d"
+    },
+    {
+      "method": "ctx.extend.setQuestionnaireDomainAdapter",
+      "tier1": true,
+      "tier2": false,
+      "permission": "extends",
+      "note": "planned for tier 2 in phase 5d"
+    },
+    {
+      "method": "ctx.flags.ensure",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.flags.evaluateRules",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.flags.has",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.flags.list",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.http.fetch",
+      "tier1": true,
+      "tier2": true,
+      "permission": "egress.hosts"
+    },
+    {
+      "method": "ctx.jobs.enqueue",
+      "tier1": true,
+      "tier2": true,
+      "permission": "jobs.types"
+    },
+    {
+      "method": "ctx.jobs.register",
+      "tier1": true,
+      "tier2": true,
+      "permission": "jobs.types"
+    },
+    {
+      "method": "ctx.jobs.schedule",
+      "tier1": true,
+      "tier2": true,
+      "permission": "jobs.types"
+    },
+    {
+      "method": "ctx.jobs.status",
+      "tier1": true,
+      "tier2": true,
+      "permission": "jobs.types"
+    },
+    {
+      "method": "ctx.llm.estimateTokens",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.llm.invoke",
+      "tier1": true,
+      "tier2": true,
+      "permission": "prompts.keys"
+    },
+    {
+      "method": "ctx.locks.acquire",
+      "tier1": true,
+      "tier2": false,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.notify.registerType",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.notify.send",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.prompts.registerPack",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.risk.evaluatePolicyRules",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.risk.getSnapshot",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.risk.isLaneEnabled",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.risk.submitAssessments",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.risk.submitProfileFactors",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.risk.submitScreeningFactors",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.routes.mount",
+      "tier1": true,
+      "tier2": true,
+      "permission": "route.permission"
+    },
+    {
+      "method": "ctx.routes.principalOf",
+      "tier1": true,
+      "tier2": false,
+      "permission": "principal",
+      "note": "resolved in tier 2 child without RPC"
+    },
+    {
+      "method": "ctx.secrets.get",
+      "tier1": true,
+      "tier2": true,
+      "permission": "secrets.keys"
+    },
+    {
+      "method": "ctx.settings.get",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.settings.search",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.streams",
+      "tier1": false,
+      "tier2": false,
+      "permission": null,
+      "availability": "reserved"
+    }
+  ]
+}

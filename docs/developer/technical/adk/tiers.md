@@ -3,7 +3,7 @@
 **Status:** GA
 **Version checked:** 2026-10-28
 **Technical owner:** Unassigned
-**Last reviewed:** 2026-10-28
+**Last reviewed:** 2026-11-16
 
 ## Tier 1
 
@@ -33,7 +33,7 @@ The host provisions one IAM user per addon, `addon.<id>@service.kassis.local`, w
 
 Still refused in tier 2: `extend.*`, `capabilities.register`, `capabilities.provide`, and `locks`. `ctx.data.read` accepts a table name. The host qualifies it with `data.schema` (or `addon_<id>` when the manifest omits the schema) and reads only `database.ownedTables`. Any other table, or a name that contains a schema, is refused.
 
-The method list is `TIER2_FACADE_METHODS` in `server/core/addon-platform/tier2/tier2RpcAllowlist.ts`. Business meaning: [Addons overview](../../business/addons/overview.md).
+The tier 2 RPC allow-list is `TIER2_FACADE_METHODS` in `server/core/addon-platform/tier2/tier2RpcAllowlist.ts`. The same list, plus every other `ctx` facade method and its tier 1 availability, ships as `@kassis/addon-sdk/tier-matrix.json`. `npm run ci:adk:tier-matrix` fails when that file disagrees with the allow-list. Business meaning: [Addons overview](../../business/addons/overview.md).
 
 `sample-tprm-check` is the fixture the tier 2 tests load. It is not a product addon. On a local backend, installing a signed copy started the child with no `DATABASE_URL`. `GET /api/v1/addons/sample-tprm-check/health` returned 204. `POST /_mcp/probe.env` returned the child pid. Killing the child restarted it. Further kills left that route at 503, and the rest of the API still answered. The fixture was removed afterwards. A tier 2 addon does not need its own entry file.
 
@@ -54,4 +54,5 @@ These keys are read from Settings. A missing or invalid value refuses to start t
 
 | Date       | Change                                                                                                                                                                    |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-16 | Documented `@kassis/addon-sdk/tier-matrix.json` as the packaged tier capability matrix; CI checks it against `TIER2_FACADE_METHODS`.                                      |
 | 2026-10-28 | Tier 2 calls the host facades over RPC. Events and jobs are delivered to the child and retried on the existing queues. The child cannot call `approvals.applyRegistered`. |
