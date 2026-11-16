@@ -9,6 +9,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const SERVER_OUT = 'dist/server/index.js';
+const MCP_OUT = 'dist/mcp/contribution.js';
 const UI_OUT = 'frontend/dist/index.js';
 
 function sourceFile(stem) {
@@ -99,6 +100,24 @@ async function buildServer(addonDir) {
   await assertExport(addonDir, SERVER_OUT, 'initialize');
 }
 
+async function buildMcp(addonDir) {
+  const entry = path.join(addonDir, sourceFile('src/mcp/contribution'));
+  if (!fs.existsSync(entry)) return false;
+  const esbuild = await loadEsbuild(addonDir);
+  await esbuild.build({
+    absWorkingDir: addonDir,
+    entryPoints: [entry],
+    outfile: path.join(addonDir, MCP_OUT),
+    bundle: true,
+    format: 'esm',
+    platform: 'node',
+    target: 'es2022',
+    logLevel: 'silent',
+    plugins: [externalKassisPlugin()],
+  });
+  return true;
+}
+
 /**
  * @param {{ onLog?: (event: { stream: 'stdout' | 'stderr', text: string }) => void }} [options]
  */
@@ -140,6 +159,7 @@ export async function buildAddon(addonDir, options = {}) {
   if (only === 'all' || only === 'server') {
     await buildServer(addonDir);
     built.push(SERVER_OUT);
+    if (await buildMcp(addonDir)) built.push(MCP_OUT);
   }
   if (only === 'all' || only === 'ui') {
     const uiEntry = path.join(addonDir, sourceFile('src/ui/index'));

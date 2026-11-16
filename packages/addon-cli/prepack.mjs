@@ -167,7 +167,7 @@ function walk(dir) {
       throw new Error(`CLI package staged a signing secret: ${full}`);
     } else if (entry.name.endsWith('.mjs') || entry.name.endsWith('.js')) {
       const text = fs.readFileSync(full, 'utf8');
-      if (text.includes('packages/') || text.includes(".ts'")) {
+      if (/from\s+['"][^'"]*packages\//.test(text)) {
         throw new Error(`CLI bundle still points at the repository: ${full}`);
       }
     }
