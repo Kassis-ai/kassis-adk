@@ -34,10 +34,17 @@
       "permission": "requires.optional"
     },
     {
+      "method": "ctx.capabilities.invoke",
+      "tier1": false,
+      "tier2": true,
+      "permission": "requires.optional",
+      "note": "host forwards a consumed call to the provider child; addon code uses consume()"
+    },
+    {
       "method": "ctx.capabilities.provide",
       "tier1": true,
-      "tier2": false,
-      "permission": "requires.optional"
+      "tier2": true,
+      "permission": "provides"
     },
     {
       "method": "ctx.capabilities.register",

@@ -232,17 +232,6 @@ function scaffoldCapability(
   loaded: { file: string; manifest: Record<string, unknown> },
   name: string
 ): CommandResult {
-  let tier = 2;
-  const rawTier = loaded.manifest.tier;
-  if (typeof rawTier === 'number') tier = rawTier;
-  else if (typeof rawTier === 'string') tier = Number(rawTier);
-  if (tier === 2) {
-    const id = String(loaded.manifest.id);
-    return commandResult(
-      [kadkIssue('KADK-218', 'manifest.json', null, { id, tier: '2' })],
-      {}
-    );
-  }
   const capability = `${String(loaded.manifest.id)}.${name}`;
   const provides = ensureArray(loaded.manifest, 'provides');
   const exists = provides.some((item) => isRecordValue(item) && item.capability === capability);

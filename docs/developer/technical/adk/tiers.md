@@ -31,7 +31,9 @@ The host provisions one IAM user per addon, `addon.<id>@service.kassis.local`, w
 
 `ctx.events.subscribe`, `ctx.jobs.register`, and `ctx.jobs.schedule` are registered on the host during `initialize()`. The host delivers them with `event.deliver` and `job.run`. A failed event delivery is written to the existing domain-events queue and retried there. A failed job stays on the job queue that `ctx.jobs` already uses. A child crash does not drop that work.
 
-Still refused in tier 2: `extend.*`, `capabilities.register`, `capabilities.provide`, and `locks`. `ctx.data.read` accepts a table name. The host qualifies it with `data.schema` (or `addon_<id>` when the manifest omits the schema) and reads only `database.ownedTables`. Any other table, or a name that contains a schema, is refused.
+`ctx.capabilities.provide` is allowed when the capability id is in the addon namespace (`<id>.` or the id with hyphens turned into underscores) and that id and version are listed in `provides`. The implementation stays in the child. A consumer's call is forwarded to that process. The wait is Settings `addons.capabilities.timeoutMs`. If the provider is disabled, crashed, or does not answer in time, the consumer gets `null`. `ctx.capabilities.register` stays refused.
+
+Still refused in tier 2: `extend.*`, `capabilities.register`, and `locks`. `ctx.data.read` accepts a table name. The host qualifies it with `data.schema` (or `addon_<id>` when the manifest omits the schema) and reads only `database.ownedTables`. Any other table, or a name that contains a schema, is refused.
 
 The tier 2 RPC allow-list is `TIER2_FACADE_METHODS` in `server/core/addon-platform/tier2/tier2RpcAllowlist.ts`. The same list, plus every other `ctx` facade method and its tier 1 availability, ships as `@kassis/addon-sdk/tier-matrix.json`. `npm run ci:adk:tier-matrix` fails when that file disagrees with the allow-list. Business meaning: [Addons overview](../../business/addons/overview.md).
 
@@ -49,12 +51,14 @@ These keys are read from Settings. A missing or invalid value refuses to start t
 | `addons.tier2.healthFailureLimit` | Consecutive failures before disable   |
 | `addons.egress.timeoutMs`         | Fetch timeout                         |
 | `addons.egress.maxResponseBytes`  | Fetch response cap                    |
+| `addons.capabilities.timeoutMs`   | Capability call timeout               |
 
 ## Changelog
 
 | Date       | Change                                                                                                                                                                    |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-11-16 | Tier 2 supervision goes through `Tier2Runner` (`start`, `stop`, `call`, `health`). The current child process is the process runner.                                      |
+| 2026-11-16 | Tier 2 may provide a namespaced capability declared in `provides`. Consumer calls are forwarded to the provider child with `addons.capabilities.timeoutMs`. A down provider returns null. |
 | 2026-11-16 | Documented `@kassis/addon-sdk/tier-matrix.json` as the packaged tier capability matrix; CI checks it against `TIER2_FACADE_METHODS`.                                      |
 | 2026-11-16 | `kassis-addon doctor --requirements` scans addon source for `ctx` calls the manifest tier cannot use and reports KADK-219 before build.                                    |
 | 2026-10-28 | Tier 2 calls the host facades over RPC. Events and jobs are delivered to the child and retried on the existing queues. The child cannot call `approvals.applyRegistered`. |

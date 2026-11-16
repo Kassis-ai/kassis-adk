@@ -14,7 +14,7 @@ function writeManifest(
 }
 
 describe('scaffold capability', () => {
-  it('refuses tier 2 with KADK-218 and does not write provides', () => {
+  it('writes provides for tier 2', () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'kassis-scaffold-cap-'));
     try {
       writeManifest(dir, { id: 'acme-widget', name: 'Widget', tier: 2, version: '0.1.0' });
@@ -27,10 +27,9 @@ describe('scaffold capability', () => {
         tier: '',
         rung: '',
       });
-      expect(result.ok).toBe(false);
-      expect(result.issues.map((issue) => issue.code)).toEqual(['KADK-218']);
+      expect(result.ok).toBe(true);
       const manifest = JSON.parse(fs.readFileSync(path.join(dir, 'manifest.json'), 'utf8'));
-      expect(manifest.provides).toBeUndefined();
+      expect(manifest.provides).toEqual([{ capability: 'acme-widget.lookup', version: '1.0.0' }]);
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }

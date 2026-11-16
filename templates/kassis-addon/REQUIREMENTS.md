@@ -101,7 +101,7 @@ Use `npx kassis-addon scaffold <kind> <name>` after `init`. Each kind below show
 
 | ID    | Pri | Requirement                                                                                                                                |
 | ----- | --- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| FR-92 | C   | _Example._ Expose callable `__ADDON_ID__.score` version `1.0.0` in `capabilities.provides`. Command: `scaffold capability score`. Tier 2 may refuse `provide` until the host allows it; record a gap if so. |
+| FR-92 | C   | _Example._ Expose callable `__ADDON_ID__.score` version `1.0.0` in `capabilities.provides`. Command: `scaffold capability score`. Tier 2 `provide` is accepted when that id is in the addon namespace. |
 
 ### Scaffold kind `event`
 

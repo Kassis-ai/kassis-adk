@@ -131,6 +131,11 @@ function checkNamespaces(manifest: ManifestRecord, id: string): KadkIssue[] {
       fieldsAt(manifest, 'groups', 'name', 'groups'),
       addonGroupNamespacePrefixes(id)
     ),
+    ...namespaceIssues(
+      'KADK-220',
+      fieldsAt(manifest, 'provides', 'capability', 'provides'),
+      dotted
+    ),
   ];
 }
 

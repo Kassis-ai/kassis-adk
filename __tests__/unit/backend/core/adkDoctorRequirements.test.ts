@@ -69,7 +69,7 @@ await ctx.audit.record({ kind: 'service', userId: null, email: null }, 'acme-ok.
         dir,
         `import type { AddonContext } from '@kassis/addon-sdk';
 export async function initialize(ctx: AddonContext): Promise<void> {
-  ctx.capabilities.provide('acme-cap.lookup', () => null);
+  await ctx.locks.acquire('acme-cap.lookup');
 }`
       );
       const result = await doctorProject(dir, { requirements: true });
@@ -77,6 +77,23 @@ export async function initialize(ctx: AddonContext): Promise<void> {
       expect(result.data.addonTier).toBe(2);
       expect(result.issues.some((issue) => issue.code === 'KADK-219')).toBe(true);
       expect(result.ok).toBe(false);
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('allows ctx.capabilities.provide for tier 2', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'kassis-doctor-req-'));
+    try {
+      writeManifest(dir, { id: 'acme-cap', name: 'Cap', tier: 2 });
+      writeServerSource(
+        dir,
+        `import type { AddonContext } from '@kassis/addon-sdk';
+export async function initialize(ctx: AddonContext): Promise<void> {
+  ctx.capabilities.provide('acme-cap.lookup', () => null);
+}`
+      );
+      expect(checkAddonTierRefusals(dir, 2)).toEqual([]);
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }

@@ -389,6 +389,15 @@
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-219"
     },
     {
+      "code": "KADK-220",
+      "category": "boundaries",
+      "severity": "error",
+      "title": "Capability outside the addon namespace",
+      "message": "Capability '{value}' at {path} must start with {prefixes}",
+      "fix": "Rename the capability so it starts with {prefixes}, and declare that id in provides.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-220"
+    },
+    {
       "code": "KADK-301",
       "category": "data",
       "severity": "error",

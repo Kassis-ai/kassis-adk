@@ -20,7 +20,7 @@ export const validManifest = {
   requiredPermissions: ['sample-tprm-check.view'],
   requires: [{ capability: 'party.lookup', range: '^1.0.0' }],
   optional: [{ capability: 'aml.screening', range: '>=1.0.0 <2.0.0' }],
-  provides: [{ capability: 'tprm.assessment', version: '1.0.0' }],
+  provides: [{ capability: 'sample-tprm-check.assessment', version: '1.0.0' }],
   events: {
     publishes: [
       {

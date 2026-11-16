@@ -182,6 +182,11 @@ describe('validateManifestV2', () => {
         },
         'groups[0].name',
       ],
+      [
+        'KADK-220',
+        { provides: [{ capability: 'tprm.assessment', version: '1.0.0' }] },
+        'provides[0].capability',
+      ],
     ] as const)('rejects a name outside the addon namespace (%s)', (code, changes, issuePath) => {
       expectOnly(manifestWith(changes), code, issuePath);
     });

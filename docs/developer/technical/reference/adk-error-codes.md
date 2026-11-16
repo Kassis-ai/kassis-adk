@@ -396,7 +396,7 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Severity: error
 - Message: `Add-on '{id}' is tier 2; ctx.capabilities.provide is refused by the host`
 - Fix: Use requires to consume another addon's capability. Do not add provides[] for tier 2 until the host accepts provide.
-- Reported by: `kassis-addon scaffold` when `--kind=capability` and manifest tier is 2
+- Reported by: older `kassis-addon scaffold` builds. Current scaffold writes `provides` for tier 2. The code stays so those logs still resolve.
 
 <a id="kadk-219"></a>
 
@@ -406,6 +406,15 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Message: `{file} calls {method}, which tier {tier} addons cannot use`
 - Fix: Use a facade allowed for your tier in `@kassis/addon-sdk/tier-matrix.json`, pick tier 1 when appropriate, or consume another addon through `requires`.
 - Reported by: `kassis-addon doctor --requirements` when addon source calls a `ctx` method the manifest tier cannot use; `createTestContext()` at runtime when a unit test calls a facade the chosen tier cannot use
+
+<a id="kadk-220"></a>
+
+### KADK-220 Capability outside the addon namespace
+
+- Severity: error
+- Message: `Capability '{value}' at {path} must start with {prefixes}`
+- Fix: Rename the capability so it starts with {prefixes}, and declare that id in provides.
+- Reported by: `validateManifestV2` on `provides[]`, and `ctx.capabilities.provide` for a tier 2 addon
 
 ## 3xx Data
 

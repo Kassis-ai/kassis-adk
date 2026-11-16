@@ -33,9 +33,8 @@ describe('clean room scaffold kinds (S1.20)', () => {
     expect(new Set(names).size).toBe(names.length);
   });
 
-  it('documents tier 2 capability refusal', () => {
-    expect(CLEAN_ROOM_SCAFFOLD_REFUSALS).toEqual([
-      { kind: 'capability', name: 'lookup', code: 'KADK-218' },
-    ]);
+  it('scaffolds capability for tier 2', () => {
+    expect(CLEAN_ROOM_SCAFFOLD_SUCCESS).toContainEqual({ kind: 'capability', name: 'lookup' });
+    expect(CLEAN_ROOM_SCAFFOLD_REFUSALS).toEqual([]);
   });
 });

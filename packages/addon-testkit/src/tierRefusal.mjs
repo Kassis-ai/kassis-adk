@@ -49,7 +49,7 @@ export function tier2HostPrefixRefusal(method) {
   if (!METHOD_NAME.test(method) || method.length > 80) return true;
   if (method.startsWith('ctx.extend.')) return true;
   if (method.startsWith('ctx.locks.')) return true;
-  if (method === 'ctx.capabilities.register' || method === 'ctx.capabilities.provide') return true;
+  if (method === 'ctx.capabilities.register') return true;
   if (method.startsWith('ctx.data.') && method !== 'ctx.data.read') return true;
   return false;
 }
