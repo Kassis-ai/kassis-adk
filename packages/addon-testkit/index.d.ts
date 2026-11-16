@@ -240,6 +240,12 @@ export interface TestAddonContext {
   readonly http: {
     fetch(url: string): Promise<HttpFetchResponse>;
   };
+  readonly routes: {
+    mount(
+      router: unknown,
+      options?: { readonly permission?: string; readonly path?: string }
+    ): Disposable;
+  };
   readonly capabilities: TestCapabilitiesFacade;
   readonly locks: TestLocksFacade;
   readonly extend: TestExtendFacade;

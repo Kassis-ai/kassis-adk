@@ -541,20 +541,25 @@ function ensureUiTestDependencies(dir: string): boolean {
   if (!fs.existsSync(pkgPath)) return false;
   const parsed = readJson(pkgPath);
   if (!isRecordValue(parsed)) return false;
+  const deps = isRecordValue(parsed.dependencies) ? { ...parsed.dependencies } : {};
   const devDeps = isRecordValue(parsed.devDependencies) ? { ...parsed.devDependencies } : {};
   let changed = false;
-  const required: Record<string, string> = {
+  const runtime: Record<string, string> = {
     react: '^19.3.1',
     'react-dom': '^19.3.1',
-    '@types/react': '^19.2.0',
   };
-  for (const [pkg, version] of Object.entries(required)) {
-    if (typeof devDeps[pkg] !== 'string') {
-      devDeps[pkg] = version;
+  for (const [pkg, version] of Object.entries(runtime)) {
+    if (typeof deps[pkg] !== 'string') {
+      deps[pkg] = version;
       changed = true;
     }
   }
+  if (typeof devDeps['@types/react'] !== 'string') {
+    devDeps['@types/react'] = '^19.2.0';
+    changed = true;
+  }
   if (!changed) return false;
+  parsed.dependencies = deps;
   parsed.devDependencies = devDeps;
   fs.writeFileSync(pkgPath, `${JSON.stringify(parsed, null, 2)}\n`);
   return true;
@@ -569,7 +574,7 @@ function ensureUiTestRunnerScript(dir: string): boolean {
   if (typeof current !== 'string' || current.includes('test/**/*.test')) return false;
   parsed.scripts = {
     ...parsed.scripts,
-    test: 'node --experimental-strip-types --test \'test/**/*.test.ts\'',
+    test: 'node --experimental-strip-types --test "test/**/*.test.ts"',
   };
   fs.writeFileSync(pkgPath, `${JSON.stringify(parsed, null, 2)}\n`);
   return true;
@@ -735,7 +740,7 @@ function mcpToolTestFile(dir: string, addonId: string, name: string): string {
   const toolName = mcpQualifiedToolName(addonId, name);
   const text = `import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { ${exportName} } from '../../src/mcp/tools/${name}.js';
+import { ${exportName} } from "../../src/mcp/tools/${name}.ts";
 
 describe('${name} MCP tool', () => {
   it('returns ok from the scaffolded handler', async () => {
@@ -781,7 +786,7 @@ function ensureMcpTestRunnerScript(dir: string): boolean {
   if (typeof current !== 'string' || current.includes('test/**/*.test')) return false;
   parsed.scripts = {
     ...parsed.scripts,
-    test: 'node --experimental-strip-types --test \'test/**/*.test.ts\'',
+    test: 'node --experimental-strip-types --test "test/**/*.test.ts"',
   };
   fs.writeFileSync(pkgPath, `${JSON.stringify(parsed, null, 2)}\n`);
   return true;

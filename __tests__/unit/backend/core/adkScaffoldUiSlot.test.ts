@@ -60,7 +60,7 @@ describe('scaffold ui-slot', () => {
       expect(renderTestSource).toContain('renderToString');
 
       const pkg = JSON.parse(fs.readFileSync(path.join(dir, 'package.json'), 'utf8'));
-      expect(pkg.devDependencies?.react).toBe('^19.3.1');
+      expect(pkg.dependencies?.react).toBe('^19.3.1');
       expect(pkg.scripts.test).toContain('test/**/*.test.ts');
 
       const copy = en.pages.vendorRisk as { title: string; body: string };

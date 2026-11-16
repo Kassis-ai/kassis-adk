@@ -218,6 +218,53 @@ export function packPublicPackages(root, destination) {
 }
 
 /**
+ * Pack private packages needed by the clean-room scaffold exercise (mcp-tool).
+ * @param {string} root
+ * @param {string} destination
+ * @returns {PackedTarball}
+ */
+export function packMcpContractTarball(root, destination) {
+  fs.mkdirSync(destination, { recursive: true });
+  const pkgDir = path.join(root, 'packages', 'mcp-contract');
+  const pkgFile = path.join(pkgDir, 'package.json');
+  const pkgText = fs.readFileSync(pkgFile, 'utf8');
+  const pkg = JSON.parse(pkgText);
+  if (pkg === null || typeof pkg !== 'object' || Array.isArray(pkg)) {
+    throw new Error('mcp-contract package.json is not an object');
+  }
+  const distDir = path.join(pkgDir, 'dist');
+  fs.mkdirSync(distDir, { recursive: true });
+  const esbuildBin = path.join(root, 'node_modules/esbuild/bin/esbuild');
+  if (!fs.existsSync(esbuildBin)) throw new Error('esbuild is missing; run npm ci');
+  const built = spawnSync(
+    esbuildBin,
+  [
+    'src/index.ts',
+    '--bundle',
+    '--platform=node',
+    '--format=esm',
+    '--outfile=dist/index.js',
+  ],
+    { cwd: pkgDir, encoding: 'utf8' }
+  );
+  if (built.status !== 0) {
+    throw new Error(`mcp-contract esbuild failed\n${built.stdout ?? ''}\n${built.stderr ?? ''}`.trim());
+  }
+  pkg.exports = { '.': './dist/index.js' };
+  pkg.files = ['dist/index.js'];
+  fs.writeFileSync(pkgFile, `${JSON.stringify(pkg, null, 2)}\n`);
+  process.stdout.write('pack mcp-contract\n');
+  try {
+    const stdout = runNpm(['pack', '--json', '--pack-destination', destination], pkgDir, 'pipe');
+    const file = packedFile(destination, packFilename(stdout));
+    return { name: '@kassis/mcp-contract', file };
+  } finally {
+    fs.writeFileSync(pkgFile, pkgText);
+    if (fs.existsSync(distDir)) fs.rmSync(distDir, { recursive: true, force: true });
+  }
+}
+
+/**
  * @param {string} root
  * @returns {string[]}
  */
@@ -282,7 +329,10 @@ function primeNpmCache(outDir, index) {
         '--no-fund',
         '--cache',
         path.join(outDir, 'npm-cache'),
-        'react@19.2.3',
+        'react@19.3.1',
+        'react-dom@19.3.1',
+        '@types/react@19.3.0',
+        'express@5.3.0',
         ...specs,
       ],
       work,

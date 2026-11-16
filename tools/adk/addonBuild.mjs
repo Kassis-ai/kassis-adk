@@ -20,6 +20,7 @@ function externalKassisPlugin() {
     name: 'external-kassis',
     setup(build) {
       build.onResolve({ filter: /^@kassis\// }, (args) => ({ path: args.path, external: true }));
+      build.onResolve({ filter: /^express$/ }, (args) => ({ path: args.path, external: true }));
     },
   };
 }
@@ -40,7 +41,28 @@ async function loadEsbuild(addonDir) {
   return import(pathToFileURL(esbuildPath).href);
 }
 
+function assertExportText(addonDir, relative, exportName) {
+  const file = path.join(addonDir, relative);
+  if (!fs.existsSync(file)) {
+    const folder = path.dirname(file);
+    const listing = fs.existsSync(folder) ? fs.readdirSync(folder).join(', ') : 'directory missing';
+    throw new Error(`${relative} was not written (${listing})`);
+  }
+  const text = fs.readFileSync(file, 'utf8');
+  const patterns = [
+    new RegExp(`export\\s+(async\\s+)?function\\s+${exportName}\\b`),
+    new RegExp(`\\bas\\s+${exportName}\\b`),
+  ];
+  if (!patterns.some((pattern) => pattern.test(text))) {
+    throw new Error(`${relative} does not export ${exportName}`);
+  }
+}
+
 async function assertExport(addonDir, relative, exportName) {
+  if (relative.startsWith('frontend/dist/')) {
+    assertExportText(addonDir, relative, exportName);
+    return;
+  }
   const file = path.join(addonDir, relative);
   if (!fs.existsSync(file)) {
     const folder = path.dirname(file);

@@ -3,7 +3,7 @@
 **Status:** GA
 **Version checked:** 2026-10-28
 **Technical owner:** Unassigned
-**Last reviewed:** 2026-10-30
+**Last reviewed:** 2026-11-16
 
 ## Prerequisites
 
@@ -47,7 +47,7 @@ Outside the repository, install `@kassis/addon-cli` and run `npx kassis-addon`. 
 node scripts/adk-clean-room.mjs
 ```
 
-The script builds the six public packages, packs them, and installs those tarballs in an empty folder with `npm install --no-package-lock`. `prepack` writes the `dist` entry points into the tarball npm publishes. Plain Node then loads `dist`. It imports each runtime entry with plain Node. It then runs `kassis-addon init`, `build`, `test`, `check`, and `conformance` for a tier 2 rung 2 addon, and `package` on a manifest that already has `signature` and `contentHash`. `@kassis/adk-core` stays private and is not packed. The script does not deploy to an instance and does not approve a request.
+The script builds the six public packages, packs them, and installs those tarballs in an empty folder with `npm install --no-package-lock`. `prepack` writes the `dist` entry points into the tarball npm publishes. Plain Node then loads `dist`. It imports each runtime entry with plain Node. It then runs `kassis-addon init`, scaffolds every scaffold kind (tier 2 `capability` must refuse with KADK-218), reinstalls dependencies (including a packed `@kassis/mcp-contract` tarball), then `build`, `test`, `check`, `conformance`, and `package` on a tier 2 rung 3 addon with `signature` and `contentHash`. `@kassis/adk-core` stays private and is not packed. The script does not deploy to an instance and does not approve a request.
 
 ## Air-gapped bundle
 
@@ -64,6 +64,7 @@ The bundle contains the SDK, the testkit, the template, the public verification 
 
 | Date       | Change                                                                                                                                                                                                                                                                               |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2026-11-16 | Clean room scaffolds route, event, job, migration, ui-slot, ui-page, and mcp-tool after init; asserts tier 2 capability refusal; packs `@kassis/mcp-contract` for offline MCP tests.                                                                                                |
 | 2026-10-30 | The `.npmrc.example` path is text. The docs site does not publish files outside `docs/`.                                                                                                                                                                                             |
 | 2026-10-28 | `prepack` puts `dist` entry points in each public tarball. The workspace `exports` stay on source so the server image still loads them.                                                                                                                                              |
 | 2026-10-28 | The packed `@kassis/addon-cli` bundles the CLI and the MCP server. An install outside the repository runs `init`, `check`, and `kassis-adk-mcp` without the checkout.                                                                                                                |

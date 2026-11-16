@@ -435,6 +435,15 @@ export function createTestContext(options = {}) {
         };
       },
     },
+    routes: {
+      /**
+       * @param {unknown} _router
+       * @param {{ permission?: string, path?: string }} [_options]
+       */
+      mount(_router, _options) {
+        return disposable();
+      },
+    },
     capabilities: createTierGuardedCapabilities(tier),
     locks: createTierGuardedLocks(tier),
     extend: createTierGuardedExtend(tier),
