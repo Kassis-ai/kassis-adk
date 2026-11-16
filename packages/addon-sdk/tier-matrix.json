@@ -179,27 +179,48 @@
       "tier1": true,
       "tier2": false,
       "permission": "database.ownedTables",
-      "note": "planned for tier 2 in phase 3"
+      "note": "tier 2 uses ctx.data.query, ctx.data.execute and ctx.data.transaction"
     },
     {
       "method": "ctx.data.$queryRaw",
       "tier1": true,
       "tier2": false,
       "permission": "database.ownedTables",
-      "note": "planned for tier 2 in phase 3"
+      "note": "tier 2 uses ctx.data.query, ctx.data.execute and ctx.data.transaction"
     },
     {
       "method": "ctx.data.$transaction",
       "tier1": true,
       "tier2": false,
       "permission": "database.ownedTables",
-      "note": "planned for tier 2 in phase 3"
+      "note": "tier 2 uses ctx.data.query, ctx.data.execute and ctx.data.transaction"
+    },
+    {
+      "method": "ctx.data.execute",
+      "tier1": false,
+      "tier2": true,
+      "permission": "database.ownedTables",
+      "note": "parameterised write as the addon run-time role"
+    },
+    {
+      "method": "ctx.data.query",
+      "tier1": false,
+      "tier2": true,
+      "permission": "database.ownedTables",
+      "note": "parameterised read as the addon run-time role"
     },
     {
       "method": "ctx.data.read",
       "tier1": true,
       "tier2": true,
       "permission": "database.ownedTables"
+    },
+    {
+      "method": "ctx.data.transaction",
+      "tier1": false,
+      "tier2": true,
+      "permission": "database.ownedTables",
+      "note": "batch of query and execute in one transaction"
     },
     {
       "method": "ctx.describe",

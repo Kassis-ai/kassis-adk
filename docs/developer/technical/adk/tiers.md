@@ -29,7 +29,7 @@ When the restart limit or the health-failure limit is hit, the supervisor disabl
 
 ## Facade bridge
 
-The child does not import core and does not receive `DATABASE_URL` or the host environment. `initialize(ctx)` runs in the child. Calls shaped `ctx.<facade>.<method>` go over the same JSON-RPC line to the facade objects `createAddonContext` builds for tier 1. The manifest policy and `AddonAccessGuard` are unchanged. The host inserts the addon's service principal. The child cannot choose that principal, send SQL, or choose the schema prefix.
+The child does not import core and does not receive `DATABASE_URL` or the host environment. `initialize(ctx)` runs in the child. Calls shaped `ctx.<facade>.<method>` go over the same JSON-RPC line to the facade objects `createAddonContext` builds for tier 1. The manifest policy and `AddonAccessGuard` are unchanged. The host inserts the addon's service principal. The child cannot choose that principal or a schema or role name.
 
 The host provisions one IAM user per addon, `addon.<id>@service.kassis.local`, with role `addon_service`. That role has no grants until an operator adds them. A call the account cannot make is refused (KADK-615). A route permission that is not in the manifest is refused (KADK-216). The child cannot call `ctx.core.approvals.applyRegistered`. That call would let it choose `decidedBy`. The host delivers `approval.apply` when the engine approves a record type the addon owns.
 
@@ -37,7 +37,9 @@ The host provisions one IAM user per addon, `addon.<id>@service.kassis.local`, w
 
 `ctx.capabilities.provide` is allowed when the capability id is in the addon namespace (`<id>.` or the id with hyphens turned into underscores) and that id and version are listed in `provides`. The implementation stays in the child. A consumer's call is forwarded to that process. The wait is Settings `addons.capabilities.timeoutMs`. If the provider is disabled, crashed, or does not answer in time, the consumer gets `null`. `ctx.capabilities.register` stays refused.
 
-Still refused in tier 2: `extend.*`, `capabilities.register`, and `locks`. `ctx.data.read` accepts a table name. The host qualifies it with `data.schema` (or `addon_<id>` when the manifest omits the schema) and reads only `database.ownedTables`. Any other table, or a name that contains a schema, is refused.
+Still refused in tier 2: `extend.*`, `capabilities.register`, `locks`, and the Prisma helpers `ctx.data.$queryRaw`, `ctx.data.$executeRaw` and `ctx.data.$transaction`. `ctx.data.read` accepts a table name. The host qualifies it with `data.schema` (or `addon_<id>` when the manifest omits the schema) and reads only `database.ownedTables`. Any other table, or a name that contains a schema, is refused.
+
+`ctx.data.query`, `ctx.data.execute` and `ctx.data.transaction` send one parameterised statement, or a batch of them. Placeholders are `$1`, `$2`, and so on. The host binds the JSON values. The statement runs as `addon_<id>_runtime` (SELECT, INSERT, UPDATE, DELETE on that schema only). The database function refuses a second command in the same string. The child does not name the role or the schema. On the first call the host installs `kassis_data_statement` in the add-on schema; that needs `kassis_provision_addon_database` (S2.01) to have created the schema. Statement timeout is Settings `addons.data.statementTimeoutMs` (seed 5000). A query that would return more rows than Settings `addons.data.rowCap` (seed 100) is refused. Both limits are read on the call. `ctx.data.read` uses the same row cap. A batch runs in one transaction and rolls back if any statement fails. Structure changes stay on the migration role.
 
 The tier 2 RPC allow-list is `TIER2_FACADE_METHODS` in `server/core/addon-platform/tier2/tier2RpcAllowlist.ts`. The same list, plus every other `ctx` facade method and its tier 1 availability, ships as `@kassis/addon-sdk/tier-matrix.json`. `npm run ci:adk:tier-matrix` fails when that file disagrees with the allow-list. Business meaning: [Addons overview](../../business/addons/overview.md).
 
@@ -45,7 +47,7 @@ The tier 2 RPC allow-list is `TIER2_FACADE_METHODS` in `server/core/addon-platfo
 
 ## Settings
 
-These keys are read from Settings. A missing or invalid value refuses to start the child.
+These keys are read from Settings. A missing or invalid value refuses to start the child. The two `addons.data` keys are read on each data call and refuse that call instead.
 
 | Key                               | Meaning                               |
 | --------------------------------- | ------------------------------------- |
@@ -56,6 +58,8 @@ These keys are read from Settings. A missing or invalid value refuses to start t
 | `addons.egress.timeoutMs`         | Fetch timeout                         |
 | `addons.egress.maxResponseBytes`  | Fetch response cap                    |
 | `addons.capabilities.timeoutMs`   | Capability call timeout               |
+| `addons.data.statementTimeoutMs`  | Timeout for one `ctx.data` statement  |
+| `addons.data.rowCap`              | Most rows one `ctx.data` query may return |
 
 ## Changelog
 
@@ -63,6 +67,7 @@ These keys are read from Settings. A missing or invalid value refuses to start t
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-11-16 | Container runner dials pre-started containers over TCP. No Docker socket. Network policy allows only RPC port 7400 and the egress proxy on 7401. The process runner stays the default until `KASSIS_TIER2_CONTAINER_RUNNERS` is set. |
 | 2026-11-16 | Process runner uses the Node permission model. Isolation is accident isolation: secret reads and spawn are denied; a TCP socket stays open on Node 24. `kassis-addon` is used only when the supervisor is root. |
+| 2026-11-16 | Tier 2 `ctx.data.query`, `ctx.data.execute` and `ctx.data.transaction` run parameterised SQL as `addon_<id>_runtime`. Timeout and row cap come from Settings.            |
 | 2026-11-16 | Tier 2 supervision goes through `Tier2Runner` (`start`, `stop`, `call`, `health`). The current child process is the process runner.                                      |
 | 2026-11-16 | Tier 2 may provide a namespaced capability declared in `provides`. Consumer calls are forwarded to the provider child with `addons.capabilities.timeoutMs`. A down provider returns null. |
 | 2026-11-16 | Documented `@kassis/addon-sdk/tier-matrix.json` as the packaged tier capability matrix; CI checks it against `TIER2_FACADE_METHODS`.                                      |
