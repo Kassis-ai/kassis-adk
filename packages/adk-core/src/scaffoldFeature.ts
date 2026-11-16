@@ -234,12 +234,57 @@ function scaffoldCapability(
   return commandResult([], { kind: 'capability', name: capability, files: ['manifest.json'] });
 }
 
+function eventSchemaDocument(eventName: string): Record<string, unknown> {
+  return {
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    eventName,
+    type: 'object',
+    required: ['subjectId', 'summary'],
+    properties: {
+      subjectId: { type: 'string' },
+      summary: { type: 'string' },
+    },
+    additionalProperties: true,
+  };
+}
+
+function eventFile(dir: string, id: string, name: string): string {
+  const relative = path.join('src', 'server', 'events', `${name}.ts`);
+  const target = path.join(dir, relative);
+  if (fs.existsSync(target)) return relative;
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  const eventName = `${id}.${name}`;
+  const eventConst = `${camelFromKebab(name)}EventName`;
+  const payloadType = `${pascal(name)}EventPayload`;
+  const publishFn = `publish${pascal(name)}`;
+  const text = `import type { AddonContext, AddonPrincipal } from '@kassis/addon-sdk';
+
+export const ${eventConst} = '${eventName}' as const;
+
+export interface ${payloadType} {
+  readonly subjectId: string;
+  readonly summary: string;
+}
+
+export async function ${publishFn}(
+  ctx: AddonContext,
+  principal: AddonPrincipal,
+  payload: ${payloadType}
+): Promise<void> {
+  await ctx.events.publish(principal, ${eventConst}, payload);
+}
+`;
+  fs.writeFileSync(target, text);
+  return relative;
+}
+
 function scaffoldEvent(
   dir: string,
   loaded: { file: string; manifest: Record<string, unknown> },
   name: string
 ): CommandResult {
-  const eventName = `${String(loaded.manifest.id)}.${name}`;
+  const id = String(loaded.manifest.id);
+  const eventName = `${id}.${name}`;
   const schema = `schemas/${name}.schema.json`;
   const events = isRecordValue(loaded.manifest.events) ? { ...loaded.manifest.events } : {};
   const publishes = Array.isArray(events.publishes) ? [...events.publishes] : [];
@@ -253,10 +298,15 @@ function scaffoldEvent(
     fs.mkdirSync(path.dirname(schemaPath), { recursive: true });
     fs.writeFileSync(
       schemaPath,
-      `${JSON.stringify({ $schema: 'https://json-schema.org/draft/2020-12/schema', type: 'object' }, null, 2)}\n`
+      `${JSON.stringify(eventSchemaDocument(eventName), null, 2)}\n`
     );
   }
-  return commandResult([], { kind: 'event', name: eventName, files: ['manifest.json', schema] });
+  const file = eventFile(dir, id, name);
+  return commandResult([], {
+    kind: 'event',
+    name: eventName,
+    files: [file, 'manifest.json', schema],
+  });
 }
 
 function scaffoldJob(
