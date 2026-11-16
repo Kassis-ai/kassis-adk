@@ -38,7 +38,7 @@
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "eventName": "calendar.event_created",
@@ -75,6 +75,7 @@
           },
           "userId": {
             "type": [
+              "string",
               "number",
               "integer"
             ]
@@ -88,7 +89,7 @@
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "eventName": "calendar.event_deleted",
@@ -127,6 +128,7 @@
           },
           "userId": {
             "type": [
+              "string",
               "number",
               "integer",
               "null"
@@ -141,12 +143,54 @@
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "eventName": "calendar.event_purged",
-        "required": [],
-        "properties": {},
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
         "additionalProperties": false
       }
     },
@@ -155,12 +199,54 @@
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "eventName": "calendar.event_restored",
-        "required": [],
-        "properties": {},
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
         "additionalProperties": false
       }
     },
@@ -169,7 +255,7 @@
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "eventName": "calendar.event_updated",
@@ -209,6 +295,7 @@
           },
           "userId": {
             "type": [
+              "string",
               "number",
               "integer",
               "null"
@@ -2933,7 +3020,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "crm.deal.stage_changed",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -2956,7 +3043,14 @@
             "type": "string"
           },
           "raw": {
-            "type": "object"
+            "type": [
+              "object",
+              "array",
+              "string",
+              "number",
+              "boolean",
+              "null"
+            ]
           },
           "connectorType": {
             "type": "string"
@@ -4419,19 +4513,12 @@
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "eventName": "flag.added",
         "required": [
-          "type",
-          "resourceType",
-          "resourceId",
-          "flagType",
-          "flagId",
-          "action",
-          "timestamp",
-          "eventId"
+          "userId"
         ],
         "properties": {
           "type": {
@@ -5191,7 +5278,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "ingest.party.upserted",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -5220,6 +5307,7 @@
               "entityType": {
                 "type": [
                   "string",
+                  "number",
                   "null"
                 ]
               },
@@ -5245,6 +5333,7 @@
               "externalReference": {
                 "type": [
                   "string",
+                  "number",
                   "null"
                 ]
               }
@@ -8827,7 +8916,22 @@
         "compatibility": "backward",
         "type": "object",
         "required": [],
-        "properties": {},
+        "properties": {
+          "listId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "requestedBy": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          }
+        },
         "additionalProperties": false
       }
     },
@@ -8853,6 +8957,26 @@
           },
           "ruleName": {
             "type": "string"
+          },
+          "violationId": {
+            "type": [
+              "number",
+              "integer",
+              "string"
+            ]
+          },
+          "ruleId": {
+            "type": [
+              "number",
+              "integer",
+              "string"
+            ]
+          },
+          "listName": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "additionalProperties": false
@@ -9652,7 +9776,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "ubo.ownership.refreshed",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -9666,7 +9790,7 @@
             "type": "string"
           },
           "upserted": {
-            "type": "object"
+            "type": "number"
           },
           "reason": {
             "type": "string"
