@@ -39,7 +39,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.assigned",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -98,13 +98,19 @@
             ]
           },
           "status": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "status_category": {
             "type": "string"
           },
           "priority": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "assigned_to": {
             "type": [
@@ -170,14 +176,23 @@
           "due_date": {
             "type": [
               "string",
+              "object",
               "null"
             ]
           },
           "created_date": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           },
           "updated_date": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           },
           "template_id": {
             "type": [
@@ -206,18 +221,28 @@
           "flow_template_version": {
             "type": [
               "number",
+              "string",
+              "object",
               "null"
             ]
           },
           "custom_data": {
-            "type": "object"
+            "type": [
+              "object",
+              "null"
+            ]
           },
           "notes": {
-            "type": "array"
+            "type": [
+              "array",
+              "object",
+              "null"
+            ]
           },
           "workflow_step_history": {
             "type": [
               "array",
+              "object",
               "null"
             ]
           },
@@ -255,12 +280,14 @@
           "due_soon_sent_at": {
             "type": [
               "string",
+              "object",
               "null"
             ]
           },
           "overdue_sent_at": {
             "type": [
               "string",
+              "object",
               "null"
             ]
           },
@@ -284,7 +311,11 @@
             ]
           },
           "updatedAt": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           },
           "escalated": {
             "type": "boolean"
@@ -312,6 +343,12 @@
           },
           "correlationId": {
             "type": "string"
+          },
+          "risk_score_current": {
+            "type": [
+              "number",
+              "null"
+            ]
           }
         },
         "additionalProperties": false
@@ -323,7 +360,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.created",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -382,13 +419,19 @@
             ]
           },
           "status": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "status_category": {
             "type": "string"
           },
           "priority": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "assigned_to": {
             "type": [
@@ -454,14 +497,23 @@
           "due_date": {
             "type": [
               "string",
+              "object",
               "null"
             ]
           },
           "created_date": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           },
           "updated_date": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           },
           "template_id": {
             "type": [
@@ -490,18 +542,28 @@
           "flow_template_version": {
             "type": [
               "number",
+              "string",
+              "object",
               "null"
             ]
           },
           "custom_data": {
-            "type": "object"
+            "type": [
+              "object",
+              "null"
+            ]
           },
           "notes": {
-            "type": "array"
+            "type": [
+              "array",
+              "object",
+              "null"
+            ]
           },
           "workflow_step_history": {
             "type": [
               "array",
+              "object",
               "null"
             ]
           },
@@ -539,12 +601,14 @@
           "due_soon_sent_at": {
             "type": [
               "string",
+              "object",
               "null"
             ]
           },
           "overdue_sent_at": {
             "type": [
               "string",
+              "object",
               "null"
             ]
           },
@@ -568,7 +632,11 @@
             ]
           },
           "updatedAt": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           },
           "escalated": {
             "type": "boolean"
@@ -596,6 +664,12 @@
           },
           "correlationId": {
             "type": "string"
+          },
+          "risk_score_current": {
+            "type": [
+              "number",
+              "null"
+            ]
           }
         },
         "additionalProperties": false
@@ -660,7 +734,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.due_soon",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -719,13 +793,19 @@
             ]
           },
           "status": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "status_category": {
             "type": "string"
           },
           "priority": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "assigned_to": {
             "type": [
@@ -791,14 +871,23 @@
           "due_date": {
             "type": [
               "string",
+              "object",
               "null"
             ]
           },
           "created_date": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           },
           "updated_date": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           },
           "template_id": {
             "type": [
@@ -827,18 +916,28 @@
           "flow_template_version": {
             "type": [
               "number",
+              "string",
+              "object",
               "null"
             ]
           },
           "custom_data": {
-            "type": "object"
+            "type": [
+              "object",
+              "null"
+            ]
           },
           "notes": {
-            "type": "array"
+            "type": [
+              "array",
+              "object",
+              "null"
+            ]
           },
           "workflow_step_history": {
             "type": [
               "array",
+              "object",
               "null"
             ]
           },
@@ -876,12 +975,14 @@
           "due_soon_sent_at": {
             "type": [
               "string",
+              "object",
               "null"
             ]
           },
           "overdue_sent_at": {
             "type": [
               "string",
+              "object",
               "null"
             ]
           },
@@ -905,7 +1006,11 @@
             ]
           },
           "updatedAt": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           },
           "escalated": {
             "type": "boolean"
@@ -933,6 +1038,12 @@
           },
           "correlationId": {
             "type": "string"
+          },
+          "risk_score_current": {
+            "type": [
+              "number",
+              "null"
+            ]
           }
         },
         "additionalProperties": false
@@ -944,7 +1055,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.escalated",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -1003,13 +1114,19 @@
             ]
           },
           "status": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "status_category": {
             "type": "string"
           },
           "priority": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "assigned_to": {
             "type": [
@@ -1075,14 +1192,23 @@
           "due_date": {
             "type": [
               "string",
+              "object",
               "null"
             ]
           },
           "created_date": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           },
           "updated_date": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           },
           "template_id": {
             "type": [
@@ -1111,18 +1237,28 @@
           "flow_template_version": {
             "type": [
               "number",
+              "string",
+              "object",
               "null"
             ]
           },
           "custom_data": {
-            "type": "object"
+            "type": [
+              "object",
+              "null"
+            ]
           },
           "notes": {
-            "type": "array"
+            "type": [
+              "array",
+              "object",
+              "null"
+            ]
           },
           "workflow_step_history": {
             "type": [
               "array",
+              "object",
               "null"
             ]
           },
@@ -1160,12 +1296,14 @@
           "due_soon_sent_at": {
             "type": [
               "string",
+              "object",
               "null"
             ]
           },
           "overdue_sent_at": {
             "type": [
               "string",
+              "object",
               "null"
             ]
           },
@@ -1189,7 +1327,11 @@
             ]
           },
           "updatedAt": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           },
           "escalated": {
             "type": "boolean"
@@ -1217,6 +1359,12 @@
           },
           "correlationId": {
             "type": "string"
+          },
+          "risk_score_current": {
+            "type": [
+              "number",
+              "null"
+            ]
           }
         },
         "additionalProperties": false
@@ -1228,7 +1376,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.overdue",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -1287,13 +1435,19 @@
             ]
           },
           "status": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "status_category": {
             "type": "string"
           },
           "priority": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "assigned_to": {
             "type": [
@@ -1359,14 +1513,23 @@
           "due_date": {
             "type": [
               "string",
+              "object",
               "null"
             ]
           },
           "created_date": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           },
           "updated_date": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           },
           "template_id": {
             "type": [
@@ -1395,18 +1558,28 @@
           "flow_template_version": {
             "type": [
               "number",
+              "string",
+              "object",
               "null"
             ]
           },
           "custom_data": {
-            "type": "object"
+            "type": [
+              "object",
+              "null"
+            ]
           },
           "notes": {
-            "type": "array"
+            "type": [
+              "array",
+              "object",
+              "null"
+            ]
           },
           "workflow_step_history": {
             "type": [
               "array",
+              "object",
               "null"
             ]
           },
@@ -1444,12 +1617,14 @@
           "due_soon_sent_at": {
             "type": [
               "string",
+              "object",
               "null"
             ]
           },
           "overdue_sent_at": {
             "type": [
               "string",
+              "object",
               "null"
             ]
           },
@@ -1473,7 +1648,11 @@
             ]
           },
           "updatedAt": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           },
           "escalated": {
             "type": "boolean"
@@ -1501,6 +1680,12 @@
           },
           "correlationId": {
             "type": "string"
+          },
+          "risk_score_current": {
+            "type": [
+              "number",
+              "null"
+            ]
           }
         },
         "additionalProperties": false
@@ -1618,7 +1803,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.status_changed",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -1677,13 +1862,19 @@
             ]
           },
           "status": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "status_category": {
             "type": "string"
           },
           "priority": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "assigned_to": {
             "type": [
@@ -1749,14 +1940,23 @@
           "due_date": {
             "type": [
               "string",
+              "object",
               "null"
             ]
           },
           "created_date": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           },
           "updated_date": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           },
           "template_id": {
             "type": [
@@ -1785,18 +1985,28 @@
           "flow_template_version": {
             "type": [
               "number",
+              "string",
+              "object",
               "null"
             ]
           },
           "custom_data": {
-            "type": "object"
+            "type": [
+              "object",
+              "null"
+            ]
           },
           "notes": {
-            "type": "array"
+            "type": [
+              "array",
+              "object",
+              "null"
+            ]
           },
           "workflow_step_history": {
             "type": [
               "array",
+              "object",
               "null"
             ]
           },
@@ -1834,12 +2044,14 @@
           "due_soon_sent_at": {
             "type": [
               "string",
+              "object",
               "null"
             ]
           },
           "overdue_sent_at": {
             "type": [
               "string",
+              "object",
               "null"
             ]
           },
@@ -1863,7 +2075,11 @@
             ]
           },
           "updatedAt": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           },
           "escalated": {
             "type": "boolean"
@@ -1891,6 +2107,12 @@
           },
           "correlationId": {
             "type": "string"
+          },
+          "risk_score_current": {
+            "type": [
+              "number",
+              "null"
+            ]
           }
         },
         "additionalProperties": false
@@ -1902,7 +2124,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.updated",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -1961,13 +2183,19 @@
             ]
           },
           "status": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "status_category": {
             "type": "string"
           },
           "priority": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "assigned_to": {
             "type": [
@@ -2033,14 +2261,23 @@
           "due_date": {
             "type": [
               "string",
+              "object",
               "null"
             ]
           },
           "created_date": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           },
           "updated_date": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           },
           "template_id": {
             "type": [
@@ -2069,18 +2306,28 @@
           "flow_template_version": {
             "type": [
               "number",
+              "string",
+              "object",
               "null"
             ]
           },
           "custom_data": {
-            "type": "object"
+            "type": [
+              "object",
+              "null"
+            ]
           },
           "notes": {
-            "type": "array"
+            "type": [
+              "array",
+              "object",
+              "null"
+            ]
           },
           "workflow_step_history": {
             "type": [
               "array",
+              "object",
               "null"
             ]
           },
@@ -2118,12 +2365,14 @@
           "due_soon_sent_at": {
             "type": [
               "string",
+              "object",
               "null"
             ]
           },
           "overdue_sent_at": {
             "type": [
               "string",
+              "object",
               "null"
             ]
           },
@@ -2147,7 +2396,11 @@
             ]
           },
           "updatedAt": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           },
           "escalated": {
             "type": "boolean"
@@ -2175,6 +2428,12 @@
           },
           "correlationId": {
             "type": "string"
+          },
+          "risk_score_current": {
+            "type": [
+              "number",
+              "null"
+            ]
           }
         },
         "additionalProperties": false
@@ -2484,7 +2743,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "document.incomplete",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -2574,7 +2833,10 @@
             "type": "string"
           },
           "fileSize": {
-            "type": "number"
+            "type": [
+              "number",
+              "null"
+            ]
           },
           "userId": {
             "type": [
@@ -2584,7 +2846,10 @@
             ]
           },
           "metadata": {
-            "type": "object"
+            "type": [
+              "object",
+              "null"
+            ]
           },
           "metadata_complete": {
             "type": "boolean"
@@ -2593,7 +2858,11 @@
             "type": "object"
           },
           "updatedAt": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           },
           "correlationId": {
             "type": "string"
@@ -2611,16 +2880,23 @@
             ]
           },
           "status": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "status_typed": {
             "type": "string"
           },
           "updated_date": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           }
         },
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
@@ -2870,7 +3146,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "document.updated",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -2960,7 +3236,10 @@
             "type": "string"
           },
           "fileSize": {
-            "type": "number"
+            "type": [
+              "number",
+              "null"
+            ]
           },
           "userId": {
             "type": [
@@ -2970,7 +3249,10 @@
             ]
           },
           "metadata": {
-            "type": "object"
+            "type": [
+              "object",
+              "null"
+            ]
           },
           "metadata_complete": {
             "type": "boolean"
@@ -2979,7 +3261,11 @@
             "type": "object"
           },
           "updatedAt": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           },
           "correlationId": {
             "type": "string"
@@ -2997,16 +3283,23 @@
             ]
           },
           "status": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "status_typed": {
             "type": "string"
           },
           "updated_date": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           }
         },
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
@@ -3337,7 +3630,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "finding.lacking_evidence",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -3387,7 +3680,10 @@
             ]
           },
           "evidence_count": {
-            "type": "number"
+            "type": [
+              "number",
+              "null"
+            ]
           },
           "missing_evidence": {
             "type": "boolean"
@@ -3405,7 +3701,10 @@
             "type": "string"
           },
           "risk_score": {
-            "type": "number"
+            "type": [
+              "number",
+              "null"
+            ]
           },
           "documentation": {
             "type": "boolean"
@@ -3414,7 +3713,7 @@
             "type": "boolean"
           }
         },
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
@@ -3735,7 +4034,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.assigned",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -3788,10 +4087,16 @@
             "type": "string"
           },
           "summary": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "objective": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "status": {
             "type": "string"
@@ -3806,46 +4111,89 @@
             "type": "array"
           },
           "metadata": {
-            "type": "object"
+            "type": [
+              "object",
+              "null"
+            ]
           },
           "ai_summary": {
-            "type": "string"
+            "type": [
+              "object",
+              "string",
+              "null"
+            ]
           },
           "visibility_scope": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "closure_notes": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "auto_generated": {
-            "type": "boolean"
+            "type": [
+              "boolean",
+              "null"
+            ]
           },
           "investigations_source": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "trigger_source": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "trigger_description": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "trigger_reference_id": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "key_question": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "primary_subjects": {
-            "type": "array"
+            "type": [
+              "array",
+              "null"
+            ]
           },
           "key_findings": {
-            "type": "array"
+            "type": [
+              "array",
+              "null"
+            ]
           },
           "required_actions": {
-            "type": "array"
+            "type": [
+              "array",
+              "null"
+            ]
           },
           "stage_guidance": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "previousStatus": {
             "type": [
@@ -3891,10 +4239,16 @@
             ]
           },
           "risk_score": {
-            "type": "number"
+            "type": [
+              "number",
+              "null"
+            ]
           },
           "evidence_count": {
-            "type": "number"
+            "type": [
+              "number",
+              "null"
+            ]
           },
           "missing_evidence": {
             "type": "boolean"
@@ -3906,10 +4260,14 @@
             "type": "boolean"
           },
           "closed_at": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           }
         },
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
@@ -3985,7 +4343,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.finding_documentation_missing",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -4038,10 +4396,16 @@
             "type": "string"
           },
           "summary": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "objective": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "status": {
             "type": "string"
@@ -4056,46 +4420,89 @@
             "type": "array"
           },
           "metadata": {
-            "type": "object"
+            "type": [
+              "object",
+              "null"
+            ]
           },
           "ai_summary": {
-            "type": "string"
+            "type": [
+              "object",
+              "string",
+              "null"
+            ]
           },
           "visibility_scope": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "closure_notes": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "auto_generated": {
-            "type": "boolean"
+            "type": [
+              "boolean",
+              "null"
+            ]
           },
           "investigations_source": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "trigger_source": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "trigger_description": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "trigger_reference_id": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "key_question": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "primary_subjects": {
-            "type": "array"
+            "type": [
+              "array",
+              "null"
+            ]
           },
           "key_findings": {
-            "type": "array"
+            "type": [
+              "array",
+              "null"
+            ]
           },
           "required_actions": {
-            "type": "array"
+            "type": [
+              "array",
+              "null"
+            ]
           },
           "stage_guidance": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "previousStatus": {
             "type": [
@@ -4141,10 +4548,16 @@
             ]
           },
           "risk_score": {
-            "type": "number"
+            "type": [
+              "number",
+              "null"
+            ]
           },
           "evidence_count": {
-            "type": "number"
+            "type": [
+              "number",
+              "null"
+            ]
           },
           "missing_evidence": {
             "type": "boolean"
@@ -4156,10 +4569,14 @@
             "type": "boolean"
           },
           "closed_at": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           }
         },
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
@@ -4168,7 +4585,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.finding_high_risk",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -4221,10 +4638,16 @@
             "type": "string"
           },
           "summary": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "objective": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "status": {
             "type": "string"
@@ -4239,46 +4662,89 @@
             "type": "array"
           },
           "metadata": {
-            "type": "object"
+            "type": [
+              "object",
+              "null"
+            ]
           },
           "ai_summary": {
-            "type": "string"
+            "type": [
+              "object",
+              "string",
+              "null"
+            ]
           },
           "visibility_scope": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "closure_notes": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "auto_generated": {
-            "type": "boolean"
+            "type": [
+              "boolean",
+              "null"
+            ]
           },
           "investigations_source": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "trigger_source": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "trigger_description": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "trigger_reference_id": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "key_question": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "primary_subjects": {
-            "type": "array"
+            "type": [
+              "array",
+              "null"
+            ]
           },
           "key_findings": {
-            "type": "array"
+            "type": [
+              "array",
+              "null"
+            ]
           },
           "required_actions": {
-            "type": "array"
+            "type": [
+              "array",
+              "null"
+            ]
           },
           "stage_guidance": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "previousStatus": {
             "type": [
@@ -4324,10 +4790,16 @@
             ]
           },
           "risk_score": {
-            "type": "number"
+            "type": [
+              "number",
+              "null"
+            ]
           },
           "evidence_count": {
-            "type": "number"
+            "type": [
+              "number",
+              "null"
+            ]
           },
           "missing_evidence": {
             "type": "boolean"
@@ -4339,10 +4811,14 @@
             "type": "boolean"
           },
           "closed_at": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           }
         },
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
@@ -4351,7 +4827,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.finding_unresolved",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -4404,10 +4880,16 @@
             "type": "string"
           },
           "summary": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "objective": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "status": {
             "type": "string"
@@ -4422,46 +4904,89 @@
             "type": "array"
           },
           "metadata": {
-            "type": "object"
+            "type": [
+              "object",
+              "null"
+            ]
           },
           "ai_summary": {
-            "type": "string"
+            "type": [
+              "object",
+              "string",
+              "null"
+            ]
           },
           "visibility_scope": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "closure_notes": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "auto_generated": {
-            "type": "boolean"
+            "type": [
+              "boolean",
+              "null"
+            ]
           },
           "investigations_source": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "trigger_source": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "trigger_description": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "trigger_reference_id": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "key_question": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "primary_subjects": {
-            "type": "array"
+            "type": [
+              "array",
+              "null"
+            ]
           },
           "key_findings": {
-            "type": "array"
+            "type": [
+              "array",
+              "null"
+            ]
           },
           "required_actions": {
-            "type": "array"
+            "type": [
+              "array",
+              "null"
+            ]
           },
           "stage_guidance": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "previousStatus": {
             "type": [
@@ -4507,10 +5032,16 @@
             ]
           },
           "risk_score": {
-            "type": "number"
+            "type": [
+              "number",
+              "null"
+            ]
           },
           "evidence_count": {
-            "type": "number"
+            "type": [
+              "number",
+              "null"
+            ]
           },
           "missing_evidence": {
             "type": "boolean"
@@ -4522,10 +5053,14 @@
             "type": "boolean"
           },
           "closed_at": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           }
         },
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
@@ -4721,7 +5256,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.stage_changed",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -4774,10 +5309,16 @@
             "type": "string"
           },
           "summary": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "objective": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "status": {
             "type": "string"
@@ -4792,46 +5333,89 @@
             "type": "array"
           },
           "metadata": {
-            "type": "object"
+            "type": [
+              "object",
+              "null"
+            ]
           },
           "ai_summary": {
-            "type": "string"
+            "type": [
+              "object",
+              "string",
+              "null"
+            ]
           },
           "visibility_scope": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "closure_notes": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "auto_generated": {
-            "type": "boolean"
+            "type": [
+              "boolean",
+              "null"
+            ]
           },
           "investigations_source": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "trigger_source": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "trigger_description": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "trigger_reference_id": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "key_question": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "primary_subjects": {
-            "type": "array"
+            "type": [
+              "array",
+              "null"
+            ]
           },
           "key_findings": {
-            "type": "array"
+            "type": [
+              "array",
+              "null"
+            ]
           },
           "required_actions": {
-            "type": "array"
+            "type": [
+              "array",
+              "null"
+            ]
           },
           "stage_guidance": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "previousStatus": {
             "type": [
@@ -4877,10 +5461,16 @@
             ]
           },
           "risk_score": {
-            "type": "number"
+            "type": [
+              "number",
+              "null"
+            ]
           },
           "evidence_count": {
-            "type": "number"
+            "type": [
+              "number",
+              "null"
+            ]
           },
           "missing_evidence": {
             "type": "boolean"
@@ -4892,10 +5482,14 @@
             "type": "boolean"
           },
           "closed_at": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           }
         },
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
@@ -4904,7 +5498,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.status_changed",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -4957,10 +5551,16 @@
             "type": "string"
           },
           "summary": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "objective": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "status": {
             "type": "string"
@@ -4975,46 +5575,89 @@
             "type": "array"
           },
           "metadata": {
-            "type": "object"
+            "type": [
+              "object",
+              "null"
+            ]
           },
           "ai_summary": {
-            "type": "string"
+            "type": [
+              "object",
+              "string",
+              "null"
+            ]
           },
           "visibility_scope": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "closure_notes": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "auto_generated": {
-            "type": "boolean"
+            "type": [
+              "boolean",
+              "null"
+            ]
           },
           "investigations_source": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "trigger_source": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "trigger_description": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "trigger_reference_id": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "key_question": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "primary_subjects": {
-            "type": "array"
+            "type": [
+              "array",
+              "null"
+            ]
           },
           "key_findings": {
-            "type": "array"
+            "type": [
+              "array",
+              "null"
+            ]
           },
           "required_actions": {
-            "type": "array"
+            "type": [
+              "array",
+              "null"
+            ]
           },
           "stage_guidance": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "previousStatus": {
             "type": [
@@ -5060,10 +5703,16 @@
             ]
           },
           "risk_score": {
-            "type": "number"
+            "type": [
+              "number",
+              "null"
+            ]
           },
           "evidence_count": {
-            "type": "number"
+            "type": [
+              "number",
+              "null"
+            ]
           },
           "missing_evidence": {
             "type": "boolean"
@@ -5075,10 +5724,14 @@
             "type": "boolean"
           },
           "closed_at": {
-            "type": "string"
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
           }
         },
-        "additionalProperties": false
+        "additionalProperties": true
       }
     },
     {
