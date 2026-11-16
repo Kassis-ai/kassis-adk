@@ -424,7 +424,211 @@ function scaffoldMigration(
   });
 }
 
+function titleFromKebab(name: string): string {
+  return name
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+}
+
+function mergeLocalePages(
+  dir: string,
+  file: string,
+  localeKey: string,
+  labels: { readonly title: string; readonly body: string }
+): string {
+  const folder = path.dirname(file);
+  fs.mkdirSync(folder, { recursive: true });
+  let root: Record<string, unknown> = {};
+  if (fs.existsSync(file)) {
+    const parsed = readJson(file);
+    if (isRecordValue(parsed)) root = { ...parsed };
+  }
+  const pages = isRecordValue(root.pages) ? { ...root.pages } : {};
+  pages[localeKey] = labels;
+  root.pages = pages;
+  fs.writeFileSync(file, `${JSON.stringify(root, null, 2)}\n`);
+  return path.relative(dir, file);
+}
+
+function uiLocaleFiles(dir: string, name: string): string[] {
+  const localeKey = camelFromKebab(name);
+  const title = titleFromKebab(name);
+  const enFile = path.join(dir, 'src', 'ui', 'locales', 'en.json');
+  const frFile = path.join(dir, 'src', 'ui', 'locales', 'fr.json');
+  const enRel = mergeLocalePages(dir, enFile, localeKey, {
+    title,
+    body: 'Scaffolded UI slot page.',
+  });
+  const frRel = mergeLocalePages(dir, frFile, localeKey, {
+    title: `Page « ${title} »`,
+    body: "Page d'emplacement UI générée par le scaffold.",
+  });
+  return [enRel, frRel];
+}
+
+function uiPageFile(dir: string, addonId: string, name: string): string {
+  const relative = path.join('src', 'ui', 'pages', `${name}.tsx`);
+  const target = path.join(dir, relative);
+  if (fs.existsSync(target)) return relative;
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  const pageExport = `${pascal(name)}Page`;
+  const localeKey = camelFromKebab(name);
+  const text = `import type { JSX } from 'react';
+import { useAddonTranslation } from '@kassis/host-sdk';
+
+const ADDON_ID = '${addonId}' as const;
+
+export function ${pageExport}(): JSX.Element {
+  const { t } = useAddonTranslation(ADDON_ID);
+  return (
+    <section data-testid={\`\${ADDON_ID}-${name}-page\`}>
+      <h1>{t('pages.${localeKey}.title')}</h1>
+      <p>{t('pages.${localeKey}.body')}</p>
+    </section>
+  );
+}
+`;
+  fs.writeFileSync(target, text);
+  return relative;
+}
+
+function uiRenderTestFile(dir: string, addonId: string, name: string): string {
+  const relative = path.join('test', 'ui', `${name}Page.render.test.ts`);
+  const target = path.join(dir, relative);
+  if (fs.existsSync(target)) return relative;
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  const localeKey = camelFromKebab(name);
+  const text = `import assert from 'node:assert/strict';
+import { createElement } from 'react';
+import { renderToString } from 'react-dom/server';
+import { describe, it } from 'node:test';
+import en from '../../src/ui/locales/en.json' with { type: 'json' };
+
+describe('${name} page render', () => {
+  it('renders catalog strings from the en locale', () => {
+    const pages = en.pages as Record<string, { title?: string; body?: string }> | undefined;
+    const copy = pages?.${localeKey};
+    assert.ok(copy?.title);
+    const html = renderToString(
+      createElement(
+        'section',
+        { 'data-testid': '${addonId}-${name}-page' },
+        createElement('h1', null, copy.title),
+        createElement('p', null, copy.body ?? '')
+      )
+    );
+    assert.ok(html.includes(copy.title));
+  });
+});
+`;
+  fs.writeFileSync(target, text);
+  return relative;
+}
+
+function ensureUiTestDependencies(dir: string): boolean {
+  const pkgPath = path.join(dir, 'package.json');
+  if (!fs.existsSync(pkgPath)) return false;
+  const parsed = readJson(pkgPath);
+  if (!isRecordValue(parsed)) return false;
+  const devDeps = isRecordValue(parsed.devDependencies) ? { ...parsed.devDependencies } : {};
+  let changed = false;
+  const required: Record<string, string> = {
+    react: '^19.3.1',
+    'react-dom': '^19.3.1',
+    '@types/react': '^19.2.0',
+  };
+  for (const [pkg, version] of Object.entries(required)) {
+    if (typeof devDeps[pkg] !== 'string') {
+      devDeps[pkg] = version;
+      changed = true;
+    }
+  }
+  if (!changed) return false;
+  parsed.devDependencies = devDeps;
+  fs.writeFileSync(pkgPath, `${JSON.stringify(parsed, null, 2)}\n`);
+  return true;
+}
+
+function ensureUiTestRunnerScript(dir: string): boolean {
+  const pkgPath = path.join(dir, 'package.json');
+  if (!fs.existsSync(pkgPath)) return false;
+  const parsed = readJson(pkgPath);
+  if (!isRecordValue(parsed) || !isRecordValue(parsed.scripts)) return false;
+  const current = parsed.scripts.test;
+  if (typeof current !== 'string' || current.includes('test/**/*.test')) return false;
+  parsed.scripts = {
+    ...parsed.scripts,
+    test: 'node --experimental-strip-types --test \'test/**/*.test.ts\'',
+  };
+  fs.writeFileSync(pkgPath, `${JSON.stringify(parsed, null, 2)}\n`);
+  return true;
+}
+
+function wireUiIndex(dir: string, id: string, name: string): string | null {
+  const initFile = path.join(dir, 'src', 'ui', 'index.ts');
+  if (!fs.existsSync(initFile)) return null;
+  const pageExport = `${pascal(name)}Page`;
+  const importLine = `import { ${pageExport} } from './pages/${name}.js';`;
+  const reactImport = "import type { ComponentType } from 'react';";
+  const sdkImport = "import { registerAddonLocales } from '@kassis/host-sdk';";
+  let text = fs.readFileSync(initFile, 'utf8');
+  if (text.includes(`path: '/${id}/${name}'`)) return null;
+
+  if (!text.includes(reactImport)) {
+    text = `${reactImport}\n${text}`;
+  }
+  if (!text.includes(sdkImport)) {
+    text = `${sdkImport}\n${text}`;
+  }
+  if (!text.includes(importLine)) {
+    const routesMarker = 'export const routes';
+    if (text.includes(routesMarker)) {
+      text = text.replace(routesMarker, `${importLine}\n\nexport const routes`);
+    } else {
+      text = `${importLine}\n${text}`;
+    }
+  }
+  if (!text.includes('readonly component:')) {
+    text = text.replace(
+      'readonly addon: { readonly name: string };',
+      'readonly addon: { readonly name: string };\n  readonly component: ComponentType;'
+    );
+  }
+  const routePath = `/${id}/${name}`;
+  const routeBlock = `  {
+    path: '${routePath}',
+    component: ${pageExport},
+    pageKey: '${id}-${name}',
+    pageName: '${titleFromKebab(name)}',
+    guard: { type: 'permission', permission: '${id}.view' },
+    addon: { name: '${id}' },
+  },`;
+  const routesClose = /export const routes: readonly AddonRoute\[\] = \[/;
+  if (routesClose.test(text)) {
+    text = text.replace(routesClose, `export const routes: readonly AddonRoute[] = [\n${routeBlock}`);
+  }
+  const registerBody = /export function register\(\): void \{\n  \/\* Host extensions are registered here\. \*\/\n\}/;
+  const registerReplacement = `export function register(): void {
+  void registerAddonLocales('${id}', {
+    en: () => import('./locales/en.json'),
+    fr: () => import('./locales/fr.json'),
+  });
+}`;
+  if (registerBody.test(text)) {
+    text = text.replace(registerBody, registerReplacement);
+  } else if (!text.includes(`registerAddonLocales('${id}'`)) {
+    text = text.replace(
+      /export function register\(\): void \{/,
+      `export function register(): void {\n  void registerAddonLocales('${id}', {\n    en: () => import('./locales/en.json'),\n    fr: () => import('./locales/fr.json'),\n  });`
+    );
+  }
+  fs.writeFileSync(initFile, text);
+  return 'src/ui/index.ts';
+}
+
 function scaffoldSlot(
+  dir: string,
   loaded: { file: string; manifest: Record<string, unknown> },
   name: string
 ): CommandResult {
@@ -448,7 +652,20 @@ function scaffoldSlot(
   ui.contributions = contributions;
   loaded.manifest.ui = ui;
   writeManifest(loaded.file, loaded.manifest);
-  return commandResult([], { kind: 'ui-slot', name, files: ['manifest.json'] });
+
+  const files = ['manifest.json'];
+  const pageFile = uiPageFile(dir, id, name);
+  files.push(pageFile);
+  files.push(...uiLocaleFiles(dir, name));
+  const testFile = uiRenderTestFile(dir, id, name);
+  files.push(testFile);
+  const indexPatch = wireUiIndex(dir, id, name);
+  if (indexPatch) files.push(indexPatch);
+  let pkgChanged = ensureUiTestDependencies(dir);
+  if (ensureUiTestRunnerScript(dir)) pkgChanged = true;
+  if (pkgChanged) files.push('package.json');
+
+  return commandResult([], { kind: 'ui-slot', name, files });
 }
 
 export function scaffoldProject(input: {
@@ -480,5 +697,5 @@ export function scaffoldProject(input: {
   if (input.kind === 'event') return scaffoldEvent(input.dir, loaded, input.name);
   if (input.kind === 'job') return scaffoldJob(input.dir, loaded, input.name);
   if (input.kind === 'migration') return scaffoldMigration(input.dir, loaded, input.name);
-  return scaffoldSlot(loaded, input.name);
+  return scaffoldSlot(input.dir, loaded, input.name);
 }
