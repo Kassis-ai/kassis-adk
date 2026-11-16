@@ -1,13 +1,8 @@
 /**
- * @param {{ addonId?: string, version?: string, tier?: 1 | 2, tenantId?: string }} [options]
+ * @param {CreateTestContextOptions} [options]
  * @returns {TestAddonContext}
  */
-export function createTestContext(options?: {
-    addonId?: string;
-    version?: string;
-    tier?: 1 | 2;
-    tenantId?: string;
-}): TestAddonContext;
+export function createTestContext(options?: CreateTestContextOptions): TestAddonContext;
 export type TestPrincipal = {
     kind: "user" | "service";
     userId: number | null;
@@ -68,6 +63,20 @@ export type RecordedLlmCall = {
         };
     };
 };
+export type RecordedSecretRead = {
+    key: string;
+};
+export type RecordedHttpFetch = {
+    url: string;
+};
+export type CreateTestContextOptions = {
+    addonId?: string | undefined;
+    version?: string | undefined;
+    tier?: 1 | 2 | undefined;
+    tenantId?: string | undefined;
+    manifest?: Record<string, unknown> | undefined;
+    manifestPath?: string | undefined;
+};
 export type TestAddonContext = {
     addon: {
         id: string;
@@ -88,6 +97,8 @@ export type TestAddonContext = {
         events: RecordedEvent[];
         jobs: RecordedJob[];
         llm: RecordedLlmCall[];
+        secrets: RecordedSecretRead[];
+        http: RecordedHttpFetch[];
     };
     audit: {
         record: Function;
@@ -106,5 +117,11 @@ export type TestAddonContext = {
     llm: {
         invoke: Function;
         estimateTokens: Function;
+    };
+    secrets: {
+        get: Function;
+    };
+    http: {
+        fetch: Function;
     };
 };

@@ -92,6 +92,23 @@ export interface RecordedLlmCall {
   readonly result: LlmResult;
 }
 
+export interface RecordedSecretRead {
+  readonly key: string;
+}
+
+export interface RecordedHttpFetch {
+  readonly url: string;
+}
+
+export interface HttpFetchResponse {
+  readonly ok: boolean;
+  readonly status: number;
+  readonly statusText: string;
+  readonly headers: Record<string, string>;
+  json(): Promise<JsonObject>;
+  text(): Promise<string>;
+}
+
 export interface AuditPage {
   readonly entries: readonly {
     readonly id: string;
@@ -127,6 +144,8 @@ export interface CreateTestContextOptions {
   readonly version?: string;
   readonly tier?: 1 | 2;
   readonly tenantId?: string;
+  readonly manifest?: Readonly<Record<string, unknown>>;
+  readonly manifestPath?: string;
 }
 
 export interface TestAddonContext {
@@ -143,6 +162,8 @@ export interface TestAddonContext {
     readonly events: RecordedEvent[];
     readonly jobs: RecordedJob[];
     readonly llm: RecordedLlmCall[];
+    readonly secrets: RecordedSecretRead[];
+    readonly http: RecordedHttpFetch[];
   };
   readonly audit: {
     record(principal: TestPrincipal, action: string, detail: AuditDetailInput): Promise<void>;
@@ -153,10 +174,10 @@ export interface TestAddonContext {
   };
   readonly events: {
     publish(principal: TestPrincipal, name: string, payload: JsonObject): Promise<void>;
-    subscribe(): Disposable;
+    subscribe(name: string): Disposable;
   };
   readonly jobs: {
-    register(): Disposable;
+    register(type: string): Disposable;
     enqueue(
       principal: TestPrincipal,
       type: string,
@@ -174,6 +195,12 @@ export interface TestAddonContext {
       options?: JsonObject
     ): Promise<LlmResult>;
     estimateTokens(text: string): Promise<number>;
+  };
+  readonly secrets: {
+    get(key: string): Promise<string | null>;
+  };
+  readonly http: {
+    fetch(url: string): Promise<HttpFetchResponse>;
   };
 }
 
