@@ -1,5 +1,7 @@
 # Tiers
 
+Tier 2 process isolation is accident isolation until the container runner is the production default. The process runner starts the child under the Node permission model so it cannot read host files outside its package and the modules it must load, and it cannot spawn a process, a worker, or a native addon. The image user `kassis-addon` is used only when the supervisor is root. On Node 24.18.1 there is no network permission flag, so the child can still open its own TCP socket, including to Postgres.
+
 **Status:** GA
 **Version checked:** 2026-10-28
 **Technical owner:** Unassigned
@@ -11,7 +13,7 @@ A tier 1 addon is loaded in the host process. `initialize()` runs there. This is
 
 ## Tier 2
 
-Set `"tier": 2` on the manifest. The host does not import the addon. `superviseTier2Addon()` starts a `Tier2Runner`. The process runner (`createProcessTier2Runner`) is the implementation that spawns one child. The child environment is the declared values plus the egress proxy, not the host `process.env`, so `DATABASE_URL` is absent. The runner's `start`, `stop`, `call`, and `health` are the only process controls the supervisor uses.
+Set `"tier": 2` on the manifest. The host does not import the addon. `superviseTier2Addon()` starts a `Tier2Runner`. The process runner (`createProcessTier2Runner`) is the implementation that spawns one child under `--permission` (read paths only; no `--allow-child-process`, `--allow-worker`, or `--allow-addons`). The child environment is the declared values plus the egress proxy, not the host `process.env`, so `DATABASE_URL` is absent. The runner's `start`, `stop`, `call`, and `health` are the only process controls the supervisor uses. A direct TCP socket is still possible: Node 24.18.1 rejects `--allow-net`.
 
 The child speaks JSON-RPC. The host mounts HTTP at `/api/v1/addons/<id>` and `POST /_mcp/:tool`. MCP discovery synthesizes tools that call those URLs. A caller must be a host-issued principal who holds every gate permission, or `system.admin` when the manifest declares none.
 
@@ -57,6 +59,7 @@ These keys are read from Settings. A missing or invalid value refuses to start t
 
 | Date       | Change                                                                                                                                                                    |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-16 | Process runner uses the Node permission model. Isolation is accident isolation: secret reads and spawn are denied; a TCP socket stays open on Node 24. `kassis-addon` is used only when the supervisor is root. |
 | 2026-11-16 | Tier 2 supervision goes through `Tier2Runner` (`start`, `stop`, `call`, `health`). The current child process is the process runner.                                      |
 | 2026-11-16 | Tier 2 may provide a namespaced capability declared in `provides`. Consumer calls are forwarded to the provider child with `addons.capabilities.timeoutMs`. A down provider returns null. |
 | 2026-11-16 | Documented `@kassis/addon-sdk/tier-matrix.json` as the packaged tier capability matrix; CI checks it against `TIER2_FACADE_METHODS`.                                      |
