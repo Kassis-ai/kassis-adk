@@ -5,6 +5,10 @@
  */
 import type { AddonTier } from '../context/addonIdentity.js';
 import type { JsonSchema } from '../json.js';
+import type {
+  ManifestExtendPointId,
+  ManifestResourceSensitivity,
+} from './manifestV2Catalog.js';
 
 export interface ManifestGroup {
   /** Slug in the addon namespace, for example `<id>.reviewers` or `<id>-reviewers`. */
@@ -149,7 +153,7 @@ export interface ManifestResourceType {
   readonly label: string;
   readonly abilities: { readonly [ability in ResourceTypeAbility]?: boolean };
   readonly icon?: string;
-  readonly sensitivity?: string;
+  readonly sensitivity?: ManifestResourceSensitivity;
   readonly viewPermissions?: readonly string[];
   readonly access?: string;
   readonly table?: string;
@@ -216,6 +220,8 @@ export interface AddonManifestV2 {
   readonly database?: ManifestDatabase;
   readonly legacyTables?: readonly LegacyTableDeclaration[];
   readonly contributions?: { readonly mcp?: McpContributionDeclaration };
+  /** `ctx.extend` registrations the addon uses; undeclared registration is refused at run time. */
+  readonly extends?: readonly ManifestExtendPointId[];
   readonly resourceTypes?: readonly ManifestResourceType[];
   readonly ui?: ManifestUi;
   readonly metadata?: ManifestMetadata;

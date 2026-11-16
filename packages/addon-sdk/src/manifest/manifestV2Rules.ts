@@ -4,6 +4,7 @@
  * a manifest that also failed the schema and every problem is reported in one pass.
  */
 import { createKadkIssue, type KadkCode, type KadkIssue } from '../codes/kadkCodes.js';
+import { MANIFEST_RESOURCE_SENSITIVITY_LEVELS } from './manifestV2Catalog.js';
 
 /** An untrusted manifest object; values are narrowed before use. */
 type ManifestRecord = Readonly<Record<string, unknown>>;
@@ -196,6 +197,7 @@ function checkDuplicates(manifest: ManifestRecord): KadkIssue[] {
       'contributions.mcp.tools',
     ],
     [fieldsAt(manifest, 'resourceTypes', 'type', 'resourceTypes'), 'resourceTypes'],
+    [stringsAt(manifest, 'extends', 'extends'), 'extends'],
     [slotKeys(manifest), 'ui.slots'],
   ];
   return lists.flatMap(([entries, listPath]) => duplicateIssues(entries, listPath));
@@ -287,6 +289,26 @@ function checkDataRetention(manifest: ManifestRecord): KadkIssue[] {
     : [createKadkIssue('KADK-309', 'data.retention')];
 }
 
+/** When the addon owns tables, every resourceTypes entry must declare a seal level. */
+function checkResourceSensitivityWhenOwnedTables(manifest: ManifestRecord): KadkIssue[] {
+  const owned = stringsAt(recordAt(manifest, 'database'), 'ownedTables', 'database.ownedTables');
+  if (owned.length === 0) return [];
+  const list = manifest['resourceTypes'];
+  if (!Array.isArray(list)) return [];
+  const issues: KadkIssue[] = [];
+  const levels = MANIFEST_RESOURCE_SENSITIVITY_LEVELS.join(', ');
+  for (let index = 0; index < list.length; index += 1) {
+    const item = list[index];
+    if (!isRecord(item)) continue;
+    const path = `resourceTypes[${index}].sensitivity`;
+    const sensitivity = item['sensitivity'];
+    if (typeof sensitivity !== 'string' || sensitivity.length === 0) {
+      issues.push(createKadkIssue('KADK-124', path, { levels }));
+    }
+  }
+  return issues;
+}
+
 function checkTierTwoData(manifest: ManifestRecord): KadkIssue[] {
   const issues: KadkIssue[] = [];
   const database = recordAt(manifest, 'database');
@@ -349,6 +371,7 @@ export function checkManifestV2Rules(
     ...checkDataRetention(manifest),
     ...checkRuntimeLoadedUi(manifest),
     ...checkDataSchemaName(manifest, id),
+    ...checkResourceSensitivityWhenOwnedTables(manifest),
     ...tierRules,
   ];
 }

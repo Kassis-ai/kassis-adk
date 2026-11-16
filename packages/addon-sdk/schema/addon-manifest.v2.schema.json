@@ -239,6 +239,11 @@
         }
       }
     },
+    "extends": {
+      "description": "Extension points the addon registers through ctx.extend; undeclared registration is refused by the host.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/manifestExtendPointId" }
+    },
     "resourceTypes": {
       "type": "array",
       "items": {
@@ -263,7 +268,7 @@
             }
           },
           "icon": { "type": "string" },
-          "sensitivity": { "type": "string" },
+          "sensitivity": { "$ref": "#/$defs/resourceSensitivityLevel" },
           "viewPermissions": { "type": "array", "items": { "type": "string" } },
           "access": { "type": "string" },
           "table": { "$ref": "#/$defs/tableName" },
@@ -435,6 +440,38 @@
       "type": "string",
       "pattern": "^[A-Za-z0-9_][A-Za-z0-9_./-]*$",
       "maxLength": 255
+    },
+    "manifestExtendPointId": {
+      "type": "string",
+      "enum": [
+        "analyticsContributor",
+        "approvable",
+        "approvableFields",
+        "auditSubject",
+        "automationAction",
+        "automationFields",
+        "automationTrigger",
+        "deletable",
+        "documentable",
+        "echoStrategy",
+        "employeeDirectory",
+        "flaggable",
+        "graphRiskMirror",
+        "importQuestionnairePack",
+        "investigationDomain",
+        "investigationTemplate",
+        "licenseFeatures",
+        "linkable",
+        "predictionCapability",
+        "questionnaireDomain",
+        "questionnaireDomainAdapter",
+        "riskFactors",
+        "shutdownHook"
+      ]
+    },
+    "resourceSensitivityLevel": {
+      "type": "string",
+      "enum": ["standard", "confidential", "mnpi"]
     }
   }
 }

@@ -209,6 +209,15 @@
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-123"
     },
     {
+      "code": "KADK-124",
+      "category": "manifest",
+      "severity": "error",
+      "title": "Resource type missing sensitivity",
+      "message": "{path} must declare sensitivity ({levels}) when database.ownedTables is non-empty",
+      "fix": "Set sensitivity on every resourceTypes entry to one of the seal levels: {levels}.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-124"
+    },
+    {
       "code": "KADK-201",
       "category": "boundaries",
       "severity": "error",

@@ -124,6 +124,12 @@ export type { AddonExtensionPoints } from './extend/addonExtensionPoints.js';
 export type * from './extend/extensionContributions.js';
 
 export type * from './manifest/manifestV2Types.js';
+export {
+  MANIFEST_EXTEND_POINT_IDS,
+  MANIFEST_RESOURCE_SENSITIVITY_LEVELS,
+  type ManifestExtendPointId,
+  type ManifestResourceSensitivity,
+} from './manifest/manifestV2Catalog.js';
 export { ADDON_MANIFEST_V2_SCHEMA } from './manifest/manifestV2Schema.js';
 export {
   addonDataSchemaName,

@@ -1,6 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { ADDON_MANIFEST_V2_SCHEMA, validateManifestV2, type KadkCode } from '@kassis/addon-sdk';
+import {
+  ADDON_MANIFEST_V2_SCHEMA,
+  MANIFEST_EXTEND_POINT_IDS,
+  MANIFEST_RESOURCE_SENSITIVITY_LEVELS,
+  validateManifestV2,
+  type KadkCode,
+} from '@kassis/addon-sdk';
 import { describe, expect, it } from 'vitest';
 
 import { MANIFEST_V2_KEYS, validManifest } from './fixtures/manifestV2.fixture.js';
@@ -273,6 +279,58 @@ describe('validateManifestV2', () => {
 
     it('rejects runtime-loaded UI without an entry file (KADK-501)', () => {
       expectOnly(manifestWith({ ui: { runtimeLoad: true } }), 'KADK-501', 'ui.entryFile');
+    });
+
+    it('rejects an unknown extends entry (KADK-101)', () => {
+      expectOnly(manifestWith({ extends: ['notAnExtensionPoint'] }), 'KADK-101', 'extends[0]');
+    });
+
+    it('rejects duplicate extends entries (KADK-116)', () => {
+      expectOnly(
+        manifestWith({ extends: ['documentable', 'documentable'] }),
+        'KADK-116',
+        'extends'
+      );
+    });
+
+    it('accepts declared extends entries', () => {
+      expect(validateManifestV2(manifestWith({ extends: ['documentable', 'auditSubject'] })).ok).toBe(
+        true
+      );
+    });
+
+    it('rejects a free-text resource sensitivity value (KADK-101)', () => {
+      const resourceTypes = [
+        {
+          type: 'tprm:assessment',
+          label: 'TPRM assessment',
+          abilities: { preview: true },
+          sensitivity: 'public',
+        },
+      ];
+      expectOnly(manifestWith({ resourceTypes }), 'KADK-101', 'resourceTypes[0].sensitivity');
+    });
+
+    it('requires sensitivity on each resource type when the addon owns tables (KADK-124)', () => {
+      const resourceTypes = [
+        {
+          type: 'tprm:assessment',
+          label: 'TPRM assessment',
+          abilities: { preview: true },
+        },
+      ];
+      expectOnly(manifestWith({ resourceTypes }), 'KADK-124', 'resourceTypes[0].sensitivity');
+    });
+
+    it('keeps schema enums aligned with manifest catalog constants', () => {
+      const defs = ADDON_MANIFEST_V2_SCHEMA['$defs'];
+      expect(defs && typeof defs === 'object').toBe(true);
+      const extendEnum = (defs as Record<string, unknown>)['manifestExtendPointId'];
+      const sensitivityEnum = (defs as Record<string, unknown>)['resourceSensitivityLevel'];
+      expect((extendEnum as { enum: string[] }).enum).toEqual([...MANIFEST_EXTEND_POINT_IDS]);
+      expect((sensitivityEnum as { enum: string[] }).enum).toEqual([
+        ...MANIFEST_RESOURCE_SENSITIVITY_LEVELS,
+      ]);
     });
   });
 

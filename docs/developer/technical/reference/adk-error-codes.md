@@ -234,6 +234,15 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Fix: Declare '\{value\}' in permissions, or remove it from the group.
 - Reported by: `validateManifestV2` in `@kassis/addon-sdk`
 
+<a id="kadk-124"></a>
+
+### KADK-124 Resource type missing sensitivity
+
+- Severity: error
+- Message: `{path} must declare sensitivity ({levels}) when database.ownedTables is non-empty`
+- Fix: Set sensitivity on every resourceTypes entry to one of the seal levels: {levels}.
+- Reported by: `validateManifestV2` in `@kassis/addon-sdk`
+
 ## 2xx Boundaries
 
 <a id="kadk-201"></a>
