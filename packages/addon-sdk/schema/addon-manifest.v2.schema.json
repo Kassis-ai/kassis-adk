@@ -89,6 +89,39 @@
         }
       }
     },
+    "process": {
+      "description": "Process packs. Each item is one JSON file under process/. The host install of those files is a later step. kassis-addon check validates the list offline.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["packs"],
+      "properties": {
+        "packs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["key", "kind", "file"],
+            "additionalProperties": false,
+            "properties": {
+              "key": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9_-]*(?:\\.[a-z0-9_-]+)+$",
+                "maxLength": 255
+              },
+              "kind": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
+                "maxLength": 64
+              },
+              "file": {
+                "type": "string",
+                "pattern": "^process/(?:[A-Za-z0-9_-]+/)*[A-Za-z0-9_-]+\\.json$",
+                "maxLength": 255
+              }
+            }
+          }
+        }
+      }
+    },
     "events": {
       "type": "object",
       "additionalProperties": false,

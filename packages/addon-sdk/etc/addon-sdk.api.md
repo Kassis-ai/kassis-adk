@@ -355,6 +355,7 @@ export interface AddonManifestV2 {
     readonly optional?: readonly CapabilityRequirement[];
     // (undocumented)
     readonly permissions?: readonly ManifestPermission[];
+    readonly process?: ManifestProcess;
     // (undocumented)
     readonly prompts?: {
         readonly keys: readonly string[];
@@ -1954,6 +1955,23 @@ export interface ManifestPermission {
 export type ManifestPermissionNames<M> = M extends {
     readonly permissions: infer L;
 } ? FieldOf<L, 'name'> : never;
+
+// Warning: (ae-missing-release-tag) "ManifestProcess" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface ManifestProcess {
+    // (undocumented)
+    readonly packs: readonly ManifestProcessPack[];
+}
+
+// Warning: (ae-missing-release-tag) "ManifestProcessPack" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export interface ManifestProcessPack {
+    readonly file: string;
+    readonly key: string;
+    readonly kind: string;
+}
 
 // Warning: (ae-missing-release-tag) "ManifestPromptKeys" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //

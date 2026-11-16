@@ -11,6 +11,8 @@
       "default": "./dist/index.js"
     },
     "./schema/addon-manifest.v2.schema.json": "./schema/addon-manifest.v2.schema.json",
+    "./schema/process-pack.schema.json": "./schema/process-pack.schema.json",
+    "./process-pack-kinds.json": "./process-pack-kinds.json",
     "./browser-externals.json": "./browser-externals.json",
     "./codes/kadk-codes.json": "./codes/kadk-codes.json",
     "./tier-matrix.json": "./tier-matrix.json",
@@ -25,6 +27,7 @@
     "tier-matrix.json",
     "guardrails.json",
     "banned-dependencies.json",
+    "process-pack-kinds.json",
     "README.md",
     "browser-externals.json"
   ],
@@ -46,6 +49,8 @@
         "default": "./dist/index.js"
       },
       "./schema/addon-manifest.v2.schema.json": "./schema/addon-manifest.v2.schema.json",
+      "./schema/process-pack.schema.json": "./schema/process-pack.schema.json",
+      "./process-pack-kinds.json": "./process-pack-kinds.json",
       "./browser-externals.json": "./browser-externals.json",
       "./codes/kadk-codes.json": "./codes/kadk-codes.json",
       "./tier-matrix.json": "./tier-matrix.json",

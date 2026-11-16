@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kassis.local/schemas/process-pack.schema.json",
+  "title": "Kassis process pack item",
+  "description": "One file under process/. References are pack keys, never database ids. The body is not schema-checked until process-pack-kinds.json names a host schema for that kind.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["key", "kind", "name"],
+  "properties": {
+    "key": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]*(?:\\.[a-z0-9_-]+)+$",
+      "maxLength": 255
+    },
+    "kind": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
+      "maxLength": 64
+    },
+    "name": { "type": "string", "minLength": 1, "maxLength": 255 },
+    "references": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 255 }
+    },
+    "permissions": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 128 }
+    },
+    "resourceTypes": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 128 }
+    },
+    "body": { "type": "object" }
+  }
+}

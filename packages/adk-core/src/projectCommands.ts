@@ -43,6 +43,7 @@ import {
   auditEngineeringPractice,
   writeEngineeringPracticeEvidence,
 } from '../../../tools/adk/engineeringPractice.mjs';
+import { auditProcessPacks } from '../../../tools/adk/processPacks.mjs';
 import type { AdkIssue, CommandResult, JsonObject, LogListener } from './types.ts';
 import { checkManifestDirectory } from './manifestCheck.ts';
 import {
@@ -116,8 +117,13 @@ export function checkProject(dir: string): CommandResult {
   try {
     const reuse = auditReuseCore(dir);
     if (reuse.report) writeReuseCoreEvidence(dir, reuse.report);
+    const packs = auditProcessPacks(dir);
     return commandResult(
-      [...checkManifestDirectory(dir), ...reuse.issues.map((issue) => fromCatalog(issue))],
+      [
+        ...checkManifestDirectory(dir),
+        ...reuse.issues.map((issue) => fromCatalog(issue)),
+        ...packs.issues.map((issue) => fromCatalog(issue)),
+      ],
       {
         manifest: path.join(dir, 'manifest.json'),
       }
@@ -376,11 +382,13 @@ export async function certifyProject(dir: string): Promise<CommandResult> {
   writeThinAddonBudgetsEvidence(dir, budgets.evidence);
   const engineering = auditEngineeringPractice(dir);
   writeEngineeringPracticeEvidence(dir, engineering.evidence);
+  const packs = auditProcessPacks(dir);
   const traceIssues = tracing.issues.map((issue) => fromCatalog(issue));
   const planIssues = planned.issues.map((issue) => fromCatalog(issue));
   const reuseIssues = reuse.issues.map((issue) => fromCatalog(issue));
   const budgetIssues = budgets.issues.map((issue) => fromCatalog(issue));
   const engineeringIssues = engineering.issues.map((issue) => fromCatalog(issue));
+  const packIssues = packs.issues.map((issue) => fromCatalog(issue));
 
   const result = certifyAttestation({ lock, attestation, checks });
   const data: JsonObject = {};
@@ -392,6 +400,7 @@ export async function certifyProject(dir: string): Promise<CommandResult> {
     ...reuseIssues,
     ...budgetIssues,
     ...engineeringIssues,
+    ...packIssues,
   ]);
   const hasError = mergedIssues.some((issue) => issue.severity === 'error');
   if (
@@ -401,6 +410,7 @@ export async function certifyProject(dir: string): Promise<CommandResult> {
     !reuse.ok ||
     !budgets.ok ||
     !engineering.ok ||
+    !packs.ok ||
     hasError
   ) {
     return { ok: false, issues: mergedIssues, data };

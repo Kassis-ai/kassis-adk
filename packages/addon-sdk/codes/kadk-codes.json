@@ -218,6 +218,51 @@
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-124"
     },
     {
+      "code": "KADK-125",
+      "category": "manifest",
+      "severity": "error",
+      "title": "Process pack key outside the addon namespace",
+      "message": "Pack key '{value}' at {path} must start with {prefixes}",
+      "fix": "Rename the pack key so it starts with {prefixes}.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-125"
+    },
+    {
+      "code": "KADK-126",
+      "category": "manifest",
+      "severity": "error",
+      "title": "Process pack file is missing or outside process/",
+      "message": "Pack file '{file}' is missing or is not under process/",
+      "fix": "Put the item at process/<name>.json and set process.packs[].file to that path.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-126"
+    },
+    {
+      "code": "KADK-127",
+      "category": "manifest",
+      "severity": "error",
+      "title": "Process pack file does not match the manifest",
+      "message": "Pack file '{file}' key or kind does not match process.packs",
+      "fix": "Set the file's key and kind to the same values as its process.packs entry.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-127"
+    },
+    {
+      "code": "KADK-128",
+      "category": "manifest",
+      "severity": "error",
+      "title": "Process pack lists an undeclared permission",
+      "message": "Pack '{key}' lists permission '{value}', which is not in permissions",
+      "fix": "Declare '{value}' in permissions, or remove it from the pack.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-128"
+    },
+    {
+      "code": "KADK-129",
+      "category": "manifest",
+      "severity": "error",
+      "title": "Process pack names an undeclared record type",
+      "message": "Pack '{key}' names record type '{value}', which is not in resourceTypes",
+      "fix": "Declare '{value}' in resourceTypes, or remove it from the pack.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-129"
+    },
+    {
       "code": "KADK-201",
       "category": "boundaries",
       "severity": "error",
@@ -513,6 +558,51 @@
       "message": "Owned table '{table}' does not say which core record it could not be",
       "fix": "Add database.tableNotes for '{table}' with notCoreRecord and why.",
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-312"
+    },
+    {
+      "code": "KADK-313",
+      "category": "data",
+      "severity": "warning",
+      "title": "Process pack kind has no stable schema",
+      "message": "Pack '{key}' kind '{kind}' has no stable schema, so its body was not checked",
+      "fix": "Leave the body unchecked until the host publishes a schema for '{kind}'. Do not add one in the kit.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-313"
+    },
+    {
+      "code": "KADK-314",
+      "category": "data",
+      "severity": "error",
+      "title": "Process pack reference does not resolve",
+      "message": "Pack '{key}' references '{value}', which is not a pack key",
+      "fix": "Point '{value}' at another pack key in this addon. References use keys, never ids.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-314"
+    },
+    {
+      "code": "KADK-316",
+      "category": "data",
+      "severity": "error",
+      "title": "Process pack file does not match the pack schema",
+      "message": "{path}: {detail}",
+      "fix": "Match the file to @kassis/addon-sdk/schema/process-pack.schema.json. The body stays an object; do not add settings, users, role assignments or secrets.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-316"
+    },
+    {
+      "code": "KADK-317",
+      "category": "data",
+      "severity": "error",
+      "title": "Duplicate process pack key",
+      "message": "Pack key '{value}' is listed more than once",
+      "fix": "Keep one process.packs entry for '{value}'.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-317"
+    },
+    {
+      "code": "KADK-318",
+      "category": "data",
+      "severity": "error",
+      "title": "Process file is not listed",
+      "message": "'{file}' is under process/ but not listed in process.packs",
+      "fix": "Add a process.packs entry for '{file}', or remove the file. The list is what the signature approval diff shows.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-318"
     },
     {
       "code": "KADK-401",

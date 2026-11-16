@@ -31,6 +31,13 @@ declare module '../../../tools/adk/certifyAttestation.mjs' {
   export function certifyAttestation(input: CertifyInput): { ok: boolean; issues: CatalogIssue[] };
 }
 
+declare module '../../../tools/adk/processPacks.mjs' {
+  export function auditProcessPacks(addonDir: string): {
+    ok: boolean;
+    issues: CatalogIssue[];
+  };
+}
+
 declare module '../../../tools/adk/reuseCore.mjs' {
   export function auditReuseCore(addonDir: string): {
     ok: boolean;

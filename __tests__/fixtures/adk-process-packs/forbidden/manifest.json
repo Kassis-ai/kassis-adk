@@ -1,0 +1,12 @@
+{
+  "id": "acme-underwriting",
+  "process": {
+    "packs": [
+      {
+        "key": "acme-underwriting.case.application",
+        "kind": "case-template",
+        "file": "process/application.json"
+      }
+    ]
+  }
+}

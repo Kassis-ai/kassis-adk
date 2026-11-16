@@ -1,0 +1,103 @@
+{
+  "description": "Process pack kinds and whether the host publishes a JSON Schema for the body. schema is null when it does not. kassis-addon check must not invent a body schema the host does not load. The installer is a later step and does not read this file to write rows.",
+  "kinds": [
+    {
+      "id": "case-template",
+      "table": "case_templates",
+      "order": 1,
+      "schema": null,
+      "reason": "layout, template_data, document_configuration and questionnaire_configuration are JSON. No host JSON Schema is applied on write."
+    },
+    {
+      "id": "flow-template",
+      "table": "flow_templates",
+      "order": 1,
+      "schema": null,
+      "reason": "Create only requires a flow_definition, template_data or steps value. The step graph has no published schema."
+    },
+    {
+      "id": "lifecycle-policy",
+      "table": "lifecycle_policies",
+      "order": 1,
+      "schema": null,
+      "reason": "The host checks steps in TypeScript (validateWritePayload) and stores them as rows. It does not publish a JSON Schema."
+    },
+    {
+      "id": "list-template",
+      "table": "list_templates",
+      "order": 2,
+      "schema": null,
+      "reason": "schema and ui_config are JSON. Built-in list form schemas do not validate this row."
+    },
+    {
+      "id": "entity-template",
+      "table": "entity_templates",
+      "order": 2,
+      "schema": null,
+      "reason": "schema and ui_config are JSON. Entity record schemas do not validate this row."
+    },
+    {
+      "id": "dashboard-template",
+      "table": "dashboard_templates",
+      "order": 2,
+      "schema": null,
+      "reason": "template_data is JSON with no published schema."
+    },
+    {
+      "id": "data-flow-template",
+      "table": "data_flow_templates",
+      "order": 2,
+      "schema": null,
+      "reason": "template_data is JSON with no published schema."
+    },
+    {
+      "id": "policy-rule",
+      "table": "policy_rules",
+      "order": 3,
+      "schema": null,
+      "reason": "parameters is JSON with no published schema."
+    },
+    {
+      "id": "flag-rule",
+      "table": "flag_rules",
+      "order": 3,
+      "schema": null,
+      "reason": "condition, actions, trigger and metadata are JSON with no published schema."
+    },
+    {
+      "id": "qa-rule",
+      "table": "qa_rules",
+      "order": 3,
+      "schema": null,
+      "reason": "rule_data is JSON with no published schema."
+    },
+    {
+      "id": "compliance-rule",
+      "table": "compliance_rules",
+      "order": 3,
+      "schema": null,
+      "reason": "rule_def is JSON with no published schema."
+    },
+    {
+      "id": "questionnaire-template",
+      "table": "questionnaire_templates",
+      "order": 4,
+      "schema": null,
+      "reason": "importQuestionnairePack types questions as untyped JSON. Questions are rows, not a published schema."
+    },
+    {
+      "id": "prompt-template",
+      "table": "prompt_templates",
+      "order": 4,
+      "schema": null,
+      "reason": "variables is JSON with no published schema. prompt_template is text. AddonPromptPack is a different runtime shape."
+    },
+    {
+      "id": "email-template",
+      "table": "email_templates",
+      "order": 4,
+      "schema": null,
+      "reason": "template_variables and visibility are JSON with no published schema. The body fields are text."
+    }
+  ]
+}

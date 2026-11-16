@@ -44,6 +44,20 @@ describe('validateManifestV2', () => {
     expect(validateManifestV2(validManifest)).toEqual({ ok: true, issues: [] });
   });
 
+  it('accepts a process pack list and rejects a path outside process/', () => {
+    const pack = {
+      key: 'sample-tprm-check.case.application',
+      kind: 'case-template',
+      file: 'process/application.json',
+    };
+    expect(validateManifestV2(manifestWith({ process: { packs: [pack] } })).ok).toBe(true);
+    expectOnly(
+      manifestWith({ process: { packs: [{ ...pack, file: 'process/../secret.json' }] } }),
+      'KADK-101',
+      'process.packs[0].file'
+    );
+  });
+
   it('accepts uiContentHash next to contentHash', () => {
     const hash = `sha256-${'ab'.repeat(32)}`;
     expect(validateManifestV2(manifestWith({ contentHash: hash, uiContentHash: hash })).ok).toBe(

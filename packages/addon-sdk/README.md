@@ -8,6 +8,7 @@ The public contract between a Kassis addon and the host:
 - Tier capability matrix (`tier-matrix.json`): each `ctx` facade method with `tier1`, `tier2`, and manifest or principal permission gates. `npm run ci:adk:tier-matrix` keeps tier 2 rows aligned with the host allow-list.
 - Guardrail catalogue (`guardrails.json`): id, group (A–F), enforcement level (L1–L5), check, primary `KADK` code and fix hint. Coding profiles, `certify`, the dev MCP server and docs read this file. `npm run ci:adk:guardrails-catalog` keeps profile keys aligned with the catalogue and requires every blocking guardrail in the unsigned v3 draft to name that machine check. Group D soft budgets and group E engineering practice rows name machine check ids (`adk.thin-addon-budgets`, `adk.outbound-timeouts`, and related); `kassis-addon budgets` / `engineering` implement them.
 - Banned dependency list (`banned-dependencies.json`): mail, scheduler, upload, file-storage, auth, database, UI kit, and LLM packages. `kassis-addon check` refuses them (KADK-221).
+- Process packs (`schema/process-pack.schema.json`, `process-pack-kinds.json`): `process/` files listed by `process.packs[]`. `kassis-addon check` validates keys, references, permissions and record types with no host. A kind whose `schema` is null has no host JSON Schema; check warns and does not invent a body schema.
 
 Tier 1 (first-party, in process) and tier 2 (client code, own process) addons compile against the same package. An addon does not know which tier it runs in.
 

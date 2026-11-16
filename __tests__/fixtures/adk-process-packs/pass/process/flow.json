@@ -1,0 +1,7 @@
+{
+  "key": "acme-underwriting.flow.application",
+  "kind": "flow-template",
+  "name": "Application flow",
+  "references": ["acme-underwriting.case.application"],
+  "body": {}
+}

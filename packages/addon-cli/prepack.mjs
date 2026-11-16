@@ -125,6 +125,14 @@ copyIntoLib(
   path.join(repoRoot, 'packages/addon-sdk/banned-dependencies.json'),
   'banned-dependencies.json'
 );
+copyIntoLib(
+  path.join(repoRoot, 'packages/addon-sdk/process-pack-kinds.json'),
+  'process-pack-kinds.json'
+);
+copyIntoLib(
+  path.join(repoRoot, 'packages/addon-sdk/schema/process-pack.schema.json'),
+  'process-pack.schema.json'
+);
 fs.cpSync(
   path.join(repoRoot, 'packages/adk-core/src/discovery'),
   path.join(lib, 'discovery'),

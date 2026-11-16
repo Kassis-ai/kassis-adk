@@ -1,0 +1,21 @@
+{
+  "id": "acme-underwriting",
+  "permissions": [{ "name": "acme-underwriting.case.read" }],
+  "resourceTypes": [
+    { "type": "acme-underwriting:application", "label": "Application", "abilities": {} }
+  ],
+  "process": {
+    "packs": [
+      {
+        "key": "acme-underwriting.case.application",
+        "kind": "case-template",
+        "file": "process/application.json"
+      },
+      {
+        "key": "acme-underwriting.flow.application",
+        "kind": "flow-template",
+        "file": "process/flow.json"
+      }
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "key": "acme-underwriting.case.application",
+  "kind": "case-template",
+  "name": "Application",
+  "permissions": ["acme-underwriting.case.write"],
+  "resourceTypes": ["acme-underwriting:application"],
+  "body": { "settings": { "theme": "dark" } }
+}

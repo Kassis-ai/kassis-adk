@@ -10,6 +10,20 @@ import type {
   ManifestResourceSensitivity,
 } from './manifestV2Catalog.js';
 
+/** One process pack file. The body schema, when the host has one, is named in process-pack-kinds.json. */
+export interface ManifestProcessPack {
+  /** Stable key in the addon namespace, for example `<id>.case.application`. */
+  readonly key: string;
+  /** Kind id from process-pack-kinds.json, for example `case-template`. */
+  readonly kind: string;
+  /** Path under `process/`, relative to the addon root. */
+  readonly file: string;
+}
+
+export interface ManifestProcess {
+  readonly packs: readonly ManifestProcessPack[];
+}
+
 export interface ManifestGroup {
   /** Slug in the addon namespace, for example `<id>.reviewers` or `<id>-reviewers`. */
   readonly name: string;
@@ -202,6 +216,8 @@ export interface AddonManifestV2 {
   readonly requiredPermissions?: readonly string[];
   /** RBAC groups carrying only this manifest's permissions; created empty at install. */
   readonly groups?: readonly ManifestGroup[];
+  /** Signed process configuration. `kassis-addon check` validates it offline; install is later. */
+  readonly process?: ManifestProcess;
   readonly requires?: readonly CapabilityRequirement[];
   readonly optional?: readonly CapabilityRequirement[];
   readonly provides?: readonly CapabilityOffer[];

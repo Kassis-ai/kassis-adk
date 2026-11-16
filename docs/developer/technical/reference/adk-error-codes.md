@@ -9,7 +9,7 @@ sidebar_label: ADK error codes
 **Status:** GA
 **Version checked:** 2026-10-28
 **Technical owner:** Unassigned
-**Last reviewed:** 2026-11-16 (KADK-122, KADK-123)
+**Last reviewed:** 2026-11-16 (KADK-125 to KADK-129, KADK-313, KADK-314, KADK-316 to KADK-318)
 
 Every check of the addon development kit reports a stable `KADK-NNN` code with a message, a fix hint and a link to this page. The catalog is data: `packages/addon-sdk/codes/kadk-codes.json`, read through `listKadkCodes()` and `getKadkCode()` in `@kassis/addon-sdk`. A test keeps this page and the catalog in step (one anchor per code, no extra anchors).
 
@@ -242,6 +242,51 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Message: `{path} must declare sensitivity ({levels}) when database.ownedTables is non-empty`
 - Fix: Set sensitivity on every resourceTypes entry to one of the seal levels: {levels}.
 - Reported by: `validateManifestV2` in `@kassis/addon-sdk`
+
+<a id="kadk-125"></a>
+
+### KADK-125 Process pack key outside the addon namespace
+
+- Severity: error
+- Message: `Pack key '{value}' at {path} must start with {prefixes}`
+- Fix: Rename the pack key so it starts with \{prefixes\}.
+- Reported by: `kassis-addon check`
+
+<a id="kadk-126"></a>
+
+### KADK-126 Process pack file is missing or outside process/
+
+- Severity: error
+- Message: `Pack file '{file}' is missing or is not under process/`
+- Fix: Put the item at process/\<name\>.json and set process.packs[].file to that path.
+- Reported by: `kassis-addon check`
+
+<a id="kadk-127"></a>
+
+### KADK-127 Process pack file does not match the manifest
+
+- Severity: error
+- Message: `Pack file '{file}' key or kind does not match process.packs`
+- Fix: Set the file's key and kind to the same values as its process.packs entry.
+- Reported by: `kassis-addon check`
+
+<a id="kadk-128"></a>
+
+### KADK-128 Process pack lists an undeclared permission
+
+- Severity: error
+- Message: `Pack '{key}' lists permission '{value}', which is not in permissions`
+- Fix: Declare '\{value\}' in permissions, or remove it from the pack.
+- Reported by: `kassis-addon check`
+
+<a id="kadk-129"></a>
+
+### KADK-129 Process pack names an undeclared record type
+
+- Severity: error
+- Message: `Pack '{key}' names record type '{value}', which is not in resourceTypes`
+- Fix: Declare '\{value\}' in resourceTypes, or remove it from the pack.
+- Reported by: `kassis-addon check`
 
 ## 2xx Boundaries
 
@@ -543,6 +588,51 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Message: `Owned table '{table}' does not say which core record it could not be`
 - Fix: Add database.tableNotes for '{table}' with notCoreRecord and why.
 - Reported by: `kassis-addon check` and `kassis-addon certify`
+
+<a id="kadk-313"></a>
+
+### KADK-313 Process pack kind has no stable schema
+
+- Severity: warning
+- Message: `Pack '{key}' kind '{kind}' has no stable schema, so its body was not checked`
+- Fix: Leave the body unchecked until the host publishes a schema for '\{kind\}'. Do not add one in the kit.
+- Reported by: `kassis-addon check`
+
+<a id="kadk-314"></a>
+
+### KADK-314 Process pack reference does not resolve
+
+- Severity: error
+- Message: `Pack '{key}' references '{value}', which is not a pack key`
+- Fix: Point '\{value\}' at another pack key in this addon. References use keys, never ids.
+- Reported by: `kassis-addon check`
+
+<a id="kadk-316"></a>
+
+### KADK-316 Process pack file does not match the pack schema
+
+- Severity: error
+- Message: `{path}: {detail}`
+- Fix: Match the file to @kassis/addon-sdk/schema/process-pack.schema.json. The body stays an object; do not add settings, users, role assignments or secrets.
+- Reported by: `kassis-addon check`
+
+<a id="kadk-317"></a>
+
+### KADK-317 Duplicate process pack key
+
+- Severity: error
+- Message: `Pack key '{value}' is listed more than once`
+- Fix: Keep one process.packs entry for '\{value\}'.
+- Reported by: `kassis-addon check`
+
+<a id="kadk-318"></a>
+
+### KADK-318 Process file is not listed
+
+- Severity: error
+- Message: `'{file}' is under process/ but not listed in process.packs`
+- Fix: Add a process.packs entry for '\{file\}', or remove the file. The list is what the signature approval diff shows.
+- Reported by: `kassis-addon check`
 
 ## 4xx Events
 
@@ -1033,6 +1123,7 @@ A published code keeps its number, category and meaning. A retired code is marke
 
 | Date       | Change                                                                                                                                                                                                                      |
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-16 | KADK-125 to KADK-129 and KADK-314, KADK-316 to KADK-318 when a process pack key, file, permission, record type, or reference is wrong. KADK-313 warns when the kind has no host JSON Schema, so the body is not checked. |
 | 2026-11-16 | KADK-723 soft budgets without BUDGETS.md reason. KADK-724–728 engineering practice (timeouts, pagination, i18n, idempotent handlers, no module state). `kassis-addon budgets` / `engineering`; certify applies the same gates. |
 | 2026-11-16 | KADK-221 when package.json depends on a banned mail, scheduler, upload, storage, auth, database, UI kit, or LLM package. KADK-310 when an owned or created table is a private approval, notification, audit, user, or role table. KADK-311 warns when REUSE.md explains that table. KADK-312 warns when an owned table has no database.tableNotes core alternative. |
 | 2026-11-16 | KADK-720 when PLAN.md is missing. KADK-721 when a requirement row has no rung. KADK-722 when the rung is not configuration, extension-point, facade, own-code, or gap. `kassis-addon plan` writes `.kassis/evidence/requirement-mapping.json`; certify applies the same gate. |

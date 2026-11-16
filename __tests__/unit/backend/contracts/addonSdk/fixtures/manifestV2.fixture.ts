@@ -84,6 +84,7 @@ export const MANIFEST_V2_KEYS = {
   permissions: true,
   requiredPermissions: true,
   groups: true,
+  process: true,
   requires: true,
   optional: true,
   provides: true,

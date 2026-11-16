@@ -1,0 +1,13 @@
+{
+  "id": "acme-underwriting",
+  "permissions": [{ "name": "acme-underwriting.case.read" }],
+  "process": {
+    "packs": [
+      {
+        "key": "acme-underwriting.case.application",
+        "kind": "case-template",
+        "file": "process/application.json"
+      }
+    ]
+  }
+}
