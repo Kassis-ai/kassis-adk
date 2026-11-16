@@ -62,7 +62,7 @@ Contract rules built into the types:
 
 ## Facades and the host keys they replace
 
-Evidence: `rg` over `addons/*/src` (and `dist` files with no `src` counterpart) for each key of table 5.3 in `docs/plans/ADK-framework.md` and the methods called on it, on `feature/adk-framework` after phase 2c. Only operations in real use are in the contract.
+Evidence: `rg` over `addons/*/src` (and `dist` files with no `src` counterpart) for each key of table 5.3 in `docs/plans/completed/ADK-framework.md` and the methods called on it, on `feature/adk-framework` after phase 2c. Only operations in real use are in the contract.
 
 | Facade operation                                                              | Replaces                                                                                                                                                                              | Addons using it today                                                                                                                               |
 | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
