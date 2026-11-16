@@ -12,6 +12,7 @@ export const MANIFEST_EXTEND_POINT_IDS = [
   'automationAction',
   'automationFields',
   'automationTrigger',
+  'communicable',
   'deletable',
   'documentable',
   'echoStrategy',

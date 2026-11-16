@@ -498,6 +498,7 @@
         "automationAction",
         "automationFields",
         "automationTrigger",
+        "communicable",
         "deletable",
         "documentable",
         "echoStrategy",

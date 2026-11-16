@@ -48,8 +48,8 @@
       "id": "communicable",
       "method": "ctx.extend.registerCommunicable",
       "manifestExtendsId": "communicable",
-      "summary": "Own email/communication for addon record types (tier 1).",
-      "note": "Host registration exists; confirm manifest extends[] allow-list if missing."
+      "summary": "Own email/communication for addon record types.",
+      "note": "Manifest extend id communicable. Tier 2 registration is the owner ctx.core.communication.send and list require."
     },
     {
       "id": "deletable",

@@ -1873,7 +1873,7 @@ export interface LocksFacade {
 // Warning: (ae-missing-release-tag) "MANIFEST_EXTEND_POINT_IDS" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
-export const MANIFEST_EXTEND_POINT_IDS: readonly ["analyticsContributor", "approvable", "approvableFields", "auditSubject", "automationAction", "automationFields", "automationTrigger", "deletable", "documentable", "echoStrategy", "employeeDirectory", "flaggable", "graphRiskMirror", "importQuestionnairePack", "investigationDomain", "investigationTemplate", "licenseFeatures", "linkable", "predictionCapability", "questionnaireDomain", "questionnaireDomainAdapter", "riskFactors", "shutdownHook"];
+export const MANIFEST_EXTEND_POINT_IDS: readonly ["analyticsContributor", "approvable", "approvableFields", "auditSubject", "automationAction", "automationFields", "automationTrigger", "communicable", "deletable", "documentable", "echoStrategy", "employeeDirectory", "flaggable", "graphRiskMirror", "importQuestionnairePack", "investigationDomain", "investigationTemplate", "licenseFeatures", "linkable", "predictionCapability", "questionnaireDomain", "questionnaireDomainAdapter", "recordAccess", "riskFactors", "shutdownHook"];
 
 // Warning: (ae-missing-release-tag) "MANIFEST_RESOURCE_SENSITIVITY_LEVELS" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //

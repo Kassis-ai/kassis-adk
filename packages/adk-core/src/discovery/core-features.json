@@ -133,7 +133,7 @@
       "summary": "Register the record type, then send and list through ctx.core.communication. Mail accounts stay in core.",
       "example": "await ctx.core.communication.send(principal, { ownerType: 'acme-widget.item', ownerId, to, subject, body });",
       "doNot": "Do not add a private mail client or SMTP library.",
-      "note": "Owner registration is ctx.extend.registerCommunicable. Tier 2 still refuses that call until communicable is a manifest extend id (S2.19). send and list refuse an owner type this addon did not register."
+      "note": "Owner registration is ctx.extend.registerCommunicable with manifest extends communicable. send and list refuse an owner type this addon did not register."
     },
     {
       "id": "publish-event",

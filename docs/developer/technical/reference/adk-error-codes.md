@@ -495,7 +495,7 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Severity: error
 - Message: `Add-on '{id}' cannot register '{value}' on '{path}'; another registration already owns that name`
 - Fix: Use a name this add-on owns, or disable the add-on that registered '{value}'.
-- Reported by: tier 2 wave 1 registration when another addon or a core type already owns the name
+- Reported by: tier 2 wave 1 and wave 2 registration when another addon or a core type already owns the name
 
 ## 3xx Data
 
@@ -1143,6 +1143,7 @@ A published code keeps its number, category and meaning. A retired code is marke
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-11-16 | KADK-125 to KADK-129 and KADK-314, KADK-316 to KADK-318 when a process pack key, file, permission, record type, or reference is wrong. KADK-313 warns when the kind has no host JSON Schema, so the body is not checked. |
 | 2026-11-16 | KADK-723 soft budgets without BUDGETS.md reason. KADK-724–728 engineering practice (timeouts, pagination, i18n, idempotent handlers, no module state). `kassis-addon budgets` / `engineering`; certify applies the same gates. |
+| 2026-11-16 | KADK-223 when two tier 2 registrations claim the same wave 1 or wave 2 name.                                                                                                                                              |
 | 2026-11-16 | KADK-223 when two tier 2 registrations claim the same wave 1 name.                                                                                                                                                        |
 | 2026-11-16 | KADK-222 when a tier 2 addon registers a `ctx.extend` point that manifest `extends` does not name.                                                                                                                          |
 | 2026-11-16 | KADK-221 when package.json depends on a banned mail, scheduler, upload, storage, auth, database, UI kit, or LLM package. KADK-310 when an owned or created table is a private approval, notification, audit, user, or role table. KADK-311 warns when REUSE.md explains that table. KADK-312 warns when an owned table has no database.tableNotes core alternative. |
