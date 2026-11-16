@@ -495,7 +495,7 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Severity: error
 - Message: `Add-on '{id}' cannot register '{value}' on '{path}'; another registration already owns that name`
 - Fix: Use a name this add-on owns, or disable the add-on that registered '{value}'.
-- Reported by: tier 2 wave 1 and wave 2 registration when another addon or a core type already owns the name
+- Reported by: tier 2 wave 1, wave 2, and wave 4 registration when another addon or a core type already owns the name
 
 ## 3xx Data
 

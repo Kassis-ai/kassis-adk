@@ -296,23 +296,23 @@
     {
       "method": "ctx.extend.registerAutomationAction",
       "tier1": true,
-      "tier2": false,
+      "tier2": true,
       "permission": "extends",
-      "note": "planned for tier 2 in phase 5d"
+      "note": "wave 4; catalog label; callback step errors when the addon is down"
     },
     {
       "method": "ctx.extend.registerAutomationFields",
       "tier1": true,
-      "tier2": false,
+      "tier2": true,
       "permission": "extends",
-      "note": "planned for tier 2 in phase 5d"
+      "note": "wave 4; condition fields on the Flag Automation catalog"
     },
     {
       "method": "ctx.extend.registerAutomationTrigger",
       "tier1": true,
-      "tier2": false,
+      "tier2": true,
       "permission": "extends",
-      "note": "planned for tier 2 in phase 5d"
+      "note": "wave 4; catalog row removed on disable; callback step errors when the addon is down"
     },
     {
       "method": "ctx.extend.registerDeletable",
