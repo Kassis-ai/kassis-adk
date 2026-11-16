@@ -31,6 +31,15 @@ declare module '../../../tools/adk/certifyAttestation.mjs' {
   export function certifyAttestation(input: CertifyInput): { ok: boolean; issues: CatalogIssue[] };
 }
 
+declare module '../../../tools/adk/reuseCore.mjs' {
+  export function auditReuseCore(addonDir: string): {
+    ok: boolean;
+    issues: CatalogIssue[];
+    report: object;
+  };
+  export function writeReuseCoreEvidence(addonDir: string, report: object): void;
+}
+
 declare module '../../../tools/adk/profileLock.mjs' {
   export function buildProfileLock(profile: object): {
     version: string;

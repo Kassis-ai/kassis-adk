@@ -398,6 +398,15 @@
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-220"
     },
     {
+      "code": "KADK-221",
+      "category": "boundaries",
+      "severity": "error",
+      "title": "Banned dependency",
+      "message": "Dependency '{name}' is a banned {category} package",
+      "fix": "Remove '{name}' from package.json and use the core facade for {category}.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-221"
+    },
+    {
       "code": "KADK-301",
       "category": "data",
       "severity": "error",
@@ -477,6 +486,33 @@
       "message": "database.ownedTables is set but data.retention is missing",
       "fix": "Set data.retention to retain, archive, or purge.",
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-309"
+    },
+    {
+      "code": "KADK-310",
+      "category": "data",
+      "severity": "error",
+      "title": "Private mechanism table",
+      "message": "Table '{table}' is a private {mechanism} table",
+      "fix": "Use the core {mechanism} feature, or add an explained row for '{table}' in REUSE.md.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-310"
+    },
+    {
+      "code": "KADK-311",
+      "category": "data",
+      "severity": "warning",
+      "title": "Private mechanism table needs acknowledgement",
+      "message": "Table '{table}' is a private {mechanism} table with an override",
+      "fix": "An approver must acknowledge the REUSE.md reason for '{table}' before this ships.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-311"
+    },
+    {
+      "code": "KADK-312",
+      "category": "data",
+      "severity": "warning",
+      "title": "Owned table has no core alternative",
+      "message": "Owned table '{table}' does not say which core record it could not be",
+      "fix": "Add database.tableNotes for '{table}' with notCoreRecord and why.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-312"
     },
     {
       "code": "KADK-401",

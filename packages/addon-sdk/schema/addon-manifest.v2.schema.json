@@ -201,7 +201,21 @@
       "additionalProperties": false,
       "properties": {
         "ownedTables": { "type": "array", "items": { "$ref": "#/$defs/tableName" } },
-        "readAccess": { "type": "array", "items": { "$ref": "#/$defs/tableName" } }
+        "readAccess": { "type": "array", "items": { "$ref": "#/$defs/tableName" } },
+        "tableNotes": {
+          "description": "For each owned table, the core record it could not be and why.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["table", "notCoreRecord", "why"],
+            "additionalProperties": false,
+            "properties": {
+              "table": { "$ref": "#/$defs/tableName" },
+              "notCoreRecord": { "type": "string", "minLength": 1, "maxLength": 80 },
+              "why": { "type": "string", "minLength": 15, "maxLength": 500 }
+            }
+          }
+        }
       }
     },
     "legacyTables": {

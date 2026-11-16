@@ -121,6 +121,10 @@ copyIntoLib(
 copyIntoLib(path.join(repoRoot, 'packages/addon-sdk/codes/kadk-codes.json'), 'kadk-codes.json');
 copyIntoLib(path.join(repoRoot, 'packages/addon-sdk/tier-matrix.json'), 'tier-matrix.json');
 copyIntoLib(path.join(repoRoot, 'packages/addon-sdk/guardrails.json'), 'guardrails.json');
+copyIntoLib(
+  path.join(repoRoot, 'packages/addon-sdk/banned-dependencies.json'),
+  'banned-dependencies.json'
+);
 fs.cpSync(
   path.join(repoRoot, 'packages/adk-core/src/discovery'),
   path.join(lib, 'discovery'),

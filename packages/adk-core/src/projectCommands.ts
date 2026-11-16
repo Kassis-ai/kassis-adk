@@ -34,6 +34,7 @@ import {
   auditRequirementPlan,
   writeRequirementMapping,
 } from '../../../tools/adk/requirementPlan.mjs';
+import { auditReuseCore, writeReuseCoreEvidence } from '../../../tools/adk/reuseCore.mjs';
 import type { AdkIssue, CommandResult, JsonObject, LogListener } from './types.ts';
 import { checkManifestDirectory } from './manifestCheck.ts';
 import {
@@ -105,9 +106,14 @@ export function initProject(
 
 export function checkProject(dir: string): CommandResult {
   try {
-    return commandResult(checkManifestDirectory(dir), {
-      manifest: path.join(dir, 'manifest.json'),
-    });
+    const reuse = auditReuseCore(dir);
+    if (reuse.report) writeReuseCoreEvidence(dir, reuse.report);
+    return commandResult(
+      [...checkManifestDirectory(dir), ...reuse.issues.map((issue) => fromCatalog(issue))],
+      {
+        manifest: path.join(dir, 'manifest.json'),
+      }
+    );
   } catch (error) {
     return failure(
       messageOf(error),
@@ -325,15 +331,23 @@ export async function certifyProject(dir: string): Promise<CommandResult> {
   if (tracing.coverage) writeRequirementsCoverage(dir, tracing.coverage);
   const planned = auditRequirementPlan(dir);
   if (planned.mapping) writeRequirementMapping(dir, planned.mapping);
+  const reuse = auditReuseCore(dir);
+  if (reuse.report) writeReuseCoreEvidence(dir, reuse.report);
   const traceIssues = tracing.issues.map((issue) => fromCatalog(issue));
   const planIssues = planned.issues.map((issue) => fromCatalog(issue));
+  const reuseIssues = reuse.issues.map((issue) => fromCatalog(issue));
 
   const result = certifyAttestation({ lock, attestation, checks });
   const data: JsonObject = {};
   const attestationIssues = result.issues.map((issue) => fromCatalog(issue));
-  const mergedIssues = dedupeIssues([...attestationIssues, ...traceIssues, ...planIssues]);
+  const mergedIssues = dedupeIssues([
+    ...attestationIssues,
+    ...traceIssues,
+    ...planIssues,
+    ...reuseIssues,
+  ]);
   const hasError = mergedIssues.some((issue) => issue.severity === 'error');
-  if (!result.ok || !tracing.ok || !planned.ok || hasError) {
+  if (!result.ok || !tracing.ok || !planned.ok || !reuse.ok || hasError) {
     return { ok: false, issues: mergedIssues, data };
   }
   const instance = process.env.KASSIS_ADK_INSTANCE ?? '';

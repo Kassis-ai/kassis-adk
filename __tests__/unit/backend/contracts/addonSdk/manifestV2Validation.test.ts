@@ -398,6 +398,21 @@ describe('validateManifestV2', () => {
       }
     );
 
+    it('accepts database.tableNotes for an owned table', () => {
+      const database = {
+        ownedTables: ['addon_sample_tprm_check.assessments'],
+        tableNotes: [
+          {
+            table: 'addon_sample_tprm_check.assessments',
+            notCoreRecord: 'case',
+            why: 'Assessment rows are not cases',
+          },
+        ],
+      };
+      const data = { schema: 'addon_sample_tprm_check', retention: 'retain' };
+      expect(validateManifestV2(manifestWith({ data, database })).ok).toBe(true);
+    });
+
     it('rejects an invalid data.retention value (KADK-101)', () => {
       const data = {
         schema: 'addon_sample_tprm_check',

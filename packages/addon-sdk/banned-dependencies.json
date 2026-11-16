@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "description": "Packages a client addon must not depend on. Core already provides mail, scheduling, upload, storage, auth, data access, UI, and LLM calls.",
+  "categories": {
+    "mail": ["nodemailer", "@sendgrid/mail", "mailgun.js", "@mailchimp/mailchimp_transactional"],
+    "scheduler": ["node-cron", "node-schedule", "cron", "bull", "bullmq", "agenda", "bree"],
+    "upload": ["multer", "busboy", "formidable", "multiparty"],
+    "file-storage": [
+      "@aws-sdk/client-s3",
+      "@aws-sdk/lib-storage",
+      "minio",
+      "@google-cloud/storage",
+      "@azure/storage-blob"
+    ],
+    "auth": ["passport", "passport-local", "jsonwebtoken", "express-session", "cookie-session", "bcrypt", "bcryptjs"],
+    "database": [
+      "pg",
+      "pg-promise",
+      "mysql",
+      "mysql2",
+      "better-sqlite3",
+      "sqlite3",
+      "mongodb",
+      "mongoose",
+      "prisma",
+      "@prisma/client",
+      "typeorm",
+      "sequelize",
+      "knex",
+      "drizzle-orm"
+    ],
+    "ui-kit": ["@mui/material", "antd", "react-bootstrap", "@chakra-ui/react", "@mantine/core"],
+    "llm": ["openai", "@anthropic-ai/sdk", "@google/generative-ai", "langchain", "@langchain/core", "cohere-ai"]
+  }
+}

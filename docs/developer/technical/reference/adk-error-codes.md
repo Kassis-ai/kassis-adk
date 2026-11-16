@@ -425,6 +425,15 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Fix: Rename the capability so it starts with {prefixes}, and declare that id in provides.
 - Reported by: `validateManifestV2` on `provides[]`, and `ctx.capabilities.provide` for a tier 2 addon
 
+<a id="kadk-221"></a>
+
+### KADK-221 Banned dependency
+
+- Severity: error
+- Message: `Dependency '{name}' is a banned {category} package`
+- Fix: Remove '{name}' from package.json and use the core facade for {category}.
+- Reported by: `kassis-addon check` and `kassis-addon certify` against `@kassis/addon-sdk/banned-dependencies.json`
+
 ## 3xx Data
 
 <a id="kadk-301"></a>
@@ -507,6 +516,33 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Message: `database.ownedTables is set but data.retention is missing`
 - Fix: Set data.retention to retain, archive, or purge.
 - Reported by: `validateManifestV2` in `@kassis/addon-sdk`
+
+<a id="kadk-310"></a>
+
+### KADK-310 Private mechanism table
+
+- Severity: error
+- Message: `Table '{table}' is a private {mechanism} table`
+- Fix: Use the core {mechanism} feature, or add an explained row for '{table}' in REUSE.md.
+- Reported by: `kassis-addon check` and `kassis-addon certify`
+
+<a id="kadk-311"></a>
+
+### KADK-311 Private mechanism table needs acknowledgement
+
+- Severity: warning
+- Message: `Table '{table}' is a private {mechanism} table with an override`
+- Fix: An approver must acknowledge the REUSE.md reason for '{table}' before this ships.
+- Reported by: `kassis-addon check` and `kassis-addon certify` when REUSE.md explains the table
+
+<a id="kadk-312"></a>
+
+### KADK-312 Owned table has no core alternative
+
+- Severity: warning
+- Message: `Owned table '{table}' does not say which core record it could not be`
+- Fix: Add database.tableNotes for '{table}' with notCoreRecord and why.
+- Reported by: `kassis-addon check` and `kassis-addon certify`
 
 ## 4xx Events
 
@@ -943,6 +979,7 @@ A published code keeps its number, category and meaning. A retired code is marke
 
 | Date       | Change                                                                                                                                                                                                                      |
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-16 | KADK-221 when package.json depends on a banned mail, scheduler, upload, storage, auth, database, UI kit, or LLM package. KADK-310 when an owned or created table is a private approval, notification, audit, user, or role table. KADK-311 warns when REUSE.md explains that table. KADK-312 warns when an owned table has no database.tableNotes core alternative. |
 | 2026-11-16 | KADK-720 when PLAN.md is missing. KADK-721 when a requirement row has no rung. KADK-722 when the rung is not configuration, extension-point, facade, own-code, or gap. `kassis-addon plan` writes `.kassis/evidence/requirement-mapping.json`; certify applies the same gate. |
 | 2026-11-16 | KADK-718 when REQUIREMENTS.md is missing. KADK-719 when a Must row has no mention in test/ or GAPS.md. `kassis-addon requirements` writes `.kassis/evidence/requirements-coverage.json`; certify applies the same gate.       |
 | 2026-10-28 | KADK-714 blocks an outcome that is not followed, violated or not_applicable. KADK-715 warns when machine evidence is typed into the attestation. KADK-707 still means the checks file has no passing result for that check. |

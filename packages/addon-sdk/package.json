@@ -15,6 +15,7 @@
     "./codes/kadk-codes.json": "./codes/kadk-codes.json",
     "./tier-matrix.json": "./tier-matrix.json",
     "./guardrails.json": "./guardrails.json",
+    "./banned-dependencies.json": "./banned-dependencies.json",
     "./package.json": "./package.json"
   },
   "files": [
@@ -23,6 +24,7 @@
     "codes",
     "tier-matrix.json",
     "guardrails.json",
+    "banned-dependencies.json",
     "README.md",
     "browser-externals.json"
   ],
@@ -47,7 +49,8 @@
       "./browser-externals.json": "./browser-externals.json",
       "./codes/kadk-codes.json": "./codes/kadk-codes.json",
       "./tier-matrix.json": "./tier-matrix.json",
-    "./guardrails.json": "./guardrails.json",
+      "./guardrails.json": "./guardrails.json",
+      "./banned-dependencies.json": "./banned-dependencies.json",
       "./package.json": "./package.json"
     }
   },

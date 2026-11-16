@@ -39,8 +39,8 @@
       "id": "adk.banned-dependencies",
       "group": "A",
       "level": "L2",
-      "check": "planned:adk.banned-dependencies",
-      "kadkCode": "KADK-205",
+      "check": "kassis-addon-check",
+      "kadkCode": "KADK-221",
       "fixHint": "Remove mail, scheduler, upload, auth, ORM, alternate UI kit, or LLM provider SDKs from package.json; use ctx facades.",
       "inProfile": false
     },
@@ -48,8 +48,8 @@
       "id": "adk.no-private-mechanism-tables",
       "group": "A",
       "level": "L3",
-      "check": "planned:adk.no-private-mechanism-tables",
-      "kadkCode": "KADK-703",
+      "check": "kassis-addon-check",
+      "kadkCode": "KADK-310",
       "fixHint": "Do not add private approval, notification, audit, or user tables; use core facades and record types.",
       "inProfile": false
     },
@@ -57,8 +57,8 @@
       "id": "adk.owned-table-core-alternative",
       "group": "A",
       "level": "L4",
-      "check": "evidence-pack:manifest.ownedTables",
-      "kadkCode": "KADK-703",
+      "check": "kassis-addon-check",
+      "kadkCode": "KADK-312",
       "fixHint": "State in the manifest or evidence pack which core record type each owned table replaces and why.",
       "inProfile": false
     },

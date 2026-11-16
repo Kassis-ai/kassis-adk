@@ -77,7 +77,7 @@ Writes dist/server/index.js and, when src/ui/index.ts exists, frontend/dist/inde
 `,
   check: `Usage: kassis-addon check [--json]
 
-Validates manifest.json. Schema errors use KADK-1xx codes. A permission outside the addon id uses KADK-110.
+Validates manifest.json. Schema errors use KADK-1xx codes. A permission outside the addon id uses KADK-110. A banned dependency is KADK-221. A private approval, notification, audit, user, or role table is KADK-310 unless REUSE.md explains it (KADK-311). An owned table with no database.tableNotes warns as KADK-312. Writes .kassis/evidence/reuse-core.json.
 `,
   conformance: `Usage: kassis-addon conformance [--json]
 
