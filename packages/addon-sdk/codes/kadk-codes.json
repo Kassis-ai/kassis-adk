@@ -368,7 +368,7 @@
       "title": "Tool path is outside the project",
       "message": "{path} is outside the project root",
       "fix": "Pass a dir inside the directory where kassis-adk-mcp was started, or set --root to that directory.",
-      "docs": "docs/developer/technical/adk/cli-reference.md"
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-217"
     },
     {
       "code": "KADK-218",
@@ -566,7 +566,7 @@
       "title": "UI entry file includes a directory",
       "message": "ui.entryFile '{value}' includes a slash",
       "fix": "Set ui.entryFile to the file name inside frontend/dist, for example index.js.",
-      "docs": "docs/developer/technical/adk/addon-anatomy.md"
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-504"
     },
     {
       "code": "KADK-601",
@@ -873,6 +873,33 @@
       "message": "Must requirement '{id}' is not named in test/ or GAPS.md",
       "fix": "Add the id to a test under test/, or record the gap in GAPS.md, then run kassis-addon requirements.",
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-719"
+    },
+    {
+      "code": "KADK-720",
+      "category": "attestation",
+      "severity": "error",
+      "title": "Requirement plan is missing",
+      "message": "PLAN.md was not found",
+      "fix": "Add PLAN.md with a rung for every FR-* and NFR-* row, then run kassis-addon plan.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-720"
+    },
+    {
+      "code": "KADK-721",
+      "category": "attestation",
+      "severity": "error",
+      "title": "Requirement has no rung",
+      "message": "Requirement '{id}' has no rung in PLAN.md",
+      "fix": "Map '{id}' to configuration, extension-point, facade, own-code, or gap, then run kassis-addon plan.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-721"
+    },
+    {
+      "code": "KADK-722",
+      "category": "attestation",
+      "severity": "error",
+      "title": "Requirement rung is not allowed",
+      "message": "Requirement '{id}' has rung '{rung}', which is not configuration, extension-point, facade, own-code or gap",
+      "fix": "Set the rung for '{id}' to configuration, extension-point, facade, own-code, or gap. A duplicate row uses rung duplicate.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-722"
     }
   ]
 }

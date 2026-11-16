@@ -30,6 +30,10 @@ import {
   auditRequirementsTracing,
   writeRequirementsCoverage,
 } from '../../../tools/adk/requirementsTrace.mjs';
+import {
+  auditRequirementPlan,
+  writeRequirementMapping,
+} from '../../../tools/adk/requirementPlan.mjs';
 import type { AdkIssue, CommandResult, JsonObject, LogListener } from './types.ts';
 import { checkManifestDirectory } from './manifestCheck.ts';
 import {
@@ -214,6 +218,49 @@ export function rulesProject(dir: string): CommandResult {
   return commandResult([], { files: writeAgentRuleFiles(lock, dir) });
 }
 
+function dedupeIssues(issues: CommandResult['issues']): CommandResult['issues'] {
+  const seen = new Set<string>();
+  return issues.filter((issue) => {
+    const key = `${issue.code}\n${issue.message}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+export function planProject(dir: string): CommandResult {
+  const planned = auditRequirementPlan(dir);
+  if (planned.mapping) writeRequirementMapping(dir, planned.mapping);
+  const unmapped =
+    planned.mapping && Array.isArray(planned.mapping.unmapped) ? planned.mapping.unmapped : [];
+  const rawSplit = planned.mapping?.split;
+  const splitSource = isRecordValue(rawSplit) ? rawSplit : {};
+  const countOf = (rung: string): number => {
+    const count = splitSource[rung];
+    return typeof count === 'number' ? count : 0;
+  };
+  const split = {
+    configuration: countOf('configuration'),
+    'extension-point': countOf('extension-point'),
+    facade: countOf('facade'),
+    'own-code': countOf('own-code'),
+    gap: countOf('gap'),
+  };
+  return {
+    ok: planned.ok,
+    issues: planned.issues.map((issue) => fromCatalog(issue)),
+    data: {
+      requirementCount:
+        planned.mapping && Array.isArray(planned.mapping.requirementIds)
+          ? planned.mapping.requirementIds.length
+          : 0,
+      unmapped,
+      split,
+      mappingPath: path.join(dir, '.kassis', 'evidence', 'requirement-mapping.json'),
+    },
+  };
+}
+
 export function requirementsProject(dir: string): CommandResult {
   const tracing = auditRequirementsTracing(dir);
   if (tracing.coverage) writeRequirementsCoverage(dir, tracing.coverage);
@@ -276,14 +323,17 @@ export async function certifyProject(dir: string): Promise<CommandResult> {
   }
   const tracing = auditRequirementsTracing(dir);
   if (tracing.coverage) writeRequirementsCoverage(dir, tracing.coverage);
+  const planned = auditRequirementPlan(dir);
+  if (planned.mapping) writeRequirementMapping(dir, planned.mapping);
   const traceIssues = tracing.issues.map((issue) => fromCatalog(issue));
+  const planIssues = planned.issues.map((issue) => fromCatalog(issue));
 
   const result = certifyAttestation({ lock, attestation, checks });
   const data: JsonObject = {};
   const attestationIssues = result.issues.map((issue) => fromCatalog(issue));
-  const mergedIssues = [...attestationIssues, ...traceIssues];
+  const mergedIssues = dedupeIssues([...attestationIssues, ...traceIssues, ...planIssues]);
   const hasError = mergedIssues.some((issue) => issue.severity === 'error');
-  if (!result.ok || !tracing.ok || hasError) {
+  if (!result.ok || !tracing.ok || !planned.ok || hasError) {
     return { ok: false, issues: mergedIssues, data };
   }
   const instance = process.env.KASSIS_ADK_INSTANCE ?? '';

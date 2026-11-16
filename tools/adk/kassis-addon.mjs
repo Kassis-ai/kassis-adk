@@ -16,6 +16,7 @@ const COMMANDS = [
   'migrate',
   'doctor',
   'requirements',
+  'plan',
   'pack',
   'package',
   'sbom',
@@ -44,6 +45,7 @@ Commands:
   migrate       up, down, status or claim on the dev host database
   doctor        Check Node, registry auth, keys, instance, and hostApi
   requirements  Trace Must rows in REQUIREMENTS.md to test/ or GAPS.md
+  plan          Map each requirement to a rung in PLAN.md
   pack          Write an evidence pack
   package       Write a signed .addon zip
   sbom          Write sbom.json for this addon
@@ -98,6 +100,10 @@ claim assigns history rows written by an older ADK (no addon id) to this addon, 
   doctor: `Usage: kassis-addon doctor [--requirements] [--json]
 
 Checks the Node version, GitHub Packages login (the token is not printed), signing key files, instance reachability, and manifest hostApi against HOST_API_VERSION. With --requirements, scans addon source for ctx facade calls that the manifest tier cannot use (tier-matrix.json).
+`,
+  plan: `Usage: kassis-addon plan [--json]
+
+Reads every FR-* and NFR-* row in REQUIREMENTS.md and requires a rung in PLAN.md: configuration, extension-point, facade, own-code, or gap. Writes .kassis/evidence/requirement-mapping.json with the rung split. Certify fails when PLAN.md is missing (KADK-720), a row has no rung (KADK-721), or a rung is not one of those five (KADK-722).
 `,
   requirements: `Usage: kassis-addon requirements [--json]
 
@@ -211,6 +217,16 @@ function printSuccess(command, data) {
   if (command === 'explain') process.stdout.write(`${data.message}\n${data.fix}\n`);
   if (command === 'certify' && typeof data.runId === 'string')
     process.stdout.write(`${data.runId}\n`);
+  if (command === 'plan' && typeof data.requirementCount === 'number') {
+    const unmapped = Array.isArray(data.unmapped) ? data.unmapped : [];
+    process.stdout.write(`Requirements ${data.requirementCount} unmapped ${unmapped.length}\n`);
+    for (const id of unmapped) process.stdout.write(`unmapped ${id}\n`);
+    const split = data.split && typeof data.split === 'object' ? data.split : {};
+    const parts = ['configuration', 'extension-point', 'facade', 'own-code', 'gap'].map(
+      (rung) => `${rung}=${typeof split[rung] === 'number' ? split[rung] : 0}`
+    );
+    process.stdout.write(`split ${parts.join(' ')}\n`);
+  }
   if (command === 'requirements' && typeof data.mustCount === 'number') {
     const untraced = Array.isArray(data.untraced) ? data.untraced : [];
     process.stdout.write(`Must ${data.mustCount} untraced ${untraced.length}\n`);

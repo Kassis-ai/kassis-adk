@@ -389,6 +389,15 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Fix: Declare '\{value\}' in permissions, or mount the route with a permission the manifest declares.
 - Reported by: `ctx.routes.mount` (3b)
 
+<a id="kadk-217"></a>
+
+### KADK-217 Tool path is outside the project
+
+- Severity: error
+- Message: `{path} is outside the project root`
+- Fix: Pass a dir inside the directory where kassis-adk-mcp was started, or set --root to that directory.
+- Reported by: `kassis-adk-mcp`
+
 <a id="kadk-218"></a>
 
 ### KADK-218 Tier 2 cannot provide a capability yet
@@ -583,6 +592,15 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Message: `Component '{component}' in slot '{slot}' threw while rendering: {detail}`
 - Fix: Fix the render error; the host shows an error state in the slot until then.
 - Reported by: Host UI runtime (Phase 6)
+
+<a id="kadk-504"></a>
+
+### KADK-504 UI entry file includes a directory
+
+- Severity: warning
+- Message: `ui.entryFile '{value}' includes a slash`
+- Fix: Set ui.entryFile to the file name inside frontend/dist, for example index.js.
+- Reported by: `kassis-addon check`
 
 ## 6xx Security
 
@@ -894,9 +912,37 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Fix: Add the id to a test under test/, or record the gap in GAPS.md, then run kassis-addon requirements.
 - Reported by: `kassis-addon requirements`; `kassis-addon certify`
 
+<a id="kadk-720"></a>
+
+### KADK-720 Requirement plan is missing
+
+- Severity: error
+- Message: `PLAN.md was not found`
+- Fix: Add PLAN.md with a rung for every FR-* and NFR-* row, then run kassis-addon plan.
+- Reported by: `kassis-addon plan`; `kassis-addon certify`
+
+<a id="kadk-721"></a>
+
+### KADK-721 Requirement has no rung
+
+- Severity: error
+- Message: `Requirement '{id}' has no rung in PLAN.md`
+- Fix: Map '{id}' to configuration, extension-point, facade, own-code, or gap, then run kassis-addon plan.
+- Reported by: `kassis-addon plan`; `kassis-addon certify`
+
+<a id="kadk-722"></a>
+
+### KADK-722 Requirement rung is not allowed
+
+- Severity: error
+- Message: `Requirement '{id}' has rung '{rung}', which is not configuration, extension-point, facade, own-code or gap`
+- Fix: Set the rung for '{id}' to configuration, extension-point, facade, own-code, or gap. A duplicate row uses rung duplicate.
+- Reported by: `kassis-addon plan`; `kassis-addon certify`
+
 ## Changelog
 
 | Date       | Change                                                                                                                                                                                                                      |
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-16 | KADK-720 when PLAN.md is missing. KADK-721 when a requirement row has no rung. KADK-722 when the rung is not configuration, extension-point, facade, own-code, or gap. `kassis-addon plan` writes `.kassis/evidence/requirement-mapping.json`; certify applies the same gate. |
 | 2026-11-16 | KADK-718 when REQUIREMENTS.md is missing. KADK-719 when a Must row has no mention in test/ or GAPS.md. `kassis-addon requirements` writes `.kassis/evidence/requirements-coverage.json`; certify applies the same gate.       |
 | 2026-10-28 | KADK-714 blocks an outcome that is not followed, violated or not_applicable. KADK-715 warns when machine evidence is typed into the attestation. KADK-707 still means the checks file has no passing result for that check. |

@@ -26,9 +26,10 @@ Priority uses MoSCoW: **M** must, **S** should, **C** could. Replace this docume
 
 1. **ADK only.** Use `kassis-addon`, `@kassis/addon-sdk`, `@kassis/host-sdk`, `@kassis/addon-testkit`, and the ADK guides. Do not import Kassis host code.
 2. **Work in this project folder.** Run `npx kassis-addon sync --profile=addon-coding-agent` and follow `AGENTS.md`.
-3. **Prerequisites first.** Run the platform checks in `TEST-REPORT.md` before feature code.
-4. **Never work around the platform.** If the ADK cannot meet a Must requirement, record it in `GAPS.md` and build the rest.
-5. **Done means** every Must for your build mode is met or gap-recorded, `certify` passes, and `TEST-REPORT.md` lists evidence for each acceptance row.
+3. **Map first.** Give every requirement row a rung in `PLAN.md`, then run `kassis-addon plan`, before feature code.
+4. **Prerequisites first.** Run the platform checks in `TEST-REPORT.md` before feature code.
+5. **Never work around the platform.** If the ADK cannot meet a Must requirement, record it in `GAPS.md`, map that row to `gap`, and build the rest.
+6. **Done means** every Must for your build mode is met or gap-recorded, `plan` and `certify` pass, and `TEST-REPORT.md` lists evidence for each acceptance row.
 
 ## 1. Purpose
 

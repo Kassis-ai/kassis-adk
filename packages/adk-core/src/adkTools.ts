@@ -105,6 +105,19 @@ declare module '../../../tools/adk/addonSbom.mjs' {
   export function writeAddonSbom(dir: string): string;
 }
 
+declare module '../../../tools/adk/requirementPlan.mjs' {
+  export function auditRequirementPlan(addonDir: string): {
+    ok: boolean;
+    issues: CatalogIssue[];
+    mapping: {
+      requirementIds?: string[];
+      unmapped?: string[];
+      split?: object;
+    } | null;
+  };
+  export function writeRequirementMapping(addonDir: string, mapping: object | null): void;
+}
+
 declare module '../../../tools/adk/requirementsTrace.mjs' {
   export function auditRequirementsTracing(addonDir: string): {
     ok: boolean;
