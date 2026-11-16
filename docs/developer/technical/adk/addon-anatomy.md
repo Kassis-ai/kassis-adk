@@ -68,6 +68,7 @@ Rung 1, the default, is the server only. Rung 2 adds the UI. Rung 3 adds the UI 
 | Date       | Change                                                                                                                                                              |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-11-16 | Package inspect and addon load refuse a `manifestVersion: 2` manifest with the same KADK code as `kassis-addon check`.                                              |
+| 2026-11-16 | Integration proof (`templateAddonPermissionProof.integration.test.ts`): template v2 permissions register in RBAC and gate addon routes instead of `system.admin` (B13 / S1.04). |
 | 2026-11-16 | Route and MCP gates read manifest v2 `permissions` objects (`{ name }`) for mount-level checks, not only string entries (B13 / S1.03).                               |
 | 2026-11-16 | Tier 1 and tier 2 start paths register manifest v2 `permissions` objects in the core permission catalog (B13 / S1.02).                                            |
 | 2026-11-16 | The template manifest declares audit, event, job, and prompt names used in `test/server.test.ts`, plus `events/started.schema.json` for the sample publish call.   |
