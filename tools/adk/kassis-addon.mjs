@@ -17,6 +17,8 @@ const COMMANDS = [
   'doctor',
   'requirements',
   'plan',
+  'budgets',
+  'engineering',
   'pack',
   'package',
   'sbom',
@@ -46,6 +48,8 @@ Commands:
   doctor        Check Node, registry auth, keys, instance, and hostApi
   requirements  Trace Must rows in REQUIREMENTS.md to test/ or GAPS.md
   plan          Map each requirement to a rung in PLAN.md
+  budgets       Soft thin-addon budgets with BUDGETS.md reasons
+  engineering   Timeouts, pagination, i18n, idempotent handlers, no module state
   pack          Write an evidence pack
   package       Write a signed .addon zip
   sbom          Write sbom.json for this addon
@@ -108,6 +112,14 @@ Reads every FR-* and NFR-* row in REQUIREMENTS.md and requires a rung in PLAN.md
   requirements: `Usage: kassis-addon requirements [--json]
 
 Parses Must rows in REQUIREMENTS.md and requires each id in test/ or GAPS.md. Writes .kassis/evidence/requirements-coverage.json. Certify fails when a Must id is untraced (KADK-719).
+`,
+  budgets: `Usage: kassis-addon budgets [--json]
+
+Counts owned tables, routes.mount calls, production dependencies and server source bytes against soft limits. Over a limit needs a BUDGETS.md reason row (metric | count | limit | reason). Writes .kassis/evidence/thin-addon-budgets.json. Certify fails with KADK-723 when a reason is missing.
+`,
+  engineering: `Usage: kassis-addon engineering [--json]
+
+Scans addon source for outbound calls without timeouts (KADK-724), findMany without take/skip (KADK-725), UI chrome outside i18n or i18next imports (KADK-726), non-idempotent job/event handlers (KADK-727), and module-level let/var state (KADK-728). Writes .kassis/evidence/engineering-practice.json. Certify runs the same gate.
 `,
   pack: `Usage: kassis-addon pack [--out <dir>] [--json]
 `,
@@ -231,6 +243,22 @@ function printSuccess(command, data) {
     const untraced = Array.isArray(data.untraced) ? data.untraced : [];
     process.stdout.write(`Must ${data.mustCount} untraced ${untraced.length}\n`);
     for (const id of untraced) process.stdout.write(`untraced ${id}\n`);
+  }
+  if (command === 'budgets' && typeof data.overageCount === 'number') {
+    process.stdout.write(`Overages ${data.overageCount}\n`);
+    const overages = Array.isArray(data.overages) ? data.overages : [];
+    for (const row of overages) {
+      if (!row || typeof row !== 'object') continue;
+      const metric = typeof row.metric === 'string' ? row.metric : '?';
+      const count = typeof row.count === 'number' ? row.count : '?';
+      const limit = typeof row.limit === 'number' ? row.limit : '?';
+      const reason = typeof row.reason === 'string' ? row.reason : '(no reason)';
+      process.stdout.write(`${metric} ${count}/${limit} ${reason}\n`);
+    }
+  }
+  if (command === 'engineering' && Array.isArray(data.failedChecks)) {
+    process.stdout.write(`Failed ${data.failedChecks.length}\n`);
+    for (const id of data.failedChecks) process.stdout.write(`${id}\n`);
   }
   if (command === 'doctor') {
     process.stdout.write(`Node ${data.nodeVersion}\n`);

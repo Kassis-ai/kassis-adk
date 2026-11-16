@@ -35,6 +35,14 @@ import {
   writeRequirementMapping,
 } from '../../../tools/adk/requirementPlan.mjs';
 import { auditReuseCore, writeReuseCoreEvidence } from '../../../tools/adk/reuseCore.mjs';
+import {
+  auditThinAddonBudgets,
+  writeThinAddonBudgetsEvidence,
+} from '../../../tools/adk/thinAddonBudgets.mjs';
+import {
+  auditEngineeringPractice,
+  writeEngineeringPracticeEvidence,
+} from '../../../tools/adk/engineeringPractice.mjs';
 import type { AdkIssue, CommandResult, JsonObject, LogListener } from './types.ts';
 import { checkManifestDirectory } from './manifestCheck.ts';
 import {
@@ -285,6 +293,37 @@ export function requirementsProject(dir: string): CommandResult {
   };
 }
 
+export function budgetsProject(dir: string): CommandResult {
+  const audited = auditThinAddonBudgets(dir);
+  writeThinAddonBudgetsEvidence(dir, audited.evidence);
+  const overages = Array.isArray(audited.evidence.overages) ? audited.evidence.overages : [];
+  return {
+    ok: audited.ok,
+    issues: audited.issues.map((issue) => fromCatalog(issue)),
+    data: {
+      overageCount: overages.length,
+      overages,
+      evidencePath: path.join(dir, '.kassis', 'evidence', 'thin-addon-budgets.json'),
+    },
+  };
+}
+
+export function engineeringProject(dir: string): CommandResult {
+  const audited = auditEngineeringPractice(dir);
+  writeEngineeringPracticeEvidence(dir, audited.evidence);
+  const failed = Object.entries(audited.checkResults)
+    .filter(([, result]) => !result.ok)
+    .map(([id]) => id);
+  return {
+    ok: audited.ok,
+    issues: audited.issues.map((issue) => fromCatalog(issue)),
+    data: {
+      failedChecks: failed,
+      evidencePath: path.join(dir, '.kassis', 'evidence', 'engineering-practice.json'),
+    },
+  };
+}
+
 export function packProject(dir: string, out: string): CommandResult {
   const outDir = out || path.join(dir, '.kassis', 'evidence');
   try {
@@ -333,9 +372,15 @@ export async function certifyProject(dir: string): Promise<CommandResult> {
   if (planned.mapping) writeRequirementMapping(dir, planned.mapping);
   const reuse = auditReuseCore(dir);
   if (reuse.report) writeReuseCoreEvidence(dir, reuse.report);
+  const budgets = auditThinAddonBudgets(dir);
+  writeThinAddonBudgetsEvidence(dir, budgets.evidence);
+  const engineering = auditEngineeringPractice(dir);
+  writeEngineeringPracticeEvidence(dir, engineering.evidence);
   const traceIssues = tracing.issues.map((issue) => fromCatalog(issue));
   const planIssues = planned.issues.map((issue) => fromCatalog(issue));
   const reuseIssues = reuse.issues.map((issue) => fromCatalog(issue));
+  const budgetIssues = budgets.issues.map((issue) => fromCatalog(issue));
+  const engineeringIssues = engineering.issues.map((issue) => fromCatalog(issue));
 
   const result = certifyAttestation({ lock, attestation, checks });
   const data: JsonObject = {};
@@ -345,9 +390,19 @@ export async function certifyProject(dir: string): Promise<CommandResult> {
     ...traceIssues,
     ...planIssues,
     ...reuseIssues,
+    ...budgetIssues,
+    ...engineeringIssues,
   ]);
   const hasError = mergedIssues.some((issue) => issue.severity === 'error');
-  if (!result.ok || !tracing.ok || !planned.ok || !reuse.ok || hasError) {
+  if (
+    !result.ok ||
+    !tracing.ok ||
+    !planned.ok ||
+    !reuse.ok ||
+    !budgets.ok ||
+    !engineering.ok ||
+    hasError
+  ) {
     return { ok: false, issues: mergedIssues, data };
   }
   const instance = process.env.KASSIS_ADK_INSTANCE ?? '';

@@ -136,6 +136,40 @@ declare module '../../../tools/adk/requirementsTrace.mjs' {
   export function writeRequirementsCoverage(addonDir: string, coverage: object | null): void;
 }
 
+declare module '../../../tools/adk/thinAddonBudgets.mjs' {
+  export const SOFT_BUDGETS: {
+    ownedTables: number;
+    routes: number;
+    dependencies: number;
+    serverSourceBytes: number;
+  };
+  export function auditThinAddonBudgets(addonDir: string): {
+    ok: boolean;
+    issues: CatalogIssue[];
+    evidence: {
+      overages?: Array<{
+        metric: string;
+        count: number;
+        limit: number;
+        reason: string | null;
+      }>;
+      counts?: object;
+      version?: number;
+    };
+  };
+  export function writeThinAddonBudgetsEvidence(addonDir: string, evidence: object): void;
+}
+
+declare module '../../../tools/adk/engineeringPractice.mjs' {
+  export function auditEngineeringPractice(addonDir: string): {
+    ok: boolean;
+    issues: CatalogIssue[];
+    evidence: object;
+    checkResults: Record<string, { ok: boolean; findings: object[] }>;
+  };
+  export function writeEngineeringPracticeEvidence(addonDir: string, evidence: object): void;
+}
+
 declare module '../../../tools/adk/certifyChecks.mjs' {
   export function recordMachineChecks(addonDir: string): object;
 }

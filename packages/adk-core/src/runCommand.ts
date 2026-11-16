@@ -11,6 +11,8 @@ import {
   initProject,
   keysProject,
   packProject,
+  budgetsProject,
+  engineeringProject,
   planProject,
   requirementsProject,
   rulesProject,
@@ -91,6 +93,10 @@ export async function runCommand(request: CommandRequest): Promise<CommandResult
       return requirementsProject(dir);
     case 'plan':
       return planProject(dir);
+    case 'budgets':
+      return budgetsProject(dir);
+    case 'engineering':
+      return engineeringProject(dir);
     case 'scaffold':
       return scaffoldProject({
         dir,

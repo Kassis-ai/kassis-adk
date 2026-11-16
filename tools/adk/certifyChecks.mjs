@@ -7,6 +7,14 @@ import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {
+  auditThinAddonBudgets,
+  writeThinAddonBudgetsEvidence,
+} from './thinAddonBudgets.mjs';
+import {
+  auditEngineeringPractice,
+  writeEngineeringPracticeEvidence,
+} from './engineeringPractice.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT_STORED_MAX = 4000;
@@ -215,6 +223,34 @@ function runRequirementPlanCheck(addonDir) {
   return finishCheck('adk.requirement-plan-mapped', inputHash, exitCode, started, output);
 }
 
+function runThinAddonBudgetsCheck(addonDir) {
+  const started = Date.now();
+  const inputHash = sha256Text(
+    `${readText(path.join(addonDir, 'manifest.json'))}\n${readText(path.join(addonDir, 'package.json'))}\n${readText(path.join(addonDir, 'BUDGETS.md'))}\n${hashTree(addonDir, ['src'])}`
+  );
+  const audited = auditThinAddonBudgets(addonDir);
+  writeThinAddonBudgetsEvidence(addonDir, audited.evidence);
+  const output = JSON.stringify({
+    ok: audited.ok,
+    overages: audited.evidence.overages,
+    issues: audited.issues,
+  });
+  return finishCheck('adk.thin-addon-budgets', inputHash, audited.ok ? 0 : 1, started, output);
+}
+
+function runEngineeringPracticeChecks(addonDir) {
+  const started = Date.now();
+  const inputHash = hashTree(addonDir, ['src', 'frontend']);
+  const audited = auditEngineeringPractice(addonDir);
+  writeEngineeringPracticeEvidence(addonDir, audited.evidence);
+  const rows = [];
+  for (const [id, result] of Object.entries(audited.checkResults)) {
+    const output = JSON.stringify({ ok: result.ok, findings: result.findings });
+    rows.push(finishCheck(id, inputHash, result.ok ? 0 : 1, started, output));
+  }
+  return rows;
+}
+
 function buildInputHash(addonDir) {
   return sha256Text(
     `${readText(path.join(addonDir, 'package.json'))}\n${hashTree(addonDir, ['src', 'frontend'])}`
@@ -238,6 +274,8 @@ export function recordMachineChecks(addonDir) {
     runRequirementsTracedCheck(root),
     runRequirementPlanCheck(root),
     attestPinnedProfileCheck(root),
+    runThinAddonBudgetsCheck(root),
+    ...runEngineeringPracticeChecks(root),
   ];
   const document = {
     cliVersion: cliPackageVersion(),

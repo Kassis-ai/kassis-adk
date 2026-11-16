@@ -936,6 +936,60 @@
       "message": "Requirement '{id}' has rung '{rung}', which is not configuration, extension-point, facade, own-code or gap",
       "fix": "Set the rung for '{id}' to configuration, extension-point, facade, own-code, or gap. A duplicate row uses rung duplicate.",
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-722"
+    },
+    {
+      "code": "KADK-723",
+      "category": "attestation",
+      "severity": "error",
+      "title": "Soft budget exceeded without reason",
+      "message": "Soft budget '{metric}' is {count} (limit {limit}) and BUDGETS.md has no reason",
+      "fix": "Add a BUDGETS.md row for '{metric}' with Count, Limit and a written reason the approver can acknowledge, then run kassis-addon budgets.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-723"
+    },
+    {
+      "code": "KADK-724",
+      "category": "attestation",
+      "severity": "error",
+      "title": "Outbound call has no timeout",
+      "message": "Outbound call in '{path}' has no timeout, AbortSignal or signal option",
+      "fix": "Pass a timeout, AbortSignal.timeout, or signal on every fetch/HTTP call in '{path}', then run kassis-addon engineering.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-724"
+    },
+    {
+      "code": "KADK-725",
+      "category": "attestation",
+      "severity": "error",
+      "title": "Query has no pagination cap",
+      "message": "findMany in '{path}' has no take or skip",
+      "fix": "Add take or skip to the findMany call in '{path}', then run kassis-addon engineering.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-725"
+    },
+    {
+      "code": "KADK-726",
+      "category": "attestation",
+      "severity": "error",
+      "title": "UI chrome is outside i18n",
+      "message": "UI file '{path}' has chrome outside translation keys or imports i18next",
+      "fix": "Move user-visible chrome in '{path}' to host-sdk translation keys (en/fr). Do not import i18next from addon UI. Then run kassis-addon engineering.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-726"
+    },
+    {
+      "code": "KADK-727",
+      "category": "attestation",
+      "severity": "error",
+      "title": "Handler is not idempotent",
+      "message": "Handler '{path}' mutates without an idempotency marker, upsert, findFirst/findUnique or ON CONFLICT",
+      "fix": "Make the job or event handler in '{path}' safe to run twice (idempotent key, upsert, or prior find), then run kassis-addon engineering.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-727"
+    },
+    {
+      "code": "KADK-728",
+      "category": "attestation",
+      "severity": "error",
+      "title": "Module-level mutable state",
+      "message": "Server file '{path}' declares module-level let or var state",
+      "fix": "Move mutable state out of module scope in '{path}' so hot toggle does not keep stale values, then run kassis-addon engineering.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-728"
     }
   ]
 }

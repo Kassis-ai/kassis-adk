@@ -27,6 +27,8 @@ Group A reuse checks run inside `kassis-addon check`: banned packages are listed
 
 The guardrail catalogue is `@kassis/addon-sdk/guardrails.json` (group, level, check, KADK code, fix hint). `kassis adk sync` writes catalogue metadata into `AGENTS.md` and related agent rule files. `kassis-addon certify` uses the catalogue fix hint when a guardrail fails with its primary KADK code.
 
+Group D soft budgets (`adk.thin-addon-budgets`) are machine-checked by `kassis-addon budgets` (KADK-723 when over a limit without a `BUDGETS.md` reason). Group E engineering checks (`adk.outbound-timeouts`, `adk.pagination-and-query-caps`, `adk.ui-i18n`, `adk.idempotent-handlers`, `adk.no-module-state`) are machine-checked by `kassis-addon engineering` (KADK-724–728). Certify records those check ids in `.kassis/evidence/checks.json`. They are not yet on the signed coding profile or the unsigned v3 draft (`inProfile: false`); adding them is a human profile update (D7).
+
 `node tools/adk/kassis-adk-mcp.mjs` is a stdio MCP server. Messages are newline-delimited JSON. Project tools: `validate_manifest`, `run_checks`, `explain_error`, and `scaffold`. Offline discovery tools (packaged data, no network): `list_facades`, `get_facade`, `list_extension_points`, `list_events`, `get_event_schema`, `get_tier_matrix`, `list_guardrails`, `get_guardrail`, `search_docs`, `get_example`, and `find_core_feature` (maps a common need to the core feature, facade or extension point, and an example). Optional live mode against `GET /api/v1/adk/catalog` waits on that catalog route (S2.36).
 
 ## Registry, runs, and attestation
@@ -57,6 +59,7 @@ Autonomy is read from the agent profile. If it cannot be read, the level is the 
 
 | Date       | Change                                                                                                                                        |
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-16 | Group D/E machine checks: `kassis-addon budgets` (KADK-723) and `kassis-addon engineering` (KADK-724–728); catalogue rows flipped/added with `inProfile: false` pending D7 profile update. |
 | 2026-11-16 | Unsigned profile v3: every blocking guardrail names a machine check. `adk.work-in-own-repo`, `adk.declared-permissions-and-audit`, `adk.declare-widened-access`, and `adk.no-unrequested-refactors` are advisory. Signing remains D7. |
 | 2026-11-16 | Core feature map MCP tool `find_core_feature` (packaged `core-features.json`: need → feature, facade/extension, example). |
 | 2026-11-16 | Group A reuse checks in `kassis-addon check`: banned dependencies (KADK-221), private mechanism tables (KADK-310/311), owned-table notes (KADK-312). |

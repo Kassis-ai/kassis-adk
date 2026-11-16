@@ -975,10 +975,65 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Fix: Set the rung for '{id}' to configuration, extension-point, facade, own-code, or gap. A duplicate row uses rung duplicate.
 - Reported by: `kassis-addon plan`; `kassis-addon certify`
 
+<a id="kadk-723"></a>
+
+### KADK-723 Soft budget exceeded without reason
+
+- Severity: error
+- Message: `Soft budget '{metric}' is {count} (limit {limit}) and BUDGETS.md has no reason`
+- Fix: Add a BUDGETS.md row for '{metric}' with Count, Limit and a written reason the approver can acknowledge, then run kassis-addon budgets.
+- Reported by: `kassis-addon budgets`; `kassis-addon certify`
+
+<a id="kadk-724"></a>
+
+### KADK-724 Outbound call has no timeout
+
+- Severity: error
+- Message: `Outbound call in '{path}' has no timeout, AbortSignal or signal option`
+- Fix: Pass a timeout, AbortSignal.timeout, or signal on every fetch/HTTP call in '{path}', then run kassis-addon engineering.
+- Reported by: `kassis-addon engineering`; `kassis-addon certify`
+
+<a id="kadk-725"></a>
+
+### KADK-725 Query has no pagination cap
+
+- Severity: error
+- Message: `findMany in '{path}' has no take or skip`
+- Fix: Add take or skip to the findMany call in '{path}', then run kassis-addon engineering.
+- Reported by: `kassis-addon engineering`; `kassis-addon certify`
+
+<a id="kadk-726"></a>
+
+### KADK-726 UI chrome is outside i18n
+
+- Severity: error
+- Message: `UI file '{path}' has chrome outside translation keys or imports i18next`
+- Fix: Move user-visible chrome in '{path}' to host-sdk translation keys (en/fr). Do not import i18next from addon UI. Then run kassis-addon engineering.
+- Reported by: `kassis-addon engineering`; `kassis-addon certify`
+
+<a id="kadk-727"></a>
+
+### KADK-727 Handler is not idempotent
+
+- Severity: error
+- Message: `Handler '{path}' mutates without an idempotency marker, upsert, findFirst/findUnique or ON CONFLICT`
+- Fix: Make the job or event handler in '{path}' safe to run twice (idempotent key, upsert, or prior find), then run kassis-addon engineering.
+- Reported by: `kassis-addon engineering`; `kassis-addon certify`
+
+<a id="kadk-728"></a>
+
+### KADK-728 Module-level mutable state
+
+- Severity: error
+- Message: `Server file '{path}' declares module-level let or var state`
+- Fix: Move mutable state out of module scope in '{path}' so hot toggle does not keep stale values, then run kassis-addon engineering.
+- Reported by: `kassis-addon engineering`; `kassis-addon certify`
+
 ## Changelog
 
 | Date       | Change                                                                                                                                                                                                                      |
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-16 | KADK-723 soft budgets without BUDGETS.md reason. KADK-724–728 engineering practice (timeouts, pagination, i18n, idempotent handlers, no module state). `kassis-addon budgets` / `engineering`; certify applies the same gates. |
 | 2026-11-16 | KADK-221 when package.json depends on a banned mail, scheduler, upload, storage, auth, database, UI kit, or LLM package. KADK-310 when an owned or created table is a private approval, notification, audit, user, or role table. KADK-311 warns when REUSE.md explains that table. KADK-312 warns when an owned table has no database.tableNotes core alternative. |
 | 2026-11-16 | KADK-720 when PLAN.md is missing. KADK-721 when a requirement row has no rung. KADK-722 when the rung is not configuration, extension-point, facade, own-code, or gap. `kassis-addon plan` writes `.kassis/evidence/requirement-mapping.json`; certify applies the same gate. |
 | 2026-11-16 | KADK-718 when REQUIREMENTS.md is missing. KADK-719 when a Must row has no mention in test/ or GAPS.md. `kassis-addon requirements` writes `.kassis/evidence/requirements-coverage.json`; certify applies the same gate.       |

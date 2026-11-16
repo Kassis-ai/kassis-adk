@@ -102,9 +102,9 @@
       "id": "adk.thin-addon-budgets",
       "group": "D",
       "level": "L4",
-      "check": "planned:adk.thin-addon-budgets",
-      "kadkCode": "KADK-703",
-      "fixHint": "When over a soft budget (tables, routes, dependencies, code size), add a written reason the approver acknowledges.",
+      "check": "adk.thin-addon-budgets",
+      "kadkCode": "KADK-723",
+      "fixHint": "When over a soft budget (tables, routes, dependencies, code size), add a BUDGETS.md reason the approver acknowledges.",
       "inProfile": false
     },
     {
@@ -133,6 +133,51 @@
       "kadkCode": "KADK-703",
       "fixHint": "Ship a down script for every up script or mark the migration irreversible with a reason in the SQL.",
       "inProfile": true
+    },
+    {
+      "id": "adk.outbound-timeouts",
+      "group": "E",
+      "level": "L3",
+      "check": "adk.outbound-timeouts",
+      "kadkCode": "KADK-724",
+      "fixHint": "Give every outbound HTTP call a timeout, AbortSignal or signal option.",
+      "inProfile": false
+    },
+    {
+      "id": "adk.pagination-and-query-caps",
+      "group": "E",
+      "level": "L3",
+      "check": "adk.pagination-and-query-caps",
+      "kadkCode": "KADK-725",
+      "fixHint": "Cap every findMany with take or skip.",
+      "inProfile": false
+    },
+    {
+      "id": "adk.ui-i18n",
+      "group": "E",
+      "level": "L3",
+      "check": "adk.ui-i18n",
+      "kadkCode": "KADK-726",
+      "fixHint": "Put UI chrome in host-sdk translation keys; do not import i18next from addon UI.",
+      "inProfile": false
+    },
+    {
+      "id": "adk.idempotent-handlers",
+      "group": "E",
+      "level": "L3",
+      "check": "adk.idempotent-handlers",
+      "kadkCode": "KADK-727",
+      "fixHint": "Make job and event handlers safe to run twice (idempotent key, upsert, or prior find).",
+      "inProfile": false
+    },
+    {
+      "id": "adk.no-module-state",
+      "group": "E",
+      "level": "L3",
+      "check": "adk.no-module-state",
+      "kadkCode": "KADK-728",
+      "fixHint": "Do not keep mutable let/var state at module scope; hot toggle must not retain stale values.",
+      "inProfile": false
     },
     {
       "id": "adk.declare-widened-access",
