@@ -136,7 +136,7 @@ function callTool(name: string, args: Record<string, unknown>): CommandResult {
   if (isDiscoveryTool(name)) return callDiscoveryTool(name, args);
   return failure(
     `Unknown tool ${name}`,
-    'Use validate_manifest, run_checks, explain_error, scaffold, or a discovery tool (list_facades, get_facade, list_extension_points, list_events, get_event_schema, get_tier_matrix, search_docs, get_example).'
+    'Use validate_manifest, run_checks, explain_error, scaffold, or a discovery tool (list_facades, get_facade, list_extension_points, list_events, get_event_schema, get_tier_matrix, search_docs, get_example, find_core_feature).'
   );
 }
 

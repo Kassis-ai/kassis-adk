@@ -48,6 +48,19 @@ export interface DocEntry {
   readonly text: string;
 }
 
+export interface CoreFeatureMapEntry {
+  readonly id: string;
+  readonly need: string;
+  readonly aliases: readonly string[];
+  readonly coreFeature: string;
+  readonly facade: string | null;
+  readonly extensionPoint: string | null;
+  readonly summary: string;
+  readonly example: string;
+  readonly doNot?: string;
+  readonly note?: string;
+}
+
 export interface GuardrailCatalogRow {
   readonly id: string;
   readonly group: string;
@@ -203,6 +216,42 @@ export function loadDocs(): readonly DocEntry[] {
     docs.push({ id: item.id, path: item.path, title: item.title, text: item.text });
   }
   return docs;
+}
+
+function stringList(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((item): item is string => typeof item === 'string');
+}
+
+export function loadCoreFeatures(): readonly CoreFeatureMapEntry[] {
+  const parsed = readDiscoveryJson('core-features.json');
+  if (!isRecordValue(parsed) || !Array.isArray(parsed.features)) return [];
+  const features: CoreFeatureMapEntry[] = [];
+  for (const item of parsed.features) {
+    if (!isRecordValue(item)) continue;
+    if (typeof item.id !== 'string' || typeof item.need !== 'string') continue;
+    if (typeof item.coreFeature !== 'string' || typeof item.summary !== 'string') continue;
+    if (typeof item.example !== 'string') continue;
+    const facade =
+      item.facade === null || typeof item.facade === 'string' ? item.facade : null;
+    const extensionPoint =
+      item.extensionPoint === null || typeof item.extensionPoint === 'string'
+        ? item.extensionPoint
+        : null;
+    features.push({
+      id: item.id,
+      need: item.need,
+      aliases: stringList(item.aliases),
+      coreFeature: item.coreFeature,
+      facade,
+      extensionPoint,
+      summary: item.summary,
+      example: item.example,
+      ...(typeof item.doNot === 'string' ? { doNot: item.doNot } : {}),
+      ...(typeof item.note === 'string' ? { note: item.note } : {}),
+    });
+  }
+  return features;
 }
 
 export function facadeArea(method: string): string {

@@ -1,9 +1,10 @@
 /**
- * MCP tool schemas and router for offline discovery (S2.38).
+ * MCP tool schemas and router for offline discovery (S2.38 / S2.50).
  */
 import type { CommandResult } from './types.ts';
 import { failure } from './issues.ts';
 import {
+  findCoreFeature,
   getEventSchema,
   getExample,
   getFacade,
@@ -27,6 +28,7 @@ const DISCOVERY_TOOLS = new Set([
   'get_guardrail',
   'search_docs',
   'get_example',
+  'find_core_feature',
 ]);
 
 export function isDiscoveryTool(name: string): boolean {
@@ -44,9 +46,10 @@ export function callDiscoveryTool(name: string, args: Record<string, unknown>): 
   if (name === 'get_guardrail') return getGuardrail(args);
   if (name === 'search_docs') return searchDocs(args);
   if (name === 'get_example') return getExample(args);
+  if (name === 'find_core_feature') return findCoreFeature(args);
   return failure(
     `Unknown discovery tool ${name}`,
-    'Use list_facades, get_facade, list_extension_points, list_events, get_event_schema, get_tier_matrix, list_guardrails, get_guardrail, search_docs, or get_example.'
+    'Use list_facades, get_facade, list_extension_points, list_events, get_event_schema, get_tier_matrix, list_guardrails, get_guardrail, search_docs, get_example, or find_core_feature.'
   );
 }
 
@@ -152,6 +155,21 @@ export const DISCOVERY_TOOL_DEFINITIONS = [
         id: { type: 'string' },
         kind: { type: 'string' },
         query: { type: 'string' },
+      },
+    },
+  },
+  {
+    name: 'find_core_feature',
+    description:
+      'Map a common need (store a file, ask for approval, remind a user, score risk, …) to the core feature, facade or extension point, and an example.',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        need: { type: 'string', description: 'Natural-language need, e.g. store a file.' },
+        query: { type: 'string', description: 'Alias for need.' },
+        q: { type: 'string', description: 'Alias for need.' },
+        feature: { type: 'string', description: 'Alias for need.' },
+        id: { type: 'string', description: 'Stable feature id from a previous list.' },
       },
     },
   },

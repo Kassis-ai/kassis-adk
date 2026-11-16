@@ -1,13 +1,14 @@
 /**
- * Offline ADK MCP discovery tools (S2.38 / B7).
+ * Offline ADK MCP discovery tools (S2.38 / B7, S2.50 feature map).
  * Reads packaged JSON under ./discovery and @kassis/addon-sdk/tier-matrix.json.
  * Optional live catalog mode waits on S2.36 (GET /api/v1/adk/catalog).
  */
-import type { CommandResult } from './types.ts';
+import type { CommandResult, JsonObject } from './types.ts';
 import { commandResult, failure, operationalIssue } from './issues.ts';
 import {
   argString,
   facadeArea,
+  loadCoreFeatures,
   loadDocs,
   loadExamples,
   loadExtensionPoints,
@@ -15,6 +16,7 @@ import {
   loadPlatformEvents,
   loadTierMatrixRows,
   rowToJson,
+  type CoreFeatureMapEntry,
   type DocEntry,
 } from './mcpDiscoveryData.ts';
 
@@ -320,6 +322,130 @@ export function getExample(args: Record<string, unknown>): CommandResult {
       kind: item.kind,
       title: item.title,
       summary: item.summary,
+    })),
+  });
+}
+
+function coreFeatureToJson(entry: CoreFeatureMapEntry): JsonObject {
+  return {
+    id: entry.id,
+    need: entry.need,
+    aliases: [...entry.aliases],
+    coreFeature: entry.coreFeature,
+    facade: entry.facade,
+    extensionPoint: entry.extensionPoint,
+    summary: entry.summary,
+    example: entry.example,
+    ...(entry.doNot ? { doNot: entry.doNot } : {}),
+    ...(entry.note ? { note: entry.note } : {}),
+  };
+}
+
+function scoreCoreFeature(entry: CoreFeatureMapEntry, terms: string[]): number {
+  const hay = [
+    entry.id,
+    entry.need,
+    entry.coreFeature,
+    entry.summary,
+    entry.facade || '',
+    entry.extensionPoint || '',
+    ...entry.aliases,
+  ]
+    .join('\n')
+    .toLowerCase();
+  let score = 0;
+  for (const term of terms) {
+    if (!term) continue;
+    if (entry.id === term || entry.need.toLowerCase() === term) score += 20;
+    if (entry.need.toLowerCase().includes(term)) score += 10;
+    if (entry.aliases.some((alias) => alias.toLowerCase() === term)) score += 12;
+    if (entry.aliases.some((alias) => alias.toLowerCase().includes(term))) score += 6;
+    if (entry.coreFeature.toLowerCase().includes(term)) score += 5;
+    if (hay.includes(term)) score += 2;
+  }
+  return score;
+}
+
+/** Map a common need to a core feature, facade or extension point, and example (S2.50). */
+export function findCoreFeature(args: Record<string, unknown> = {}): CommandResult {
+  const id = argString(args, 'id');
+  const need =
+    argString(args, 'need') || argString(args, 'query') || argString(args, 'q') || argString(args, 'feature');
+  const features = loadCoreFeatures();
+  if (id) {
+    const match = features.find((item) => item.id === id);
+    if (!match) {
+      return commandResult(
+        [
+          operationalIssue(
+            'ADK-DISCOVERY',
+            'error',
+            `Unknown core feature ${id}`,
+            'Call find_core_feature without id, or pass need such as "store a file".'
+          ),
+        ],
+        { id }
+      );
+    }
+    return commandResult([], { mode: 'offline', feature: coreFeatureToJson(match) });
+  }
+  if (!need) {
+    return commandResult([], {
+      mode: 'offline',
+      count: features.length,
+      features: features.map((item) => ({
+        id: item.id,
+        need: item.need,
+        coreFeature: item.coreFeature,
+        facade: item.facade,
+        extensionPoint: item.extensionPoint,
+      })),
+    });
+  }
+  const terms = need
+    .toLowerCase()
+    .split(/[^a-z0-9._-]+/i)
+    .filter(Boolean);
+  const ranked = features
+    .map((feature) => ({ feature, score: scoreCoreFeature(feature, terms) }))
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score || a.feature.id.localeCompare(b.feature.id));
+  if (ranked.length === 0) {
+    return commandResult(
+      [
+        operationalIssue(
+          'ADK-DISCOVERY',
+          'error',
+          `No core feature matches ${need}`,
+          'Try a shorter need (store a file, ask for approval, remind a user, score risk) or omit need to list all.'
+        ),
+      ],
+      { need, count: 0, features: [] }
+    );
+  }
+  if (ranked.length === 1 || (ranked[0] && ranked[0].score >= (ranked[1]?.score || 0) + 8)) {
+    const top = ranked[0];
+    if (top) {
+      return commandResult([], {
+        mode: 'offline',
+        need,
+        feature: coreFeatureToJson(top.feature),
+        alternatives: ranked.slice(1, 4).map((item) => ({
+          id: item.feature.id,
+          need: item.feature.need,
+          coreFeature: item.feature.coreFeature,
+          score: item.score,
+        })),
+      });
+    }
+  }
+  return commandResult([], {
+    mode: 'offline',
+    need,
+    count: ranked.length,
+    features: ranked.map(({ feature, score }) => ({
+      ...coreFeatureToJson(feature),
+      score,
     })),
   });
 }

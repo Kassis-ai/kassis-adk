@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  findCoreFeature,
   getEventSchema,
   getExample,
   getFacade,
@@ -29,10 +30,11 @@ const DISCOVERY_NAMES = [
   'get_guardrail',
   'search_docs',
   'get_example',
+  'find_core_feature',
 ] as const;
 
-describe('offline ADK MCP discovery tools (S2.38)', () => {
-  it('registers the ten discovery tool definitions', () => {
+describe('offline ADK MCP discovery tools (S2.38 / S2.50)', () => {
+  it('registers the eleven discovery tool definitions', () => {
     expect(DISCOVERY_TOOL_DEFINITIONS.map((tool) => tool.name)).toEqual([...DISCOVERY_NAMES]);
     for (const name of DISCOVERY_NAMES) {
       expect(isDiscoveryTool(name)).toBe(true);
@@ -128,9 +130,53 @@ describe('offline ADK MCP discovery tools (S2.38)', () => {
     expect(example.snippet).toContain('defineMcpTool');
   });
 
+  it('find_core_feature maps common needs to facade, extension and example', () => {
+    const listed = findCoreFeature({});
+    expect(listed.ok).toBe(true);
+    expect(Number(listed.data.count)).toBeGreaterThanOrEqual(4);
+    const catalog = listed.data.features as { id: string; need: string }[];
+    expect(catalog.some((row) => row.id === 'store-file')).toBe(true);
+
+    const store = findCoreFeature({ need: 'store a file' });
+    expect(store.ok).toBe(true);
+    const storeFeature = store.data.feature as {
+      id: string;
+      coreFeature: string;
+      facade: string;
+      extensionPoint: string;
+      example: string;
+    };
+    expect(storeFeature.id).toBe('store-file');
+    expect(storeFeature.coreFeature).toBe('Documents');
+    expect(storeFeature.facade).toBe('ctx.core.documents.create');
+    expect(storeFeature.extensionPoint).toBe('ctx.extend.registerDocumentable');
+    expect(storeFeature.example).toContain('ctx.core.documents.create');
+
+    const approval = findCoreFeature({ query: 'ask for approval' });
+    expect(approval.ok).toBe(true);
+    expect((approval.data.feature as { id: string }).id).toBe('ask-for-approval');
+
+    const remind = findCoreFeature({ need: 'remind a user' });
+    expect(remind.ok).toBe(true);
+    expect((remind.data.feature as { facade: string }).facade).toBe('ctx.notify.send');
+
+    const risk = findCoreFeature({ need: 'score risk' });
+    expect(risk.ok).toBe(true);
+    expect((risk.data.feature as { facade: string }).facade).toBe('ctx.risk.submitAssessments');
+
+    const byId = findCoreFeature({ id: 'raise-a-flag' });
+    expect(byId.ok).toBe(true);
+    expect((byId.data.feature as { facade: string }).facade).toBe('ctx.flags.ensure');
+
+    const missing = findCoreFeature({ need: 'teleport across dimensions' });
+    expect(missing.ok).toBe(false);
+    expect(missing.issues[0]?.code).toBe('ADK-DISCOVERY');
+  });
+
   it('runContainedTool serves discovery tools without a project dir', () => {
     const result = runContainedTool('/tmp', 'list_facades', {});
     expect(result.ok).toBe(true);
     expect(callDiscoveryTool('list_events', {}).ok).toBe(true);
+    expect(callDiscoveryTool('find_core_feature', { need: 'store a file' }).ok).toBe(true);
   });
 });

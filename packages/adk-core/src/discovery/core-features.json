@@ -1,0 +1,183 @@
+{
+  "schemaVersion": 1,
+  "description": "Common needs mapped to core features, facades or extension points, and examples for offline MCP find_core_feature (S2.50).",
+  "features": [
+    {
+      "id": "store-file",
+      "need": "store a file",
+      "aliases": ["upload document", "attach file", "file storage", "save document"],
+      "coreFeature": "Documents",
+      "facade": "ctx.core.documents.create",
+      "extensionPoint": "ctx.extend.registerDocumentable",
+      "summary": "Store and attach files through core documents; register documentable on addon record types.",
+      "example": "await ctx.core.documents.create(principal, { ownerType: 'acme-widget.item', ownerId: itemId, filename, bytes });",
+      "doNot": "Do not add a private upload or object-storage client."
+    },
+    {
+      "id": "ask-for-approval",
+      "need": "ask for approval",
+      "aliases": ["approval workflow", "maker checker", "require approval", "approvable"],
+      "coreFeature": "Approvals",
+      "facade": "ctx.core.approvals.guard",
+      "extensionPoint": "ctx.extend.registerApprovable",
+      "summary": "Send work through the core approvals engine; register the record type as approvable.",
+      "example": "await ctx.core.approvals.guard(principal, { recordType: 'acme-widget.item', recordId: itemId, action: 'publish' });",
+      "doNot": "Do not create an addon-owned approval or status-history table."
+    },
+    {
+      "id": "remind-a-user",
+      "need": "remind a user",
+      "aliases": ["notify user", "send notification", "in-app alert", "deadline reminder"],
+      "coreFeature": "Notifications",
+      "facade": "ctx.notify.send",
+      "extensionPoint": "ctx.notify.registerType",
+      "summary": "Register notification types and send through core notify so users control preferences.",
+      "example": "ctx.notify.registerType({ key: 'acme-widget.due', title: 'Item due' });\nawait ctx.notify.send(principal, { type: 'acme-widget.due', userId, payload: { itemId } });",
+      "doNot": "Do not keep a private notification table or mail-out side channel."
+    },
+    {
+      "id": "score-risk",
+      "need": "score risk",
+      "aliases": ["risk score", "risk assessment", "submit risk factors", "risk lane"],
+      "coreFeature": "Risk",
+      "facade": "ctx.risk.submitAssessments",
+      "extensionPoint": "ctx.extend.registerRiskFactors",
+      "summary": "Submit assessments and factors through core risk; contribute factors via the extension point.",
+      "example": "await ctx.risk.submitAssessments(principal, { subjectType: 'party', subjectId: partyId, assessments: [...] });",
+      "doNot": "Do not invent a parallel risk scoring engine in the addon."
+    },
+    {
+      "id": "record-audit",
+      "need": "record an audit action",
+      "aliases": ["audit trail", "audit log", "who did what"],
+      "coreFeature": "Audit",
+      "facade": "ctx.audit.record",
+      "extensionPoint": "ctx.extend.registerAuditSubject",
+      "summary": "Declare actions in audit.actions and record with a host principal; map record types to audit subjects.",
+      "example": "await ctx.audit.record(principal, 'acme-widget.started', { subjectType: 'addon', subjectId: ctx.id });",
+      "doNot": "Do not write a private audit table."
+    },
+    {
+      "id": "raise-a-flag",
+      "need": "raise a flag",
+      "aliases": ["risk flag", "compliance flag", "flag entity", "flaggable"],
+      "coreFeature": "Flags",
+      "facade": "ctx.flags.ensure",
+      "extensionPoint": "ctx.extend.registerFlaggable",
+      "summary": "Ensure and evaluate flags through core; register flaggable record types when the process needs them.",
+      "example": "await ctx.flags.ensure(principal, { code: 'sanctions_hit', subjectType: 'party', subjectId: partyId });",
+      "doNot": "Do not store flags in an addon-owned table."
+    },
+    {
+      "id": "schedule-work",
+      "need": "schedule background work",
+      "aliases": ["cron", "scheduled job", "remind later", "enqueue job", "background task"],
+      "coreFeature": "Jobs",
+      "facade": "ctx.jobs.schedule",
+      "extensionPoint": null,
+      "summary": "Register handlers and schedule or enqueue through core jobs; declare job types in the manifest.",
+      "example": "ctx.jobs.register('acme-widget.refresh', async (job) => { /* ... */ });\nawait ctx.jobs.schedule('acme-widget.refresh', { cron: '0 * * * *' });",
+      "doNot": "Do not add a private scheduler or cron library."
+    },
+    {
+      "id": "call-ai",
+      "need": "call an AI model",
+      "aliases": ["llm", "prompt", "generate text", "embeddings"],
+      "coreFeature": "LLM",
+      "facade": "ctx.llm.invoke",
+      "extensionPoint": "ctx.prompts.registerPack",
+      "summary": "Invoke models through Settings-owned AI config; register prompt packs for reusable prompts.",
+      "example": "const result = await ctx.llm.invoke(principal, { promptKey: 'acme-widget.summarize', input: { text } });",
+      "doNot": "Do not hardcode a provider SDK or model name when Settings already own them."
+    },
+    {
+      "id": "create-a-case",
+      "need": "create a case",
+      "aliases": ["open case", "case workflow", "investigation case"],
+      "coreFeature": "Cases",
+      "facade": "ctx.core.cases.create",
+      "extensionPoint": null,
+      "summary": "Create and update cases through the core case engine; process shape belongs in configuration or packs.",
+      "example": "const created = await ctx.core.cases.create(principal, { templateKey: 'acme-underwriting.application', title });",
+      "doNot": "Do not build a private case or workflow engine."
+    },
+    {
+      "id": "search-entities",
+      "need": "search entities",
+      "aliases": ["find party", "entity search", "lookup record", "link entities"],
+      "coreFeature": "Entities",
+      "facade": "ctx.core.entities.search",
+      "extensionPoint": "ctx.extend.registerLinkable",
+      "summary": "Search and link through core entity services; register linkable for addon record types.",
+      "example": "const hits = await ctx.core.entities.search(principal, { query: name, types: ['party'] });",
+      "doNot": "Do not query core tables directly for search."
+    },
+    {
+      "id": "check-permission",
+      "need": "check a permission",
+      "aliases": ["access control", "authorize user", "has permission", "rbac"],
+      "coreFeature": "Users and RBAC",
+      "facade": "ctx.core.users.hasPermission",
+      "extensionPoint": null,
+      "summary": "Gate on host principals and declared permissions; use hasPermission for conditional UI or handlers.",
+      "example": "const allowed = await ctx.core.users.hasPermission(principal, 'acme-widget.publish');",
+      "doNot": "Do not create a private user or role table."
+    },
+    {
+      "id": "send-email",
+      "need": "send email",
+      "aliases": ["email user", "communication", "mail", "communicable"],
+      "coreFeature": "Communication",
+      "facade": "ctx.extend.registerCommunicable",
+      "extensionPoint": "ctx.extend.registerCommunicable",
+      "summary": "Own communication for addon record types via registerCommunicable. A typed ctx.core.communication facade is planned (S2.15).",
+      "example": "ctx.extend.registerCommunicable({ ownerType: 'acme-widget.item', viewPermission: 'acme-widget.view', sendPermission: 'acme-widget.send' });",
+      "doNot": "Do not add a private mail client or SMTP library.",
+      "note": "ctx.core.communication.send / list land in S2.15; until then use communicable registration plus host mail UI."
+    },
+    {
+      "id": "publish-event",
+      "need": "publish a domain event",
+      "aliases": ["emit event", "subscribe event", "event bus"],
+      "coreFeature": "Events",
+      "facade": "ctx.events.publish",
+      "extensionPoint": null,
+      "summary": "Publish and subscribe with namespaced events declared in the manifest and JSON schemas.",
+      "example": "await ctx.events.publish(principal, 'acme-widget.started', { at: new Date().toISOString() });",
+      "doNot": "Do not emit through a private bus or unscoped core emit."
+    },
+    {
+      "id": "read-settings",
+      "need": "read a setting",
+      "aliases": ["configuration", "feature flag setting", "tenant setting"],
+      "coreFeature": "Settings",
+      "facade": "ctx.settings.get",
+      "extensionPoint": null,
+      "summary": "Read host Settings keys; do not hardcode catalogs a client can rename.",
+      "example": "const language = await ctx.settings.get('client.ui.language');",
+      "doNot": "Do not ship a parallel settings store in the addon."
+    },
+    {
+      "id": "call-external-http",
+      "need": "call an external HTTP API",
+      "aliases": ["egress", "outbound http", "webhook client", "fetch remote"],
+      "coreFeature": "HTTP egress",
+      "facade": "ctx.http.fetch",
+      "extensionPoint": null,
+      "summary": "Use declared egress via ctx.http.fetch so the host proxy and allow-list apply.",
+      "example": "const res = await ctx.http.fetch('https://api.example.com/v1/items', { method: 'GET' });",
+      "doNot": "Do not open raw sockets or undeclared fetch around the egress proxy."
+    },
+    {
+      "id": "contribute-automation",
+      "need": "add an automation action",
+      "aliases": ["weave action", "automation trigger", "workflow automation"],
+      "coreFeature": "Automation",
+      "facade": "ctx.extend.registerAutomationAction",
+      "extensionPoint": "ctx.extend.registerAutomationTrigger",
+      "summary": "Register triggers and actions the Weave engine can run; declare extends in the manifest.",
+      "example": "ctx.extend.registerAutomationAction({ id: 'acme-widget.refresh', run: async (input) => { /* ... */ } });",
+      "doNot": "Do not build a private rules engine for the same triggers."
+    }
+  ]
+}
