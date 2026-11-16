@@ -14,10 +14,12 @@ function manifestWith(changes: MutableManifest, remove: string[] = []): MutableM
 }
 
 function tierOne(changes: MutableManifest = {}): MutableManifest {
-  return manifestWith(
-    { tier: 1, data: undefined, database: { ownedTables: ['tprm_assessments'] }, ...changes },
-    ['data']
-  );
+  return manifestWith({
+    tier: 1,
+    data: { schema: 'addon_sample_tprm_check', retention: 'retain' },
+    database: { ownedTables: ['tprm_assessments'] },
+    ...changes,
+  });
 }
 
 function codesOf(manifest: unknown): string[] {
@@ -300,14 +302,45 @@ describe('validateManifestV2', () => {
 
     it('rejects a data.schema that does not match the id (KADK-304)', () => {
       const changes = {
-        data: { schema: 'addon_other' },
+        data: { schema: 'addon_other', retention: 'retain' },
         database: { ownedTables: ['addon_other.assessments'] },
       };
       expectOnly(manifestWith(changes), 'KADK-304', 'data.schema');
     });
 
     it('rejects tier 2 tables without data.schema (KADK-305)', () => {
-      expectOnly(manifestWith({}, ['data']), 'KADK-305', 'data.schema');
+      const { ok, issues } = validateManifestV2(
+        manifestWith({ database: { ownedTables: ['addon_sample_tprm_check.assessments'] } }, [
+          'data',
+        ])
+      );
+      expect(ok).toBe(false);
+      expect(issues.map((issue) => issue.code)).toEqual(['KADK-309', 'KADK-305']);
+    });
+
+    it('rejects owned tables without data.retention (KADK-309)', () => {
+      expectOnly(
+        manifestWith({ data: { schema: 'addon_sample_tprm_check' } }),
+        'KADK-309',
+        'data.retention'
+      );
+    });
+
+    it.each(['retain', 'archive', 'purge'] as const)(
+      'accepts data.retention %s when owned tables are declared',
+      (retention) => {
+        const database = { ownedTables: ['addon_sample_tprm_check.assessments'] };
+        const data = { schema: 'addon_sample_tprm_check', retention };
+        expect(validateManifestV2(manifestWith({ data, database })).ok).toBe(true);
+      }
+    );
+
+    it('rejects an invalid data.retention value (KADK-101)', () => {
+      const data = {
+        schema: 'addon_sample_tprm_check',
+        retention: 'delete',
+      };
+      expectOnly(manifestWith({ data, database: {} }), 'KADK-101', 'data.retention');
     });
 
     it('rejects a legacy table the addon does not own (KADK-306)', () => {

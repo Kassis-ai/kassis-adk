@@ -59,6 +59,9 @@ export interface ManifestDatabase {
   readonly readAccess?: readonly string[];
 }
 
+/** Uninstall handling for data in `data.schema`. Required when `database.ownedTables` is non-empty. */
+export type DataRetentionPolicy = 'retain' | 'archive' | 'purge';
+
 export type LegacyTableStrategy = 'retain' | 'rename';
 
 /** Tier 1 only: a table that still lives in `public` until Phase 4 moves it. */
@@ -209,7 +212,7 @@ export interface AddonManifestV2 {
   readonly prompts?: { readonly keys: readonly string[] };
   readonly secrets?: { readonly keys: readonly string[] };
   readonly config?: { readonly schema: JsonSchema };
-  readonly data?: { readonly schema: string };
+  readonly data?: { readonly schema: string; readonly retention?: DataRetentionPolicy };
   readonly database?: ManifestDatabase;
   readonly legacyTables?: readonly LegacyTableDeclaration[];
   readonly contributions?: { readonly mcp?: McpContributionDeclaration };

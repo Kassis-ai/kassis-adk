@@ -472,6 +472,15 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Fix: Read core data through ctx.core facades; ctx.data reaches only the addon's own schema.
 - Reported by: Addon database role (Phase 4)
 
+<a id="kadk-309"></a>
+
+### KADK-309 Owned tables without data.retention
+
+- Severity: error
+- Message: `database.ownedTables is set but data.retention is missing`
+- Fix: Set data.retention to retain, archive, or purge.
+- Reported by: `validateManifestV2` in `@kassis/addon-sdk`
+
 ## 4xx Events
 
 <a id="kadk-401"></a>

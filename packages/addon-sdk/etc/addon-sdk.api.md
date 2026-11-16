@@ -262,6 +262,7 @@ export interface AddonManifestV2 {
     // (undocumented)
     readonly data?: {
         readonly schema: string;
+        readonly retention?: DataRetentionPolicy;
     };
     // (undocumented)
     readonly database?: ManifestDatabase;
@@ -803,6 +804,11 @@ export interface CoreFacades {
 //
 // @public (undocumented)
 export function createKadkIssue(code: KadkCode, path: string, values?: KadkTemplateValues): KadkIssue;
+
+// Warning: (ae-missing-release-tag) "DataRetentionPolicy" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export type DataRetentionPolicy = 'retain' | 'archive' | 'purge';
 
 // Warning: (ae-missing-release-tag) "DeclareAddon" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1825,6 +1831,7 @@ export interface ManifestSettingsTab {
     readonly label: string;
     // (undocumented)
     readonly order?: number;
+    readonly permissions?: readonly string[];
 }
 
 // Warning: (ae-missing-release-tag) "ManifestSigning" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -2121,6 +2128,7 @@ export type QuestionnaireCompleteContext = {
 export type QuestionnaireDomainAdapter = {
     onResponseOpened?: (ctx: QuestionnaireOpenContext) => Promise<void>;
     onAnswerCommitted?: (ctx: QuestionnaireCommitContext) => Promise<void>;
+    dryRun?: (ctx: QuestionnaireDryRunContext) => Promise<QuestionnaireDryRunLine[]>;
     canAccessSubject?: (ctx: QuestionnaireSubjectAccessContext) => Promise<boolean>;
     extensionFields?: QuestionnaireExtensionField[];
 };
@@ -2138,12 +2146,30 @@ export type QuestionnaireDomainContribution = {
     adapter?: QuestionnaireDomainAdapter;
 };
 
+// Warning: (ae-missing-release-tag) "QuestionnaireDryRunContext" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type QuestionnaireDryRunContext = {
+    domain: string;
+    subject: QuestionnaireRegistrySubject;
+    responseId: string;
+    questionnaireId: string | null;
+};
+
+// Warning: (ae-missing-release-tag) "QuestionnaireDryRunLine" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type QuestionnaireDryRunLine = {
+    code: string;
+    detail: string | null;
+};
+
 // Warning: (ae-missing-release-tag) "QuestionnaireExtensionField" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export type QuestionnaireExtensionField = {
     key: string;
-    type: 'string' | 'string_list' | 'number' | 'boolean' | 'option_ref' | 'pack_ref' | 'flag_type_ref';
+    type: 'string' | 'string_list' | 'number' | 'boolean' | 'option_ref' | 'pack_ref' | 'flag_type_ref' | 'schema_path_ref';
     labelKey: string;
     label: string;
 };

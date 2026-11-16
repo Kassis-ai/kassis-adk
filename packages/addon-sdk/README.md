@@ -136,13 +136,14 @@ Keys of table 5.3 left out on purpose:
 
 ## Manifest v2
 
-Fields: `manifestVersion` (2), `id`, `name`, `version`, `publisher`, `tier`, `hostApi` (all required); `entrypoints.main`, `signature`, `contentHash`, `permissions[]`, `requiredPermissions`, `requires[]` and `optional[]` (capability + semver range), `provides[]` (capability + version), `events.publishes[]` (name + schema file), `events.subscribes`, `audit.actions`, `egress.hosts`, `jobs.types`, `prompts.keys`, `secrets.keys`, `config.schema`, `data.schema`, `database.ownedTables`, `database.readAccess`, `legacyTables[]`, `contributions.mcp`, `resourceTypes[]`, `ui` (entry file, runtime load, contributions, `slots`), `metadata` (informational only).
+Fields: `manifestVersion` (2), `id`, `name`, `version`, `publisher`, `tier`, `hostApi` (all required); `entrypoints.main`, `signature`, `contentHash`, `permissions[]`, `requiredPermissions`, `requires[]` and `optional[]` (capability + semver range), `provides[]` (capability + version), `events.publishes[]` (name + schema file), `events.subscribes`, `audit.actions`, `egress.hosts`, `jobs.types`, `prompts.keys`, `secrets.keys`, `config.schema`, `data.schema`, `data.retention` (`retain`, `archive`, `purge`; required when `database.ownedTables` is non-empty), `database.ownedTables`, `database.readAccess`, `legacyTables[]`, `contributions.mcp`, `resourceTypes[]`, `ui` (entry file, runtime load, contributions, `slots`), `metadata` (informational only).
 
 `validateManifestV2(manifest, options?)` returns `{ ok, issues }`; each issue has `code`, `path`, `message`, `fix` and `docs`. It runs the schema with Ajv, then the rules a schema cannot express:
 
 - Permissions, job types, prompt keys, published events and audit actions start with `<id>.` or the id with underscores; secret keys start with `<id>:`.
 - No duplicate entries; a capability is not both required and optional; every `requiredPermissions` entry is declared.
 - Tier 2 cannot declare `legacyTables` or `database.readAccess`, and its owned tables are qualified with `data.schema`, which must be `addon_<id with underscores>`.
+- Any non-empty `database.ownedTables` requires `data.retention` (`retain`, `archive`, or `purge`).
 - Tier 1 `legacyTables` name owned tables; a rename lands in the addon prefix.
 - Package paths stay inside the package; event schemas are `.schema.json` files; runtime-loaded UI has an entry file.
 - With `options.reservedNamespaces` (the host's core namespaces), the id must not be one of them.
@@ -183,7 +184,7 @@ Every field of the 9 `addons/*/manifest.json` files (counts are manifests that u
 | `config.aiProvider` / `aiModel` (investigation-panel)                                       | 1            | –                                                    | dropped: AI Settings own model and provider (C9)                                             |
 | `database.ownedTables`                                                                      | 9            | `database.ownedTables`                               | kept; tier 2 qualifies them with `data.schema`                                               |
 | `database.readAccess`                                                                       | 8            | `database.readAccess`                                | kept, tier 1 only                                                                            |
-| `database.dataRetentionPolicy`                                                              | 6            | –                                                    | dropped until the Phase 4 uninstall enforces retention                                       |
+| `database.dataRetentionPolicy`                                                              | 6            | `data.retention`                                     | moved under `data`; `purge` replaces v1 `delete`                                            |
 | `database.migrationsManifest` / `migrations`                                                | 3 / 1        | –                                                    | dropped until the Phase 4 runner defines migrations                                          |
 | `database.delegatedHostCapabilities`, `database.description`                                | 1, 3         | –                                                    | dropped (no reads; comment)                                                                  |
 | `legacyTables[]`                                                                            | 2            | `legacyTables[]`                                     | kept, tier 1 only; `strategy` and `removalDeadline` required                                 |

@@ -452,6 +452,15 @@
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-308"
     },
     {
+      "code": "KADK-309",
+      "category": "data",
+      "severity": "error",
+      "title": "Owned tables without data.retention",
+      "message": "database.ownedTables is set but data.retention is missing",
+      "fix": "Set data.retention to retain, archive, or purge.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-309"
+    },
+    {
       "code": "KADK-401",
       "category": "events",
       "severity": "error",

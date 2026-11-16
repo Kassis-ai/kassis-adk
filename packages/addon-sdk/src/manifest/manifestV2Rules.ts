@@ -276,6 +276,17 @@ function checkDataSchemaName(manifest: ManifestRecord, id: string): KadkIssue[] 
     : [];
 }
 
+/** Required when the addon declares any owned table (tier 1 or 2). */
+function checkDataRetention(manifest: ManifestRecord): KadkIssue[] {
+  const owned = stringsAt(recordAt(manifest, 'database'), 'ownedTables', 'database.ownedTables');
+  if (owned.length === 0) return [];
+  const retention = recordAt(manifest, 'data')['retention'];
+  return typeof retention === 'string' &&
+    (retention === 'retain' || retention === 'archive' || retention === 'purge')
+    ? []
+    : [createKadkIssue('KADK-309', 'data.retention')];
+}
+
 function checkTierTwoData(manifest: ManifestRecord): KadkIssue[] {
   const issues: KadkIssue[] = [];
   const database = recordAt(manifest, 'database');
@@ -335,6 +346,7 @@ export function checkManifestV2Rules(
     ...checkGroupPermissions(manifest),
     ...checkPackagePaths(manifest),
     ...checkEventSchemaFiles(manifest),
+    ...checkDataRetention(manifest),
     ...checkRuntimeLoadedUi(manifest),
     ...checkDataSchemaName(manifest, id),
     ...tierRules,

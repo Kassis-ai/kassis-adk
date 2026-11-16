@@ -38,7 +38,7 @@ export const validManifest = {
   config: {
     schema: { type: 'object', properties: { batchSize: { type: 'integer', minimum: 1 } } },
   },
-  data: { schema: 'addon_sample_tprm_check' },
+  data: { schema: 'addon_sample_tprm_check', retention: 'retain' },
   database: { ownedTables: ['addon_sample_tprm_check.assessments'] },
   contributions: { mcp: { entry: 'dist/mcp/contribution.js', tools: ['tprm_assessment_get'] } },
   resourceTypes: [

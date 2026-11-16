@@ -188,6 +188,11 @@
           "type": "string",
           "pattern": "^addon_[a-z0-9_]+$",
           "maxLength": 63
+        },
+        "retention": {
+          "description": "What happens to the addon schema and owned tables on uninstall.",
+          "type": "string",
+          "enum": ["retain", "archive", "purge"]
         }
       }
     },

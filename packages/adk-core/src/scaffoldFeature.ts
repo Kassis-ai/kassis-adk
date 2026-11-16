@@ -380,6 +380,9 @@ function scaffoldMigration(
   if (typeof data.schema !== 'string') {
     data.schema = schema;
   }
+  if (typeof data.retention !== 'string') {
+    data.retention = 'retain';
+  }
   loaded.manifest.data = data;
 
   const database = isRecordValue(loaded.manifest.database) ? { ...loaded.manifest.database } : {};
