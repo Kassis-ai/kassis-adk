@@ -9,7 +9,7 @@ sidebar_label: ADK error codes
 **Status:** GA
 **Version checked:** 2026-10-28
 **Technical owner:** Unassigned
-**Last reviewed:** 2026-10-28
+**Last reviewed:** 2026-11-16
 
 Every check of the addon development kit reports a stable `KADK-NNN` code with a message, a fix hint and a link to this page. The catalog is data: `packages/addon-sdk/codes/kadk-codes.json`, read through `listKadkCodes()` and `getKadkCode()` in `@kassis/addon-sdk`. A test keeps this page and the catalog in step (one anchor per code, no extra anchors).
 
@@ -361,6 +361,15 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Message: `Add-on '{id}' mounted a route with permission '{value}', which is not in permissions`
 - Fix: Declare '\{value\}' in permissions, or mount the route with a permission the manifest declares.
 - Reported by: `ctx.routes.mount` (3b)
+
+<a id="kadk-218"></a>
+
+### KADK-218 Tier 2 cannot provide a capability yet
+
+- Severity: error
+- Message: `Add-on '{id}' is tier 2; ctx.capabilities.provide is refused by the host`
+- Fix: Use requires to consume another addon's capability. Do not add provides[] for tier 2 until the host accepts provide.
+- Reported by: `kassis-addon scaffold` when `--kind=capability` and manifest tier is 2
 
 ## 3xx Data
 

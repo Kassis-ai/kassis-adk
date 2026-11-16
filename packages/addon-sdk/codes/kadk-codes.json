@@ -344,6 +344,15 @@
       "docs": "docs/developer/technical/adk/cli-reference.md"
     },
     {
+      "code": "KADK-218",
+      "category": "boundaries",
+      "severity": "error",
+      "title": "Tier 2 cannot provide a capability yet",
+      "message": "Add-on '{id}' is tier 2; ctx.capabilities.provide is refused by the host",
+      "fix": "Use requires to consume another addon's capability. Do not add provides[] for tier 2 until the host accepts provide.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-218"
+    },
+    {
       "code": "KADK-301",
       "category": "data",
       "severity": "error",
