@@ -151,6 +151,32 @@ export interface Disposable {
   dispose(): Promise<void>;
 }
 
+export interface TestCapabilitiesFacade {
+  get(capability: string): Promise<unknown>;
+  consume(capability: string): Promise<unknown>;
+  provide(capability: string, handler: unknown): Disposable;
+  register(capability: string, handler: unknown): Disposable;
+}
+
+export interface TestLocksFacade {
+  acquire(name: string): Promise<Disposable>;
+}
+
+export type TestExtendFacade = Record<string, (...args: readonly unknown[]) => Disposable>;
+
+export interface TestDataFacade {
+  read(principal: TestPrincipal, table: string): Promise<readonly unknown[]>;
+  $queryRaw(
+    query: TemplateStringsArray,
+    ...values: readonly (string | number | boolean | null | Date)[]
+  ): Promise<readonly unknown[]>;
+  $executeRaw(
+    query: TemplateStringsArray,
+    ...values: readonly (string | number | boolean | null | Date)[]
+  ): Promise<number>;
+  $transaction<T>(work: (tx: TestDataFacade) => Promise<T>): Promise<T>;
+}
+
 export interface CreateTestContextOptions {
   readonly addonId?: string;
   readonly version?: string;
@@ -214,6 +240,10 @@ export interface TestAddonContext {
   readonly http: {
     fetch(url: string): Promise<HttpFetchResponse>;
   };
+  readonly capabilities: TestCapabilitiesFacade;
+  readonly locks: TestLocksFacade;
+  readonly extend: TestExtendFacade;
+  readonly data: TestDataFacade;
 }
 
 export function createTestContext(options?: CreateTestContextOptions): TestAddonContext;

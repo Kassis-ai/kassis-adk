@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { manifestPolicyFromManifest } from './manifestPolicy.mjs';
 import { TestContextError } from './testContextError.mjs';
+import { createTierGuardedCapabilities, createTierGuardedData, createTierGuardedExtend, createTierGuardedLocks, } from './tierGuardedFacades.mjs';
 /**
  * @typedef {object} TestPrincipal
  * @property {'user' | 'service'} kind
@@ -95,6 +96,10 @@ import { TestContextError } from './testContextError.mjs';
  * @property {{ invoke: Function, estimateTokens: Function }} llm
  * @property {{ get: Function }} secrets
  * @property {{ fetch: Function }} http
+ * @property {object} capabilities
+ * @property {object} locks
+ * @property {object} extend
+ * @property {object} data
  */
 function disposable() {
     return {
@@ -398,5 +403,9 @@ export function createTestContext(options = {}) {
                 };
             },
         },
+        capabilities: createTierGuardedCapabilities(tier),
+        locks: createTierGuardedLocks(tier),
+        extend: createTierGuardedExtend(tier),
+        data: createTierGuardedData(tier),
     };
 }

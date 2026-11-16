@@ -378,7 +378,7 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Severity: error
 - Message: `{file} calls {method}, which tier {tier} addons cannot use`
 - Fix: Use a facade allowed for your tier in `@kassis/addon-sdk/tier-matrix.json`, pick tier 1 when appropriate, or consume another addon through `requires`.
-- Reported by: `kassis-addon doctor --requirements` when addon source calls a `ctx` method the manifest tier cannot use
+- Reported by: `kassis-addon doctor --requirements` when addon source calls a `ctx` method the manifest tier cannot use; `createTestContext()` at runtime when a unit test calls a facade the chosen tier cannot use
 
 ## 3xx Data
 

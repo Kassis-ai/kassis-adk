@@ -124,4 +124,8 @@ export type TestAddonContext = {
     http: {
         fetch: Function;
     };
+    capabilities: object;
+    locks: object;
+    extend: object;
+    data: object;
 };

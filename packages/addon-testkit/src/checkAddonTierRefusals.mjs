@@ -4,11 +4,9 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import { createRequire } from 'node:module';
 import ts from 'typescript';
 
-const require = createRequire(import.meta.url);
-const MATRIX_PATH = require.resolve('@kassis/addon-sdk/tier-matrix.json');
+import { loadTierMatrix, refusedForTier } from './tierRefusal.mjs';
 
 const SOURCE_EXTENSIONS = new Set(['.ts', '.tsx', '.mts', '.cts', '.js', '.jsx', '.mjs', '.cjs']);
 const SKIP_DIRECTORIES = new Set(['node_modules', 'dist', 'coverage', '.git']);
@@ -24,63 +22,6 @@ const METHOD_NAME = /^ctx\.[A-Za-z][A-Za-z0-9]*(?:\.[A-Za-z_$][A-Za-z0-9_$]*){0,
  * @property {string} method
  * @property {string} message
  */
-
-/**
- * @typedef {object} TierMatrixRow
- * @property {string} method
- * @property {boolean} tier1
- * @property {boolean} tier2
- */
-
-/** @type {ReadonlyMap<string, TierMatrixRow> | null} */
-let matrixByMethod = null;
-
-/**
- * @returns {ReadonlyMap<string, TierMatrixRow>}
- */
-function loadTierMatrix() {
-  if (matrixByMethod) return matrixByMethod;
-  const document = JSON.parse(fs.readFileSync(MATRIX_PATH, 'utf8'));
-  /** @type {Map<string, TierMatrixRow>} */
-  const map = new Map();
-  if (document && typeof document === 'object' && Array.isArray(document.methods)) {
-    for (const row of document.methods) {
-      if (!row || typeof row !== 'object' || typeof row.method !== 'string') continue;
-      map.set(row.method, row);
-    }
-  }
-  matrixByMethod = map;
-  return map;
-}
-
-/**
- * Tier 2 host refusal when the method is absent from the matrix (see tier2RpcRefusal.ts).
- * @param {string} method
- * @returns {boolean}
- */
-function tier2HostPrefixRefusal(method) {
-  if (!METHOD_NAME.test(method) || method.length > 80) return true;
-  if (method.startsWith('ctx.extend.')) return true;
-  if (method.startsWith('ctx.locks.')) return true;
-  if (method === 'ctx.capabilities.register' || method === 'ctx.capabilities.provide') return true;
-  if (method.startsWith('ctx.data.') && method !== 'ctx.data.read') return true;
-  return false;
-}
-
-/**
- * @param {string} method
- * @param {1 | 2} tier
- * @param {ReadonlyMap<string, TierMatrixRow>} matrix
- * @returns {boolean}
- */
-function refusedForTier(method, tier, matrix) {
-  const row = matrix.get(method);
-  if (row) {
-    return tier === 2 ? row.tier2 === false : row.tier1 === false;
-  }
-  if (tier === 2) return tier2HostPrefixRefusal(method);
-  return false;
-}
 
 /**
  * @param {ts.Expression} expression
