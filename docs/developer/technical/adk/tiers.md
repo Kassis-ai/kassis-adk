@@ -11,7 +11,7 @@ A tier 1 addon is loaded in the host process. `initialize()` runs there. This is
 
 ## Tier 2
 
-Set `"tier": 2` on the manifest. The host does not import the addon. `superviseTier2Addon()` starts one child process. The child environment is the declared values plus the egress proxy, not the host `process.env`, so `DATABASE_URL` is absent.
+Set `"tier": 2` on the manifest. The host does not import the addon. `superviseTier2Addon()` starts a `Tier2Runner`. The process runner (`createProcessTier2Runner`) is the implementation that spawns one child. The child environment is the declared values plus the egress proxy, not the host `process.env`, so `DATABASE_URL` is absent. The runner's `start`, `stop`, `call`, and `health` are the only process controls the supervisor uses.
 
 The child speaks JSON-RPC. The host mounts HTTP at `/api/v1/addons/<id>` and `POST /_mcp/:tool`. MCP discovery synthesizes tools that call those URLs. A caller must be a host-issued principal who holds every gate permission, or `system.admin` when the manifest declares none.
 
@@ -54,6 +54,7 @@ These keys are read from Settings. A missing or invalid value refuses to start t
 
 | Date       | Change                                                                                                                                                                    |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-16 | Tier 2 supervision goes through `Tier2Runner` (`start`, `stop`, `call`, `health`). The current child process is the process runner.                                      |
 | 2026-11-16 | Documented `@kassis/addon-sdk/tier-matrix.json` as the packaged tier capability matrix; CI checks it against `TIER2_FACADE_METHODS`.                                      |
 | 2026-11-16 | `kassis-addon doctor --requirements` scans addon source for `ctx` calls the manifest tier cannot use and reports KADK-219 before build.                                    |
 | 2026-10-28 | Tier 2 calls the host facades over RPC. Events and jobs are delivered to the child and retried on the existing queues. The child cannot call `approvals.applyRegistered`. |
