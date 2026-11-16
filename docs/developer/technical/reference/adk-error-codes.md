@@ -876,8 +876,27 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Fix: Remove the typed evidence for '\{key\}'. Certify records \{check\} itself.
 - Reported by: `kassis addon certify`
 
+<a id="kadk-718"></a>
+
+### KADK-718 Requirements file is missing
+
+- Severity: error
+- Message: `REQUIREMENTS.md was not found`
+- Fix: Add REQUIREMENTS.md with FR-* and NFR-* rows, or run kassis-addon init from the template.
+- Reported by: `kassis-addon requirements`; `kassis-addon certify`
+
+<a id="kadk-719"></a>
+
+### KADK-719 Must requirement is not traced
+
+- Severity: error
+- Message: `Must requirement '{id}' is not named in test/ or GAPS.md`
+- Fix: Add the id to a test under test/, or record the gap in GAPS.md, then run kassis-addon requirements.
+- Reported by: `kassis-addon requirements`; `kassis-addon certify`
+
 ## Changelog
 
 | Date       | Change                                                                                                                                                                                                                      |
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-16 | KADK-718 when REQUIREMENTS.md is missing. KADK-719 when a Must row has no mention in test/ or GAPS.md. `kassis-addon requirements` writes `.kassis/evidence/requirements-coverage.json`; certify applies the same gate.       |
 | 2026-10-28 | KADK-714 blocks an outcome that is not followed, violated or not_applicable. KADK-715 warns when machine evidence is typed into the attestation. KADK-707 still means the checks file has no passing result for that check. |

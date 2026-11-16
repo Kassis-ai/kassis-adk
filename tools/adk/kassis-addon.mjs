@@ -15,6 +15,7 @@ const COMMANDS = [
   'dev',
   'migrate',
   'doctor',
+  'requirements',
   'pack',
   'package',
   'sbom',
@@ -42,6 +43,7 @@ Commands:
   dev           Start a configured local dev host
   migrate       up, down, status or claim on the dev host database
   doctor        Check Node, registry auth, keys, instance, and hostApi
+  requirements  Trace Must rows in REQUIREMENTS.md to test/ or GAPS.md
   pack          Write an evidence pack
   package       Write a signed .addon zip
   sbom          Write sbom.json for this addon
@@ -96,6 +98,10 @@ claim assigns history rows written by an older ADK (no addon id) to this addon, 
   doctor: `Usage: kassis-addon doctor [--requirements] [--json]
 
 Checks the Node version, GitHub Packages login (the token is not printed), signing key files, instance reachability, and manifest hostApi against HOST_API_VERSION. With --requirements, scans addon source for ctx facade calls that the manifest tier cannot use (tier-matrix.json).
+`,
+  requirements: `Usage: kassis-addon requirements [--json]
+
+Parses Must rows in REQUIREMENTS.md and requires each id in test/ or GAPS.md. Writes .kassis/evidence/requirements-coverage.json. Certify fails when a Must id is untraced (KADK-719).
 `,
   pack: `Usage: kassis-addon pack [--out <dir>] [--json]
 `,
@@ -205,6 +211,11 @@ function printSuccess(command, data) {
   if (command === 'explain') process.stdout.write(`${data.message}\n${data.fix}\n`);
   if (command === 'certify' && typeof data.runId === 'string')
     process.stdout.write(`${data.runId}\n`);
+  if (command === 'requirements' && typeof data.mustCount === 'number') {
+    const untraced = Array.isArray(data.untraced) ? data.untraced : [];
+    process.stdout.write(`Must ${data.mustCount} untraced ${untraced.length}\n`);
+    for (const id of untraced) process.stdout.write(`untraced ${id}\n`);
+  }
   if (command === 'doctor') {
     process.stdout.write(`Node ${data.nodeVersion}\n`);
     process.stdout.write(

@@ -105,6 +105,15 @@ declare module '../../../tools/adk/addonSbom.mjs' {
   export function writeAddonSbom(dir: string): string;
 }
 
+declare module '../../../tools/adk/requirementsTrace.mjs' {
+  export function auditRequirementsTracing(addonDir: string): {
+    ok: boolean;
+    issues: CatalogIssue[];
+    coverage: object | null;
+  };
+  export function writeRequirementsCoverage(addonDir: string, coverage: object | null): void;
+}
+
 declare module '../../../tools/adk/certifyChecks.mjs' {
   export function recordMachineChecks(addonDir: string): object;
 }

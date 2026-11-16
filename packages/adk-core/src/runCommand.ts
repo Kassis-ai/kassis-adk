@@ -11,6 +11,7 @@ import {
   initProject,
   keysProject,
   packProject,
+  requirementsProject,
   rulesProject,
   signProject,
   syncProject,
@@ -85,6 +86,8 @@ export async function runCommand(request: CommandRequest): Promise<CommandResult
       return migrateProject(dir, request.subcommand, flags.target);
     case 'doctor':
       return doctorProject(dir, { requirements: request.requirements });
+    case 'requirements':
+      return requirementsProject(dir);
     case 'scaffold':
       return scaffoldProject({
         dir,

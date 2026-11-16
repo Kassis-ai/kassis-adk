@@ -26,6 +26,10 @@ import {
   registerPublisherKey,
 } from '../../../tools/adk/publisherKeys.mjs';
 import { recordMachineChecks } from '../../../tools/adk/certifyChecks.mjs';
+import {
+  auditRequirementsTracing,
+  writeRequirementsCoverage,
+} from '../../../tools/adk/requirementsTrace.mjs';
 import type { AdkIssue, CommandResult, JsonObject, LogListener } from './types.ts';
 import { checkManifestDirectory } from './manifestCheck.ts';
 import {
@@ -210,6 +214,24 @@ export function rulesProject(dir: string): CommandResult {
   return commandResult([], { files: writeAgentRuleFiles(lock, dir) });
 }
 
+export function requirementsProject(dir: string): CommandResult {
+  const tracing = auditRequirementsTracing(dir);
+  if (tracing.coverage) writeRequirementsCoverage(dir, tracing.coverage);
+  const untraced = tracing.coverage && Array.isArray(tracing.coverage.untraced) ? tracing.coverage.untraced : [];
+  return {
+    ok: tracing.ok,
+    issues: tracing.issues.map((issue) => fromCatalog(issue)),
+    data: {
+      mustCount:
+        tracing.coverage && Array.isArray(tracing.coverage.mustIds)
+          ? tracing.coverage.mustIds.length
+          : 0,
+      untraced,
+      coveragePath: path.join(dir, '.kassis', 'evidence', 'requirements-coverage.json'),
+    },
+  };
+}
+
 export function packProject(dir: string, out: string): CommandResult {
   const outDir = out || path.join(dir, '.kassis', 'evidence');
   try {
@@ -252,10 +274,17 @@ export async function certifyProject(dir: string): Promise<CommandResult> {
       checks = null;
     }
   }
+  const tracing = auditRequirementsTracing(dir);
+  if (tracing.coverage) writeRequirementsCoverage(dir, tracing.coverage);
+  const traceIssues = tracing.issues.map((issue) => fromCatalog(issue));
+
   const result = certifyAttestation({ lock, attestation, checks });
   const data: JsonObject = {};
-  if (!result.ok) {
-    return { ok: false, issues: result.issues.map((issue) => fromCatalog(issue)), data };
+  const attestationIssues = result.issues.map((issue) => fromCatalog(issue));
+  const mergedIssues = [...attestationIssues, ...traceIssues];
+  const hasError = mergedIssues.some((issue) => issue.severity === 'error');
+  if (!result.ok || !tracing.ok || hasError) {
+    return { ok: false, issues: mergedIssues, data };
   }
   const instance = process.env.KASSIS_ADK_INSTANCE ?? '';
   const token = process.env.KASSIS_ADK_TOKEN ?? '';
@@ -271,7 +300,7 @@ export async function certifyProject(dir: string): Promise<CommandResult> {
     });
     return { ok: true, issues: [], data: { runId: submitted.runId } };
   }
-  return { ok: true, issues: result.issues.map((issue) => fromCatalog(issue)), data };
+  return { ok: true, issues: mergedIssues, data };
 }
 
 export async function buildProject(

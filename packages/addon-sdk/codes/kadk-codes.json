@@ -855,6 +855,24 @@
       "message": "Guardrail '{key}' has typed evidence. Machine evidence comes only from .kassis/evidence/checks.json.",
       "fix": "Remove the typed evidence for '{key}'. Certify records {check} itself.",
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-715"
+    },
+    {
+      "code": "KADK-718",
+      "category": "attestation",
+      "severity": "error",
+      "title": "Requirements file is missing",
+      "message": "REQUIREMENTS.md was not found",
+      "fix": "Add REQUIREMENTS.md with FR-* and NFR-* rows, or run kassis-addon init from the template.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-718"
+    },
+    {
+      "code": "KADK-719",
+      "category": "attestation",
+      "severity": "error",
+      "title": "Must requirement is not traced",
+      "message": "Must requirement '{id}' is not named in test/ or GAPS.md",
+      "fix": "Add the id to a test under test/, or record the gap in GAPS.md, then run kassis-addon requirements.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-719"
     }
   ]
 }
