@@ -2801,6 +2801,191 @@
       }
     },
     {
+      "name": "country.risk_updated",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "country.risk_updated",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "code",
+          "previous",
+          "next",
+          "changedFields",
+          "actorUserId",
+          "actorEmail",
+          "at",
+          "catalogUpdatedAt"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "previous": {
+            "type": "object",
+            "required": [
+              "isHighRisk",
+              "riskScore",
+              "complianceData",
+              "isActive"
+            ],
+            "properties": {
+              "isHighRisk": {
+                "type": "boolean"
+              },
+              "riskScore": {
+                "type": "number"
+              },
+              "complianceData": {
+                "type": "object"
+              },
+              "isActive": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          },
+          "next": {
+            "type": "object",
+            "required": [
+              "isHighRisk",
+              "riskScore",
+              "complianceData",
+              "isActive"
+            ],
+            "properties": {
+              "isHighRisk": {
+                "type": "boolean"
+              },
+              "riskScore": {
+                "type": "number"
+              },
+              "complianceData": {
+                "type": "object"
+              },
+              "isActive": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          },
+          "changedFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "actorUserId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "actorEmail": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "at": {
+            "type": "string"
+          },
+          "catalogUpdatedAt": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "crm.deal.created",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "crm.deal.created",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "crm.deal.deleted",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "crm.deal.deleted",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "crm.deal.stage_changed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "crm.deal.stage_changed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "dealId",
+          "stage",
+          "crmSystem",
+          "raw"
+        ],
+        "properties": {
+          "dealId": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "previousStage": {
+            "type": "string"
+          },
+          "crmSystem": {
+            "type": "string"
+          },
+          "raw": {
+            "type": "object"
+          },
+          "connectorType": {
+            "type": "string"
+          },
+          "instanceId": {
+            "type": "string"
+          },
+          "tenantId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "crm.deal.updated",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "crm.deal.updated",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "document.analysis.completed",
       "source": "platform",
       "schema": {
@@ -4748,6 +4933,249 @@
       }
     },
     {
+      "name": "ingest.deal.upserted",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "ingest.deal.upserted",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "sourceSystem",
+          "sourceRecordId",
+          "occurredAt",
+          "payload",
+          "raw"
+        ],
+        "properties": {
+          "sourceSystem": {
+            "type": "string"
+          },
+          "sourceRecordId": {
+            "type": "string"
+          },
+          "occurredAt": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object",
+            "properties": {
+              "dealName": {
+                "type": "string"
+              },
+              "phase": {
+                "type": "string"
+              },
+              "issuerName": {
+                "type": "string"
+              },
+              "issuerIdentifier": {
+                "type": "string"
+              },
+              "dealSizeAmount": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "dealSizeCurrency": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "counterparties": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "role": {
+                      "type": "string"
+                    },
+                    "identifiers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "scheme": {
+                            "type": "string"
+                          },
+                          "value": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "scheme",
+                          "value"
+                        ],
+                        "additionalProperties": true
+                      }
+                    }
+                  },
+                  "required": [
+                    "name"
+                  ],
+                  "additionalProperties": true
+                }
+              }
+            },
+            "additionalProperties": true
+          },
+          "raw": {
+            "type": [
+              "object",
+              "array",
+              "string",
+              "number",
+              "boolean",
+              "null"
+            ]
+          },
+          "connectorType": {
+            "type": "string"
+          },
+          "instanceId": {
+            "type": "string"
+          },
+          "tenantId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "ingest.ownership.upserted",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "ingest.ownership.upserted",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "sourceSystem"
+        ],
+        "properties": {
+          "sourceSystem": {
+            "type": "string"
+          },
+          "sourceRecordId": {
+            "type": "string"
+          },
+          "occurredAt": {
+            "type": "string"
+          },
+          "origin": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object"
+          },
+          "raw": {},
+          "connectorType": {
+            "type": "string"
+          },
+          "instanceId": {
+            "type": "string"
+          },
+          "tenantId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "ingest.party.upserted",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "ingest.party.upserted",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "sourceSystem",
+          "sourceRecordId",
+          "occurredAt",
+          "payload",
+          "raw"
+        ],
+        "properties": {
+          "sourceSystem": {
+            "type": "string"
+          },
+          "sourceRecordId": {
+            "type": "string"
+          },
+          "occurredAt": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object",
+            "properties": {
+              "displayName": {
+                "type": "string"
+              },
+              "entityType": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "identifiers": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "scheme": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "scheme",
+                    "value"
+                  ],
+                  "additionalProperties": true
+                }
+              },
+              "externalReference": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": true
+          },
+          "raw": {
+            "type": "object"
+          },
+          "connectorType": {
+            "type": "string"
+          },
+          "instanceId": {
+            "type": "string"
+          },
+          "tenantId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "investigation.assigned",
       "source": "platform",
       "schema": {
@@ -6623,40 +7051,6 @@
       }
     },
     {
-      "name": "party.adverse_media_hit",
-      "source": "platform",
-      "schema": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "eventName": "party.adverse_media_hit",
-        "version": 1,
-        "compatibility": "backward",
-        "type": "object",
-        "required": [
-          "entityId",
-          "events"
-        ],
-        "properties": {
-          "entityId": {
-            "type": "string",
-            "minLength": 1
-          },
-          "userId": {
-            "type": [
-              "string",
-              "number"
-            ]
-          },
-          "events": {
-            "type": "array"
-          },
-          "previousEventsCount": {
-            "type": "number"
-          }
-        },
-        "additionalProperties": true
-      }
-    },
-    {
       "name": "party.adverse_media.analyzed",
       "source": "platform",
       "schema": {
@@ -6696,6 +7090,40 @@
           },
           "runId": {
             "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "party.adverse_media_hit",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "party.adverse_media_hit",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "entityId",
+          "events"
+        ],
+        "properties": {
+          "entityId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "events": {
+            "type": "array"
+          },
+          "previousEventsCount": {
+            "type": "number"
           }
         },
         "additionalProperties": true
@@ -6809,6 +7237,47 @@
       }
     },
     {
+      "name": "policy.evaluation.requested",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "policy.evaluation.requested",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "policy.violation.detected",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "policy.violation.detected",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {
+          "listId": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "entryId": {
+            "type": "string"
+          },
+          "ruleName": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "risk.calculated",
       "source": "platform",
       "schema": {
@@ -6860,6 +7329,479 @@
           }
         },
         "additionalProperties": true
+      }
+    },
+    {
+      "name": "risk.factor.assessed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "risk.factor.assessed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "subjectType",
+          "subjectId",
+          "domain",
+          "factorCode",
+          "providerId",
+          "assessmentId"
+        ],
+        "properties": {
+          "subjectType": {
+            "type": "string"
+          },
+          "subjectId": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "factorCode": {
+            "type": "string"
+          },
+          "providerId": {
+            "type": "string"
+          },
+          "assessmentId": {
+            "type": "string"
+          },
+          "correlationId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "risk.factor.confirmed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "risk.factor.confirmed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "subjectType",
+          "subjectId",
+          "domain",
+          "factorCode",
+          "priorAssessmentId",
+          "newAssessmentId",
+          "newStatus"
+        ],
+        "properties": {
+          "subjectType": {
+            "type": "string"
+          },
+          "subjectId": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "factorCode": {
+            "type": "string"
+          },
+          "priorAssessmentId": {
+            "type": "string"
+          },
+          "newAssessmentId": {
+            "type": "string"
+          },
+          "newStatus": {
+            "type": "string",
+            "enum": [
+              "confirmed",
+              "rejected"
+            ]
+          },
+          "correlationId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "risk.factor.overridden",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "risk.factor.overridden",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "subjectType",
+          "subjectId",
+          "domain",
+          "factorCode",
+          "providerId",
+          "score",
+          "effectiveAt"
+        ],
+        "properties": {
+          "subjectType": {
+            "type": "string"
+          },
+          "subjectId": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "factorCode": {
+            "type": "string"
+          },
+          "providerId": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          },
+          "assessmentId": {
+            "type": "string"
+          },
+          "reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "correlationId": {
+            "type": "string"
+          },
+          "effectiveAt": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "risk.model.changed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "risk.model.changed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "risk.propagation.completed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "risk.propagation.completed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "subjectType",
+          "subjectId",
+          "effectiveAt"
+        ],
+        "properties": {
+          "subjectType": {
+            "type": "string"
+          },
+          "subjectId": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "linkedCaseCount": {
+            "type": "integer"
+          },
+          "linkedInvestigationCount": {
+            "type": "integer"
+          },
+          "linkedGraphCount": {
+            "type": "integer"
+          },
+          "correlationId": {
+            "type": "string"
+          },
+          "effectiveAt": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "risk.signals.received",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "risk.signals.received",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "risk.snapshot.current",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "risk.snapshot.current",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "snapshotId",
+          "subjectType",
+          "subjectId",
+          "domain",
+          "version",
+          "score",
+          "level"
+        ],
+        "properties": {
+          "snapshotId": {
+            "type": "string"
+          },
+          "subjectType": {
+            "type": "string"
+          },
+          "subjectId": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer"
+          },
+          "score": {
+            "type": "number"
+          },
+          "level": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "risk.snapshot.updated",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "risk.snapshot.updated",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "snapshotId",
+          "subjectType",
+          "subjectId",
+          "domain",
+          "version",
+          "score",
+          "level",
+          "riskModelId"
+        ],
+        "properties": {
+          "snapshotId": {
+            "type": "string"
+          },
+          "subjectType": {
+            "type": "string"
+          },
+          "subjectId": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer"
+          },
+          "score": {
+            "type": "number"
+          },
+          "level": {
+            "type": "string"
+          },
+          "riskModelId": {
+            "type": "string"
+          },
+          "correlationId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "risk.snapshot.version_created",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "risk.snapshot.version_created",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "snapshotId",
+          "subjectType",
+          "subjectId",
+          "domain",
+          "version",
+          "score",
+          "level",
+          "riskModelId",
+          "effectiveAt"
+        ],
+        "properties": {
+          "snapshotId": {
+            "type": "string"
+          },
+          "subjectType": {
+            "type": "string"
+          },
+          "subjectId": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer"
+          },
+          "score": {
+            "type": "number"
+          },
+          "level": {
+            "type": "string"
+          },
+          "riskModelId": {
+            "type": "string"
+          },
+          "correlationId": {
+            "type": "string"
+          },
+          "effectiveAt": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "risk.subscription.registered",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "risk.subscription.registered",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "risk.threshold.crossed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "risk.threshold.crossed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "subjectType",
+          "subjectId",
+          "domain",
+          "snapshotId",
+          "newLevel",
+          "newScore",
+          "effectiveAt"
+        ],
+        "properties": {
+          "subjectType": {
+            "type": "string"
+          },
+          "subjectId": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "snapshotId": {
+            "type": "string"
+          },
+          "previousLevel": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "newLevel": {
+            "type": "string"
+          },
+          "previousScore": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "newScore": {
+            "type": "number"
+          },
+          "correlationId": {
+            "type": "string"
+          },
+          "effectiveAt": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "ubo.ownership.refreshed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "ubo.ownership.refreshed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "entityId"
+        ],
+        "properties": {
+          "entityId": {
+            "type": "string"
+          },
+          "sourceSystem": {
+            "type": "string"
+          },
+          "upserted": {
+            "type": "object"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
       }
     },
     {
