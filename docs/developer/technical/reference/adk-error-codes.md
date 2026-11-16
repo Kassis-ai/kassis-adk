@@ -479,6 +479,15 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Fix: Remove '{name}' from package.json and use the core facade for {category}.
 - Reported by: `kassis-addon check` and `kassis-addon certify` against `@kassis/addon-sdk/banned-dependencies.json`
 
+<a id="kadk-222"></a>
+
+### KADK-222 Extension point is not declared
+
+- Severity: error
+- Message: `Add-on '{id}' registered '{value}', which is not in extends`
+- Fix: Add '{value}' to extends in the manifest.
+- Reported by: tier 2 `ctx.extend.*` when the point is missing from manifest `extends`
+
 ## 3xx Data
 
 <a id="kadk-301"></a>
@@ -1125,6 +1134,7 @@ A published code keeps its number, category and meaning. A retired code is marke
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-11-16 | KADK-125 to KADK-129 and KADK-314, KADK-316 to KADK-318 when a process pack key, file, permission, record type, or reference is wrong. KADK-313 warns when the kind has no host JSON Schema, so the body is not checked. |
 | 2026-11-16 | KADK-723 soft budgets without BUDGETS.md reason. KADK-724–728 engineering practice (timeouts, pagination, i18n, idempotent handlers, no module state). `kassis-addon budgets` / `engineering`; certify applies the same gates. |
+| 2026-11-16 | KADK-222 when a tier 2 addon registers a `ctx.extend` point that manifest `extends` does not name.                                                                                                                          |
 | 2026-11-16 | KADK-221 when package.json depends on a banned mail, scheduler, upload, storage, auth, database, UI kit, or LLM package. KADK-310 when an owned or created table is a private approval, notification, audit, user, or role table. KADK-311 warns when REUSE.md explains that table. KADK-312 warns when an owned table has no database.tableNotes core alternative. |
 | 2026-11-16 | KADK-720 when PLAN.md is missing. KADK-721 when a requirement row has no rung. KADK-722 when the rung is not configuration, extension-point, facade, own-code, or gap. `kassis-addon plan` writes `.kassis/evidence/requirement-mapping.json`; certify applies the same gate. |
 | 2026-11-16 | KADK-718 when REQUIREMENTS.md is missing. KADK-719 when a Must row has no mention in test/ or GAPS.md. `kassis-addon requirements` writes `.kassis/evidence/requirements-coverage.json`; certify applies the same gate.       |

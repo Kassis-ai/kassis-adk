@@ -452,6 +452,15 @@
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-221"
     },
     {
+      "code": "KADK-222",
+      "category": "boundaries",
+      "severity": "error",
+      "title": "Extension point is not declared",
+      "message": "Add-on '{id}' registered '{value}', which is not in extends",
+      "fix": "Add '{value}' to extends in the manifest.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-222"
+    },
+    {
       "code": "KADK-301",
       "category": "data",
       "severity": "error",
