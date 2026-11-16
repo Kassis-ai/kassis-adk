@@ -136,6 +136,8 @@ export interface AddonExtensionPoints {
     // (undocumented)
     registerAutomationTrigger(input: AutomationTriggerContribution): Disposable;
     // (undocumented)
+    registerCommunicable(input: CommunicableContribution): Disposable;
+    // (undocumented)
     registerDeletable(input: DeletableContribution): Disposable;
     // (undocumented)
     registerDocumentable(input: DocumentableContribution): Disposable;
@@ -781,6 +783,15 @@ export interface CasesFacade {
     // (undocumented)
     update(principal: AddonPrincipal, caseId: string, changes: JsonObject): Promise<CaseRecord>;
 }
+
+// Warning: (ae-missing-release-tag) "CommunicableContribution" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type CommunicableContribution = {
+    type: string;
+    viewPermissions: readonly string[];
+    sendPermissions: readonly string[];
+};
 
 // Warning: (ae-missing-release-tag) "CoreFacades" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //

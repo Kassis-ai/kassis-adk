@@ -339,6 +339,13 @@
       "note": "planned for tier 2 in phase 5d"
     },
     {
+      "method": "ctx.extend.registerCommunicable",
+      "tier1": true,
+      "tier2": false,
+      "permission": "extends",
+      "note": "S2.14; tier 2 callback channel is S2.18"
+    },
+    {
       "method": "ctx.extend.registerPredictionCapability",
       "tier1": true,
       "tier2": false,

@@ -238,6 +238,13 @@ export type LinkableContribution = {
   allowedRoles?: string[];
 };
 
+export type CommunicableContribution = {
+  /** One of the addon's manifest resourceTypes (email owner type). */
+  type: string;
+  viewPermissions: readonly string[];
+  sendPermissions: readonly string[];
+};
+
 export type LifecycleIdCast = 'integer' | 'string';
 
 export type LifecycleFlagMode = 'deleted_at' | 'status' | 'is_active';

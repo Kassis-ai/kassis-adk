@@ -23,6 +23,7 @@ import type {
   InvestigationTemplateContribution,
   LicenseFeaturesContribution,
   LinkableContribution,
+  CommunicableContribution,
   PredictionCapabilityContribution,
   QuestionnaireAdapterContribution,
   QuestionnaireDomainContribution,
@@ -46,6 +47,7 @@ export interface AddonExtensionPoints {
     pack: QuestionnairePackImport
   ): Promise<QuestionnairePackImportResult>;
   registerLinkable(input: LinkableContribution): Disposable;
+  registerCommunicable(input: CommunicableContribution): Disposable;
   registerDeletable(input: DeletableContribution): Disposable;
   registerFlaggable(input: FlaggableContribution): Disposable;
   registerApprovable(input: ApprovableContribution): Disposable;
