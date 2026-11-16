@@ -7,7 +7,7 @@
 
 ## Manifest
 
-`manifest.json` is validated as manifest v2 by `kassis-addon check`. The fields an addon author sets most often:
+`manifest.json` is validated as manifest v2 by `kassis-addon check`. The host runs the same check when it inspects a package and when it loads an addon, and only when `manifestVersion` is `2`. A failure uses the same KADK code as `check`. A manifest without that version keeps the previous inspect and load path. The fields an addon author sets most often:
 
 | Field                                          | Role                                                                                                                                                                                                                  |
 | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -67,6 +67,7 @@ Rung 1, the default, is the server only. Rung 2 adds the UI. Rung 3 adds the UI 
 
 | Date       | Change                                                                                                                                                              |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-16 | Package inspect and addon load refuse a `manifestVersion: 2` manifest with the same KADK code as `kassis-addon check`.                                              |
 | 2026-11-16 | Route and MCP gates read manifest v2 `permissions` objects (`{ name }`) for mount-level checks, not only string entries (B13 / S1.03).                               |
 | 2026-11-16 | Tier 1 and tier 2 start paths register manifest v2 `permissions` objects in the core permission catalog (B13 / S1.02).                                            |
 | 2026-11-16 | The template manifest declares audit, event, job, and prompt names used in `test/server.test.ts`, plus `events/started.schema.json` for the sample publish call.   |
