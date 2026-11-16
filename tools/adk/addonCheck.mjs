@@ -3,46 +3,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import { createRequire } from 'node:module';
-import { pathToFileURL } from 'node:url';
 import { checkAddonImports } from '@kassis/addon-testkit';
-
-async function loadAjv() {
-  try {
-    const file = createRequire(import.meta.url).resolve('ajv/dist/2020.js');
-    const loaded = await import(pathToFileURL(file).href);
-    return loaded.default;
-  } catch {
-    throw new Error('ajv is not installed');
-  }
-}
-
-export async function checkManifest(manifest, root) {
-  const schemaCandidates = [
-    path.join(root, 'packages/addon-sdk/schema/addon-manifest.v2.schema.json'),
-    path.join(root, 'schema/addon-manifest.v2.schema.json'),
-  ];
-  const schemaPath = schemaCandidates.find((candidate) => fs.existsSync(candidate));
-  if (!schemaPath) throw new Error('addon manifest schema was not found');
-  const Ajv = await loadAjv();
-  const ajv = new Ajv({ allErrors: true, strict: false });
-  const validate = ajv.compile(JSON.parse(fs.readFileSync(schemaPath, 'utf8')));
-  const issues = [];
-  if (!validate(manifest)) {
-    for (const error of validate.errors ?? []) {
-      issues.push(`${error.instancePath || '/'} ${error.message}`);
-    }
-  }
-  const id = typeof manifest.id === 'string' ? manifest.id : '';
-  const permissions = Array.isArray(manifest.permissions) ? manifest.permissions : [];
-  for (const permission of permissions) {
-    const name = typeof permission?.name === 'string' ? permission.name : '';
-    if (id && name && !name.startsWith(`${id}.`)) {
-      issues.push(`permission ${name} is outside ${id}.*`);
-    }
-  }
-  return issues;
-}
 
 /**
  * @param {string} addonDir
