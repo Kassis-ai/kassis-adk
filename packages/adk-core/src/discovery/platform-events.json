@@ -8,6 +8,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "addon.lifecycle.changed",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "required": [
           "addonName",
@@ -28,7 +30,7 @@
             "type": "object"
           }
         },
-        "additionalProperties": true
+        "additionalProperties": false
       }
     },
     {
