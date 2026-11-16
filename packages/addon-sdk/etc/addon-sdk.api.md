@@ -55,17 +55,52 @@ export interface AddonContext<D extends AddonDeclarations = AddonDeclarations> {
     readonly tenant: TenantScope;
 }
 
+// Warning: (ae-missing-release-tag) "AddonDataBatchResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type AddonDataBatchResult = {
+    readonly results: readonly (AddonDataQueryResult | AddonDataExecuteResult)[];
+};
+
+// Warning: (ae-missing-release-tag) "AddonDataBatchStatement" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type AddonDataBatchStatement = {
+    readonly op: 'query' | 'execute';
+    readonly sql: string;
+    readonly params?: readonly AddonSqlParam[];
+};
+
 // Warning: (ae-missing-release-tag) "AddonDataClient" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
-export interface AddonDataClient {
-    // (undocumented)
-    $executeRaw(query: TemplateStringsArray, ...values: SqlValue[]): Promise<number>;
-    // (undocumented)
-    $queryRaw(query: TemplateStringsArray, ...values: SqlValue[]): Promise<JsonObject[]>;
-    // (undocumented)
-    $transaction<T>(work: (tx: AddonDataClient) => Promise<T>): Promise<T>;
-}
+export type AddonDataClient = AddonTier1DataClient | AddonTier2DataClient;
+
+// Warning: (ae-missing-release-tag) "AddonDataExecuteResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type AddonDataExecuteResult = {
+    readonly count: number;
+};
+
+// Warning: (ae-missing-release-tag) "AddonDataQueryResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type AddonDataQueryResult = {
+    readonly rows: readonly JsonObject[];
+};
+
+// Warning: (ae-missing-release-tag) "AddonDataReadOptions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type AddonDataReadOptions = {
+    readonly limit?: number;
+};
+
+// Warning: (ae-missing-release-tag) "AddonDataReadResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type AddonDataReadResult = AddonDataQueryResult;
 
 // Warning: (ae-missing-release-tag) "addonDataSchemaName" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -393,10 +428,41 @@ export type AddonPromptPack = {
 // @public
 export type AddonRouter = (...args: never[]) => void | Promise<void>;
 
+// Warning: (ae-missing-release-tag) "AddonSqlParam" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export type AddonSqlParam = string | number | boolean | null | JsonObject | readonly JsonValue[];
+
 // Warning: (ae-missing-release-tag) "AddonTier" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
 export type AddonTier = 1 | 2;
+
+// Warning: (ae-missing-release-tag) "AddonTier1DataClient" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export interface AddonTier1DataClient {
+    // (undocumented)
+    $executeRaw(query: TemplateStringsArray, ...values: SqlValue[]): Promise<number>;
+    // (undocumented)
+    $queryRaw(query: TemplateStringsArray, ...values: SqlValue[]): Promise<JsonObject[]>;
+    // (undocumented)
+    $transaction<T>(work: (tx: AddonTier1DataClient) => Promise<T>): Promise<T>;
+}
+
+// Warning: (ae-missing-release-tag) "AddonTier2DataClient" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export interface AddonTier2DataClient {
+    // (undocumented)
+    execute(sql: string, params?: readonly AddonSqlParam[]): Promise<AddonDataExecuteResult>;
+    // (undocumented)
+    query(sql: string, params?: readonly AddonSqlParam[]): Promise<AddonDataQueryResult>;
+    // (undocumented)
+    read(table: string, options?: AddonDataReadOptions): Promise<AddonDataReadResult>;
+    // (undocumented)
+    transaction(statements: readonly AddonDataBatchStatement[]): Promise<AddonDataBatchResult>;
+}
 
 // Warning: (ae-missing-release-tag) "AddonTypeMap" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -861,7 +927,7 @@ export type DeclareAddon<M, T extends AddonTypeMap<M>> = {
     };
     readonly data: T extends {
         readonly data: infer D extends AddonDataClient;
-    } ? D : AddonDataClient;
+    } ? D : DefaultDataClient<M>;
 };
 
 // Warning: (ae-missing-release-tag) "defineAddon" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -1332,7 +1398,7 @@ export function getKadkCode(code: KadkCode): KadkCodeDefinition;
 // @public
 export type GraphRiskMirrorContribution = {
     providerId: string;
-    writer: (tx: AddonDataClient, input: GraphRiskMirrorInput, mirrorPayload: JsonObject) => Promise<void>;
+    writer: (tx: AddonTier1DataClient, input: GraphRiskMirrorInput, mirrorPayload: JsonObject) => Promise<void>;
 };
 
 // Warning: (ae-missing-release-tag) "GraphRiskMirrorInput" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -2683,7 +2749,8 @@ export function validateManifestV2(manifest: unknown, options?: ManifestValidati
 
 // Warnings were encountered during analysis:
 //
-// dist/context/addonDeclarations.d.ts:102:5 - (ae-forgotten-export) The symbol "ConsumedContract" needs to be exported by the entry point index.d.ts
+// dist/context/addonDeclarations.d.ts:107:5 - (ae-forgotten-export) The symbol "ConsumedContract" needs to be exported by the entry point index.d.ts
+// dist/context/addonDeclarations.d.ts:110:5 - (ae-forgotten-export) The symbol "DefaultDataClient" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

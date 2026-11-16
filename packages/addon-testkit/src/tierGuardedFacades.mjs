@@ -73,7 +73,7 @@ export function createTierGuardedExtend(tier) {
 /**
  * @returns {object}
  */
-function inMemoryDataClient() {
+function inMemoryTier1DataClient() {
   return {
     async $queryRaw() {
       return [];
@@ -82,7 +82,7 @@ function inMemoryDataClient() {
       return 0;
     },
     async $transaction(work) {
-      return work(inMemoryDataClient());
+      return work(inMemoryTier1DataClient());
     },
   };
 }
@@ -93,9 +93,21 @@ function inMemoryDataClient() {
  */
 export function createTierGuardedData(tier) {
   return {
-    async read() {
+    async read(_table, _options) {
       assertCtxMethodAllowed(tier, 'ctx.data.read');
-      return [];
+      return { rows: [] };
+    },
+    async query(_sql, _params) {
+      assertCtxMethodAllowed(tier, 'ctx.data.query');
+      return { rows: [] };
+    },
+    async execute(_sql, _params) {
+      assertCtxMethodAllowed(tier, 'ctx.data.execute');
+      return { count: 0 };
+    },
+    async transaction(_statements) {
+      assertCtxMethodAllowed(tier, 'ctx.data.transaction');
+      return { results: [] };
     },
     async $queryRaw() {
       assertCtxMethodAllowed(tier, 'ctx.data.$queryRaw');
@@ -107,7 +119,7 @@ export function createTierGuardedData(tier) {
     },
     async $transaction(work) {
       assertCtxMethodAllowed(tier, 'ctx.data.$transaction');
-      return work(inMemoryDataClient());
+      return work(inMemoryTier1DataClient());
     },
   };
 }

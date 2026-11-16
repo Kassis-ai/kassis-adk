@@ -4,7 +4,12 @@
  * so an undeclared name fails to compile. The host checks the same lists at runtime.
  */
 import type { JsonObject } from '../json.js';
-import type { AddonDataClient } from './dataClient.js';
+import type {
+  AddonDataClient,
+  AddonTier1DataClient,
+  AddonTier2DataClient,
+} from './dataClient.js';
+import type { AddonTier } from './addonIdentity.js';
 
 /** Event name → payload type. */
 export type EventPayloads = { readonly [eventName: string]: JsonObject };
@@ -63,6 +68,14 @@ export type ManifestConsumedCapabilities<M> =
   | (M extends { readonly requires: infer L } ? FieldOf<L, 'capability'> : never)
   | (M extends { readonly optional: infer L } ? FieldOf<L, 'capability'> : never);
 
+type ManifestTier<M> = M extends { readonly tier: infer T extends AddonTier } ? T : AddonTier;
+
+type DefaultDataClient<M> = ManifestTier<M> extends 2
+  ? AddonTier2DataClient
+  : ManifestTier<M> extends 1
+    ? AddonTier1DataClient
+    : AddonDataClient;
+
 /** Payload and contract types for the names a manifest declares. */
 export type AddonTypeMap<M> = {
   readonly publishes: { readonly [E in ManifestPublishedEvents<M>]: JsonObject };
@@ -92,5 +105,7 @@ export type DeclareAddon<M, T extends AddonTypeMap<M>> = {
   readonly secretKeys: ManifestSecretKeys<M>;
   readonly permissions: ManifestPermissionNames<M>;
   readonly consumes: { readonly [C in ManifestConsumedCapabilities<M>]: ConsumedContract<T, C> };
-  readonly data: T extends { readonly data: infer D extends AddonDataClient } ? D : AddonDataClient;
+  readonly data: T extends { readonly data: infer D extends AddonDataClient }
+    ? D
+    : DefaultDataClient<M>;
 };

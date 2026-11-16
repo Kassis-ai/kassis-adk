@@ -165,7 +165,15 @@ export interface TestLocksFacade {
 export type TestExtendFacade = Record<string, (...args: readonly unknown[]) => Disposable>;
 
 export interface TestDataFacade {
-  read(principal: TestPrincipal, table: string): Promise<readonly unknown[]>;
+  read(
+    table: string,
+    options?: { readonly limit?: number }
+  ): Promise<{ readonly rows: readonly unknown[] }>;
+  query(sql: string, params?: readonly unknown[]): Promise<{ readonly rows: readonly unknown[] }>;
+  execute(sql: string, params?: readonly unknown[]): Promise<{ readonly count: number }>;
+  transaction(
+    statements: readonly { readonly op: 'query' | 'execute'; readonly sql: string; readonly params?: readonly unknown[] }[]
+  ): Promise<{ readonly results: readonly unknown[] }>;
   $queryRaw(
     query: TemplateStringsArray,
     ...values: readonly (string | number | boolean | null | Date)[]

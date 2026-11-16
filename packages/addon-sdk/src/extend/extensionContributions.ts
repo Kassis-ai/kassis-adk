@@ -7,7 +7,7 @@
 import type { JsonObject, JsonValue } from '../json.js';
 import type { AddonPrincipal } from '../context/addonIdentity.js';
 import type { ApprovalOutcome } from '../context/coreFacades.js';
-import type { AddonDataClient } from '../context/dataClient.js';
+import type { AddonTier1DataClient } from '../context/dataClient.js';
 
 /** Host-specific: the host keys `promptKeys` by its own prompt-owner list. */
 export type InvestigationDomainContribution = {
@@ -436,7 +436,7 @@ export type GraphRiskMirrorInput = {
 export type GraphRiskMirrorContribution = {
   providerId: string;
   writer: (
-    tx: AddonDataClient,
+    tx: AddonTier1DataClient,
     input: GraphRiskMirrorInput,
     mirrorPayload: JsonObject
   ) => Promise<void>;

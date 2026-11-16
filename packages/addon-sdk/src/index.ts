@@ -23,7 +23,19 @@ export type {
   ManifestSecretKeys,
   ManifestSubscribedEvents,
 } from './context/addonDeclarations.js';
-export type { AddonDataClient, SqlValue } from './context/dataClient.js';
+export type {
+  AddonDataBatchResult,
+  AddonDataBatchStatement,
+  AddonDataClient,
+  AddonDataExecuteResult,
+  AddonDataQueryResult,
+  AddonDataReadOptions,
+  AddonDataReadResult,
+  AddonSqlParam,
+  AddonTier1DataClient,
+  AddonTier2DataClient,
+  SqlValue,
+} from './context/dataClient.js';
 export type {
   AddonEvent,
   AddonFetchInit,

@@ -68,6 +68,7 @@ These keys are read from Settings. A missing or invalid value refuses to start t
 | 2026-11-16 | Container runner dials pre-started containers over TCP. No Docker socket. Network policy allows only RPC port 7400 and the egress proxy on 7401. The process runner stays the default until `KASSIS_TIER2_CONTAINER_RUNNERS` is set. |
 | 2026-11-16 | Process runner uses the Node permission model. Isolation is accident isolation: secret reads and spawn are denied; a TCP socket stays open on Node 24. `kassis-addon` is used only when the supervisor is root. |
 | 2026-11-16 | Tier 2 `ctx.data.query`, `ctx.data.execute` and `ctx.data.transaction` run parameterised SQL as `addon_<id>_runtime`. Timeout and row cap come from Settings.            |
+| 2026-11-16 | `@kassis/addon-sdk` types `ctx.data` as `AddonTier2DataClient` or `AddonTier1DataClient` from manifest `tier`; Prisma helpers are tier 1 only.                            |
 | 2026-11-16 | Tier 2 supervision goes through `Tier2Runner` (`start`, `stop`, `call`, `health`). The current child process is the process runner.                                      |
 | 2026-11-16 | Tier 2 may provide a namespaced capability declared in `provides`. Consumer calls are forwarded to the provider child with `addons.capabilities.timeoutMs`. A down provider returns null. |
 | 2026-11-16 | Documented `@kassis/addon-sdk/tier-matrix.json` as the packaged tier capability matrix; CI checks it against `TIER2_FACADE_METHODS`.                                      |
