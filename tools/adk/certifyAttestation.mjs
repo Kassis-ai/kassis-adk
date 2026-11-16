@@ -8,6 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { recordMachineChecks } from './certifyChecks.mjs';
+import { getGuardrailCatalogEntry } from './guardrailCatalog.mjs';
 
 const require = createRequire(import.meta.url);
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -29,12 +30,20 @@ function fill(template, values) {
 export function kadkIssue(code, values = {}) {
   const entry = byCode.get(code);
   if (!entry) throw new Error(`Unknown KADK code ${code}`);
-  return {
+  const issue = {
     code,
     severity: entry.severity,
     message: fill(entry.message, values),
     fix: fill(entry.fix, values),
   };
+  const key = typeof values.key === 'string' ? values.key : '';
+  if (key.length > 0) {
+    const guardrail = getGuardrailCatalogEntry(key);
+    if (guardrail && guardrail.kadkCode === code && typeof guardrail.fixHint === 'string') {
+      return { ...issue, fix: guardrail.fixHint };
+    }
+  }
+  return issue;
 }
 
 const ALLOWED_OUTCOMES = new Set(['followed', 'violated', 'not_applicable']);

@@ -121,6 +121,38 @@ describe('certifyAttestation', () => {
     expect(result.ok).toBe(false);
   });
 
+  it('uses catalogue fixHint for profile guardrail violations when KADK matches', () => {
+    const profileLock = {
+      version: '2',
+      hash: 'def',
+      guardrails: [
+        {
+          key: 'adk.work-in-own-repo',
+          severity: 'blocking',
+          verification: 'self',
+        },
+      ],
+    };
+    const result = certifyAttestation({
+      lock: profileLock,
+      attestation: {
+        version: '2',
+        lockHash: 'def',
+        answers: [
+          {
+            key: 'adk.work-in-own-repo',
+            outcome: 'violated',
+            note: 'touched server/',
+          },
+        ],
+      },
+      checks: null,
+    });
+    const violated = result.issues.find((issue) => issue.code === 'KADK-703');
+    expect(violated?.fix).toContain('addon repository');
+    expect(result.ok).toBe(false);
+  });
+
   it('warns KADK-715 and still passes when the checks file recorded the machine check', () => {
     const result = certifyAttestation({
       lock,

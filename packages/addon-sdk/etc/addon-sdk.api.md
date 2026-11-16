@@ -201,6 +201,11 @@ export interface AddonFetchResponse {
     text(): Promise<string>;
 }
 
+// Warning: (ae-missing-release-tag) "addonGroupNamespacePrefixes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export function addonGroupNamespacePrefixes(addonId: string): string[];
+
 // Warning: (ae-missing-release-tag) "AddonIdentity" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -243,6 +248,20 @@ export interface AddonLogger {
     warn(message: string, detail?: JsonObject): void;
 }
 
+// Warning: (ae-missing-release-tag) "AddonManifestContract" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface AddonManifestContract {
+    // (undocumented)
+    readonly data?: {
+        readonly retention?: DataRetentionPolicy;
+    };
+    // (undocumented)
+    readonly database?: {
+        readonly ownedTables?: readonly string[];
+    };
+}
+
 // Warning: (ae-missing-release-tag) "AddonManifestV2" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -278,6 +297,8 @@ export interface AddonManifestV2 {
     };
     // (undocumented)
     readonly events?: ManifestEvents;
+    readonly extends?: readonly ManifestExtendPointId[];
+    readonly groups?: readonly ManifestGroup[];
     readonly health?: {
         readonly path: string;
     };
@@ -843,6 +864,38 @@ export type DeclareAddon<M, T extends AddonTypeMap<M>> = {
     } ? D : AddonDataClient;
 };
 
+// Warning: (ae-missing-release-tag) "defineAddon" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export function defineAddon<D extends AddonDeclarations = AddonDeclarations, const M extends AddonManifestContract = AddonManifestContract>(definition: DefineAddonInput<D, M>): DefinedAddon<D>;
+
+// Warning: (ae-missing-release-tag) "DefineAddonInput" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface DefineAddonInput<D extends AddonDeclarations, M extends AddonManifestContract> {
+    // (undocumented)
+    initialize(ctx: AddonContext<D>): Promise<void>;
+    // Warning: (ae-forgotten-export) The symbol "ManifestWithRetention" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    readonly manifest?: ManifestWithRetention<M>;
+    // (undocumented)
+    readonly recordTypes?: readonly RecordTypeDefinition[];
+}
+
+// Warning: (ae-missing-release-tag) "DefinedAddon" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface DefinedAddon<D extends AddonDeclarations = AddonDeclarations> extends AddonModule<D> {
+    // (undocumented)
+    readonly recordTypes: readonly RecordTypeDefinition[];
+}
+
+// Warning: (ae-missing-release-tag) "defineRecordType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export function defineRecordType<const T extends RecordTypeDefinition>(recordType: T): T;
+
 // Warning: (ae-missing-release-tag) "DeletableContribution" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -1259,6 +1312,16 @@ export interface FlagTarget {
     readonly ownerType: string;
 }
 
+// Warning: (ae-missing-release-tag) "formatGuardrailCheck" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export function formatGuardrailCheck(check: string | readonly string[]): string;
+
+// Warning: (ae-missing-release-tag) "getGuardrailCatalogEntry" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export function getGuardrailCatalogEntry(id: string): GuardrailCatalogEntry | undefined;
+
 // Warning: (ae-missing-release-tag) "getKadkCode" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
@@ -1285,6 +1348,45 @@ export type GraphRiskMirrorInput = {
     domain: string;
     riskModelId: string;
 };
+
+// Warning: (ae-missing-release-tag) "GUARDRAIL_GROUP_LABELS" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export const GUARDRAIL_GROUP_LABELS: Readonly<Record<GuardrailGroup, string>>;
+
+// Warning: (ae-missing-release-tag) "GUARDRAIL_LEVEL_LABELS" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export const GUARDRAIL_LEVEL_LABELS: Readonly<Record<GuardrailLevel, string>>;
+
+// Warning: (ae-missing-release-tag) "GuardrailCatalogEntry" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface GuardrailCatalogEntry {
+    readonly check: string | readonly string[];
+    // (undocumented)
+    readonly fixHint: string;
+    // (undocumented)
+    readonly group: GuardrailGroup;
+    // (undocumented)
+    readonly id: string;
+    // (undocumented)
+    readonly inProfile?: boolean;
+    // (undocumented)
+    readonly kadkCode: `KADK-${number}`;
+    // (undocumented)
+    readonly level: GuardrailLevel;
+}
+
+// Warning: (ae-missing-release-tag) "GuardrailGroup" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type GuardrailGroup = 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
+
+// Warning: (ae-missing-release-tag) "GuardrailLevel" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type GuardrailLevel = 'L1' | 'L2' | 'L3' | 'L4' | 'L5';
 
 // Warning: (ae-missing-release-tag) "HttpFacade" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1549,6 +1651,11 @@ export type LinkableContribution = {
     allowedRoles?: string[];
 };
 
+// Warning: (ae-missing-release-tag) "listGuardrailCatalogEntries" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export function listGuardrailCatalogEntries(): readonly GuardrailCatalogEntry[];
+
 // Warning: (ae-missing-release-tag) "listKadkCodes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -1625,6 +1732,16 @@ export interface LocksFacade {
     }): Promise<LockHandle | null>;
 }
 
+// Warning: (ae-missing-release-tag) "MANIFEST_EXTEND_POINT_IDS" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export const MANIFEST_EXTEND_POINT_IDS: readonly ["analyticsContributor", "approvable", "approvableFields", "auditSubject", "automationAction", "automationFields", "automationTrigger", "deletable", "documentable", "echoStrategy", "employeeDirectory", "flaggable", "graphRiskMirror", "importQuestionnairePack", "investigationDomain", "investigationTemplate", "licenseFeatures", "linkable", "predictionCapability", "questionnaireDomain", "questionnaireDomainAdapter", "riskFactors", "shutdownHook"];
+
+// Warning: (ae-missing-release-tag) "MANIFEST_RESOURCE_SENSITIVITY_LEVELS" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export const MANIFEST_RESOURCE_SENSITIVITY_LEVELS: readonly ["standard", "confidential", "mnpi"];
+
 // Warning: (ae-missing-release-tag) "MANIFEST_V1_FIELD_HOMES" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
@@ -1675,6 +1792,23 @@ export interface ManifestEvents {
     // (undocumented)
     readonly publishes?: readonly PublishedEventDeclaration[];
     readonly subscribes?: readonly string[];
+}
+
+// Warning: (ae-missing-release-tag) "ManifestExtendPointId" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type ManifestExtendPointId = (typeof MANIFEST_EXTEND_POINT_IDS)[number];
+
+// Warning: (ae-missing-release-tag) "ManifestGroup" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface ManifestGroup {
+    // (undocumented)
+    readonly description?: string;
+    // (undocumented)
+    readonly displayName: string;
+    readonly name: string;
+    readonly permissions: readonly string[];
 }
 
 // Warning: (ae-missing-release-tag) "ManifestJobTypes" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -1785,6 +1919,11 @@ export interface ManifestResourceRelation {
     readonly to: string;
 }
 
+// Warning: (ae-missing-release-tag) "ManifestResourceSensitivity" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type ManifestResourceSensitivity = (typeof MANIFEST_RESOURCE_SENSITIVITY_LEVELS)[number];
+
 // Warning: (ae-missing-release-tag) "ManifestResourceType" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -1807,7 +1946,7 @@ export interface ManifestResourceType {
     // (undocumented)
     readonly relations?: readonly ManifestResourceRelation[];
     // (undocumented)
-    readonly sensitivity?: string;
+    readonly sensitivity?: ManifestResourceSensitivity;
     // (undocumented)
     readonly table?: string;
     readonly type: string;
@@ -2262,6 +2401,43 @@ export type QuestionnaireSubjectAccessContext = {
     };
     subject: QuestionnaireRegistrySubject;
 };
+
+// Warning: (ae-missing-release-tag) "RecordTypeAuditSubject" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface RecordTypeAuditSubject {
+    // (undocumented)
+    readonly aliases?: readonly string[];
+    // (undocumented)
+    readonly catalogued?: boolean;
+    // (undocumented)
+    readonly pathPrefixes?: readonly string[];
+    // (undocumented)
+    readonly relatedTypes?: readonly string[];
+    // (undocumented)
+    readonly subjectType: string;
+}
+
+// Warning: (ae-missing-release-tag) "RecordTypeDefinition" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface RecordTypeDefinition {
+    // (undocumented)
+    readonly auditSubject: RecordTypeAuditSubject;
+    // (undocumented)
+    readonly canAccess: (principal: AddonPrincipal, recordId: string) => Promise<boolean>;
+    // (undocumented)
+    readonly onDelete: (principal: AddonPrincipal, recordId: string) => Promise<void>;
+    // (undocumented)
+    readonly sensitivity: ManifestResourceSensitivity;
+    // (undocumented)
+    readonly type: string;
+}
+
+// Warning: (ae-missing-release-tag) "requireGuardrailCatalogEntry" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export function requireGuardrailCatalogEntry(id: string): GuardrailCatalogEntry;
 
 // Warning: (ae-missing-release-tag) "ResourceId" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //

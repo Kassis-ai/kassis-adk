@@ -3,10 +3,12 @@ import {
   getEventSchema,
   getExample,
   getFacade,
+  getGuardrail,
   getTierMatrix,
   listEvents,
   listExtensionPoints,
   listFacades,
+  listGuardrails,
   searchDocs,
 } from '../../../../packages/adk-core/src/mcpDiscovery.ts';
 import {
@@ -23,16 +25,32 @@ const DISCOVERY_NAMES = [
   'list_events',
   'get_event_schema',
   'get_tier_matrix',
+  'list_guardrails',
+  'get_guardrail',
   'search_docs',
   'get_example',
 ] as const;
 
 describe('offline ADK MCP discovery tools (S2.38)', () => {
-  it('registers the eight discovery tool definitions', () => {
+  it('registers the ten discovery tool definitions', () => {
     expect(DISCOVERY_TOOL_DEFINITIONS.map((tool) => tool.name)).toEqual([...DISCOVERY_NAMES]);
     for (const name of DISCOVERY_NAMES) {
       expect(isDiscoveryTool(name)).toBe(true);
     }
+  });
+
+  it('list_guardrails and get_guardrail read guardrails.json offline', () => {
+    const listed = listGuardrails({ inProfile: true });
+    expect(listed.ok).toBe(true);
+    expect(Number(listed.data.count)).toBeGreaterThanOrEqual(11);
+    const guardrails = listed.data.guardrails as { id: string }[];
+    expect(guardrails.some((row) => row.id === 'adk.certify')).toBe(true);
+
+    const one = getGuardrail({ id: 'adk.requirements-traced' });
+    expect(one.ok).toBe(true);
+    const guardrail = one.data.guardrail as { kadkCode: string; check: string };
+    expect(guardrail.kadkCode).toBe('KADK-718');
+    expect(guardrail.check).toBe('adk.requirements-traced');
   });
 
   it('list_facades and get_tier_matrix read packaged tier-matrix.json offline', () => {

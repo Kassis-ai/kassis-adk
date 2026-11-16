@@ -3,8 +3,14 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import {
+  formatGuardrailCheck,
+  getGuardrailCatalogEntry,
+  loadGuardrailCatalog,
+} from './guardrailCatalog.mjs';
 
 function ruleText(lock) {
+  loadGuardrailCatalog();
   const lines = [
     `# ${lock.profileId} ${lock.version}`,
     '',
@@ -16,6 +22,14 @@ function ruleText(lock) {
   for (const item of lock.guardrails) {
     lines.push(`## ${item.key} (${item.severity})`);
     lines.push('');
+    const catalogue = getGuardrailCatalogEntry(item.key);
+    if (catalogue) {
+      lines.push(
+        `Catalogue: group ${catalogue.group}, ${catalogue.level}. Check: ${formatGuardrailCheck(catalogue.check)}. Primary code: ${catalogue.kadkCode}.`
+      );
+      lines.push(catalogue.fixHint);
+      lines.push('');
+    }
     lines.push(item.rule);
     lines.push('');
   }

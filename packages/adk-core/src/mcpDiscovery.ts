@@ -11,6 +11,7 @@ import {
   loadDocs,
   loadExamples,
   loadExtensionPoints,
+  loadGuardrailCatalogRows,
   loadPlatformEvents,
   loadTierMatrixRows,
   rowToJson,
@@ -129,6 +130,57 @@ export function getEventSchema(args: Record<string, unknown>): CommandResult {
     source: event.source,
     schema: event.schema,
   });
+}
+
+export function listGuardrails(args: Record<string, unknown> = {}): CommandResult {
+  const group = argString(args, 'group').toUpperCase();
+  const query = argString(args, 'query').toLowerCase();
+  const profileOnly = args.inProfile === true || argString(args, 'inProfile') === 'true';
+  let rows = loadGuardrailCatalogRows();
+  if (group) rows = rows.filter((row) => row.group === group);
+  if (profileOnly) rows = rows.filter((row) => row.inProfile === true);
+  if (query) {
+    rows = rows.filter(
+      (row) =>
+        row.id.toLowerCase().includes(query) ||
+        row.fixHint.toLowerCase().includes(query) ||
+        row.check.toLowerCase().includes(query)
+    );
+  }
+  return commandResult([], {
+    mode: 'offline',
+    count: rows.length,
+    guardrails: rows.map((row) => ({
+      id: row.id,
+      group: row.group,
+      level: row.level,
+      check: row.check,
+      kadkCode: row.kadkCode,
+      ...(row.inProfile ? { inProfile: true } : {}),
+    })),
+  });
+}
+
+export function getGuardrail(args: Record<string, unknown>): CommandResult {
+  const id = argString(args, 'id') || argString(args, 'key');
+  if (!id) {
+    return failure('id is required', 'Pass a guardrail id from list_guardrails, e.g. adk.certify.');
+  }
+  const row = loadGuardrailCatalogRows().find((item) => item.id === id);
+  if (!row) {
+    return commandResult(
+      [
+        operationalIssue(
+          'ADK-DISCOVERY',
+          'error',
+          `Unknown guardrail ${id}`,
+          'Call list_guardrails or read @kassis/addon-sdk/guardrails.json.'
+        ),
+      ],
+      { id }
+    );
+  }
+  return commandResult([], { mode: 'offline', guardrail: row });
 }
 
 export function getTierMatrix(args: Record<string, unknown> = {}): CommandResult {

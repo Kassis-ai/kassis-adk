@@ -166,3 +166,15 @@ export {
   type KadkSeverity,
   type KadkTemplateValues,
 } from './codes/kadkCodes.js';
+
+export {
+  GUARDRAIL_GROUP_LABELS,
+  GUARDRAIL_LEVEL_LABELS,
+  formatGuardrailCheck,
+  getGuardrailCatalogEntry,
+  listGuardrailCatalogEntries,
+  requireGuardrailCatalogEntry,
+  type GuardrailCatalogEntry,
+  type GuardrailGroup,
+  type GuardrailLevel,
+} from './guardrails/guardrailCatalog.js';

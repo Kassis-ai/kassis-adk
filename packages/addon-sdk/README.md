@@ -6,6 +6,7 @@ The public contract between a Kassis addon and the host:
 - Manifest v2: a JSON Schema (`schema/addon-manifest.v2.schema.json`), the `AddonManifestV2` type, and `validateManifestV2()`.
 - `KADK` error codes: a data catalog (`codes/kadk-codes.json`) with a typed accessor. Every code is documented in [docs/developer/reference/adk-error-codes.md](../../docs/developer/reference/adk-error-codes.md).
 - Tier capability matrix (`tier-matrix.json`): each `ctx` facade method with `tier1`, `tier2`, and manifest or principal permission gates. `npm run ci:adk:tier-matrix` keeps tier 2 rows aligned with the host allow-list.
+- Guardrail catalogue (`guardrails.json`): id, group (A–F), enforcement level (L1–L5), check, primary `KADK` code and fix hint. Coding profiles, `certify`, the dev MCP server and docs read this file. `npm run ci:adk:guardrails-catalog` keeps profile keys aligned with the catalogue.
 
 Tier 1 (first-party, in process) and tier 2 (client code, own process) addons compile against the same package. An addon does not know which tier it runs in.
 

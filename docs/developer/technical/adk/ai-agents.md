@@ -23,7 +23,9 @@ An unsigned version 3 draft lives at `tools/adk/profiles/addon-coding-agent.v3.d
 
 `sync --instance=<url>` downloads `GET /api/v1/agent-registry/profiles/published/<id>` instead of the bundled file.
 
-`node tools/adk/kassis-adk-mcp.mjs` is a stdio MCP server. Messages are newline-delimited JSON. Project tools: `validate_manifest`, `run_checks`, `explain_error`, and `scaffold`. Offline discovery tools (packaged data, no network): `list_facades`, `get_facade`, `list_extension_points`, `list_events`, `get_event_schema`, `get_tier_matrix`, `search_docs`, and `get_example`. Optional live mode against `GET /api/v1/adk/catalog` waits on that catalog route (S2.36).
+The guardrail catalogue is `@kassis/addon-sdk/guardrails.json` (group, level, check, KADK code, fix hint). `kassis adk sync` writes catalogue metadata into `AGENTS.md` and related agent rule files. `kassis-addon certify` uses the catalogue fix hint when a guardrail fails with its primary KADK code.
+
+`node tools/adk/kassis-adk-mcp.mjs` is a stdio MCP server. Messages are newline-delimited JSON. Project tools: `validate_manifest`, `run_checks`, `explain_error`, and `scaffold`. Offline discovery tools (packaged data, no network): `list_facades`, `get_facade`, `list_extension_points`, `list_events`, `get_event_schema`, `get_tier_matrix`, `list_guardrails`, `get_guardrail`, `search_docs`, and `get_example`. Optional live mode against `GET /api/v1/adk/catalog` waits on that catalog route (S2.36).
 
 ## Registry, runs, and attestation
 
@@ -53,6 +55,7 @@ Autonomy is read from the agent profile. If it cannot be read, the level is the 
 
 | Date       | Change                                                                                                                                        |
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-16 | Guardrail catalogue `guardrails.json` in the SDK; MCP `list_guardrails` / `get_guardrail`; certify and sync read catalogue metadata. |
 | 2026-11-16 | Unsigned coding profile v3 draft: `adk.requirements-traced` machine guardrail and six `adk.add-*` coding skills. Signing remains D7 / human-only. |
 | 2026-11-16 | Offline discovery tools: `list_facades`, `get_facade`, `list_extension_points`, `list_events`, `get_event_schema`, `get_tier_matrix`, `search_docs`, `get_example`. |
 | 2026-10-28 | The dev MCP server speaks newline-delimited JSON and exposes `validate_manifest`, `run_checks`, `explain_error`, and `scaffold`.              |

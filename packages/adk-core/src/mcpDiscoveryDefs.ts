@@ -7,10 +7,12 @@ import {
   getEventSchema,
   getExample,
   getFacade,
+  getGuardrail,
   getTierMatrix,
   listEvents,
   listExtensionPoints,
   listFacades,
+  listGuardrails,
   searchDocs,
 } from './mcpDiscovery.ts';
 
@@ -21,6 +23,8 @@ const DISCOVERY_TOOLS = new Set([
   'list_events',
   'get_event_schema',
   'get_tier_matrix',
+  'list_guardrails',
+  'get_guardrail',
   'search_docs',
   'get_example',
 ]);
@@ -36,11 +40,13 @@ export function callDiscoveryTool(name: string, args: Record<string, unknown>): 
   if (name === 'list_events') return listEvents(args);
   if (name === 'get_event_schema') return getEventSchema(args);
   if (name === 'get_tier_matrix') return getTierMatrix(args);
+  if (name === 'list_guardrails') return listGuardrails(args);
+  if (name === 'get_guardrail') return getGuardrail(args);
   if (name === 'search_docs') return searchDocs(args);
   if (name === 'get_example') return getExample(args);
   return failure(
     `Unknown discovery tool ${name}`,
-    'Use list_facades, get_facade, list_extension_points, list_events, get_event_schema, get_tier_matrix, search_docs, or get_example.'
+    'Use list_facades, get_facade, list_extension_points, list_events, get_event_schema, get_tier_matrix, list_guardrails, get_guardrail, search_docs, or get_example.'
   );
 }
 
@@ -100,6 +106,29 @@ export const DISCOVERY_TOOL_DEFINITIONS = [
     inputSchema: {
       type: 'object' as const,
       properties: { tier: { type: 'number' } },
+    },
+  },
+  {
+    name: 'list_guardrails',
+    description: 'List guardrail catalogue rows from @kassis/addon-sdk/guardrails.json.',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        group: { type: 'string', description: 'Optional group filter A–F.' },
+        query: { type: 'string' },
+        inProfile: { type: 'boolean', description: 'When true, only coding-profile guardrails.' },
+      },
+    },
+  },
+  {
+    name: 'get_guardrail',
+    description: 'Return one guardrail catalogue row (group, level, check, KADK code, fix hint).',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        id: { type: 'string' },
+        key: { type: 'string', description: 'Alias for id.' },
+      },
     },
   },
   {

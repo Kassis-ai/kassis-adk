@@ -48,6 +48,16 @@ export interface DocEntry {
   readonly text: string;
 }
 
+export interface GuardrailCatalogRow {
+  readonly id: string;
+  readonly group: string;
+  readonly level: string;
+  readonly check: string;
+  readonly kadkCode: string;
+  readonly fixHint: string;
+  readonly inProfile?: boolean;
+}
+
 function moduleDir(): string {
   return path.dirname(fileURLToPath(import.meta.url));
 }
@@ -61,12 +71,45 @@ function tierMatrixPath(): string {
   return require.resolve('@kassis/addon-sdk/tier-matrix.json');
 }
 
+function guardrailsCatalogPath(): string {
+  if (packedCli()) return path.join(moduleDir(), 'guardrails.json');
+  return require.resolve('@kassis/addon-sdk/guardrails.json');
+}
+
 function readDiscoveryJson(name: string): unknown {
   return JSON.parse(fs.readFileSync(path.join(discoveryDir(), name), 'utf8')) as unknown;
 }
 
 function toJsonObject(value: Record<string, unknown>): JsonObject {
   return JSON.parse(JSON.stringify(value)) as JsonObject;
+}
+
+export function loadGuardrailCatalogRows(): readonly GuardrailCatalogRow[] {
+  const parsed: unknown = JSON.parse(fs.readFileSync(guardrailsCatalogPath(), 'utf8'));
+  if (!isRecordValue(parsed) || !Array.isArray(parsed.entries)) return [];
+  const rows: GuardrailCatalogRow[] = [];
+  for (const item of parsed.entries) {
+    if (!isRecordValue(item) || typeof item.id !== 'string') continue;
+    if (typeof item.group !== 'string' || typeof item.level !== 'string') continue;
+    if (typeof item.kadkCode !== 'string' || typeof item.fixHint !== 'string') continue;
+    const check =
+      typeof item.check === 'string'
+        ? item.check
+        : Array.isArray(item.check) && item.check.every((part) => typeof part === 'string')
+          ? item.check.join(', ')
+          : '';
+    if (check.length === 0) continue;
+    rows.push({
+      id: item.id,
+      group: item.group,
+      level: item.level,
+      check,
+      kadkCode: item.kadkCode,
+      fixHint: item.fixHint,
+      ...(item.inProfile === true ? { inProfile: true } : {}),
+    });
+  }
+  return rows;
 }
 
 export function loadTierMatrixRows(): readonly TierMatrixRow[] {

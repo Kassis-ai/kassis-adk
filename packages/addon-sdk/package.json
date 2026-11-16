@@ -14,6 +14,7 @@
     "./browser-externals.json": "./browser-externals.json",
     "./codes/kadk-codes.json": "./codes/kadk-codes.json",
     "./tier-matrix.json": "./tier-matrix.json",
+    "./guardrails.json": "./guardrails.json",
     "./package.json": "./package.json"
   },
   "files": [
@@ -21,6 +22,7 @@
     "schema",
     "codes",
     "tier-matrix.json",
+    "guardrails.json",
     "README.md",
     "browser-externals.json"
   ],
@@ -45,6 +47,7 @@
       "./browser-externals.json": "./browser-externals.json",
       "./codes/kadk-codes.json": "./codes/kadk-codes.json",
       "./tier-matrix.json": "./tier-matrix.json",
+    "./guardrails.json": "./guardrails.json",
       "./package.json": "./package.json"
     }
   },
