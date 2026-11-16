@@ -72,7 +72,8 @@ Rung 1, the default, is the server only. Rung 2 adds the UI. Rung 3 adds the UI 
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-11-16 | SDK `defineAddon` and `defineRecordType`: a record type requires `canAccess`, `onDelete`, `sensitivity`, and an audit subject; owned tables require `data.retention` at the type level. The template entry uses `defineAddon` (S2.17). |
 | 2026-11-16 | RBAC role editor groups manifest-registered permissions under the addon id (`permissions.category`); assignable in the picker without automatic role grants (S2.10). |
-| 2026-11-16 | Optional manifest `groups[]`: namespaced group slugs and permission lists validated like `requiredPermissions` (KADK-122, KADK-123). Host RBAC install is S2.12.   |
+| 2026-11-16 | Host install creates manifest `groups[]` as empty core RBAC groups (`groups.owner_addon`). Update reconciles the permission list and keeps members. Uninstall removes the groups, memberships and direct grants (S2.12). |
+| 2026-11-16 | Optional manifest `groups[]`: namespaced group slugs and permission lists validated like `requiredPermissions` (KADK-122, KADK-123). |
 | 2026-11-16 | Manifest v2 adds `extends[]` and fixes `resourceTypes[].sensitivity` to `standard`, `confidential`, or `mnpi`; sensitivity is required when `database.ownedTables` is set (KADK-124). |
 | 2026-11-16 | Package inspect and addon load refuse a `manifestVersion: 2` manifest with the same KADK code as `kassis-addon check`.                                              |
 | 2026-11-16 | Integration proof (`templateAddonPermissionProof.integration.test.ts`): template v2 permissions register in RBAC and gate addon routes instead of `system.admin` (B13 / S1.04). |
