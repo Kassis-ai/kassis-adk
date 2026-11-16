@@ -70,6 +70,10 @@ On-prem uses `docker-compose.onprem.yml`. Air-gapped install uses the bundle fro
 
 The catalog is built from `@kassis/addon-sdk` tier-matrix data and the host registries. It lists facade method names with tier flags and the permission each call needs, capability ids with version and owning addon, event names with their JSON schemas, host slot, deep-link and source names, and reserved permission namespaces. It does not return capability implementations, settings values, tenant rows, or secrets.
 
+## Process packs (kind 1)
+
+Installing or updating a package that lists `process.packs[]` creates case templates, flow templates and lifecycle policies as drafts. The host calls the existing template and lifecycle services. A case template's `linked_flow_key` and `lifecycle_policy_key` are pack keys and are stored as the ids created for those packs. `source_addon`, `source_key` and `source_version` record the package. Drafts stay unpublished, and a lifecycle pack is not made the default. A listed kind other than those three stops the install. A `source_key` that is already present is left unchanged. Apply release step `20261116-process-pack-provenance` on a database that does not already have those columns.
+
 ## Tier 2 package migrations
 
 Installing or updating a tier 2 package applies `migrations/*.up.sql` from that package. The host provisions schema `addon_<id>` (hyphens in the id become underscores), then runs each pending up script as role `addon_<id>_migrate` inside the install or update lease. The script and its checksum row commit together. A script that fails leaves that script unapplied; scripts that already committed stay applied, and the install or update stops. A script whose file changed after it was applied is refused. The same file name in two packages is two rows. The app role is not a member of the migration role.
@@ -116,6 +120,7 @@ The override lowers Postgres memory, gives schema init a longer health start per
 
 | Date       | Change                                                                                                                                                                                                                                                                 |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-16 | Install and update create kind-1 process packs (case template, flow template, lifecycle policy) as drafts and set provenance. Apply `20261116-process-pack-provenance` first on a database that lacks the columns.                                                     |
 | 2026-11-16 | Tier 2 container runner is opt-in via `KASSIS_TIER2_CONTAINER_RUNNERS`. `kassis-addon dev` starts that runner on an internal network. Apply `deploy/k8s/production/tier2-runner-network-policy.yaml` on the cluster.                                                  |
 | 2026-11-16 | Disable lets in-flight tier 1 requests, jobs, and event handlers finish, and does not start new ones. An in-flight tier 2 call is rejected; the HTTP route answers 503 `tier 2 addon <id> stopped`.                                                                    |
 | 2026-11-16 | The live lab workflow starts its own compose stack, loads day-0 seeds, applies the release ledger, and builds the dev host image from the commit. It runs at 05:30 UTC and on demand. It does not deploy to the cloud demo.                                          |
