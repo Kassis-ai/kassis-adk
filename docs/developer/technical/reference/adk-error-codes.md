@@ -9,7 +9,7 @@ sidebar_label: ADK error codes
 **Status:** GA
 **Version checked:** 2026-10-28
 **Technical owner:** Unassigned
-**Last reviewed:** 2026-11-16
+**Last reviewed:** 2026-11-16 (KADK-122, KADK-123)
 
 Every check of the addon development kit reports a stable `KADK-NNN` code with a message, a fix hint and a link to this page. The catalog is data: `packages/addon-sdk/codes/kadk-codes.json`, read through `listKadkCodes()` and `getKadkCode()` in `@kassis/addon-sdk`. A test keeps this page and the catalog in step (one anchor per code, no extra anchors).
 
@@ -215,6 +215,24 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Message: `Configuration of '{id}' is invalid: {detail}`
 - Fix: Change the addon configuration so it matches config.schema in the manifest.
 - Reported by: `createAddonContext`, before `initialize()` (3b)
+
+<a id="kadk-122"></a>
+
+### KADK-122 Group name outside the addon namespace
+
+- Severity: error
+- Message: `Group name '{value}' at {path} must start with {prefixes}`
+- Fix: Rename the group so it starts with \{prefixes\}.
+- Reported by: `validateManifestV2` in `@kassis/addon-sdk`
+
+<a id="kadk-123"></a>
+
+### KADK-123 Group lists an undeclared permission
+
+- Severity: error
+- Message: `groups lists '{value}', which is not in permissions`
+- Fix: Declare '\{value\}' in permissions, or remove it from the group.
+- Reported by: `validateManifestV2` in `@kassis/addon-sdk`
 
 ## 2xx Boundaries
 

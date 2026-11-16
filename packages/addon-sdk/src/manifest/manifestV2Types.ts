@@ -6,6 +6,15 @@
 import type { AddonTier } from '../context/addonIdentity.js';
 import type { JsonSchema } from '../json.js';
 
+export interface ManifestGroup {
+  /** Slug in the addon namespace, for example `<id>.reviewers` or `<id>-reviewers`. */
+  readonly name: string;
+  readonly displayName: string;
+  readonly description?: string;
+  /** Permissions this group grants; each must appear in `permissions`. */
+  readonly permissions: readonly string[];
+}
+
 export interface ManifestPermission {
   /** `<id>.<resource>.<action>` (or the id with underscores). */
   readonly name: string;
@@ -184,6 +193,8 @@ export interface AddonManifestV2 {
   readonly permissions?: readonly ManifestPermission[];
   /** Permissions every route of the addon needs; each must be declared in `permissions`. */
   readonly requiredPermissions?: readonly string[];
+  /** RBAC groups carrying only this manifest's permissions; created empty at install. */
+  readonly groups?: readonly ManifestGroup[];
   readonly requires?: readonly CapabilityRequirement[];
   readonly optional?: readonly CapabilityRequirement[];
   readonly provides?: readonly CapabilityOffer[];

@@ -26,6 +26,12 @@ export function addonNamespacePrefixes(addonId: string): string[] {
   return [...new Set([`${addonId}.`, `${addonId.replace(/-/g, '_')}.`])];
 }
 
+/** Slug prefixes for manifest `groups[].name` (dotted or hyphenated). */
+export function addonGroupNamespacePrefixes(addonId: string): string[] {
+  const underscored = addonId.replace(/-/g, '_');
+  return [...new Set([`${addonId}.`, `${underscored}.`, `${addonId}-`, `${underscored}-`])];
+}
+
 /** `ubo-panel` → `addon_ubo_panel`, the Postgres schema and role of the addon. */
 export function addonDataSchemaName(addonId: string): string {
   return `addon_${addonId.replace(/-/g, '_')}`;
@@ -119,6 +125,11 @@ function checkNamespaces(manifest: ManifestRecord, id: string): KadkIssue[] {
       stringsAt(recordAt(manifest, 'audit'), 'actions', 'audit.actions'),
       dotted
     ),
+    ...namespaceIssues(
+      'KADK-122',
+      fieldsAt(manifest, 'groups', 'name', 'groups'),
+      addonGroupNamespacePrefixes(id)
+    ),
   ];
 }
 
@@ -132,6 +143,21 @@ function duplicateIssues(entries: Entry<string>[], listPath: string): KadkIssue[
     seen.add(entry.value);
   }
   return issues;
+}
+
+function groupPermissionEntries(manifest: ManifestRecord): Entry<string>[] {
+  const list = manifest['groups'];
+  if (!Array.isArray(list)) return [];
+  return list.flatMap((item: unknown, index) => {
+    if (!isRecord(item)) return [];
+    const permissions = item['permissions'];
+    if (!Array.isArray(permissions)) return [];
+    return permissions.flatMap((value: unknown, permIndex) =>
+      typeof value === 'string'
+        ? [{ value, path: `groups[${index}].permissions[${permIndex}]` }]
+        : []
+    );
+  });
 }
 
 function slotKeys(manifest: ManifestRecord): Entry<string>[] {
@@ -149,6 +175,8 @@ function checkDuplicates(manifest: ManifestRecord): KadkIssue[] {
   const database = recordAt(manifest, 'database');
   const lists: Array<readonly [Entry<string>[], string]> = [
     [fieldsAt(manifest, 'permissions', 'name', 'permissions'), 'permissions'],
+    [fieldsAt(manifest, 'groups', 'name', 'groups'), 'groups'],
+    [groupPermissionEntries(manifest), 'groups'],
     [stringsAt(manifest, 'requiredPermissions', 'requiredPermissions'), 'requiredPermissions'],
     [fieldsAt(manifest, 'requires', 'capability', 'requires'), 'requires'],
     [fieldsAt(manifest, 'optional', 'capability', 'optional'), 'optional'],
@@ -189,6 +217,15 @@ function checkRequiredPermissions(manifest: ManifestRecord): KadkIssue[] {
   return stringsAt(manifest, 'requiredPermissions', 'requiredPermissions')
     .filter((entry) => !declared.has(entry.value))
     .map((entry) => createKadkIssue('KADK-118', entry.path, { value: entry.value }));
+}
+
+function checkGroupPermissions(manifest: ManifestRecord): KadkIssue[] {
+  const declared = new Set(
+    fieldsAt(manifest, 'permissions', 'name', 'permissions').map((entry) => entry.value)
+  );
+  return groupPermissionEntries(manifest)
+    .filter((entry) => !declared.has(entry.value))
+    .map((entry) => createKadkIssue('KADK-123', entry.path, { value: entry.value }));
 }
 
 function leavesPackage(path: string): boolean {
@@ -295,6 +332,7 @@ export function checkManifestV2Rules(
     ...checkDuplicates(manifest),
     ...checkCapabilityOverlap(manifest),
     ...checkRequiredPermissions(manifest),
+    ...checkGroupPermissions(manifest),
     ...checkPackagePaths(manifest),
     ...checkEventSchemaFiles(manifest),
     ...checkRuntimeLoadedUi(manifest),

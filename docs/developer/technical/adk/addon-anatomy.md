@@ -17,6 +17,7 @@
 | `routing.mountPath`                            | Path the host passes into `initialize()`.                                                                                                                                                                             |
 | `database.ownedTables` / `database.readAccess` | Tables this addon owns or may read. Do not use a wildcard for a new addon.                                                                                                                                            |
 | `permissions`                                  | Catalog entries (`{ name, displayName, … }`) in the addon permission namespace. On enable, the host registers them in core RBAC the same way it used to for v1 `definedPermissions`. See [Permission namespaces](../addons/permission-namespaces.md). |
+| `groups`                                       | Optional RBAC groups (`name`, `displayName`, `permissions[]`). Each name stays in the addon namespace; each permission must be declared in `permissions`. The host creates them empty at install (S2.12).                                             |
 | `ui.entryFile`                                 | Frontend bundle entry, usually `index.js`.                                                                                                                                                                            |
 | `ui.runtimeLoad`                               | When true, the host loads the page from the runtime catalog instead of a static import.                                                                                                                               |
 | `mcp.tools`                                    | Tool names. Tier 2 tools are forwarded. They are not imported into the host.                                                                                                                                          |
@@ -67,6 +68,7 @@ Rung 1, the default, is the server only. Rung 2 adds the UI. Rung 3 adds the UI 
 
 | Date       | Change                                                                                                                                                              |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-16 | Optional manifest `groups[]`: namespaced group slugs and permission lists validated like `requiredPermissions` (KADK-122, KADK-123). Host RBAC install is S2.12.   |
 | 2026-11-16 | Package inspect and addon load refuse a `manifestVersion: 2` manifest with the same KADK code as `kassis-addon check`.                                              |
 | 2026-11-16 | Integration proof (`templateAddonPermissionProof.integration.test.ts`): template v2 permissions register in RBAC and gate addon routes instead of `system.admin` (B13 / S1.04). |
 | 2026-11-16 | Route and MCP gates read manifest v2 `permissions` objects (`{ name }`) for mount-level checks, not only string entries (B13 / S1.03).                               |

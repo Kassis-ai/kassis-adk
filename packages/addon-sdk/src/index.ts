@@ -127,6 +127,7 @@ export type * from './manifest/manifestV2Types.js';
 export { ADDON_MANIFEST_V2_SCHEMA } from './manifest/manifestV2Schema.js';
 export {
   addonDataSchemaName,
+  addonGroupNamespacePrefixes,
   addonNamespacePrefixes,
   type ManifestValidationOptions,
 } from './manifest/manifestV2Rules.js';

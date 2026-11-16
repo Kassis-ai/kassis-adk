@@ -82,6 +82,7 @@ export const MANIFEST_V2_KEYS = {
   uiContentHash: true,
   permissions: true,
   requiredPermissions: true,
+  groups: true,
   requires: true,
   optional: true,
   provides: true,

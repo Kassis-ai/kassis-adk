@@ -191,6 +191,24 @@
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-121"
     },
     {
+      "code": "KADK-122",
+      "category": "manifest",
+      "severity": "error",
+      "title": "Group name outside the addon namespace",
+      "message": "Group name '{value}' at {path} must start with {prefixes}",
+      "fix": "Rename the group so it starts with {prefixes}.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-122"
+    },
+    {
+      "code": "KADK-123",
+      "category": "manifest",
+      "severity": "error",
+      "title": "Group lists an undeclared permission",
+      "message": "groups lists '{value}', which is not in permissions",
+      "fix": "Declare '{value}' in permissions, or remove it from the group.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-123"
+    },
+    {
       "code": "KADK-201",
       "category": "boundaries",
       "severity": "error",

@@ -161,6 +161,19 @@ describe('validateManifestV2', () => {
         'events.publishes[0].name',
       ],
       ['KADK-115', { audit: { actions: ['user.login'] } }, 'audit.actions[0]'],
+      [
+        'KADK-122',
+        {
+          groups: [
+            {
+              name: 'cases-reviewer',
+              displayName: 'Reviewers',
+              permissions: ['sample-tprm-check.view'],
+            },
+          ],
+        },
+        'groups[0].name',
+      ],
     ] as const)('rejects a name outside the addon namespace (%s)', (code, changes, issuePath) => {
       expectOnly(manifestWith(changes), code, issuePath);
     });
@@ -198,6 +211,44 @@ describe('validateManifestV2', () => {
         'KADK-118',
         'requiredPermissions[0]'
       );
+    });
+
+    it('accepts a manifest group in the addon namespace', () => {
+      const groups = [
+        {
+          name: 'sample-tprm-check-reviewers',
+          displayName: 'TPRM reviewers',
+          permissions: ['sample-tprm-check.view', 'sample-tprm-check.run'],
+        },
+      ];
+      expect(codesOf(manifestWith({ groups }))).toEqual([]);
+    });
+
+    it('rejects a group permission that is not declared (KADK-123)', () => {
+      const groups = [
+        {
+          name: 'sample-tprm-check.reviewers',
+          displayName: 'TPRM reviewers',
+          permissions: ['sample-tprm-check.admin'],
+        },
+      ];
+      expectOnly(manifestWith({ groups }), 'KADK-123', 'groups[0].permissions[0]');
+    });
+
+    it('rejects duplicate group names (KADK-116)', () => {
+      const groups = [
+        {
+          name: 'sample-tprm-check.reviewers',
+          displayName: 'A',
+          permissions: ['sample-tprm-check.view'],
+        },
+        {
+          name: 'sample-tprm-check.reviewers',
+          displayName: 'B',
+          permissions: ['sample-tprm-check.run'],
+        },
+      ];
+      expectOnly(manifestWith({ groups }), 'KADK-116', 'groups');
     });
 
     it('rejects a package path that leaves the package (KADK-120)', () => {

@@ -56,6 +56,25 @@
       }
     },
     "requiredPermissions": { "type": "array", "items": { "$ref": "#/$defs/permissionName" } },
+    "groups": {
+      "description": "RBAC groups the addon provides. The host creates them with no members; each lists only this manifest's permissions.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "displayName", "permissions"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "$ref": "#/$defs/groupSlug" },
+          "displayName": { "type": "string", "minLength": 1, "maxLength": 120 },
+          "description": { "type": "string" },
+          "permissions": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "#/$defs/permissionName" }
+          }
+        }
+      }
+    },
     "requires": { "type": "array", "items": { "$ref": "#/$defs/capabilityRequirement" } },
     "optional": { "type": "array", "items": { "$ref": "#/$defs/capabilityRequirement" } },
     "provides": {
@@ -374,6 +393,12 @@
     "permissionName": {
       "type": "string",
       "pattern": "^[a-z0-9_-]+(?:\\.[a-z0-9_*-]+)+$",
+      "maxLength": 128
+    },
+    "groupSlug": {
+      "description": "Slug in the addon namespace (checked by validateManifestV2).",
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_.-]*$",
       "maxLength": 128
     },
     "dottedName": {
