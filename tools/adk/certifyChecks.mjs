@@ -15,6 +15,10 @@ import {
   auditEngineeringPractice,
   writeEngineeringPracticeEvidence,
 } from './engineeringPractice.mjs';
+import {
+  auditMandatoryContract,
+  writeMandatoryContractEvidence,
+} from './mandatoryContract.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT_STORED_MAX = 4000;
@@ -238,6 +242,27 @@ function runThinAddonBudgetsCheck(addonDir) {
   return finishCheck('adk.thin-addon-budgets', inputHash, audited.ok ? 0 : 1, started, output);
 }
 
+export function mandatoryContractCheck(addonDir) {
+  return runMandatoryContractCheck(addonDir);
+}
+
+function runMandatoryContractCheck(addonDir) {
+  const started = Date.now();
+  const inputHash = sha256Text(
+    `${readText(path.join(addonDir, 'manifest.json'))}\n${hashTree(addonDir, ['src'])}`
+  );
+  const audited = auditMandatoryContract(addonDir);
+  writeMandatoryContractEvidence(addonDir, audited.evidence);
+  const output = JSON.stringify({ ok: audited.ok, issues: audited.issues });
+  return finishCheck(
+    'adk.mandatory-contract-intact',
+    inputHash,
+    audited.ok ? 0 : 1,
+    started,
+    output
+  );
+}
+
 function runEngineeringPracticeChecks(addonDir) {
   const started = Date.now();
   const inputHash = hashTree(addonDir, ['src', 'frontend']);
@@ -275,6 +300,7 @@ export function recordMachineChecks(addonDir) {
     runRequirementPlanCheck(root),
     attestPinnedProfileCheck(root),
     runThinAddonBudgetsCheck(root),
+    runMandatoryContractCheck(root),
     ...runEngineeringPracticeChecks(root),
   ];
   const document = {

@@ -43,7 +43,8 @@ describe('coding profile v3 draft (S2.40)', () => {
     const keys = draft.guardrails.map((item) => item.key);
     expect(keys).toContain('adk.requirements-traced');
     expect(keys).toContain('adk.requirement-plan-mapped');
-    expect(keys).toHaveLength(13);
+    expect(keys).toContain('adk.mandatory-contract-intact');
+    expect(keys).toHaveLength(14);
     const blocking = draft.guardrails.filter((item) => item.severity === 'blocking');
     expect(blocking.length).toBeGreaterThan(0);
     for (const item of blocking) {
@@ -83,7 +84,7 @@ describe('coding profile v3 draft (S2.40)', () => {
     expect(lock.version).toBe('3');
     expect(Array.isArray(lock.skills)).toBe(true);
     expect(lock.skills.map((skill: { key: string }) => skill.key)).toEqual([...skillKeys]);
-    expect(blankAttestation(lock).answers).toHaveLength(13);
+    expect(blankAttestation(lock).answers).toHaveLength(14);
 
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'kassis-profile-v3-'));
     try {

@@ -118,6 +118,16 @@
       "checkIds": [
         "adk.attest-pinned-profile"
       ]
+    },
+    {
+      "key": "adk.mandatory-contract-intact",
+      "severity": "blocking",
+      "title": "Keep the mandatory record contract",
+      "rule": "A record access check must decide from the principal and the record. A deletion handler must erase or detach the record. Certify records adk.mandatory-contract-intact and fails a return-true or throw-only canAccess (KADK-730), an empty or throw-only onDelete (KADK-732), a missing canAccess when resourceTypes is set (KADK-729), and a missing onDelete when the addon owns tables (KADK-731). The record-type scaffold throws until you replace those stubs. The host refuses to enable the same addon. This guardrail is on the unsigned draft until the profile is signed.",
+      "verification": "machine",
+      "checkIds": [
+        "adk.mandatory-contract-intact"
+      ]
     }
   ],
   "skills": [

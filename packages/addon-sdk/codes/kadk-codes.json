@@ -1098,6 +1098,42 @@
       "message": "Server file '{path}' declares module-level let or var state",
       "fix": "Move mutable state out of module scope in '{path}' so hot toggle does not keep stale values, then run kassis-addon engineering.",
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-728"
+    },
+    {
+      "code": "KADK-729",
+      "category": "attestation",
+      "severity": "error",
+      "title": "Record access check is missing",
+      "message": "Record access check is missing for a declared record type ('{path}')",
+      "fix": "Add a canAccess handler for each resourceTypes entry. A missing handler is not an allow.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-729"
+    },
+    {
+      "code": "KADK-730",
+      "category": "attestation",
+      "severity": "error",
+      "title": "Record access check is a stub",
+      "message": "Access check '{name}' in '{path}' returns true or only throws",
+      "fix": "Replace the access check in '{path}' so it decides from the principal and the record. A return true body and a body that only throws are stubs, including the record-type scaffold.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-730"
+    },
+    {
+      "code": "KADK-731",
+      "category": "attestation",
+      "severity": "error",
+      "title": "Deletion handler is missing",
+      "message": "Deletion handler is missing while the addon owns tables ('{path}')",
+      "fix": "Add an onDelete handler when database.ownedTables is not empty.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-731"
+    },
+    {
+      "code": "KADK-732",
+      "category": "attestation",
+      "severity": "error",
+      "title": "Deletion handler is a stub",
+      "message": "Deletion handler '{name}' in '{path}' is empty or only throws",
+      "fix": "Replace the deletion handler in '{path}' so it erases or detaches the record. An empty body and a body that only throws are stubs, including the record-type scaffold.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-732"
     }
   ]
 }

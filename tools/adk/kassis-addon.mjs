@@ -81,7 +81,7 @@ Writes dist/server/index.js and, when src/ui/index.ts exists, frontend/dist/inde
 `,
   check: `Usage: kassis-addon check [--json]
 
-Validates manifest.json. Schema errors use KADK-1xx codes. A permission outside the addon id uses KADK-110. A banned dependency is KADK-221. A private approval, notification, audit, user, or role table is KADK-310 unless REUSE.md explains it (KADK-311). An owned table with no database.tableNotes warns as KADK-312. Writes .kassis/evidence/reuse-core.json. process.packs and process/*.json are checked offline (keys, references, permissions, record types). A kind with no host schema warns KADK-313 and does not check the body.
+Validates manifest.json. Schema errors use KADK-1xx codes. A permission outside the addon id uses KADK-110. A banned dependency is KADK-221. A private approval, notification, audit, user, or role table is KADK-310 unless REUSE.md explains it (KADK-311). An owned table with no database.tableNotes warns as KADK-312. Writes .kassis/evidence/reuse-core.json. process.packs and process/*.json are checked offline (keys, references, permissions, record types). A kind with no host schema warns KADK-313 and does not check the body. A manifest v2 record access check that returns true or only throws is KADK-730. An empty or throw-only deletion handler is KADK-732. A missing handler is KADK-729 or KADK-731. Writes .kassis/evidence/mandatory-contract.json.
 `,
   conformance: `Usage: kassis-addon conformance [--json]
 
@@ -147,7 +147,7 @@ Inside this repository, omit --key to use the repo signer. Outside it, --key is 
 `,
   certify: `Usage: kassis-addon certify [--json]
 
-Runs check, conformance, build, and test, then records adk.requirements-traced, adk.requirement-plan-mapped, and adk.attest-pinned-profile before the attestation gate. --json prints { ok, issues, data }.
+Runs check, conformance, build, and test, then records adk.requirements-traced, adk.requirement-plan-mapped, adk.attest-pinned-profile, and adk.mandatory-contract-intact before the attestation gate. A fresh record-type scaffold fails that check until canAccess and onDelete are filled in. --json prints { ok, issues, data }.
 `,
   attest: `Usage: kassis-addon attest [--json]
 

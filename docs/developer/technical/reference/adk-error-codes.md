@@ -9,7 +9,7 @@ sidebar_label: ADK error codes
 **Status:** GA
 **Version checked:** 2026-10-28
 **Technical owner:** Unassigned
-**Last reviewed:** 2026-11-16 (KADK-125 to KADK-129, KADK-223, KADK-313, KADK-314, KADK-316 to KADK-318)
+**Last reviewed:** 2026-11-16 (KADK-125 to KADK-129, KADK-223, KADK-313, KADK-314, KADK-316 to KADK-318, KADK-729 to KADK-732)
 
 Every check of the addon development kit reports a stable `KADK-NNN` code with a message, a fix hint and a link to this page. The catalog is data: `packages/addon-sdk/codes/kadk-codes.json`, read through `listKadkCodes()` and `getKadkCode()` in `@kassis/addon-sdk`. A test keeps this page and the catalog in step (one anchor per code, no extra anchors).
 
@@ -1137,10 +1137,47 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Fix: Move mutable state out of module scope in '{path}' so hot toggle does not keep stale values, then run kassis-addon engineering.
 - Reported by: `kassis-addon engineering`; `kassis-addon certify`
 
+<a id="kadk-729"></a>
+
+### KADK-729 Record access check is missing
+
+- Severity: error
+- Message: `Record access check is missing for a declared record type ('{path}')`
+- Fix: Add a canAccess handler for each resourceTypes entry. A missing handler is not an allow.
+- Reported by: `kassis-addon check`; `kassis-addon certify`; enable
+
+<a id="kadk-730"></a>
+
+### KADK-730 Record access check is a stub
+
+- Severity: error
+- Message: `Access check '{name}' in '{path}' returns true or only throws`
+- Fix: Replace the access check in '{path}' so it decides from the principal and the record. A return true body and a body that only throws are stubs, including the record-type scaffold.
+- Reported by: `kassis-addon check`; `kassis-addon certify`; enable
+
+<a id="kadk-731"></a>
+
+### KADK-731 Deletion handler is missing
+
+- Severity: error
+- Message: `Deletion handler is missing while the addon owns tables ('{path}')`
+- Fix: Add an onDelete handler when database.ownedTables is not empty.
+- Reported by: `kassis-addon check`; `kassis-addon certify`; enable
+
+<a id="kadk-732"></a>
+
+### KADK-732 Deletion handler is a stub
+
+- Severity: error
+- Message: `Deletion handler '{name}' in '{path}' is empty or only throws`
+- Fix: Replace the deletion handler in '{path}' so it erases or detaches the record. An empty body and a body that only throws are stubs, including the record-type scaffold.
+- Reported by: `kassis-addon check`; `kassis-addon certify`; enable
+
 ## Changelog
 
 | Date       | Change                                                                                                                                                                                                                      |
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-16 | KADK-729 when a manifest v2 addon declares a record type and has no canAccess handler. KADK-730 when that handler returns true or only throws. KADK-731 when owned tables have no onDelete handler. KADK-732 when that handler is empty or only throws. `kassis-addon check` and `certify` report them. Enable refuses the same addon. |
 | 2026-11-16 | KADK-125 to KADK-129 and KADK-314, KADK-316 to KADK-318 when a process pack key, file, permission, record type, or reference is wrong. KADK-313 warns when the kind has no host JSON Schema, so the body is not checked. |
 | 2026-11-16 | KADK-723 soft budgets without BUDGETS.md reason. KADK-724–728 engineering practice (timeouts, pagination, i18n, idempotent handlers, no module state). `kassis-addon budgets` / `engineering`; certify applies the same gates. |
 | 2026-11-16 | KADK-223 when two tier 2 registrations claim the same wave 1 or wave 2 name.                                                                                                                                              |

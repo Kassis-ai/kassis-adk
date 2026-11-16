@@ -177,6 +177,19 @@ declare module '../../../tools/adk/engineeringPractice.mjs' {
   export function writeEngineeringPracticeEvidence(addonDir: string, evidence: object): void;
 }
 
+declare module '../../../tools/adk/mandatoryContract.mjs' {
+  export function auditMandatoryContract(addonDir: string): {
+    ok: boolean;
+    issues: CatalogIssue[];
+    evidence: object;
+  };
+  export function mandatoryContractRefusal(audit: {
+    ok: boolean;
+    issues: CatalogIssue[];
+  }): { code: string; message: string } | null;
+  export function writeMandatoryContractEvidence(addonDir: string, evidence: object): void;
+}
+
 declare module '../../../tools/adk/certifyChecks.mjs' {
   export function recordMachineChecks(addonDir: string): object;
 }

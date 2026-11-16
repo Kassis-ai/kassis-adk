@@ -233,10 +233,10 @@
       "id": "adk.mandatory-contract-intact",
       "group": "F",
       "level": "L3",
-      "check": "planned:adk.mandatory-contract-intact",
-      "kadkCode": "KADK-703",
-      "fixHint": "Implement mandatory extension callbacks; do not ship return-true stubs or empty delete handlers.",
-      "inProfile": false
+      "check": "adk.mandatory-contract-intact",
+      "kadkCode": "KADK-730",
+      "fixHint": "Replace record-type scaffold stubs before certify. canAccess must not return true or only throw (KADK-730). onDelete must not be empty or only throw (KADK-732). A declared record type needs canAccess (KADK-729). Owned tables need onDelete (KADK-731). The host refuses enable with the same check. This guardrail stays on the unsigned v3 draft until it is signed.",
+      "inProfile": true
     }
   ]
 }
