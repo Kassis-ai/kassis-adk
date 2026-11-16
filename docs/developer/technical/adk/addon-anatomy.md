@@ -16,7 +16,7 @@
 | `tier`                                         | `1` (default) or `2`. See [Tiers](./tiers.md).                                                                                                                                                                        |
 | `routing.mountPath`                            | Path the host passes into `initialize()`.                                                                                                                                                                             |
 | `database.ownedTables` / `database.readAccess` | Tables this addon owns or may read. Do not use a wildcard for a new addon.                                                                                                                                            |
-| `permissions`                                  | Names in the addon permission namespace. See [Permission namespaces](../addons/permission-namespaces.md).                                                                                                             |
+| `permissions`                                  | Catalog entries (`{ name, displayName, … }`) in the addon permission namespace. On enable, the host registers them in core RBAC the same way it used to for v1 `definedPermissions`. See [Permission namespaces](../addons/permission-namespaces.md). |
 | `ui.entryFile`                                 | Frontend bundle entry, usually `index.js`.                                                                                                                                                                            |
 | `ui.runtimeLoad`                               | When true, the host loads the page from the runtime catalog instead of a static import.                                                                                                                               |
 | `mcp.tools`                                    | Tool names. Tier 2 tools are forwarded. They are not imported into the host.                                                                                                                                          |
@@ -67,11 +67,9 @@ Rung 1, the default, is the server only. Rung 2 adds the UI. Rung 3 adds the UI 
 
 | Date       | Change                                                                                                                                                              |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-<<<<<<< HEAD
+| 2026-11-16 | Tier 1 and tier 2 start paths register manifest v2 `permissions` objects in the core permission catalog (B13 / S1.02).                                            |
 | 2026-11-16 | The template manifest declares audit, event, job, and prompt names used in `test/server.test.ts`, plus `events/started.schema.json` for the sample publish call.   |
-=======
 | 2026-11-16 | `init` copies `REQUIREMENTS.md`, `GAPS.md`, and `TEST-REPORT.md` shaped after BRD-ADK-001, including scaffold-kind requirement examples.                            |
->>>>>>> 212ad63e1 (feat(adk): S1.19 template requirements files)
 | 2026-10-28 | The tier 2 template sets `resources.memoryMb` to 128 and `health.path` to `/health`. The host refuses a tier 2 addon without memory.                                |
 | 2026-10-28 | Manifest v2 may carry `signing.keyId`, covered by the signature.                                                                                                    |
 | 2026-10-28 | `ui.entryFile` is `index.js`, relative to `frontend/dist`. A path with a slash is KADK-504. The catalog strips a leading `frontend/dist/`.                          |
