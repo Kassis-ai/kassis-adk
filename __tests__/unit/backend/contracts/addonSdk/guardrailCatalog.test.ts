@@ -42,5 +42,13 @@ describe('@kassis/addon-sdk guardrails.json (S2.45)', () => {
       expect(getGuardrailCatalogEntry(key)?.inProfile).toBe(true);
     }
     expect(v3).toContain('adk.requirements-traced');
+    expect(getGuardrailCatalogEntry('adk.requirement-plan-mapped')?.check).toBe(
+      'adk.requirement-plan-mapped'
+    );
+    expect(getGuardrailCatalogEntry('adk.sdk-imports-only')?.check).toBe('kassis-addon-conformance');
+    expect(getGuardrailCatalogEntry('adk.attest-pinned-profile')?.check).toBe(
+      'adk.attest-pinned-profile'
+    );
+    expect(getGuardrailCatalogEntry('adk.declared-permissions-and-audit')?.level).toBe('L5');
   });
 });

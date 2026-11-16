@@ -13,7 +13,7 @@ An import is allowed when the specifier is a relative path that stays inside the
 
 `conformance` runs that check on `src/`, `frontend/`, and, when the files exist, `dist/server/index.js` and `frontend/dist/index.js`. A migration that goes up still needs a down script.
 
-`certify` runs the CLI commands `check`, `conformance`, `build` and `test`, then computes the content hash. It writes `.kassis/evidence/checks.json` with the CLI version, the Node version, and for each check the input hash, exit code, duration and output digest.
+`certify` runs the CLI commands `check`, `conformance`, `build` and `test`, then `requirements`, `plan`, and the pinned-profile attestation check, then computes the content hash. It writes `.kassis/evidence/checks.json` with the CLI version, the Node version, and for each check the input hash, exit code, duration and output digest. `adk.attest-pinned-profile` exits 0 when no profile is pinned. When a lock is present it exits 0 only if `.kassis/attestation.json` matches that lock and answers every guardrail.
 
 An outcome must be `followed`, `violated` or `not_applicable`. Anything else, including a blank string or null, fails with KADK-714. The helper that prepares a new attestation writes null for each outcome so the file fails until it is answered.
 
@@ -47,6 +47,7 @@ node tools/adk/kassis-addon.mjs pack --out=evidence
 
 | Date       | Change                                                                                                                                                                                                        |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-16 | Certify records `adk.requirement-plan-mapped` and `adk.attest-pinned-profile` in `checks.json` beside requirements tracing. |
 | 2026-11-16 | `createTestContext` allows tier 2 `capabilities.provide` and still refuses extend, locks, `capabilities.register`, and data writes with KADK-219 from `tier-matrix.json`.                                          |
 | 2026-11-16 | `createTestContext` enforces manifest declared-name lists for audit, events, jobs, prompts, secrets and egress with host KADK codes.                                                                          |
 | 2026-10-28 | Conformance uses one import checker. Forbidden imports fail with KADK-201 through KADK-205, including `dist/server/index.js` and `frontend/dist/index.js` when those files exist.                             |

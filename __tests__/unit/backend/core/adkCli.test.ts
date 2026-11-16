@@ -148,6 +148,8 @@ describe('addon CLI', () => {
         'kassis-addon-build:1',
         'kassis-addon-test:1',
         'adk.requirements-traced:0',
+        'adk.requirement-plan-mapped:0',
+        'adk.attest-pinned-profile:0',
       ]);
       expect(
         checks.checks.every(

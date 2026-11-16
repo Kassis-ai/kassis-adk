@@ -135,7 +135,7 @@ Inside this repository, omit --key to use the repo signer. Outside it, --key is 
 `,
   certify: `Usage: kassis-addon certify [--json]
 
-Runs check, conformance, build, and test, then the attestation gate. --json prints { ok, issues, data }.
+Runs check, conformance, build, and test, then records adk.requirements-traced, adk.requirement-plan-mapped, and adk.attest-pinned-profile before the attestation gate. --json prints { ok, issues, data }.
 `,
   attest: `Usage: kassis-addon attest [--json]
 

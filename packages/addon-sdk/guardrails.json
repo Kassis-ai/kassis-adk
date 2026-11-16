@@ -23,16 +23,16 @@
       "level": "L5",
       "check": "self-attestation",
       "kadkCode": "KADK-703",
-      "fixHint": "Work only in this addon repository. Import Kassis as @kassis/* packages; never edit core or host paths.",
+      "fixHint": "Advisory: a machine cannot see which repository the agent edited. Work only in this addon repository. Import Kassis as @kassis/* packages; never edit core or host paths.",
       "inProfile": true
     },
     {
       "id": "adk.sdk-imports-only",
       "group": "A",
       "level": "L2",
-      "check": "self-attestation",
-      "kadkCode": "KADK-703",
-      "fixHint": "Import only from @kassis/* and this addon's src/. Remove host paths and container.resolve calls.",
+      "check": "kassis-addon-conformance",
+      "kadkCode": "KADK-201",
+      "fixHint": "Import only from @kassis/* and this addon's src/. kassis-addon conformance fails host paths and undeclared packages (KADK-201 to KADK-205).",
       "inProfile": true
     },
     {
@@ -75,10 +75,10 @@
       "id": "adk.requirement-plan-mapped",
       "group": "B",
       "level": "L3",
-      "check": "planned:kassis-addon-plan",
-      "kadkCode": "KADK-703",
-      "fixHint": "Run kassis-addon plan and map each Must requirement before writing code.",
-      "inProfile": false
+      "check": "adk.requirement-plan-mapped",
+      "kadkCode": "KADK-720",
+      "fixHint": "Run kassis-addon plan so every FR-* and NFR-* row in REQUIREMENTS.md has a rung in PLAN.md (KADK-720, KADK-721, KADK-722).",
+      "inProfile": true
     },
     {
       "id": "adk.requirements-traced",
@@ -110,10 +110,10 @@
     {
       "id": "adk.declared-permissions-and-audit",
       "group": "F",
-      "level": "L3",
+      "level": "L5",
       "check": "self-attestation",
       "kadkCode": "KADK-703",
-      "fixHint": "Declare a permission per route and record every write through ctx.data or a facade with a manifest audit action.",
+      "fixHint": "Advisory: check does not see route handlers or write sites. Declare a permission per route and record every write through ctx.data or a facade with a manifest audit action.",
       "inProfile": true
     },
     {
@@ -122,7 +122,7 @@
       "level": "L3",
       "check": "kassis-addon-check",
       "kadkCode": "KADK-703",
-      "fixHint": "Give each published event a schema and handle null when a consumed capability is absent.",
+      "fixHint": "kassis-addon check requires each published event schema path to end in .schema.json (KADK-406). It does not scan source for null when a consumed capability is absent.",
       "inProfile": true
     },
     {
@@ -140,7 +140,7 @@
       "level": "L4",
       "check": "evidence-pack:change-summary",
       "kadkCode": "KADK-703",
-      "fixHint": "Describe any wider permissions, egress hosts, or data access in the change summary before certify.",
+      "fixHint": "Advisory in the profile: a machine cannot detect widened access. Describe wider permissions, egress hosts, or data access in the change summary. The approver reads that summary in the evidence pack (L4).",
       "inProfile": true
     },
     {
@@ -172,16 +172,16 @@
       "level": "L5",
       "check": "self-attestation",
       "kadkCode": "KADK-703",
-      "fixHint": "Limit edits to files and behaviour the task asked for; revert drive-by refactors.",
+      "fixHint": "Advisory: a machine cannot tell which edits were requested. Limit edits to files and behaviour the task asked for; revert drive-by refactors.",
       "inProfile": true
     },
     {
       "id": "adk.attest-pinned-profile",
       "group": "F",
       "level": "L3",
-      "check": "self-attestation",
+      "check": "adk.attest-pinned-profile",
       "kadkCode": "KADK-702",
-      "fixHint": "Run kassis adk sync, read pinned guardrails, then kassis-addon attest with one answer per guardrail before certify.",
+      "fixHint": "Run kassis adk sync, then kassis-addon attest and answer every pinned guardrail. Certify records check adk.attest-pinned-profile. Reading the rules at the start of a run is not observable.",
       "inProfile": true
     },
     {

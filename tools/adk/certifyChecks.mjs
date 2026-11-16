@@ -119,6 +119,68 @@ function runAddonCommand(addonDir, command, inputHash) {
   return finishCheck(`kassis-addon-${command}`, inputHash, exitCode, started, output);
 }
 
+const ATTEST_OUTCOMES = new Set(['followed', 'violated', 'not_applicable']);
+
+function readJsonObject(file) {
+  if (!fs.existsSync(file)) return null;
+  try {
+    const parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : null;
+  } catch (error) {
+    if (!(error instanceof SyntaxError)) throw error;
+    return null;
+  }
+}
+
+/**
+ * Machine evidence for `adk.attest-pinned-profile`.
+ * No lock means nothing is pinned, so the check passes.
+ * A lock requires one valid answer per guardrail in `.kassis/attestation.json`.
+ */
+export function attestPinnedProfileCheck(addonDir) {
+  const started = Date.now();
+  const lockPath = path.join(addonDir, '.kassis', 'agent-profile.lock.json');
+  const attestPath = path.join(addonDir, '.kassis', 'attestation.json');
+  const inputHash = sha256Text(`${readText(lockPath)}\n${readText(attestPath)}`);
+  if (!fs.existsSync(lockPath)) {
+    return finishCheck('adk.attest-pinned-profile', inputHash, 0, started, 'no pinned profile\n');
+  }
+  const lock = readJsonObject(lockPath);
+  const attestation = readJsonObject(attestPath);
+  const problems = [];
+  if (!lock) problems.push('lock is not a JSON object');
+  if (!attestation) problems.push('attestation is missing or not a JSON object');
+  if (lock && attestation) {
+    if (attestation.version !== lock.version || attestation.lockHash !== lock.hash) {
+      problems.push('attestation does not match the pinned lock');
+    }
+    const guardrails = Array.isArray(lock.guardrails) ? lock.guardrails : [];
+    const answers = Array.isArray(attestation.answers) ? attestation.answers : [];
+    const seen = new Set();
+    for (const answer of answers) {
+      const key = answer && typeof answer.key === 'string' ? answer.key : '';
+      if (!key) {
+        problems.push('answer missing key');
+        continue;
+      }
+      if (seen.has(key)) problems.push(`duplicate answer ${key}`);
+      seen.add(key);
+      const outcome = answer.outcome;
+      if (!ATTEST_OUTCOMES.has(outcome)) problems.push(`${key} outcome is not answered`);
+      if ((outcome === 'violated' || outcome === 'not_applicable') && !answer.note) {
+        problems.push(`${key} needs a note`);
+      }
+    }
+    for (const guardrail of guardrails) {
+      if (guardrail && typeof guardrail.key === 'string' && !seen.has(guardrail.key)) {
+        problems.push(`missing answer ${guardrail.key}`);
+      }
+    }
+  }
+  const output = problems.length === 0 ? 'attestation answers the pinned profile\n' : `${problems.join('\n')}\n`;
+  return finishCheck('adk.attest-pinned-profile', inputHash, problems.length === 0 ? 0 : 1, started, output);
+}
+
 /** Machine evidence for profile guardrail `adk.requirements-traced`. */
 function runRequirementsTracedCheck(addonDir) {
   const cli = path.join(here, 'kassis-addon.mjs');
@@ -136,6 +198,23 @@ function runRequirementsTracedCheck(addonDir) {
   return finishCheck('adk.requirements-traced', inputHash, exitCode, started, output);
 }
 
+/** Machine evidence for profile guardrail `adk.requirement-plan-mapped`. */
+function runRequirementPlanCheck(addonDir) {
+  const cli = path.join(here, 'kassis-addon.mjs');
+  const started = Date.now();
+  const inputHash = sha256Text(
+    `${readText(path.join(addonDir, 'REQUIREMENTS.md'))}\n${readText(path.join(addonDir, 'PLAN.md'))}`
+  );
+  const result = spawnSync(process.execPath, [cli, 'plan', '--json'], {
+    cwd: addonDir,
+    encoding: 'utf8',
+  });
+  const errorText = result.error instanceof Error ? result.error.message : '';
+  const output = `${result.stdout ?? ''}${result.stderr ?? ''}${errorText}`;
+  const exitCode = typeof result.status === 'number' ? result.status : 1;
+  return finishCheck('adk.requirement-plan-mapped', inputHash, exitCode, started, output);
+}
+
 function buildInputHash(addonDir) {
   return sha256Text(
     `${readText(path.join(addonDir, 'package.json'))}\n${hashTree(addonDir, ['src', 'frontend'])}`
@@ -143,7 +222,8 @@ function buildInputHash(addonDir) {
 }
 
 /**
- * Runs check, conformance, build and test, then the content hash.
+ * Runs check, conformance, build, test, requirements tracing, requirement
+ * mapping, and the pinned-profile attestation check, then the content hash.
  * Writes `.kassis/evidence/checks.json` and returns that document.
  *
  * @param {string} addonDir
@@ -156,6 +236,8 @@ export function recordMachineChecks(addonDir) {
     runAddonCommand(root, 'build', buildInputHash(root)),
     runAddonCommand(root, 'test', hashTree(root, ['test'])),
     runRequirementsTracedCheck(root),
+    runRequirementPlanCheck(root),
+    attestPinnedProfileCheck(root),
   ];
   const document = {
     cliVersion: cliPackageVersion(),

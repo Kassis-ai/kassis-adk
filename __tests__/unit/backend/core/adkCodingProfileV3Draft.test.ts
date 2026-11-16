@@ -25,7 +25,12 @@ describe('coding profile v3 draft (S2.40)', () => {
       version: string;
       draft: boolean;
       signature?: string;
-      guardrails: Array<{ key: string; verification: string; checkIds?: string[] }>;
+      guardrails: Array<{
+        key: string;
+        severity?: string;
+        verification: string;
+        checkIds?: string[];
+      }>;
       skills: Array<{ key: string; title: string; description: string; body: string }>;
       previousVersion: { version: string; signature: string };
     };
@@ -37,7 +42,22 @@ describe('coding profile v3 draft (S2.40)', () => {
 
     const keys = draft.guardrails.map((item) => item.key);
     expect(keys).toContain('adk.requirements-traced');
-    expect(keys).toHaveLength(12);
+    expect(keys).toContain('adk.requirement-plan-mapped');
+    expect(keys).toHaveLength(13);
+    const blocking = draft.guardrails.filter((item) => item.severity === 'blocking');
+    expect(blocking.length).toBeGreaterThan(0);
+    for (const item of blocking) {
+      expect(item.verification, item.key).toBe('machine');
+      expect(item.checkIds?.length, item.key).toBeGreaterThan(0);
+    }
+    for (const key of [
+      'adk.work-in-own-repo',
+      'adk.declared-permissions-and-audit',
+      'adk.declare-widened-access',
+      'adk.no-unrequested-refactors',
+    ]) {
+      expect(draft.guardrails.find((item) => item.key === key)?.severity).toBe('advisory');
+    }
     const traced = draft.guardrails.find((item) => item.key === 'adk.requirements-traced');
     expect(traced).toMatchObject({
       verification: 'machine',
@@ -63,7 +83,7 @@ describe('coding profile v3 draft (S2.40)', () => {
     expect(lock.version).toBe('3');
     expect(Array.isArray(lock.skills)).toBe(true);
     expect(lock.skills.map((skill: { key: string }) => skill.key)).toEqual([...skillKeys]);
-    expect(blankAttestation(lock).answers).toHaveLength(12);
+    expect(blankAttestation(lock).answers).toHaveLength(13);
 
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'kassis-profile-v3-'));
     try {
@@ -86,5 +106,9 @@ describe('coding profile v3 draft (S2.40)', () => {
     const row = checks.checks.find((item) => item.id === 'adk.requirements-traced');
     expect(row).toBeDefined();
     expect(row?.exitCode).toBe(0);
+    const planned = checks.checks.find((item) => item.id === 'adk.requirement-plan-mapped');
+    expect(planned?.exitCode).toBe(0);
+    const attested = checks.checks.find((item) => item.id === 'adk.attest-pinned-profile');
+    expect(attested?.exitCode).toBe(0);
   }, 120000);
 });

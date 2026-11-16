@@ -2,21 +2,24 @@
   "profileId": "addon-coding-agent",
   "version": "3",
   "draft": true,
-  "draftNote": "Unsigned draft for S2.40 / D7. Joe reviews and signs; do not point sync at this file until a signature is present.",
+  "draftNote": "Unsigned draft for S2.40 / D7. Joe reviews and signs; do not point sync at this file until a signature is present. S2.46 names a machine check for every blocking guardrail. Where no check exists, the guardrail is advisory.",
   "guardrails": [
     {
       "key": "adk.work-in-own-repo",
-      "severity": "blocking",
+      "severity": "advisory",
       "title": "Work only in your addon repository",
-      "rule": "Work only in this repository. Kassis core is a dependency, never a file to edit.",
+      "rule": "Advisory: a machine cannot see which repository you edited. Work only in this repository. Kassis core is a dependency, never a file to edit.",
       "verification": "self"
     },
     {
       "key": "adk.sdk-imports-only",
       "severity": "blocking",
       "title": "Import only from the SDK and your own code",
-      "rule": "Import only from @kassis/* packages and your own src/. Never resolve host services by name.",
-      "verification": "self"
+      "rule": "Import only from @kassis/* packages and your own src/. Never resolve host services by name. Certify records kassis-addon-conformance (KADK-201 to KADK-205).",
+      "verification": "machine",
+      "checkIds": [
+        "kassis-addon-conformance"
+      ]
     },
     {
       "key": "adk.lowest-rung",
@@ -27,30 +30,36 @@
     },
     {
       "key": "adk.declared-permissions-and-audit",
-      "severity": "blocking",
+      "severity": "advisory",
       "title": "Declare permissions and audit every write",
-      "rule": "Every route declares a permission in your addon namespace. Every write goes through ctx.data or a host facade and records an audit action declared in the manifest.",
+      "rule": "Advisory: check does not see route handlers or write sites. Every route declares a permission in your addon namespace. Every write goes through ctx.data or a host facade and records an audit action declared in the manifest.",
       "verification": "self"
     },
     {
       "key": "adk.event-schemas-and-null-capabilities",
       "severity": "blocking",
       "title": "Give every event a schema and handle missing capabilities",
-      "rule": "Every published event has a schema. Every consumed capability handles null, because the addon that provides it can be switched off.",
-      "verification": "self"
+      "rule": "Every published event has a schema. Certify records kassis-addon-check, which requires each schema path to end in .schema.json (KADK-406). That check does not scan source for null when a consumed capability is absent; still handle null, because the provider can be switched off.",
+      "verification": "machine",
+      "checkIds": [
+        "kassis-addon-check"
+      ]
     },
     {
       "key": "adk.reversible-migrations",
       "severity": "blocking",
       "title": "Make every migration reversible",
-      "rule": "Every migration has a down script, or is marked irreversible with a reason.",
-      "verification": "self"
+      "rule": "Every migration has a down script, or is marked irreversible with a reason. Certify records kassis-addon-conformance.",
+      "verification": "machine",
+      "checkIds": [
+        "kassis-addon-conformance"
+      ]
     },
     {
       "key": "adk.declare-widened-access",
-      "severity": "blocking",
+      "severity": "advisory",
       "title": "Declare any widened access",
-      "rule": "Never widen permissions, egress hosts or data access without saying so in the change summary.",
+      "rule": "Advisory: a machine cannot detect widened access. Never widen permissions, egress hosts or data access without saying so in the change summary. The approver reads that summary in the evidence pack.",
       "verification": "self"
     },
     {
@@ -77,6 +86,16 @@
       ]
     },
     {
+      "key": "adk.requirement-plan-mapped",
+      "severity": "blocking",
+      "title": "Map every requirement to a rung",
+      "rule": "Every FR-* and NFR-* row in REQUIREMENTS.md has one rung in PLAN.md: configuration, extension-point, facade, own-code, or gap. Run kassis-addon plan before you finish. Certify records machine check adk.requirement-plan-mapped and fails with KADK-720, KADK-721, or KADK-722 when the plan is missing, a row is unmapped, or a rung is invalid.",
+      "verification": "machine",
+      "checkIds": [
+        "adk.requirement-plan-mapped"
+      ]
+    },
+    {
       "key": "adk.document-changes",
       "severity": "advisory",
       "title": "Document what you built",
@@ -85,17 +104,20 @@
     },
     {
       "key": "adk.no-unrequested-refactors",
-      "severity": "blocking",
+      "severity": "advisory",
       "title": "Do not refactor code you were not asked to change",
-      "rule": "Do not refactor code you were not asked to change.",
+      "rule": "Advisory: a machine cannot tell which edits were requested. Do not refactor code you were not asked to change.",
       "verification": "self"
     },
     {
       "key": "adk.attest-pinned-profile",
       "severity": "blocking",
       "title": "Read your pinned guardrails and attest to them",
-      "rule": "At the start, read the guardrails and skills of your pinned profile (kassis adk sync). Before you say you are done, fill in .kassis/attestation.json with one answer per guardrail.",
-      "verification": "self"
+      "rule": "At the start, read the guardrails and skills of your pinned profile (kassis adk sync). Before you say you are done, fill in .kassis/attestation.json with one answer per guardrail. Certify records machine check adk.attest-pinned-profile. A run with no pinned lock passes that check; a lock fails it until every guardrail is answered.",
+      "verification": "machine",
+      "checkIds": [
+        "adk.attest-pinned-profile"
+      ]
     }
   ],
   "skills": [
