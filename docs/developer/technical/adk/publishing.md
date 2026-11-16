@@ -3,7 +3,7 @@
 **Status:** GA
 **Version checked:** 2026-10-28
 **Technical owner:** Unassigned
-**Last reviewed:** 2026-10-30
+**Last reviewed:** 2026-11-16
 
 Version rules are in the [semver policy](../addons/semver-policy.md). Do not bump a public export of `@kassis/addon-sdk` without a matching report change.
 
@@ -57,6 +57,7 @@ The install path is `addons-installed/<id>/<version>/`. The version must be high
 
 | Date       | Change                                                                                                                                                                                         |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-16 | `host-sdk.api.md` includes `OwnerCommunicationTab` and `OwnerCommunicationTabProps`. `ci:packages:host-sdk-self-contained` passes on that report.                                              |
 | 2026-10-30 | `host-sdk.api.md` matches a clean API Extractor run (`React_2.JSX.Element`). `addon-sdk.api.md` lists `ManifestSigning`, which the source already exported.                                    |
 | 2026-10-28 | `package` refuses a failed certify and includes attestation and lock in the evidence pack. `ci:packages:publish-config` also checks that committed `package.json` files still point at `src/`. |
 | 2026-10-28 | Public tarballs publish `dist` entry points. `ci:packages:publish-config` packs each package and checks those entries.                                                                         |
