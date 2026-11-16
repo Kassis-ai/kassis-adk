@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "description": "Worked examples for offline ADK MCP get_example (scaffold kinds and common patterns).",
+  "examples": [
+    {
+      "id": "scaffold-route",
+      "kind": "route",
+      "title": "Scaffold an HTTP route",
+      "summary": "Adds src/server/routes/<name>.ts, permission, and initialize mount.",
+      "snippet": "await ctx.routes.mount(router, { permission: 'acme-widget.view', path: '/ping' });"
+    },
+    {
+      "id": "scaffold-event",
+      "kind": "event",
+      "title": "Publish a namespaced event with a schema",
+      "summary": "Writes events/<name>.schema.json and events.publishes in the manifest.",
+      "snippet": "await ctx.events.publish(principal, 'acme-widget.started', { at: new Date().toISOString() });"
+    },
+    {
+      "id": "scaffold-job",
+      "kind": "job",
+      "title": "Register a background job",
+      "summary": "Adds src/server/jobs/<name>.ts and jobs.types in the manifest.",
+      "snippet": "ctx.jobs.register('acme-widget.refresh', async (job) => { /* ... */ });"
+    },
+    {
+      "id": "scaffold-migration",
+      "kind": "migration",
+      "title": "Add an owned-table migration",
+      "summary": "Writes up/down SQL and database.ownedTables; tier 2 install runner is S2.02.",
+      "snippet": "-- migrations/0001_items.up.sql\nCREATE TABLE addon_acme_widget.items (id uuid PRIMARY KEY);"
+    },
+    {
+      "id": "scaffold-ui-page",
+      "kind": "ui-page",
+      "title": "Add a runtime-loaded UI page",
+      "summary": "Uses @kassis/host-sdk with en/fr locales and a render test.",
+      "snippet": "import { PageHeader } from '@kassis/host-sdk';\nexport default function StatusPage() {\n  return <PageHeader title=\"Status\" />;\n}"
+    },
+    {
+      "id": "scaffold-mcp-tool",
+      "kind": "mcp-tool",
+      "title": "Contribute an MCP tool",
+      "summary": "defineMcpTool under src/mcp/tools with contributions.mcp in the manifest.",
+      "snippet": "import { defineMcpTool } from '@kassis/mcp-contract';\nexport const ping = defineMcpTool({ name: 'acme-widget.ping', /* ... */ });"
+    },
+    {
+      "id": "facade-audit",
+      "kind": "facade",
+      "title": "Record an audit action",
+      "summary": "Declare the action in audit.actions, then call ctx.audit.record.",
+      "snippet": "await ctx.audit.record(principal, 'acme-widget.started', { subjectType: 'addon', subjectId: ctx.id });"
+    },
+    {
+      "id": "facade-tier-check",
+      "kind": "tier",
+      "title": "Check whether a facade is allowed for tier 2",
+      "summary": "Use get_tier_matrix / get_facade; refused calls raise KADK-219.",
+      "snippet": "ctx.capabilities.provide  // tier2: false in tier-matrix.json"
+    }
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "description": "ctx.extend contribution points for offline ADK MCP discovery.",
+  "points": [
+    {
+      "id": "analyticsContributor",
+      "method": "ctx.extend.registerAnalyticsContributor",
+      "manifestExtendsId": "analyticsContributor",
+      "summary": "Contribute analytics metrics or dashboards for the addon."
+    },
+    {
+      "id": "approvable",
+      "method": "ctx.extend.registerApprovable",
+      "manifestExtendsId": "approvable",
+      "summary": "Register a record type that can enter the approvals engine."
+    },
+    {
+      "id": "approvableFields",
+      "method": "ctx.extend.registerApprovableFields",
+      "manifestExtendsId": "approvableFields",
+      "summary": "Declare fields shown on approval requests for a record type."
+    },
+    {
+      "id": "auditSubject",
+      "method": "ctx.extend.registerAuditSubject",
+      "manifestExtendsId": "auditSubject",
+      "summary": "Map a record type to an audit subject for enterprise audit rows."
+    },
+    {
+      "id": "automationAction",
+      "method": "ctx.extend.registerAutomationAction",
+      "manifestExtendsId": "automationAction",
+      "summary": "Register an automation action the Weave engine can run."
+    },
+    {
+      "id": "automationFields",
+      "method": "ctx.extend.registerAutomationFields",
+      "manifestExtendsId": "automationFields",
+      "summary": "Declare fields available to automation rules for a record type."
+    },
+    {
+      "id": "automationTrigger",
+      "method": "ctx.extend.registerAutomationTrigger",
+      "manifestExtendsId": "automationTrigger",
+      "summary": "Register an automation trigger the Weave engine can fire."
+    },
+    {
+      "id": "communicable",
+      "method": "ctx.extend.registerCommunicable",
+      "manifestExtendsId": "communicable",
+      "summary": "Own email/communication for addon record types (tier 1).",
+      "note": "Host registration exists; confirm manifest extends[] allow-list if missing."
+    },
+    {
+      "id": "deletable",
+      "method": "ctx.extend.registerDeletable",
+      "manifestExtendsId": "deletable",
+      "summary": "Register deletion checks and handlers for a record type."
+    },
+    {
+      "id": "documentable",
+      "method": "ctx.extend.registerDocumentable",
+      "manifestExtendsId": "documentable",
+      "summary": "Attach documents to a record type through core document services."
+    },
+    {
+      "id": "echoStrategy",
+      "method": "ctx.extend.registerEchoStrategy",
+      "manifestExtendsId": "echoStrategy",
+      "summary": "Contribute an Echo (graph) strategy for investigation views."
+    },
+    {
+      "id": "employeeDirectory",
+      "method": "ctx.extend.registerEmployeeDirectory",
+      "manifestExtendsId": "employeeDirectory",
+      "summary": "Provide employee directory lookups for the host."
+    },
+    {
+      "id": "flaggable",
+      "method": "ctx.extend.registerFlaggable",
+      "manifestExtendsId": "flaggable",
+      "summary": "Allow risk/compliance flags on a record type."
+    },
+    {
+      "id": "graphRiskMirror",
+      "method": "ctx.extend.registerGraphRiskMirror",
+      "manifestExtendsId": "graphRiskMirror",
+      "summary": "Mirror risk signals into the investigation graph."
+    },
+    {
+      "id": "importQuestionnairePack",
+      "method": "ctx.extend.importQuestionnairePack",
+      "manifestExtendsId": "importQuestionnairePack",
+      "summary": "Import a questionnaire pack into core tables (idempotent)."
+    },
+    {
+      "id": "investigationDomain",
+      "method": "ctx.extend.registerInvestigationDomain",
+      "manifestExtendsId": "investigationDomain",
+      "summary": "Register an investigation domain for the Investigation Panel."
+    },
+    {
+      "id": "investigationTemplate",
+      "method": "ctx.extend.registerInvestigationTemplate",
+      "manifestExtendsId": "investigationTemplate",
+      "summary": "Register an investigation template for a domain."
+    },
+    {
+      "id": "licenseFeatures",
+      "method": "ctx.extend.registerLicenseFeatures",
+      "manifestExtendsId": "licenseFeatures",
+      "summary": "Declare license features the addon requires or exposes."
+    },
+    {
+      "id": "linkable",
+      "method": "ctx.extend.registerLinkable",
+      "manifestExtendsId": "linkable",
+      "summary": "Register a record type that can participate in entity linking."
+    },
+    {
+      "id": "predictionCapability",
+      "method": "ctx.extend.registerPredictionCapability",
+      "manifestExtendsId": "predictionCapability",
+      "summary": "Register a prediction capability for risk or scoring."
+    },
+    {
+      "id": "questionnaireDomain",
+      "method": "ctx.extend.registerQuestionnaireDomain",
+      "manifestExtendsId": "questionnaireDomain",
+      "summary": "Register a questionnaire domain adapter surface."
+    },
+    {
+      "id": "questionnaireDomainAdapter",
+      "method": "ctx.extend.setQuestionnaireDomainAdapter",
+      "manifestExtendsId": "questionnaireDomainAdapter",
+      "summary": "Set the questionnaire domain adapter implementation."
+    },
+    {
+      "id": "riskFactors",
+      "method": "ctx.extend.registerRiskFactors",
+      "manifestExtendsId": "riskFactors",
+      "summary": "Contribute risk factors used by core risk scoring."
+    },
+    {
+      "id": "shutdownHook",
+      "method": "ctx.extend.registerShutdownHook",
+      "manifestExtendsId": "shutdownHook",
+      "summary": "Run cleanup when the addon is disabled or the host shuts down."
+    }
+  ]
+}

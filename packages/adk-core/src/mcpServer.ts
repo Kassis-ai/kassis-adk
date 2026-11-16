@@ -5,6 +5,11 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import type { CommandResult } from './types.ts';
 import { cliVersion, commandResult, failure, isRecordValue, kadkIssue } from './issues.ts';
+import {
+  callDiscoveryTool,
+  DISCOVERY_TOOL_DEFINITIONS,
+  isDiscoveryTool,
+} from './mcpDiscoveryDefs.ts';
 import { checkProject, conformanceProject, explainProject } from './projectCommands.ts';
 import { scaffoldProject } from './scaffoldFeature.ts';
 
@@ -52,6 +57,7 @@ const TOOLS = [
       required: ['kind'],
     },
   },
+  ...DISCOVERY_TOOL_DEFINITIONS,
 ];
 
 function argString(args: Record<string, unknown>, key: string): string {
@@ -100,6 +106,9 @@ export function runContainedTool(
   name: string,
   args: Record<string, unknown>
 ): CommandResult {
+  if (isDiscoveryTool(name)) {
+    return callDiscoveryTool(name, args);
+  }
   const requested = argString(args, 'dir') || rootDir;
   const dir = projectDirWithinRoot(rootDir, requested);
   if (!dir) {
@@ -124,9 +133,10 @@ function callTool(name: string, args: Record<string, unknown>): CommandResult {
       rung: argString(args, 'rung'),
     });
   }
+  if (isDiscoveryTool(name)) return callDiscoveryTool(name, args);
   return failure(
     `Unknown tool ${name}`,
-    'Use validate_manifest, run_checks, explain_error, or scaffold.'
+    'Use validate_manifest, run_checks, explain_error, scaffold, or a discovery tool (list_facades, get_facade, list_extension_points, list_events, get_event_schema, get_tier_matrix, search_docs, get_example).'
   );
 }
 

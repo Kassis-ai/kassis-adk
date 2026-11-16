@@ -119,6 +119,12 @@ copyIntoLib(
   'addon_verification_public.key'
 );
 copyIntoLib(path.join(repoRoot, 'packages/addon-sdk/codes/kadk-codes.json'), 'kadk-codes.json');
+copyIntoLib(path.join(repoRoot, 'packages/addon-sdk/tier-matrix.json'), 'tier-matrix.json');
+fs.cpSync(
+  path.join(repoRoot, 'packages/adk-core/src/discovery'),
+  path.join(lib, 'discovery'),
+  { recursive: true }
+);
 fs.cpSync(
   path.join(repoRoot, 'templates/kassis-addon'),
   path.join(pkgRoot, 'templates/kassis-addon'),
