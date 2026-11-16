@@ -34,6 +34,2153 @@
       }
     },
     {
+      "name": "case.assigned",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "case.assigned",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "eventId",
+          "timestamp",
+          "case"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "case": {
+            "type": "object"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "caseId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "status_category": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "assigned_to": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assigned_group_id": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "reference": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "source_system": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "external_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "version": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "created_by": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "client_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "client_email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "narrative": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "due_date": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "created_date": {
+            "type": "string"
+          },
+          "updated_date": {
+            "type": "string"
+          },
+          "template_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "lifecycle_policy_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "lifecycle_policy_version": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "flow_template_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "flow_template_version": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "custom_data": {
+            "type": "object"
+          },
+          "notes": {
+            "type": "array"
+          },
+          "workflow_step_history": {
+            "type": [
+              "array",
+              "null"
+            ]
+          },
+          "active_workflow_step_id": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "priority_typed": {
+            "type": "string"
+          },
+          "jurisdiction_code": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "risk_score": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "risk_level": {
+            "type": "string"
+          },
+          "aml_score": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "due_soon_sent_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "overdue_sent_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "oldStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "newStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "escalated": {
+            "type": "boolean"
+          },
+          "statusChanged": {
+            "type": "boolean"
+          },
+          "assignedTo": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assignedGroupId": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "overdue": {
+            "type": "boolean"
+          },
+          "daysOverdue": {
+            "type": "number"
+          },
+          "correlationId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "case.created",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "case.created",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "eventId",
+          "timestamp",
+          "case"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "case": {
+            "type": "object"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "caseId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "status_category": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "assigned_to": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assigned_group_id": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "reference": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "source_system": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "external_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "version": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "created_by": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "client_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "client_email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "narrative": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "due_date": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "created_date": {
+            "type": "string"
+          },
+          "updated_date": {
+            "type": "string"
+          },
+          "template_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "lifecycle_policy_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "lifecycle_policy_version": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "flow_template_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "flow_template_version": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "custom_data": {
+            "type": "object"
+          },
+          "notes": {
+            "type": "array"
+          },
+          "workflow_step_history": {
+            "type": [
+              "array",
+              "null"
+            ]
+          },
+          "active_workflow_step_id": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "priority_typed": {
+            "type": "string"
+          },
+          "jurisdiction_code": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "risk_score": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "risk_level": {
+            "type": "string"
+          },
+          "aml_score": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "due_soon_sent_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "overdue_sent_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "oldStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "newStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "escalated": {
+            "type": "boolean"
+          },
+          "statusChanged": {
+            "type": "boolean"
+          },
+          "assignedTo": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assignedGroupId": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "overdue": {
+            "type": "boolean"
+          },
+          "daysOverdue": {
+            "type": "number"
+          },
+          "correlationId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "case.deleted",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "case.deleted",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "case.due_soon",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "case.due_soon",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "eventId",
+          "timestamp",
+          "case"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "case": {
+            "type": "object"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "caseId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "status_category": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "assigned_to": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assigned_group_id": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "reference": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "source_system": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "external_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "version": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "created_by": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "client_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "client_email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "narrative": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "due_date": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "created_date": {
+            "type": "string"
+          },
+          "updated_date": {
+            "type": "string"
+          },
+          "template_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "lifecycle_policy_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "lifecycle_policy_version": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "flow_template_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "flow_template_version": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "custom_data": {
+            "type": "object"
+          },
+          "notes": {
+            "type": "array"
+          },
+          "workflow_step_history": {
+            "type": [
+              "array",
+              "null"
+            ]
+          },
+          "active_workflow_step_id": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "priority_typed": {
+            "type": "string"
+          },
+          "jurisdiction_code": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "risk_score": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "risk_level": {
+            "type": "string"
+          },
+          "aml_score": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "due_soon_sent_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "overdue_sent_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "oldStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "newStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "escalated": {
+            "type": "boolean"
+          },
+          "statusChanged": {
+            "type": "boolean"
+          },
+          "assignedTo": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assignedGroupId": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "overdue": {
+            "type": "boolean"
+          },
+          "daysOverdue": {
+            "type": "number"
+          },
+          "correlationId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "case.escalated",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "case.escalated",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "eventId",
+          "timestamp",
+          "case"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "case": {
+            "type": "object"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "caseId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "status_category": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "assigned_to": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assigned_group_id": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "reference": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "source_system": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "external_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "version": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "created_by": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "client_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "client_email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "narrative": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "due_date": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "created_date": {
+            "type": "string"
+          },
+          "updated_date": {
+            "type": "string"
+          },
+          "template_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "lifecycle_policy_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "lifecycle_policy_version": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "flow_template_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "flow_template_version": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "custom_data": {
+            "type": "object"
+          },
+          "notes": {
+            "type": "array"
+          },
+          "workflow_step_history": {
+            "type": [
+              "array",
+              "null"
+            ]
+          },
+          "active_workflow_step_id": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "priority_typed": {
+            "type": "string"
+          },
+          "jurisdiction_code": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "risk_score": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "risk_level": {
+            "type": "string"
+          },
+          "aml_score": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "due_soon_sent_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "overdue_sent_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "oldStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "newStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "escalated": {
+            "type": "boolean"
+          },
+          "statusChanged": {
+            "type": "boolean"
+          },
+          "assignedTo": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assignedGroupId": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "overdue": {
+            "type": "boolean"
+          },
+          "daysOverdue": {
+            "type": "number"
+          },
+          "correlationId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "case.overdue",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "case.overdue",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "eventId",
+          "timestamp",
+          "case"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "case": {
+            "type": "object"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "caseId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "status_category": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "assigned_to": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assigned_group_id": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "reference": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "source_system": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "external_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "version": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "created_by": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "client_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "client_email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "narrative": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "due_date": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "created_date": {
+            "type": "string"
+          },
+          "updated_date": {
+            "type": "string"
+          },
+          "template_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "lifecycle_policy_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "lifecycle_policy_version": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "flow_template_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "flow_template_version": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "custom_data": {
+            "type": "object"
+          },
+          "notes": {
+            "type": "array"
+          },
+          "workflow_step_history": {
+            "type": [
+              "array",
+              "null"
+            ]
+          },
+          "active_workflow_step_id": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "priority_typed": {
+            "type": "string"
+          },
+          "jurisdiction_code": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "risk_score": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "risk_level": {
+            "type": "string"
+          },
+          "aml_score": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "due_soon_sent_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "overdue_sent_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "oldStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "newStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "escalated": {
+            "type": "boolean"
+          },
+          "statusChanged": {
+            "type": "boolean"
+          },
+          "assignedTo": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assignedGroupId": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "overdue": {
+            "type": "boolean"
+          },
+          "daysOverdue": {
+            "type": "number"
+          },
+          "correlationId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "case.purged",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "case.purged",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "case.restored",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "case.restored",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "case.status_changed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "case.status_changed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "eventId",
+          "timestamp",
+          "case"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "case": {
+            "type": "object"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "caseId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "status_category": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "assigned_to": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assigned_group_id": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "reference": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "source_system": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "external_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "version": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "created_by": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "client_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "client_email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "narrative": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "due_date": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "created_date": {
+            "type": "string"
+          },
+          "updated_date": {
+            "type": "string"
+          },
+          "template_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "lifecycle_policy_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "lifecycle_policy_version": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "flow_template_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "flow_template_version": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "custom_data": {
+            "type": "object"
+          },
+          "notes": {
+            "type": "array"
+          },
+          "workflow_step_history": {
+            "type": [
+              "array",
+              "null"
+            ]
+          },
+          "active_workflow_step_id": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "priority_typed": {
+            "type": "string"
+          },
+          "jurisdiction_code": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "risk_score": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "risk_level": {
+            "type": "string"
+          },
+          "aml_score": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "due_soon_sent_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "overdue_sent_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "oldStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "newStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "escalated": {
+            "type": "boolean"
+          },
+          "statusChanged": {
+            "type": "boolean"
+          },
+          "assignedTo": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assignedGroupId": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "overdue": {
+            "type": "boolean"
+          },
+          "daysOverdue": {
+            "type": "number"
+          },
+          "correlationId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "case.updated",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "case.updated",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "eventId",
+          "timestamp",
+          "case"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "case": {
+            "type": "object"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "caseId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "status_category": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "assigned_to": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assigned_group_id": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "reference": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "source_system": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "external_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "version": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "created_by": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "client_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "client_email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "narrative": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "due_date": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "created_date": {
+            "type": "string"
+          },
+          "updated_date": {
+            "type": "string"
+          },
+          "template_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "lifecycle_policy_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "lifecycle_policy_version": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "flow_template_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "flow_template_version": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "custom_data": {
+            "type": "object"
+          },
+          "notes": {
+            "type": "array"
+          },
+          "workflow_step_history": {
+            "type": [
+              "array",
+              "null"
+            ]
+          },
+          "active_workflow_step_id": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "priority_typed": {
+            "type": "string"
+          },
+          "jurisdiction_code": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "risk_score": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "risk_level": {
+            "type": "string"
+          },
+          "aml_score": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "due_soon_sent_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "overdue_sent_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "oldStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "newStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "escalated": {
+            "type": "boolean"
+          },
+          "statusChanged": {
+            "type": "boolean"
+          },
+          "assignedTo": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assignedGroupId": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "overdue": {
+            "type": "boolean"
+          },
+          "daysOverdue": {
+            "type": "number"
+          },
+          "correlationId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "control-room.alert.updated",
       "source": "platform",
       "schema": {
@@ -180,6 +2327,874 @@
       }
     },
     {
+      "name": "document.analysis.completed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "document.analysis.completed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "documentId"
+        ],
+        "properties": {
+          "documentId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "jobId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "document.analysis.requested",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "document.analysis.requested",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "documentId",
+          "jobId"
+        ],
+        "properties": {
+          "documentId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "options": {
+            "type": "object"
+          },
+          "jobId": {
+            "type": "string"
+          },
+          "queueOptions": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "document.deleted",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "document.deleted",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "document.downloaded",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "document.downloaded",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "documentId"
+        ],
+        "properties": {
+          "documentId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "dealId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "userId": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "document.incomplete",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "document.incomplete",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "eventId",
+          "timestamp",
+          "document"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "document": {
+            "type": "object"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "documentId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "document_name": {
+            "type": "string"
+          },
+          "owner_type": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "owner_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ownerType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ownerId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "dealId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "mimeType": {
+            "type": "string"
+          },
+          "fileSize": {
+            "type": "number"
+          },
+          "userId": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "metadata": {
+            "type": "object"
+          },
+          "metadata_complete": {
+            "type": "boolean"
+          },
+          "changes": {
+            "type": "object"
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "correlationId": {
+            "type": "string"
+          },
+          "category": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "subcategory": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "status_typed": {
+            "type": "string"
+          },
+          "updated_date": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "document.owner_linked",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "document.owner_linked",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {
+          "documentId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "ownerType": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "document.owner_registered",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "document.owner_registered",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "ownerType",
+          "label"
+        ],
+        "properties": {
+          "ownerType": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "document.owner_unlinked",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "document.owner_unlinked",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {
+          "documentId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "ownerType": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "document.processed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "document.processed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "documentId"
+        ],
+        "properties": {
+          "documentId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "caseId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "category": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "entities": {
+            "type": "array"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "source": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "document.purged",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "document.purged",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "document.restored",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "document.restored",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "document.updated",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "document.updated",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "eventId",
+          "timestamp",
+          "document"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "document": {
+            "type": "object"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "documentId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "document_name": {
+            "type": "string"
+          },
+          "owner_type": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "owner_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ownerType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ownerId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "dealId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "mimeType": {
+            "type": "string"
+          },
+          "fileSize": {
+            "type": "number"
+          },
+          "userId": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "metadata": {
+            "type": "object"
+          },
+          "metadata_complete": {
+            "type": "boolean"
+          },
+          "changes": {
+            "type": "object"
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "correlationId": {
+            "type": "string"
+          },
+          "category": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "subcategory": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "status_typed": {
+            "type": "string"
+          },
+          "updated_date": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "document.uploaded",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "document.uploaded",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "eventId",
+          "timestamp",
+          "document"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "document": {
+            "type": "object"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "documentId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "document_name": {
+            "type": "string"
+          },
+          "owner_type": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "owner_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ownerType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ownerId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "dealId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "mimeType": {
+            "type": "string"
+          },
+          "fileSize": {
+            "type": "number"
+          },
+          "userId": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "metadata": {
+            "type": "object"
+          },
+          "metadata_complete": {
+            "type": "boolean"
+          },
+          "changes": {
+            "type": "object"
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "correlationId": {
+            "type": "string"
+          },
+          "category": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "subcategory": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "status_typed": {
+            "type": "string"
+          },
+          "updated_date": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "document.viewed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "document.viewed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "documentId"
+        ],
+        "properties": {
+          "documentId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "dealId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "userId": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "entity.adverse_media_hit",
       "source": "platform",
       "schema": {
@@ -314,6 +3329,92 @@
           }
         },
         "additionalProperties": true
+      }
+    },
+    {
+      "name": "finding.lacking_evidence",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "finding.lacking_evidence",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "eventId",
+          "timestamp",
+          "finding"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "finding": {
+            "type": "object"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "investigationId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "evidence_count": {
+            "type": "number"
+          },
+          "missing_evidence": {
+            "type": "boolean"
+          },
+          "correlationId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "risk_score": {
+            "type": "number"
+          },
+          "documentation": {
+            "type": "boolean"
+          },
+          "documentation_missing": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
       }
     },
     {
@@ -629,6 +3730,805 @@
       }
     },
     {
+      "name": "investigation.assigned",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "investigation.assigned",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "eventId",
+          "timestamp",
+          "investigation"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "investigation": {
+            "type": "object"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "investigationId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "objective": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array"
+          },
+          "metadata": {
+            "type": "object"
+          },
+          "ai_summary": {
+            "type": "string"
+          },
+          "visibility_scope": {
+            "type": "string"
+          },
+          "closure_notes": {
+            "type": "string"
+          },
+          "auto_generated": {
+            "type": "boolean"
+          },
+          "investigations_source": {
+            "type": "string"
+          },
+          "trigger_source": {
+            "type": "string"
+          },
+          "trigger_description": {
+            "type": "string"
+          },
+          "trigger_reference_id": {
+            "type": "string"
+          },
+          "key_question": {
+            "type": "string"
+          },
+          "primary_subjects": {
+            "type": "array"
+          },
+          "key_findings": {
+            "type": "array"
+          },
+          "required_actions": {
+            "type": "array"
+          },
+          "stage_guidance": {
+            "type": "string"
+          },
+          "previousStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "newStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previousStage": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "newStage": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assignments": {
+            "type": "array"
+          },
+          "assigned_to": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "finding": {
+            "type": "object"
+          },
+          "correlationId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "risk_score": {
+            "type": "number"
+          },
+          "evidence_count": {
+            "type": "number"
+          },
+          "missing_evidence": {
+            "type": "boolean"
+          },
+          "documentation": {
+            "type": "boolean"
+          },
+          "documentation_missing": {
+            "type": "boolean"
+          },
+          "closed_at": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "investigation.created",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "investigation.created",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "investigation.deleted",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "investigation.deleted",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "investigation.finding_documentation_missing",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "investigation.finding_documentation_missing",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "eventId",
+          "timestamp",
+          "investigation"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "investigation": {
+            "type": "object"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "investigationId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "objective": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array"
+          },
+          "metadata": {
+            "type": "object"
+          },
+          "ai_summary": {
+            "type": "string"
+          },
+          "visibility_scope": {
+            "type": "string"
+          },
+          "closure_notes": {
+            "type": "string"
+          },
+          "auto_generated": {
+            "type": "boolean"
+          },
+          "investigations_source": {
+            "type": "string"
+          },
+          "trigger_source": {
+            "type": "string"
+          },
+          "trigger_description": {
+            "type": "string"
+          },
+          "trigger_reference_id": {
+            "type": "string"
+          },
+          "key_question": {
+            "type": "string"
+          },
+          "primary_subjects": {
+            "type": "array"
+          },
+          "key_findings": {
+            "type": "array"
+          },
+          "required_actions": {
+            "type": "array"
+          },
+          "stage_guidance": {
+            "type": "string"
+          },
+          "previousStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "newStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previousStage": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "newStage": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assignments": {
+            "type": "array"
+          },
+          "assigned_to": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "finding": {
+            "type": "object"
+          },
+          "correlationId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "risk_score": {
+            "type": "number"
+          },
+          "evidence_count": {
+            "type": "number"
+          },
+          "missing_evidence": {
+            "type": "boolean"
+          },
+          "documentation": {
+            "type": "boolean"
+          },
+          "documentation_missing": {
+            "type": "boolean"
+          },
+          "closed_at": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "investigation.finding_high_risk",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "investigation.finding_high_risk",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "eventId",
+          "timestamp",
+          "investigation"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "investigation": {
+            "type": "object"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "investigationId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "objective": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array"
+          },
+          "metadata": {
+            "type": "object"
+          },
+          "ai_summary": {
+            "type": "string"
+          },
+          "visibility_scope": {
+            "type": "string"
+          },
+          "closure_notes": {
+            "type": "string"
+          },
+          "auto_generated": {
+            "type": "boolean"
+          },
+          "investigations_source": {
+            "type": "string"
+          },
+          "trigger_source": {
+            "type": "string"
+          },
+          "trigger_description": {
+            "type": "string"
+          },
+          "trigger_reference_id": {
+            "type": "string"
+          },
+          "key_question": {
+            "type": "string"
+          },
+          "primary_subjects": {
+            "type": "array"
+          },
+          "key_findings": {
+            "type": "array"
+          },
+          "required_actions": {
+            "type": "array"
+          },
+          "stage_guidance": {
+            "type": "string"
+          },
+          "previousStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "newStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previousStage": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "newStage": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assignments": {
+            "type": "array"
+          },
+          "assigned_to": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "finding": {
+            "type": "object"
+          },
+          "correlationId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "risk_score": {
+            "type": "number"
+          },
+          "evidence_count": {
+            "type": "number"
+          },
+          "missing_evidence": {
+            "type": "boolean"
+          },
+          "documentation": {
+            "type": "boolean"
+          },
+          "documentation_missing": {
+            "type": "boolean"
+          },
+          "closed_at": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "investigation.finding_unresolved",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "investigation.finding_unresolved",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "eventId",
+          "timestamp",
+          "investigation"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "investigation": {
+            "type": "object"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "investigationId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "objective": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array"
+          },
+          "metadata": {
+            "type": "object"
+          },
+          "ai_summary": {
+            "type": "string"
+          },
+          "visibility_scope": {
+            "type": "string"
+          },
+          "closure_notes": {
+            "type": "string"
+          },
+          "auto_generated": {
+            "type": "boolean"
+          },
+          "investigations_source": {
+            "type": "string"
+          },
+          "trigger_source": {
+            "type": "string"
+          },
+          "trigger_description": {
+            "type": "string"
+          },
+          "trigger_reference_id": {
+            "type": "string"
+          },
+          "key_question": {
+            "type": "string"
+          },
+          "primary_subjects": {
+            "type": "array"
+          },
+          "key_findings": {
+            "type": "array"
+          },
+          "required_actions": {
+            "type": "array"
+          },
+          "stage_guidance": {
+            "type": "string"
+          },
+          "previousStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "newStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previousStage": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "newStage": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assignments": {
+            "type": "array"
+          },
+          "assigned_to": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "finding": {
+            "type": "object"
+          },
+          "correlationId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "risk_score": {
+            "type": "number"
+          },
+          "evidence_count": {
+            "type": "number"
+          },
+          "missing_evidence": {
+            "type": "boolean"
+          },
+          "documentation": {
+            "type": "boolean"
+          },
+          "documentation_missing": {
+            "type": "boolean"
+          },
+          "closed_at": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "investigation.graph.generation_requested",
       "source": "platform",
       "schema": {
@@ -710,6 +4610,526 @@
       }
     },
     {
+      "name": "investigation.purged",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "investigation.purged",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "investigation.restored",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "investigation.restored",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "investigation.stage_changed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "investigation.stage_changed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "eventId",
+          "timestamp",
+          "investigation"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "investigation": {
+            "type": "object"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "investigationId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "objective": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array"
+          },
+          "metadata": {
+            "type": "object"
+          },
+          "ai_summary": {
+            "type": "string"
+          },
+          "visibility_scope": {
+            "type": "string"
+          },
+          "closure_notes": {
+            "type": "string"
+          },
+          "auto_generated": {
+            "type": "boolean"
+          },
+          "investigations_source": {
+            "type": "string"
+          },
+          "trigger_source": {
+            "type": "string"
+          },
+          "trigger_description": {
+            "type": "string"
+          },
+          "trigger_reference_id": {
+            "type": "string"
+          },
+          "key_question": {
+            "type": "string"
+          },
+          "primary_subjects": {
+            "type": "array"
+          },
+          "key_findings": {
+            "type": "array"
+          },
+          "required_actions": {
+            "type": "array"
+          },
+          "stage_guidance": {
+            "type": "string"
+          },
+          "previousStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "newStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previousStage": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "newStage": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assignments": {
+            "type": "array"
+          },
+          "assigned_to": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "finding": {
+            "type": "object"
+          },
+          "correlationId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "risk_score": {
+            "type": "number"
+          },
+          "evidence_count": {
+            "type": "number"
+          },
+          "missing_evidence": {
+            "type": "boolean"
+          },
+          "documentation": {
+            "type": "boolean"
+          },
+          "documentation_missing": {
+            "type": "boolean"
+          },
+          "closed_at": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "investigation.status_changed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "investigation.status_changed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "eventId",
+          "timestamp",
+          "investigation"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "investigation": {
+            "type": "object"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "investigationId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "objective": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array"
+          },
+          "metadata": {
+            "type": "object"
+          },
+          "ai_summary": {
+            "type": "string"
+          },
+          "visibility_scope": {
+            "type": "string"
+          },
+          "closure_notes": {
+            "type": "string"
+          },
+          "auto_generated": {
+            "type": "boolean"
+          },
+          "investigations_source": {
+            "type": "string"
+          },
+          "trigger_source": {
+            "type": "string"
+          },
+          "trigger_description": {
+            "type": "string"
+          },
+          "trigger_reference_id": {
+            "type": "string"
+          },
+          "key_question": {
+            "type": "string"
+          },
+          "primary_subjects": {
+            "type": "array"
+          },
+          "key_findings": {
+            "type": "array"
+          },
+          "required_actions": {
+            "type": "array"
+          },
+          "stage_guidance": {
+            "type": "string"
+          },
+          "previousStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "newStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previousStage": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "newStage": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assignments": {
+            "type": "array"
+          },
+          "assigned_to": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "finding": {
+            "type": "object"
+          },
+          "correlationId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "risk_score": {
+            "type": "number"
+          },
+          "evidence_count": {
+            "type": "number"
+          },
+          "missing_evidence": {
+            "type": "boolean"
+          },
+          "documentation": {
+            "type": "boolean"
+          },
+          "documentation_missing": {
+            "type": "boolean"
+          },
+          "closed_at": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "investigation.updated",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "investigation.updated",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "party.adverse_media_hit",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "party.adverse_media_hit",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "entityId",
+          "events"
+        ],
+        "properties": {
+          "entityId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "events": {
+            "type": "array"
+          },
+          "previousEventsCount": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
       "name": "party.adverse_media.analyzed",
       "source": "platform",
       "schema": {
@@ -749,40 +5169,6 @@
           },
           "runId": {
             "type": "string"
-          }
-        },
-        "additionalProperties": true
-      }
-    },
-    {
-      "name": "party.adverse_media_hit",
-      "source": "platform",
-      "schema": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "eventName": "party.adverse_media_hit",
-        "version": 1,
-        "compatibility": "backward",
-        "type": "object",
-        "required": [
-          "entityId",
-          "events"
-        ],
-        "properties": {
-          "entityId": {
-            "type": "string",
-            "minLength": 1
-          },
-          "userId": {
-            "type": [
-              "string",
-              "number"
-            ]
-          },
-          "events": {
-            "type": "array"
-          },
-          "previousEventsCount": {
-            "type": "number"
           }
         },
         "additionalProperties": true
