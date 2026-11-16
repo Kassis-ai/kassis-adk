@@ -19,6 +19,8 @@ Version 1 stays readable at `tools/adk/profiles/addon-coding-agent.v1.json`. Its
 
 Version 2 replaces the machine check `kassis-addon-certify` on `adk.certify` with `kassis-addon-check`, `kassis-addon-conformance`, `kassis-addon-build` and `kassis-addon-test`. Certify runs those checks and writes the only copy of the results. An agent does not type them into the attestation.
 
+An unsigned version 3 draft lives at `tools/adk/profiles/addon-coding-agent.v3.draft.json`. It adds the blocking machine guardrail `adk.requirements-traced` (check id `adk.requirements-traced`, backed by `kassis-addon requirements` / KADK-718 and KADK-719) and six coding skills (`adk.add-route`, `adk.add-table`, `adk.add-event`, `adk.add-job`, `adk.add-ui-page`, `adk.add-mcp-tool`) whose bodies also live under `kassis-skills/adk-add-*/SKILL.md`. Do not point `sync` at the draft until a person signs it (decision D7). Certify already records `adk.requirements-traced` in `.kassis/evidence/checks.json` so the guardrail has machine evidence when version 3 is signed.
+
 `sync --instance=<url>` downloads `GET /api/v1/agent-registry/profiles/published/<id>` instead of the bundled file.
 
 `node tools/adk/kassis-adk-mcp.mjs` is a stdio MCP server. Messages are newline-delimited JSON. Project tools: `validate_manifest`, `run_checks`, `explain_error`, and `scaffold`. Offline discovery tools (packaged data, no network): `list_facades`, `get_facade`, `list_extension_points`, `list_events`, `get_event_schema`, `get_tier_matrix`, `search_docs`, and `get_example`. Optional live mode against `GET /api/v1/adk/catalog` waits on that catalog route (S2.36).
@@ -51,6 +53,7 @@ Autonomy is read from the agent profile. If it cannot be read, the level is the 
 
 | Date       | Change                                                                                                                                        |
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-16 | Unsigned coding profile v3 draft: `adk.requirements-traced` machine guardrail and six `adk.add-*` coding skills. Signing remains D7 / human-only. |
 | 2026-11-16 | Offline discovery tools: `list_facades`, `get_facade`, `list_extension_points`, `list_events`, `get_event_schema`, `get_tier_matrix`, `search_docs`, `get_example`. |
 | 2026-10-28 | The dev MCP server speaks newline-delimited JSON and exposes `validate_manifest`, `run_checks`, `explain_error`, and `scaffold`.              |
 | 2026-10-28 | Coding profile version 2 replaces the `kassis-addon-certify` machine check with check, conformance, build and test. Version 1 stays readable. |

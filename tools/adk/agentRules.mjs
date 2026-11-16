@@ -19,6 +19,23 @@ function ruleText(lock) {
     lines.push(item.rule);
     lines.push('');
   }
+  const skills = Array.isArray(lock.skills) ? lock.skills : [];
+  if (skills.length > 0) {
+    lines.push('## Skills');
+    lines.push('');
+    lines.push('Read the skill that matches the work before you scaffold or edit that kind.');
+    lines.push('');
+    for (const skill of skills) {
+      const key = typeof skill.key === 'string' ? skill.key : 'skill';
+      const title = typeof skill.title === 'string' ? skill.title : key;
+      const description =
+        typeof skill.description === 'string' ? skill.description : 'See the pinned profile skill body.';
+      lines.push(`### ${key}: ${title}`);
+      lines.push('');
+      lines.push(description);
+      lines.push('');
+    }
+  }
   return `${lines.join('\n')}`;
 }
 

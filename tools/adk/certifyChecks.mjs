@@ -119,6 +119,23 @@ function runAddonCommand(addonDir, command, inputHash) {
   return finishCheck(`kassis-addon-${command}`, inputHash, exitCode, started, output);
 }
 
+/** Machine evidence for profile guardrail `adk.requirements-traced`. */
+function runRequirementsTracedCheck(addonDir) {
+  const cli = path.join(here, 'kassis-addon.mjs');
+  const started = Date.now();
+  const inputHash = sha256Text(
+    `${readText(path.join(addonDir, 'REQUIREMENTS.md'))}\n${hashTree(addonDir, ['test'])}\n${readText(path.join(addonDir, 'GAPS.md'))}`
+  );
+  const result = spawnSync(process.execPath, [cli, 'requirements', '--json'], {
+    cwd: addonDir,
+    encoding: 'utf8',
+  });
+  const errorText = result.error instanceof Error ? result.error.message : '';
+  const output = `${result.stdout ?? ''}${result.stderr ?? ''}${errorText}`;
+  const exitCode = typeof result.status === 'number' ? result.status : 1;
+  return finishCheck('adk.requirements-traced', inputHash, exitCode, started, output);
+}
+
 function buildInputHash(addonDir) {
   return sha256Text(
     `${readText(path.join(addonDir, 'package.json'))}\n${hashTree(addonDir, ['src', 'frontend'])}`
@@ -138,6 +155,7 @@ export function recordMachineChecks(addonDir) {
     runAddonCommand(root, 'conformance', hashTree(root, ['src', 'frontend', 'migrations'])),
     runAddonCommand(root, 'build', buildInputHash(root)),
     runAddonCommand(root, 'test', hashTree(root, ['test'])),
+    runRequirementsTracedCheck(root),
   ];
   const document = {
     cliVersion: cliPackageVersion(),
