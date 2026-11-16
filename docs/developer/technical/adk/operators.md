@@ -56,6 +56,12 @@ On-prem uses `docker-compose.onprem.yml`. Air-gapped install uses the bundle fro
 | Backend crash: `Cannot find module '/tools/adk/evidenceSummary.mjs'` | The production image must copy `tools/adk/evidenceSummary.mjs` and symlink `/tools` to `/app/tools`. Rebuild the backend.                                                                                                                            |
 | MCP HTTP crash: `Cannot find module '/app/server/prisma.js'`         | The MCP image does not ship Prisma. Publisher trust then uses the seeded file. Rebuild MCP.                                                                                                                                                          |
 
+## ADK catalog
+
+`GET /api/v1/adk/catalog` needs a signed-in user with `system.admin`. `GET /api/v1/adk/version` stays open and still returns only `hostApi`.
+
+The catalog is built from `@kassis/addon-sdk` tier-matrix data and the host registries. It lists facade method names with tier flags and the permission each call needs, capability ids with version and owning addon, event names with their JSON schemas, host slot, deep-link and source names, and reserved permission namespaces. It does not return capability implementations, settings values, tenant rows, or secrets.
+
 ## Uninstall retention
 
 Uninstall reads `data.retention` on a v2 manifest (`retain`, `archive`, `purge`). When that field is absent it still reads v1 `database.dataRetentionPolicy` (`retain`, `archive`, `delete`). `retain` and `archive` leave prefixed tables in place. `delete` and `purge` report leftover prefixed tables as residuals. `purge` writes one `retention_purge` audit row. Exporting or dropping the addon schema is the migration runner, not this check.
@@ -82,6 +88,7 @@ Enable and disable reach MCP without a process restart. List and call read `GET 
 
 | Date       | Change                                                                                                                                                                                                                                                                 |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-16 | `GET /api/v1/adk/catalog` returns facade names, event schemas, capability ids, host slot names and reserved permission namespaces for `system.admin`. It does not return implementations or secrets.                                                                   |
 | 2026-11-16 | Runtime-load UIs re-read `addons/ui-catalog` and `addons/frontend-catalog` on disable, unknown enablement, and tab focus (at most once per minute).                                                                                                                      |
 | 2026-11-16 | Tier 1 `import()` is keyed by manifest `contentHash` so hot updates load new server code; disable then enable of the same hash reuses the module. Authors must avoid module-level mutable state.                                                                       |
 | 2026-11-16 | Uninstall applies v2 `data.retention` (`retain`, `archive`, `purge`) and still accepts v1 `delete`. `purge` adds one `retention_purge` audit row. Prefixed tables left behind fail the residual check for `delete` and `purge`.                                        |
