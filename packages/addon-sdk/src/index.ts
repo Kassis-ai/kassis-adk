@@ -120,6 +120,16 @@ export type {
 } from './context/coreFacades.js';
 export type { AddonContext, AddonModule } from './context/addonContext.js';
 
+export {
+  defineAddon,
+  defineRecordType,
+  type AddonManifestContract,
+  type DefinedAddon,
+  type DefineAddonInput,
+  type RecordTypeAuditSubject,
+  type RecordTypeDefinition,
+} from './define/defineAddon.js';
+
 export type { AddonExtensionPoints } from './extend/addonExtensionPoints.js';
 export type * from './extend/extensionContributions.js';
 

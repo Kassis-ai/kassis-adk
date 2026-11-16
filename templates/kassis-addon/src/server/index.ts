@@ -1,5 +1,9 @@
-import type { AddonContext } from '@kassis/addon-sdk';
+import { defineAddon } from '@kassis/addon-sdk';
 
-export async function initialize(ctx: AddonContext): Promise<void> {
-  ctx.logger.info('__ADDON_ID__ initialized');
-}
+const addon = defineAddon({
+  async initialize(ctx): Promise<void> {
+    ctx.logger.info('__ADDON_ID__ initialized');
+  },
+});
+
+export const initialize = addon.initialize;

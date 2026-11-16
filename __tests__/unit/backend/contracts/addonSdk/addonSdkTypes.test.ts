@@ -38,6 +38,7 @@ describe('@kassis/addon-sdk types', () => {
     const diagnostics = diagnosticsFor([
       path.join(FIXTURES, 'manifestV2.fixture.ts'),
       path.join(FIXTURES, 'addonContextUsage.fixture.ts'),
+      path.join(FIXTURES, 'defineAddon.fixture.ts'),
     ]);
 
     expect(diagnostics).toEqual([]);
