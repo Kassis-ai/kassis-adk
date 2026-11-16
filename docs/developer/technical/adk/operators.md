@@ -17,6 +17,10 @@ After the first boot load, the browser re-reads the UI catalog and `addons/front
 
 Tier 1 server modules load with a `contentHash` query on the entry `import()` URL when the manifest carries `contentHash`, so an approved update with a new hash loads new server code without a backend restart. Disable then enable the same installed folder reuses the cached module for that hash. Tier 1 addon authors must not keep mutable state at module scope (top-level `let`, caches, or singletons); use `initialize()` / disposers or per-request state instead.
 
+## Split workers
+
+`RUN_MODE=all` registers and removes an addon's job handlers in the same process as the toggle. `RUN_MODE=workers` does not share that memory. That process reads `addon_configurations.is_enabled` at job time and again every 15 seconds. A disabled addon's handlers are removed, and a job for it is refused and not retried. A newly enabled addon's handlers are registered on that pass, after the same load the process uses at startup. If the enabled set cannot be read, addon jobs are refused and retried, and the handlers stay as they are. Core jobs are not checked. A worker restart is not required for a toggle. The 15-second window is `ADDON_JOB_ENABLEMENT_CACHE_MS` in `server/workers/addonJobEnablement.ts`.
+
 ## Release steps and seeds
 
 Day-0 and later SQL are listed in [release steps](../deployment/release-steps.md). Apply them with `npm run release:apply` on a database that already exists. A rebuild does not re-run init scripts.
@@ -95,6 +99,7 @@ Enable and disable reach MCP without a process restart. List and call read `GET 
 | 2026-11-16 | MCP list and call follow addon enablement from `GET /api/v1/addons/status`, cached for `MCP_ADDON_STATUS_CACHE_MS` (default five seconds). A failed read withholds addon tools. Core tools stay. A process restart is not required.                                      |
 | 2026-11-16 | Release step `20261116-addon-database-roles` adds the per-addon migration and run-time database roles. Apply it with `npm run release:apply`.                                                                                                                          |
 | 2026-11-16 | Tier 2 capability calls wait `addons.capabilities.timeoutMs` (release step `20261116-tier2-capability-timeout`). A missing value refuses the child start.                                                                                                               |
+| 2026-11-16 | Split workers follow addon enablement from `addon_configurations` within 15 seconds. A disabled addon's jobs are refused without retry. A worker restart is not required for a toggle.                                                                                 |
 | 2026-11-14 | `KASSIS_DEVHOST_ATTACH` makes `kassis-addon dev` join that container's network and secrets and run as `RUN_MODE=api`.                                                                                                                                                    |
 | 2026-11-14 | Installed tier 2 MCP tools are listed only while the signing key still verifies. A revoked key drops the tool on the next discovery load.                                                                                                                              |
 | 2026-11-14 | Disable, update and uninstall stop a tier 2 child. The wait before the process is killed is `addons.tier2.stopTimeoutMs` (release step `20261114-tier2-stop-timeout`). Host shutdown waits for the same stop.                                                         |
