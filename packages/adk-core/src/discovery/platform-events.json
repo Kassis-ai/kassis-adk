@@ -34,6 +34,221 @@
       }
     },
     {
+      "name": "calendar.event_created",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "calendar.event_created",
+        "required": [
+          "eventId",
+          "ownerType",
+          "ownerId",
+          "caseId",
+          "userId"
+        ],
+        "properties": {
+          "eventId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "ownerType": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "caseId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "number",
+              "integer"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "calendar.event_deleted",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "calendar.event_deleted",
+        "required": [
+          "eventId",
+          "ownerType",
+          "ownerId",
+          "caseId"
+        ],
+        "properties": {
+          "eventId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "ownerType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ownerId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "caseId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "number",
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "calendar.event_purged",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "calendar.event_purged",
+        "required": [],
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "calendar.event_restored",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "calendar.event_restored",
+        "required": [],
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "calendar.event_updated",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "calendar.event_updated",
+        "required": [
+          "eventId",
+          "ownerType",
+          "ownerId",
+          "caseId",
+          "changes"
+        ],
+        "properties": {
+          "eventId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "ownerType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ownerId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "caseId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "number",
+              "integer",
+              "null"
+            ]
+          },
+          "changes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "calendar.owner_registered",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "calendar.owner_registered",
+        "required": [
+          "ownerType",
+          "label"
+        ],
+        "properties": {
+          "ownerType": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "case.assigned",
       "source": "platform",
       "schema": {
@@ -3488,6 +3703,212 @@
       }
     },
     {
+      "name": "email.dead_letter",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "email.dead_letter",
+        "required": [
+          "emailId",
+          "retryCount",
+          "error"
+        ],
+        "properties": {
+          "emailId": {
+            "type": [
+              "number",
+              "integer",
+              "string"
+            ]
+          },
+          "retryCount": {
+            "type": "number"
+          },
+          "error": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "email.failed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "email.failed",
+        "required": [
+          "emailId",
+          "error"
+        ],
+        "properties": {
+          "emailId": {
+            "type": [
+              "number",
+              "integer",
+              "string"
+            ]
+          },
+          "error": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "email.owner_registered",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "email.owner_registered",
+        "required": [
+          "ownerType",
+          "label"
+        ],
+        "properties": {
+          "ownerType": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "email.queued",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "email.queued",
+        "required": [
+          "emailId",
+          "reason"
+        ],
+        "properties": {
+          "emailId": {
+            "type": [
+              "number",
+              "integer"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "scheduleAt": {
+            "type": [
+              "string",
+              "object"
+            ]
+          },
+          "ownerType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ownerId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "email.received",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "email.received",
+        "required": [
+          "emailId",
+          "ownerType",
+          "ownerId",
+          "from",
+          "subject"
+        ],
+        "properties": {
+          "emailId": {
+            "type": [
+              "number",
+              "integer",
+              "string"
+            ]
+          },
+          "ownerType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ownerId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "from": {
+            "type": "string"
+          },
+          "subject": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "email.sent",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "email.sent",
+        "required": [
+          "emailId",
+          "messageId"
+        ],
+        "properties": {
+          "emailId": {
+            "type": [
+              "number",
+              "integer"
+            ]
+          },
+          "messageId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "entity.adverse_media_hit",
       "source": "platform",
       "schema": {
@@ -3714,6 +4135,304 @@
           }
         },
         "additionalProperties": true
+      }
+    },
+    {
+      "name": "flag.added",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "flag.added",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "flagType",
+          "flagId",
+          "action",
+          "timestamp",
+          "eventId"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "flagType": {
+            "type": "string"
+          },
+          "flagId": {
+            "type": [
+              "string",
+              "number",
+              "integer"
+            ]
+          },
+          "action": {
+            "type": "string"
+          },
+          "userId": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "dryRun": {
+            "type": "boolean"
+          },
+          "tenantId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "flag.owner_registered",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "flag.owner_registered",
+        "required": [
+          "ownerType"
+        ],
+        "properties": {
+          "ownerType": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "flag.raised",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "flag.raised",
+        "required": [],
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "flag.removed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "flag.removed",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "flagType",
+          "flagId",
+          "action",
+          "timestamp",
+          "eventId"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "flagType": {
+            "type": "string"
+          },
+          "flagId": {
+            "type": [
+              "string",
+              "number",
+              "integer"
+            ]
+          },
+          "action": {
+            "type": "string"
+          },
+          "userId": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "eventId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "flag.rule_evaluated",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "flag.rule_evaluated",
+        "required": [
+          "rulesEvaluated",
+          "matchCount"
+        ],
+        "properties": {
+          "resourceType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "eventType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "rulesEvaluated": {
+            "type": "number"
+          },
+          "matchCount": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "flag.rule_matched",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "flag.rule_matched",
+        "required": [
+          "ruleId",
+          "ruleSlug",
+          "actions",
+          "eventData",
+          "options"
+        ],
+        "properties": {
+          "ruleId": {
+            "type": [
+              "number",
+              "integer"
+            ]
+          },
+          "ruleSlug": {
+            "type": "string"
+          },
+          "actions": {
+            "type": "array"
+          },
+          "eventData": {
+            "type": "object"
+          },
+          "matchRecordId": {
+            "type": [
+              "number",
+              "integer",
+              "null"
+            ]
+          },
+          "options": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "flag.updated",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "flag.updated",
+        "required": [
+          "resourceType",
+          "flagType",
+          "action",
+          "affectedIds"
+        ],
+        "properties": {
+          "resourceType": {
+            "type": "string"
+          },
+          "flagType": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "affectedIds": {
+            "type": "array",
+            "items": {
+              "type": [
+                "string",
+                "number"
+              ]
+            }
+          },
+          "userId": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
       }
     },
     {
@@ -5749,6 +6468,161 @@
       }
     },
     {
+      "name": "notification.failed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "notification.failed",
+        "required": [],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "notification.requested",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "notification.requested",
+        "required": [],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "meta": {
+            "type": "object"
+          },
+          "ownerType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ownerId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "link": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "actor": {
+            "type": "object",
+            "properties": {
+              "userId": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false
+          },
+          "dedupeKey": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "notification.sent",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "notification.sent",
+        "required": [],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "notification.type_registered",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "notification.type_registered",
+        "required": [
+          "type",
+          "preferenceKey",
+          "defaultChannels",
+          "version"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "preferenceKey": {
+            "type": "string"
+          },
+          "defaultChannels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "version": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "party.adverse_media_hit",
       "source": "platform",
       "schema": {
@@ -5983,6 +6857,282 @@
               "string",
               "null"
             ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "workflow.approval_denied",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "workflow.approval_denied",
+        "required": [
+          "entityType",
+          "entityId",
+          "userId"
+        ],
+        "properties": {
+          "entityType": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "userId": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "workflow.approval_granted",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "workflow.approval_granted",
+        "required": [
+          "entityType",
+          "entityId",
+          "userId"
+        ],
+        "properties": {
+          "entityType": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "userId": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "workflow.approval_requested",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "workflow.approval_requested",
+        "required": [],
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "workflow.ended",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "workflow.ended",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "eventId",
+          "timestamp",
+          "workflow",
+          "caseId",
+          "completedStepId"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "workflow": {
+            "type": "object"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "caseId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "completedStepId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "workflow.state_changed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "workflow.state_changed",
+        "required": [
+          "entityType",
+          "entityId",
+          "fromStatus",
+          "toStatus",
+          "changedBy"
+        ],
+        "properties": {
+          "entityType": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "fromStatus": {
+            "type": "string"
+          },
+          "toStatus": {
+            "type": "string"
+          },
+          "changedBy": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "workflow.step_completed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "eventName": "workflow.step_completed",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "eventId",
+          "timestamp",
+          "workflow",
+          "caseId",
+          "completedStepId"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "workflow": {
+            "type": "object"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "caseId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "completedStepId": {
+            "type": "string"
+          },
+          "nextStepId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "outcome": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "completedBy": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "source": {
+            "type": "string"
           }
         },
         "additionalProperties": true
