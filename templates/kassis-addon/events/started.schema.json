@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "eventName": "__ADDON_ID__.started",
+  "type": "object",
+  "additionalProperties": true
+}
