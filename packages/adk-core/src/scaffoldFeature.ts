@@ -80,6 +80,55 @@ function ensureExpressDependency(dir: string): boolean {
   return true;
 }
 
+function wireJobRegister(dir: string, name: string): string | null {
+  const initFile = path.join(dir, 'src', 'server', 'index.ts');
+  if (!fs.existsSync(initFile)) return null;
+  const registerFn = `register${pascal(name)}`;
+  const importLine = `import { ${registerFn} } from './jobs/${name}.js';`;
+  let text = fs.readFileSync(initFile, 'utf8');
+  if (text.includes(`${registerFn}(ctx)`)) return null;
+  if (!text.includes(importLine)) {
+    const sdkImport = "import type { AddonContext } from '@kassis/addon-sdk';";
+    if (text.includes(sdkImport)) {
+      text = text.replace(sdkImport, `${sdkImport}\n${importLine}`);
+    } else {
+      text = `${importLine}\n${text}`;
+    }
+  }
+  const initMatch = /export async function initialize\(ctx: AddonContext\): Promise<void> \{/;
+  if (!initMatch.test(text)) return null;
+  text = text.replace(
+    initMatch,
+    `export async function initialize(ctx: AddonContext): Promise<void> {\n  ${registerFn}(ctx);`
+  );
+  fs.writeFileSync(initFile, text);
+  return 'src/server/index.ts';
+}
+
+function jobFile(dir: string, id: string, name: string): string {
+  const relative = path.join('src', 'server', 'jobs', `${name}.ts`);
+  const target = path.join(dir, relative);
+  if (fs.existsSync(target)) return relative;
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  const jobType = `${id}.${name}`;
+  const typeConst = `${camelFromKebab(name)}JobType`;
+  const handlerFn = `handle${pascal(name)}`;
+  const text = `import type { AddonContext, AddonJob, JsonValue } from '@kassis/addon-sdk';
+
+export const ${typeConst} = '${jobType}' as const;
+
+export async function ${handlerFn}(job: AddonJob): Promise<JsonValue> {
+  return { ok: true, jobType: job.type, attempt: job.attempt };
+}
+
+export function register${pascal(name)}(ctx: AddonContext): void {
+  ctx.jobs.register(${typeConst}, ${handlerFn});
+}
+`;
+  fs.writeFileSync(target, text);
+  return relative;
+}
+
 function wireRouteMount(dir: string, name: string): string | null {
   const initFile = path.join(dir, 'src', 'server', 'index.ts');
   if (!fs.existsSync(initFile)) return null;
@@ -211,17 +260,23 @@ function scaffoldEvent(
 }
 
 function scaffoldJob(
+  dir: string,
   loaded: { file: string; manifest: Record<string, unknown> },
   name: string
 ): CommandResult {
-  const job = `${String(loaded.manifest.id)}.${name}`;
+  const id = String(loaded.manifest.id);
+  const job = `${id}.${name}`;
   const jobs = isRecordValue(loaded.manifest.jobs) ? { ...loaded.manifest.jobs } : {};
   const types = Array.isArray(jobs.types) ? [...jobs.types] : [];
   if (!types.includes(job)) types.push(job);
   jobs.types = types;
   loaded.manifest.jobs = jobs;
   writeManifest(loaded.file, loaded.manifest);
-  return commandResult([], { kind: 'job', name: job, files: ['manifest.json'] });
+  const file = jobFile(dir, id, name);
+  const files = [file, 'manifest.json'];
+  const initPatch = wireJobRegister(dir, name);
+  if (initPatch) files.push(initPatch);
+  return commandResult([], { kind: 'job', name: job, files });
 }
 
 function scaffoldMigration(dir: string, name: string): CommandResult {
@@ -299,7 +354,7 @@ export function scaffoldProject(input: {
   if (input.kind === 'route') return scaffoldRoute(input.dir, loaded, input.name);
   if (input.kind === 'capability') return scaffoldCapability(loaded, input.name);
   if (input.kind === 'event') return scaffoldEvent(input.dir, loaded, input.name);
-  if (input.kind === 'job') return scaffoldJob(loaded, input.name);
+  if (input.kind === 'job') return scaffoldJob(input.dir, loaded, input.name);
   if (input.kind === 'migration') return scaffoldMigration(input.dir, input.name);
   return scaffoldSlot(loaded, input.name);
 }
