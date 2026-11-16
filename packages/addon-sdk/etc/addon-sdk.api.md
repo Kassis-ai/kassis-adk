@@ -486,6 +486,8 @@ export type AddonTypeMap<M> = {
 //
 // @public
 export type AnalyticsContributorContribution = {
+    id?: string;
+    record?: Tier2OwnedRecord;
     contributor: {
         contributorId: string;
         datasets: Array<{
@@ -1469,6 +1471,8 @@ export function getKadkCode(code: KadkCode): KadkCodeDefinition;
 //
 // @public
 export type GraphRiskMirrorContribution = {
+    id?: string;
+    record?: Tier2OwnedRecord;
     providerId: string;
     writer: (tx: AddonTier1DataClient, input: GraphRiskMirrorInput, mirrorPayload: JsonObject) => Promise<void>;
 };
@@ -2332,6 +2336,8 @@ export type PredictionCapability = {
 //
 // @public
 export type PredictionCapabilityContribution = {
+    id?: string;
+    record?: Tier2OwnedRecord;
     capability: PredictionCapability;
 };
 
@@ -2660,6 +2666,8 @@ export interface RiskFacade {
 //
 // @public (undocumented)
 export type RiskFactorsContribution = {
+    id?: string;
+    record?: Tier2OwnedRecord;
     request: RiskSubscriberRegistration;
 };
 
@@ -2803,6 +2811,13 @@ export interface TenantScope {
     // (undocumented)
     readonly id: string;
 }
+
+// Warning: (ae-missing-release-tag) "Tier2OwnedRecord" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export type Tier2OwnedRecord = {
+    resourceType: string;
+};
 
 // Warning: (ae-missing-release-tag) "UsersFacade" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //

@@ -402,7 +402,14 @@ export type RiskSubscriberRegistration = {
   subscriptions?: JsonObject[];
 };
 
+/** Tier 2 names the registration with `id` and an owned record. Tier 1 ignores both. */
+export type Tier2OwnedRecord = {
+  resourceType: string;
+};
+
 export type RiskFactorsContribution = {
+  id?: string;
+  record?: Tier2OwnedRecord;
   request: RiskSubscriberRegistration;
 };
 
@@ -414,6 +421,8 @@ export type AnalyticsPullArgs = {
 
 /** Host-specific: the host types rows and filters as untyped maps. */
 export type AnalyticsContributorContribution = {
+  id?: string;
+  record?: Tier2OwnedRecord;
   contributor: {
     contributorId: string;
     datasets: Array<{ datasetId: string; grain: string }>;
@@ -434,6 +443,8 @@ export type GraphRiskMirrorInput = {
 
 /** Host-specific: in process the host passes its own Prisma transaction as `tx`. */
 export type GraphRiskMirrorContribution = {
+  id?: string;
+  record?: Tier2OwnedRecord;
   providerId: string;
   writer: (
     tx: AddonTier1DataClient,
@@ -467,6 +478,8 @@ export type PredictionCapability = {
 
 /** Host-specific: the host takes the capability as an untyped value. */
 export type PredictionCapabilityContribution = {
+  id?: string;
+  record?: Tier2OwnedRecord;
   capability: PredictionCapability;
 };
 

@@ -495,7 +495,7 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Severity: error
 - Message: `Add-on '{id}' cannot register '{value}' on '{path}'; another registration already owns that name`
 - Fix: Use a name this add-on owns, or disable the add-on that registered '{value}'.
-- Reported by: tier 2 wave 1, wave 2, and wave 4 registration when another addon or a core type already owns the name
+- Reported by: tier 2 wave 1, wave 2, wave 4, and wave 5 registration when another addon or a core type already owns the name
 
 ## 3xx Data
 
@@ -1180,6 +1180,7 @@ A published code keeps its number, category and meaning. A retired code is marke
 | 2026-11-16 | KADK-729 when a manifest v2 addon declares a record type and has no canAccess handler. KADK-730 when that handler returns true or only throws. KADK-731 when owned tables have no onDelete handler. KADK-732 when that handler is empty or only throws. `kassis-addon check` and `certify` report them. Enable refuses the same addon. |
 | 2026-11-16 | KADK-125 to KADK-129 and KADK-314, KADK-316 to KADK-318 when a process pack key, file, permission, record type, or reference is wrong. KADK-313 warns when the kind has no host JSON Schema, so the body is not checked. |
 | 2026-11-16 | KADK-723 soft budgets without BUDGETS.md reason. KADK-724–728 engineering practice (timeouts, pagination, i18n, idempotent handlers, no module state). `kassis-addon budgets` / `engineering`; certify applies the same gates. |
+| 2026-11-16 | KADK-223 also when two tier 2 addons claim the same wave 5 risk, analytics, graph mirror, or prediction name.                                                                                                              |
 | 2026-11-16 | KADK-223 when two tier 2 registrations claim the same wave 1 or wave 2 name.                                                                                                                                              |
 | 2026-11-16 | KADK-223 when two tier 2 registrations claim the same wave 1 name.                                                                                                                                                        |
 | 2026-11-16 | KADK-222 when a tier 2 addon registers a `ctx.extend` point that manifest `extends` does not name.                                                                                                                          |
