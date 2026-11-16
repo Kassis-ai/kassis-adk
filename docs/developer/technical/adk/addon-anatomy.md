@@ -72,7 +72,7 @@ Rung 1, the default, is the server only. Rung 2 adds the UI. Rung 3 adds the UI 
 
 | Date       | Change                                                                                                                                                              |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-11-16 | Release step `20261116-process-pack-provenance` adds nullable `source_addon`, `source_key` and `source_version` on core template and rule tables for future process packs (S2.51). Apply the step before a backend that writes those columns. |
+| 2026-11-16 | Release step `20261116-process-pack-provenance` adds nullable `source_addon`, `source_key` and `source_version` on core template and rule tables for future process packs (S2.51). After `20261027-list-schema`, `public.list_templates` and `public.policy_rules` are views over `addon_list_management`; the step alters those base tables and rebuilds the views. Apply the step before a backend that writes those columns. |
 | 2026-11-16 | `kassis-addon plan` maps each requirement row in `PLAN.md` and writes `.kassis/evidence/requirement-mapping.json`; `certify` fails on KADK-720/721/722 (S2.48). |
 | 2026-11-16 | `kassis-addon requirements` traces Must rows in `REQUIREMENTS.md` to `test/` or `GAPS.md` and writes `.kassis/evidence/requirements-coverage.json`; `certify` fails on KADK-719 (S2.39). |
 | 2026-11-16 | SDK `defineAddon` and `defineRecordType`: a record type requires `canAccess`, `onDelete`, `sensitivity`, and an audit subject; owned tables require `data.retention` at the type level. The template entry uses `defineAddon` (S2.17). |
