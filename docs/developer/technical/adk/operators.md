@@ -90,11 +90,20 @@ MCP discovery lists a tier 2 tool from `contributions.mcp` on an active installe
 
 Enable and disable reach MCP without a process restart. List and call read `GET /api/v1/addons/status` and keep that result for `MCP_ADDON_STATUS_CACHE_MS` (five seconds when unset). A disabled addon's tools are left off the list, and a call returns `Addon <id> is disabled`. A newly enabled addon's tools are loaded on the next list or call after the cache expires, through the same signature and trust gate as startup. If that status read fails or the body is not a list, addon tools are withheld and a call returns `Addon <id> tools are unavailable because addon state could not be read`. Core tools stay listed. An addon that is not in the status list is still offered.
 
+## Live lab
+
+The ADK live lab workflow (`.github/workflows/adk-live-lab.yml`) runs every day at 05:30 UTC and when someone starts it by hand. It does not expect a stack that is already up, and it does not deploy to the cloud demo.
+
+`node scripts/adk-live-lab-stack.mjs` builds `kassis-backend:prod`, the `devhost` image from this commit (`KASSIS_DEVHOST_IMAGE`, default `kassis-devhost:commit`), the nginx image and the MCP image. It starts postgres, redis, backend, nginx and mcp-http from `docker-compose.yml` plus `deploy/docker/adk-live-lab.compose.yml`. Postgres loads the day-0 schema and `database/seeds/core`. `npm run release:apply` then applies the release ledger. Optional demo seeds stay skipped. The live checks run after that, with `KASSIS_DEVHOST_IMAGE` set to the image just built and `KASSIS_LAB_URL` set to `http://localhost`.
+
+The override lowers Postgres memory, gives schema init a longer health start period, and turns `TF_SERVICE_ENABLED` off. Backend, nginx and mcp-http start with `--no-deps`, so the runner does not start GPU Ollama, TensorFlow or the frontend image. `node scripts/adk-live-lab-stack.mjs --down` stops the project and does not delete volumes. The release seed imports `pg` from `server/node_modules`, so the workflow runs `npm ci` in `server/` first.
+
 ## Changelog
 
 | Date       | Change                                                                                                                                                                                                                                                                 |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-11-16 | Disable lets in-flight tier 1 requests, jobs, and event handlers finish, and does not start new ones. An in-flight tier 2 call is rejected; the HTTP route answers 503 `tier 2 addon <id> stopped`.                                                                    |
+| 2026-11-16 | The live lab workflow starts its own compose stack, loads day-0 seeds, applies the release ledger, and builds the dev host image from the commit. It runs at 05:30 UTC and on demand. It does not deploy to the cloud demo.                                          |
 | 2026-11-16 | `GET /api/v1/adk/catalog` returns facade names, event schemas, capability ids, host slot names and reserved permission namespaces for `system.admin`. It does not return implementations or secrets.                                                                   |
 | 2026-11-16 | Runtime-load UIs re-read `addons/ui-catalog` and `addons/frontend-catalog` on disable, unknown enablement, and tab focus (at most once per minute).                                                                                                                      |
 | 2026-11-16 | Tier 1 `import()` is keyed by manifest `contentHash` so hot updates load new server code; disable then enable of the same hash reuses the module. Authors must avoid module-level mutable state.                                                                       |
