@@ -127,6 +127,18 @@ Use `npx kassis-addon scaffold <kind> <name>` after `init`. Each kind below show
 | ----- | --- | ---------------------------------------------------------------------------------------------------------------- |
 | FR-96 | C   | _Example._ Add a party tab slot entry in the manifest. Command: `scaffold ui-slot vendor-risk`. Implement the component under `src/ui/`. |
 
+### Scaffold kind `ui-page`
+
+| ID    | Pri | Requirement                                                                                                                      |
+| ----- | --- | -------------------------------------------------------------------------------------------------------------------------------- |
+| FR-97 | C   | _Example._ Add a full addon page with nav and route wiring. Command: `scaffold ui-page executive-summary`. Same outputs as `ui-slot`. |
+
+### Scaffold kind `mcp-tool`
+
+| ID    | Pri | Requirement                                                                                                                                      |
+| ----- | --- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| FR-98 | C   | _Example._ Expose read-only MCP tool `__ADDON_ID__.ping`. Command: `scaffold mcp-tool ping`. Declare `contributions.mcp` and wire `src/mcp/contribution.ts`. |
+
 ## 8. Acceptance tests (starter)
 
 | ID    | Covers  | Steps                         | Expected                          |

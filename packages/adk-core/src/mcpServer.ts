@@ -36,7 +36,8 @@ const TOOLS = [
   },
   {
     name: 'scaffold',
-    description: 'Create an addon or add a route, capability, event, job, migration, or UI slot.',
+    description:
+      'Create an addon or add a route, capability, event, job, migration, UI slot, UI page, or MCP tool.',
     inputSchema: {
       type: 'object' as const,
       properties: {

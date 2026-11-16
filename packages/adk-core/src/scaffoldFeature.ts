@@ -13,7 +13,17 @@ import {
 import { initProject } from './projectCommands.ts';
 
 const NAME_RE = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
-const KINDS = ['addon', 'route', 'capability', 'event', 'job', 'migration', 'ui-slot'] as const;
+const KINDS = [
+  'addon',
+  'route',
+  'capability',
+  'event',
+  'job',
+  'migration',
+  'ui-slot',
+  'ui-page',
+  'mcp-tool',
+] as const;
 type ScaffoldKind = (typeof KINDS)[number];
 
 function isKind(value: string): value is ScaffoldKind {
@@ -627,10 +637,198 @@ function wireUiIndex(dir: string, id: string, name: string): string | null {
   return 'src/ui/index.ts';
 }
 
-function scaffoldSlot(
+function dependencyFileSpec(dir: string, packageFolder: string, fallback: string): string {
+  const candidates = [
+    path.resolve(dir, '../../packages', packageFolder),
+    path.resolve(dir, '../../../packages', packageFolder),
+  ];
+  const found = candidates.find((candidate) => fs.existsSync(path.join(candidate, 'package.json')));
+  if (!found) return fallback;
+  const relative = path.relative(dir, found).split(path.sep).join('/');
+  return `file:${relative.startsWith('.') ? relative : `./${relative}`}`;
+}
+
+function ensurePackageDependency(dir: string, packageName: string, version: string): boolean {
+  const pkgPath = path.join(dir, 'package.json');
+  if (!fs.existsSync(pkgPath)) return false;
+  const parsed = readJson(pkgPath);
+  if (!isRecordValue(parsed)) return false;
+  const deps = isRecordValue(parsed.dependencies) ? { ...parsed.dependencies } : {};
+  if (typeof deps[packageName] === 'string') return false;
+  const folder = packageName.replace('@kassis/', '');
+  deps[packageName] = dependencyFileSpec(dir, folder, version);
+  parsed.dependencies = deps;
+  fs.writeFileSync(pkgPath, `${JSON.stringify(parsed, null, 2)}\n`);
+  return true;
+}
+
+function mcpQualifiedToolName(addonId: string, name: string): string {
+  return `${addonId}.${name}`;
+}
+
+function mcpToolFile(dir: string, addonId: string, name: string, viewPermission: string): string {
+  const relative = path.join('src', 'mcp', 'tools', `${name}.ts`);
+  const target = path.join(dir, relative);
+  if (fs.existsSync(target)) return relative;
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  const toolName = mcpQualifiedToolName(addonId, name);
+  const exportName = camelFromKebab(name);
+  const text = `import { defineMcpTool } from '@kassis/mcp-contract';
+
+export const ${exportName} = defineMcpTool({
+  name: '${toolName}',
+  title: '${titleFromKebab(name)}',
+  description: 'Scaffolded read-only MCP tool for ${addonId}.',
+  input: {
+    type: 'object',
+    additionalProperties: false,
+    properties: {},
+  },
+  access: {
+    anyOf: ['${viewPermission}'],
+    mutating: false,
+  },
+  async handler() {
+    return { summary: 'ok', data: { ok: true, tool: '${toolName}' } };
+  },
+});
+`;
+  fs.writeFileSync(target, text);
+  return relative;
+}
+
+function wireMcpContribution(dir: string, addonId: string, name: string): string | null {
+  const contributionFile = path.join(dir, 'src', 'mcp', 'contribution.ts');
+  const exportName = camelFromKebab(name);
+  const importLine = `import { ${exportName} } from './tools/${name}.js';`;
+  let text = '';
+  if (fs.existsSync(contributionFile)) {
+    text = fs.readFileSync(contributionFile, 'utf8');
+    const toolRef = new RegExp(`\\b${exportName}\\b`);
+    if (toolRef.test(text) && text.includes('export const tools')) return null;
+    if (!text.includes(importLine)) {
+      text = `${importLine}\n${text}`;
+    }
+    const toolsOpen = 'export const tools = [';
+    if (text.includes(toolsOpen)) {
+      text = text.replace(toolsOpen, `${toolsOpen}\n  ${exportName},`);
+    }
+  } else {
+    fs.mkdirSync(path.dirname(contributionFile), { recursive: true });
+    text = `${importLine}
+
+export const addonName = '${addonId}' as const;
+
+export const tools = [${exportName}];
+`;
+  }
+  fs.writeFileSync(contributionFile, text.endsWith('\n') ? text : `${text}\n`);
+  return 'src/mcp/contribution.ts';
+}
+
+function mcpToolTestFile(dir: string, addonId: string, name: string): string {
+  const relative = path.join('test', 'mcp', `${name}.mcp.test.ts`);
+  const target = path.join(dir, relative);
+  if (fs.existsSync(target)) return relative;
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  const exportName = camelFromKebab(name);
+  const toolName = mcpQualifiedToolName(addonId, name);
+  const text = `import assert from 'node:assert/strict';
+import { describe, it } from 'node:test';
+import { ${exportName} } from '../../src/mcp/tools/${name}.js';
+
+describe('${name} MCP tool', () => {
+  it('returns ok from the scaffolded handler', async () => {
+    const outcome = await ${exportName}.handler(
+      {},
+      {
+        api: {
+          get: async () => ({}),
+          post: async () => ({}),
+          put: async () => ({}),
+          patch: async () => ({}),
+          delete: async () => ({}),
+        },
+        principal: { id: 'test', kind: 'user', permissions: [] },
+        paths: {
+          api: (p: string) => p,
+          addon: (id: string, p?: string) => \`\${id}/\${p ?? ''}\`,
+        },
+        log: {
+          info: () => undefined,
+          warn: () => undefined,
+          error: () => undefined,
+        },
+        audit: () => undefined,
+      }
+    );
+    assert.ok(!('error' in outcome));
+    assert.equal(outcome.summary, 'ok');
+    assert.equal((outcome.data as { tool?: string } | undefined)?.tool, '${toolName}');
+  });
+});
+`;
+  fs.writeFileSync(target, text);
+  return relative;
+}
+
+function ensureMcpTestRunnerScript(dir: string): boolean {
+  const pkgPath = path.join(dir, 'package.json');
+  if (!fs.existsSync(pkgPath)) return false;
+  const parsed = readJson(pkgPath);
+  if (!isRecordValue(parsed) || !isRecordValue(parsed.scripts)) return false;
+  const current = parsed.scripts.test;
+  if (typeof current !== 'string' || current.includes('test/**/*.test')) return false;
+  parsed.scripts = {
+    ...parsed.scripts,
+    test: 'node --experimental-strip-types --test \'test/**/*.test.ts\'',
+  };
+  fs.writeFileSync(pkgPath, `${JSON.stringify(parsed, null, 2)}\n`);
+  return true;
+}
+
+function scaffoldMcpTool(
   dir: string,
   loaded: { file: string; manifest: Record<string, unknown> },
   name: string
+): CommandResult {
+  const id = String(loaded.manifest.id);
+  const toolName = mcpQualifiedToolName(id, name);
+  const viewPermission = `${id}.view`;
+  addPermission(loaded.manifest, viewPermission);
+
+  const contributions = isRecordValue(loaded.manifest.contributions)
+    ? { ...loaded.manifest.contributions }
+    : {};
+  const mcp = isRecordValue(contributions.mcp) ? { ...contributions.mcp } : {};
+  if (typeof mcp.entry !== 'string') {
+    mcp.entry = 'dist/mcp/contribution.js';
+  }
+  const tools = Array.isArray(mcp.tools) ? [...mcp.tools] : [];
+  if (!tools.includes(toolName)) tools.push(toolName);
+  mcp.tools = tools;
+  contributions.mcp = mcp;
+  loaded.manifest.contributions = contributions;
+  writeManifest(loaded.file, loaded.manifest);
+
+  const files = ['manifest.json'];
+  const toolFile = mcpToolFile(dir, id, name, viewPermission);
+  files.push(toolFile);
+  const contributionPatch = wireMcpContribution(dir, id, name);
+  if (contributionPatch) files.push(contributionPatch);
+  files.push(mcpToolTestFile(dir, id, name));
+  let pkgChanged = ensurePackageDependency(dir, '@kassis/mcp-contract', '^0.1.0');
+  if (ensureMcpTestRunnerScript(dir)) pkgChanged = true;
+  if (pkgChanged) files.push('package.json');
+
+  return commandResult([], { kind: 'mcp-tool', name: toolName, files });
+}
+
+function scaffoldUiContribution(
+  dir: string,
+  loaded: { file: string; manifest: Record<string, unknown> },
+  name: string,
+  kind: 'ui-slot' | 'ui-page'
 ): CommandResult {
   if (!isRecordValue(loaded.manifest.ui)) {
     return failure(
@@ -665,7 +863,23 @@ function scaffoldSlot(
   if (ensureUiTestRunnerScript(dir)) pkgChanged = true;
   if (pkgChanged) files.push('package.json');
 
-  return commandResult([], { kind: 'ui-slot', name, files });
+  return commandResult([], { kind, name, files });
+}
+
+function scaffoldSlot(
+  dir: string,
+  loaded: { file: string; manifest: Record<string, unknown> },
+  name: string
+): CommandResult {
+  return scaffoldUiContribution(dir, loaded, name, 'ui-slot');
+}
+
+function scaffoldUiPage(
+  dir: string,
+  loaded: { file: string; manifest: Record<string, unknown> },
+  name: string
+): CommandResult {
+  return scaffoldUiContribution(dir, loaded, name, 'ui-page');
 }
 
 export function scaffoldProject(input: {
@@ -680,7 +894,7 @@ export function scaffoldProject(input: {
   if (!isKind(input.kind)) {
     return failure(
       `scaffold kind must be one of ${KINDS.join(', ')}`,
-      'Pass kind addon, route, capability, event, job, migration, or ui-slot.'
+      'Pass kind addon, route, capability, event, job, migration, ui-slot, ui-page, or mcp-tool.'
     );
   }
   if (input.kind === 'addon') {
@@ -697,5 +911,7 @@ export function scaffoldProject(input: {
   if (input.kind === 'event') return scaffoldEvent(input.dir, loaded, input.name);
   if (input.kind === 'job') return scaffoldJob(input.dir, loaded, input.name);
   if (input.kind === 'migration') return scaffoldMigration(input.dir, loaded, input.name);
-  return scaffoldSlot(input.dir, loaded, input.name);
+  if (input.kind === 'ui-slot') return scaffoldSlot(input.dir, loaded, input.name);
+  if (input.kind === 'ui-page') return scaffoldUiPage(input.dir, loaded, input.name);
+  return scaffoldMcpTool(input.dir, loaded, input.name);
 }

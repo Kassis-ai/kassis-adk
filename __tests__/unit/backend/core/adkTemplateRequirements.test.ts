@@ -16,6 +16,8 @@ const SCAFFOLD_KINDS = [
   'job',
   'migration',
   'ui-slot',
+  'ui-page',
+  'mcp-tool',
 ] as const;
 
 function runInit(dir: string): void {
