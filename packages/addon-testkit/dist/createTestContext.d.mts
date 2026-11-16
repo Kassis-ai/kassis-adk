@@ -74,6 +74,7 @@ export type CreateTestContextOptions = {
     version?: string | undefined;
     tier?: 1 | 2 | undefined;
     tenantId?: string | undefined;
+    config?: Record<string, unknown> | undefined;
     manifest?: Record<string, unknown> | undefined;
     manifestPath?: string | undefined;
 };
@@ -92,6 +93,7 @@ export type TestAddonContext = {
         warn: Function;
         error: Function;
     };
+    config: Readonly<Record<string, unknown>>;
     recorded: {
         audit: RecordedAudit[];
         events: RecordedEvent[];
@@ -99,6 +101,13 @@ export type TestAddonContext = {
         llm: RecordedLlmCall[];
         secrets: RecordedSecretRead[];
         http: RecordedHttpFetch[];
+        settings: object[];
+        flags: object[];
+        notify: object[];
+        risk: object[];
+        core: object[];
+        prompts: object[];
+        routes: object[];
     };
     audit: {
         record: Function;
@@ -124,6 +133,13 @@ export type TestAddonContext = {
     http: {
         fetch: Function;
     };
+    routes: object;
+    settings: object;
+    flags: object;
+    notify: object;
+    risk: object;
+    core: object;
+    prompts: object;
     capabilities: object;
     locks: object;
     extend: object;

@@ -6,6 +6,16 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import {
+  createConfigFake,
+  createCoreFacadesFake,
+  createFlagsFake,
+  createNotifyFake,
+  createPromptsFake,
+  createRiskFake,
+  createRoutesFake,
+  createSettingsFake,
+} from './contextAreaFakes.mjs';
 import { manifestPolicyFromManifest } from './manifestPolicy.mjs';
 import { TestContextError } from './testContextError.mjs';
 import {
@@ -100,6 +110,7 @@ import {
  * @property {string} [version]
  * @property {1 | 2} [tier]
  * @property {string} [tenantId]
+ * @property {Record<string, unknown>} [config]
  * @property {Record<string, unknown>} [manifest]
  * @property {string} [manifestPath]
  */
@@ -109,13 +120,21 @@ import {
  * @property {{ id: string, version: string, tier: 1 | 2 }} addon
  * @property {{ id: string }} tenant
  * @property {{ debug: Function, info: Function, warn: Function, error: Function }} logger
- * @property {{ audit: RecordedAudit[], events: RecordedEvent[], jobs: RecordedJob[], llm: RecordedLlmCall[], secrets: RecordedSecretRead[], http: RecordedHttpFetch[] }} recorded
+ * @property {Readonly<Record<string, unknown>>} config
+ * @property {{ audit: RecordedAudit[], events: RecordedEvent[], jobs: RecordedJob[], llm: RecordedLlmCall[], secrets: RecordedSecretRead[], http: RecordedHttpFetch[], settings: object[], flags: object[], notify: object[], risk: object[], core: object[], prompts: object[], routes: object[] }} recorded
  * @property {{ record: Function, search: Function }} audit
  * @property {{ publish: Function, subscribe: Function }} events
  * @property {{ register: Function, enqueue: Function, schedule: Function, status: Function }} jobs
  * @property {{ invoke: Function, estimateTokens: Function }} llm
  * @property {{ get: Function }} secrets
  * @property {{ fetch: Function }} http
+ * @property {object} routes
+ * @property {object} settings
+ * @property {object} flags
+ * @property {object} notify
+ * @property {object} risk
+ * @property {object} core
+ * @property {object} prompts
  * @property {object} capabilities
  * @property {object} locks
  * @property {object} extend
@@ -219,7 +238,8 @@ export function createTestContext(options = {}) {
       ? options.tenantId
       : 'tenant';
   const tier = options.tier === 1 ? 1 : 2;
-  const policy = manifestPolicyFromManifest(resolveManifest(options));
+  const manifest = resolveManifest(options);
+  const policy = manifestPolicyFromManifest(manifest);
 
   /** @type {RecordedAudit[]} */
   const audit = [];
@@ -233,6 +253,20 @@ export function createTestContext(options = {}) {
   const secrets = [];
   /** @type {RecordedHttpFetch[]} */
   const http = [];
+  /** @type {object[]} */
+  const settings = [];
+  /** @type {object[]} */
+  const flags = [];
+  /** @type {object[]} */
+  const notify = [];
+  /** @type {object[]} */
+  const risk = [];
+  /** @type {object[]} */
+  const core = [];
+  /** @type {object[]} */
+  const prompts = [];
+  /** @type {object[]} */
+  const routes = [];
 
   return {
     addon: { id: addonId, version, tier },
@@ -243,7 +277,22 @@ export function createTestContext(options = {}) {
       warn() {},
       error() {},
     },
-    recorded: { audit, events, jobs, llm, secrets, http },
+    config: createConfigFake(manifest, options.config),
+    recorded: {
+      audit,
+      events,
+      jobs,
+      llm,
+      secrets,
+      http,
+      settings,
+      flags,
+      notify,
+      risk,
+      core,
+      prompts,
+      routes,
+    },
     audit: {
       /**
        * @param {TestPrincipal} principal
@@ -435,15 +484,13 @@ export function createTestContext(options = {}) {
         };
       },
     },
-    routes: {
-      /**
-       * @param {unknown} _router
-       * @param {{ permission?: string, path?: string }} [_options]
-       */
-      mount(_router, _options) {
-        return disposable();
-      },
-    },
+    routes: createRoutesFake(routes),
+    settings: createSettingsFake(settings),
+    flags: createFlagsFake(flags),
+    notify: createNotifyFake(notify),
+    risk: createRiskFake(risk),
+    core: createCoreFacadesFake(tier, core),
+    prompts: createPromptsFake(prompts),
     capabilities: createTierGuardedCapabilities(tier),
     locks: createTierGuardedLocks(tier),
     extend: createTierGuardedExtend(tier),

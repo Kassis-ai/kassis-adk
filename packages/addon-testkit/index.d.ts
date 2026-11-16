@@ -112,6 +112,51 @@ export interface RecordedHttpFetch {
   readonly url: string;
 }
 
+export interface RecordedSettingsCall {
+  readonly op: 'get' | 'search';
+  readonly key?: string;
+}
+
+export interface RecordedFlagsCall {
+  readonly op: 'ensure' | 'has' | 'list' | 'evaluateRules';
+  readonly principal?: TestPrincipal;
+  readonly input?: JsonObject;
+  readonly target?: JsonObject;
+  readonly flagType?: string;
+  readonly event?: JsonObject;
+}
+
+export interface RecordedNotifyCall {
+  readonly op: 'send' | 'registerType';
+  readonly principal?: TestPrincipal;
+  readonly notification?: JsonObject;
+  readonly type?: string;
+  readonly options?: JsonObject;
+}
+
+export interface RecordedRiskCall {
+  readonly op: string;
+  readonly principal?: TestPrincipal;
+  readonly [key: string]: JsonPrimitive | JsonObject | TestPrincipal | undefined;
+}
+
+export interface RecordedCoreCall {
+  readonly facade: string;
+  readonly op: string;
+  readonly principal?: TestPrincipal;
+  readonly [key: string]: JsonPrimitive | JsonObject | TestPrincipal | undefined;
+}
+
+export interface RecordedPromptsCall {
+  readonly op: 'registerPack';
+  readonly pack: JsonObject;
+}
+
+export interface RecordedRoutesCall {
+  readonly op: 'mount';
+  readonly options: JsonObject | null;
+}
+
 export interface HttpFetchResponse {
   readonly ok: boolean;
   readonly status: number;
@@ -190,8 +235,156 @@ export interface CreateTestContextOptions {
   readonly version?: string;
   readonly tier?: 1 | 2;
   readonly tenantId?: string;
+  readonly config?: Readonly<Record<string, unknown>>;
   readonly manifest?: Readonly<Record<string, unknown>>;
   readonly manifestPath?: string;
+}
+
+export interface TestSettingsFacade {
+  get(key: string): Promise<JsonPrimitive | JsonObject | null>;
+  search(): Promise<{ readonly limitPerType: number }>;
+}
+
+export interface TestFlagsFacade {
+  ensure(
+    principal: TestPrincipal,
+    input: {
+      readonly ownerType: string;
+      readonly ownerId: string | number;
+      readonly flagType: string;
+      readonly present: boolean;
+      readonly autoAssigned?: boolean;
+      readonly reason?: string;
+      readonly metadata?: JsonObject;
+    }
+  ): Promise<{ readonly changed: boolean }>;
+  has(
+    principal: TestPrincipal,
+    target: { readonly ownerType: string; readonly ownerId: string | number },
+    flagType: string
+  ): Promise<boolean>;
+  list(
+    principal: TestPrincipal,
+    target: { readonly ownerType: string; readonly ownerId: string | number }
+  ): Promise<
+    readonly {
+      readonly flagType: string;
+      readonly autoAssigned: boolean;
+      readonly assignedAt: string;
+      readonly metadata: JsonObject | null;
+    }[]
+  >;
+  evaluateRules(principal: TestPrincipal, event: JsonObject): Promise<void>;
+}
+
+export interface TestNotifyFacade {
+  send(
+    principal: TestPrincipal,
+    notification: {
+      readonly recipientUserId: number;
+      readonly type: string;
+      readonly title: string;
+      readonly message: string;
+      readonly priority?: 'low' | 'normal' | 'high';
+      readonly link?: string;
+      readonly payload?: JsonObject;
+    }
+  ): Promise<void>;
+  registerType(
+    type: string,
+    options: { readonly category: string; readonly defaultChannels: readonly string[] }
+  ): Disposable;
+}
+
+export interface TestRiskFacade {
+  isLaneEnabled(lane: 'entity' | 'graph'): Promise<boolean>;
+  submitAssessments(principal: TestPrincipal, submission: JsonObject): Promise<{
+    readonly accepted: number;
+    readonly snapshot: null;
+  }>;
+  submitScreeningFactors(principal: TestPrincipal, input: JsonObject): Promise<{
+    readonly accepted: number;
+    readonly snapshot: null;
+  }>;
+  submitProfileFactors(principal: TestPrincipal, input: JsonObject): Promise<{
+    readonly accepted: number;
+    readonly snapshot: null;
+  }>;
+  getSnapshot(
+    principal: TestPrincipal,
+    subject: JsonObject,
+    domain?: string
+  ): Promise<null>;
+  evaluatePolicyRules(
+    principal: TestPrincipal,
+    input: JsonObject
+  ): Promise<readonly JsonObject[]>;
+}
+
+export interface TestPromptsFacade {
+  registerPack(pack: JsonObject): Disposable;
+}
+
+export interface TestCoreFacades {
+  readonly cases: {
+    get(principal: TestPrincipal, caseId: string): Promise<JsonObject | null>;
+    create(
+      principal: TestPrincipal,
+      input: { readonly title: string; readonly fields?: JsonObject }
+    ): Promise<JsonObject>;
+    update(principal: TestPrincipal, caseId: string, changes: JsonObject): Promise<JsonObject>;
+    attachEntity(principal: TestPrincipal, link: JsonObject): Promise<void>;
+  };
+  readonly approvals: {
+    guard(principal: TestPrincipal, input: JsonObject): Promise<{ readonly status: 'allowed' }>;
+    isEnforced(subjectType: string): Promise<boolean>;
+    registerApplier(subjectType: string, applier: unknown): Disposable;
+    applyRegistered(outcome: JsonObject): Promise<void>;
+  };
+  readonly parties: {
+    findDuplicates(
+      principal: TestPrincipal,
+      candidate: JsonObject,
+      options?: { readonly limit?: number }
+    ): Promise<readonly JsonObject[]>;
+    ensureRiskLaneSeeded(principal: TestPrincipal): Promise<void>;
+  };
+  readonly entities: {
+    search(
+      principal: TestPrincipal,
+      query: { readonly text: string; readonly limit?: number }
+    ): Promise<readonly JsonObject[]>;
+    link(
+      principal: TestPrincipal,
+      input: JsonObject
+    ): Promise<{ readonly entityId: string; readonly created: boolean }>;
+  };
+  readonly documents: {
+    create(principal: TestPrincipal, input: JsonObject): Promise<JsonObject>;
+    extractText(
+      principal: TestPrincipal,
+      source: JsonObject
+    ): Promise<{ readonly text: string; readonly truncated: boolean }>;
+    mapTags(
+      principal: TestPrincipal,
+      tags: readonly string[]
+    ): Promise<readonly { readonly tag: string; readonly tagId: null }[]>;
+    indexText(principal: TestPrincipal, input: JsonObject): Promise<void>;
+  };
+  readonly users: {
+    get(principal: TestPrincipal, userId: number): Promise<JsonObject | null>;
+    hasPermission(
+      principal: TestPrincipal,
+      userId: number,
+      permission: string
+    ): Promise<boolean>;
+    getPreference(principal: TestPrincipal, key: string): Promise<JsonPrimitive | JsonObject | null>;
+    setPreference(
+      principal: TestPrincipal,
+      key: string,
+      value: JsonPrimitive | JsonObject
+    ): Promise<{ readonly saved: true }>;
+  };
 }
 
 export interface TestAddonContext {
@@ -203,6 +396,7 @@ export interface TestAddonContext {
     warn(message: string, detail?: JsonObject): void;
     error(message: string, detail?: JsonObject): void;
   };
+  readonly config: Readonly<Record<string, unknown>>;
   readonly recorded: {
     readonly audit: RecordedAudit[];
     readonly events: RecordedEvent[];
@@ -210,6 +404,13 @@ export interface TestAddonContext {
     readonly llm: RecordedLlmCall[];
     readonly secrets: RecordedSecretRead[];
     readonly http: RecordedHttpFetch[];
+    readonly settings: RecordedSettingsCall[];
+    readonly flags: RecordedFlagsCall[];
+    readonly notify: RecordedNotifyCall[];
+    readonly risk: RecordedRiskCall[];
+    readonly core: RecordedCoreCall[];
+    readonly prompts: RecordedPromptsCall[];
+    readonly routes: RecordedRoutesCall[];
   };
   readonly audit: {
     record(principal: TestPrincipal, action: string, detail: AuditDetailInput): Promise<void>;
@@ -253,7 +454,14 @@ export interface TestAddonContext {
       router: unknown,
       options?: { readonly permission?: string; readonly path?: string }
     ): Disposable;
+    principalOf(request: object): TestPrincipal;
   };
+  readonly settings: TestSettingsFacade;
+  readonly flags: TestFlagsFacade;
+  readonly notify: TestNotifyFacade;
+  readonly risk: TestRiskFacade;
+  readonly core: TestCoreFacades;
+  readonly prompts: TestPromptsFacade;
   readonly capabilities: TestCapabilitiesFacade;
   readonly locks: TestLocksFacade;
   readonly extend: TestExtendFacade;
