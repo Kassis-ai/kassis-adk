@@ -3,7 +3,7 @@
 **Status:** GA
 **Version checked:** 2026-10-28
 **Technical owner:** Unassigned
-**Last reviewed:** 2026-11-14
+**Last reviewed:** 2026-11-16
 
 ## Enable and disable
 
@@ -51,6 +51,10 @@ On-prem uses `docker-compose.onprem.yml`. Air-gapped install uses the bundle fro
 | Backend crash: `Cannot find module '/tools/adk/evidenceSummary.mjs'` | The production image must copy `tools/adk/evidenceSummary.mjs` and symlink `/tools` to `/app/tools`. Rebuild the backend.                                                                                                                            |
 | MCP HTTP crash: `Cannot find module '/app/server/prisma.js'`         | The MCP image does not ship Prisma. Publisher trust then uses the seeded file. Rebuild MCP.                                                                                                                                                          |
 
+## Uninstall retention
+
+Uninstall reads `data.retention` on a v2 manifest (`retain`, `archive`, `purge`). When that field is absent it still reads v1 `database.dataRetentionPolicy` (`retain`, `archive`, `delete`). `retain` and `archive` leave prefixed tables in place. `delete` and `purge` report leftover prefixed tables as residuals. `purge` writes one `retention_purge` audit row. Exporting or dropping the addon schema is the migration runner, not this check.
+
 ## Package deploy
 
 `POST /api/v1/addon-security/deploy` accepts `.addon` (zip) and `.tar.gz`. The upload temp file often has no extension; the host sniffs zip (`PK`) and gzip magic when the name is not `.addon`, `.zip`, or `.tar.gz`. It checks the signature and recomputes `contentHash` on the extracted folder before anything is copied. `manifest.checksum` is not compared. An optional `archiveSha256` field is compared to the uploaded bytes and protects the transfer only.
@@ -71,6 +75,7 @@ MCP discovery lists a tier 2 tool from `contributions.mcp` on an active installe
 
 | Date       | Change                                                                                                                                                                                                                                                                 |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-16 | Uninstall applies v2 `data.retention` (`retain`, `archive`, `purge`) and still accepts v1 `delete`. `purge` adds one `retention_purge` audit row. Prefixed tables left behind fail the residual check for `delete` and `purge`.                                        |
 | 2026-11-14 | `KASSIS_DEVHOST_ATTACH` makes `kassis-addon dev` join that container's network and secrets and run as `RUN_MODE=api`.                                                                                                                                                    |
 | 2026-11-14 | Installed tier 2 MCP tools are listed only while the signing key still verifies. A revoked key drops the tool on the next discovery load.                                                                                                                              |
 | 2026-11-14 | Disable, update and uninstall stop a tier 2 child. The wait before the process is killed is `addons.tier2.stopTimeoutMs` (release step `20261114-tier2-stop-timeout`). Host shutdown waits for the same stop.                                                         |
