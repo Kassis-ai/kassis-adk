@@ -4,6 +4,7 @@ import { addonDataSchemaName } from '@kassis/addon-sdk';
 import type { AdkIssue, CommandResult } from './types.ts';
 import { commandResult, failure, isRecordValue, kadkIssue, readJson } from './issues.ts';
 import { initProject } from './projectCommands.ts';
+import { scaffoldRecordType } from './scaffoldRecordType.ts';
 
 const NAME_RE = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
 const KINDS = [
@@ -16,6 +17,7 @@ const KINDS = [
   'ui-slot',
   'ui-page',
   'mcp-tool',
+  'record-type',
 ] as const;
 type ScaffoldKind = (typeof KINDS)[number];
 
@@ -869,7 +871,7 @@ export function scaffoldProject(input: {
   if (!isKind(input.kind)) {
     return failure(
       `scaffold kind must be one of ${KINDS.join(', ')}`,
-      'Pass kind addon, route, capability, event, job, migration, ui-slot, ui-page, or mcp-tool.'
+      'Pass kind addon, route, capability, event, job, migration, ui-slot, ui-page, mcp-tool, or record-type.'
     );
   }
   if (input.kind === 'addon') {
@@ -888,5 +890,6 @@ export function scaffoldProject(input: {
   if (input.kind === 'migration') return scaffoldMigration(input.dir, loaded, input.name);
   if (input.kind === 'ui-slot') return scaffoldSlot(input.dir, loaded, input.name);
   if (input.kind === 'ui-page') return scaffoldUiPage(input.dir, loaded, input.name);
+  if (input.kind === 'record-type') return scaffoldRecordType(input.dir, loaded, input.name);
   return scaffoldMcpTool(input.dir, loaded, input.name);
 }

@@ -159,7 +159,7 @@ Writes .kassis/attestation.json with null outcomes when it is missing.
 `,
   rules: `Usage: kassis-addon rules [--json]
 `,
-  scaffold: `Usage: kassis-addon scaffold --kind <addon|route|capability|event|job|migration|ui-slot> [--id <addon-id>] [--name <kebab>] [--dir <path>] [--json]
+  scaffold: `Usage: kassis-addon scaffold --kind <addon|route|capability|event|job|migration|ui-slot|ui-page|mcp-tool|record-type> [--id <addon-id>] [--name <kebab>] [--dir <path>] [--json]
 `,
 };
 
