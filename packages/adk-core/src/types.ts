@@ -56,5 +56,6 @@ export interface CommandRequest {
   /** Undefined when --image was not passed. An empty string means the flag was passed blank. */
   readonly imageFlag: string | undefined;
   readonly followLogs: boolean;
+  readonly requirements: boolean;
   readonly onLog?: LogListener;
 }

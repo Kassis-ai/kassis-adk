@@ -93,9 +93,9 @@ Applies migrations only to the database inside the dev host started by kassis-ad
 History is kept per addon id (manifest.json). Each script runs in one transaction with its history row, so a failure keeps nothing. A script edited after it was applied stops up and down.
 claim assigns history rows written by an older ADK (no addon id) to this addon, for its own script names.
 `,
-  doctor: `Usage: kassis-addon doctor [--json]
+  doctor: `Usage: kassis-addon doctor [--requirements] [--json]
 
-Checks the Node version, GitHub Packages login (the token is not printed), signing key files, instance reachability, and manifest hostApi against HOST_API_VERSION.
+Checks the Node version, GitHub Packages login (the token is not printed), signing key files, instance reachability, and manifest hostApi against HOST_API_VERSION. With --requirements, scans addon source for ctx facade calls that the manifest tier cannot use (tier-matrix.json).
 `,
   pack: `Usage: kassis-addon pack [--out <dir>] [--json]
 `,
@@ -216,6 +216,11 @@ function printSuccess(command, data) {
     );
     const range = data.hostApiRange ? data.hostApiRange : '(no manifest)';
     process.stdout.write(`hostApi ${data.hostApiVersion} ${range}\n`);
+    if (data.requirementsScan === true) {
+      process.stdout.write(
+        `tier ${data.addonTier} refusals ${typeof data.tierRefusals === 'number' ? data.tierRefusals : 0}\n`
+      );
+    }
   }
   if (command === 'migrate') {
     printLines(data.lines);
@@ -239,6 +244,7 @@ try {
       help: { type: 'boolean', short: 'h' },
       version: { type: 'boolean' },
       json: { type: 'boolean' },
+      requirements: { type: 'boolean' },
       id: { type: 'string' },
       dir: { type: 'string' },
       publisher: { type: 'string' },
@@ -279,6 +285,7 @@ try {
     cwd: process.cwd(),
     imageFlag: typeof parsed.values.image === 'string' ? parsed.values.image : undefined,
     followLogs: command === 'dev' && !json,
+    requirements: parsed.values.requirements === true,
     onLog: json
       ? undefined
       : (event) => {

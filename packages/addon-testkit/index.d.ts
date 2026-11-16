@@ -16,6 +16,18 @@ export interface AddonImportIssue {
 
 export function checkAddonImports(addonDir: string): AddonImportIssue[];
 
+export type TierRefusalCode = 'KADK-219';
+
+export interface TierRefusalIssue {
+  readonly code: TierRefusalCode;
+  readonly file: string;
+  readonly line: number;
+  readonly method: string;
+  readonly message: string;
+}
+
+export function checkAddonTierRefusals(addonDir: string, tier: 1 | 2): TierRefusalIssue[];
+
 export function assertEvidencePack(dir: string): CertifyReport;
 
 export type JsonPrimitive = string | number | boolean | null;

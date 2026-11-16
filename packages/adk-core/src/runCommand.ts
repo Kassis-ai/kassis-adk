@@ -84,7 +84,7 @@ export async function runCommand(request: CommandRequest): Promise<CommandResult
     case 'migrate':
       return migrateProject(dir, request.subcommand, flags.target);
     case 'doctor':
-      return doctorProject(dir);
+      return doctorProject(dir, { requirements: request.requirements });
     case 'scaffold':
       return scaffoldProject({
         dir,

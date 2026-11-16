@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { checkAddonTierRefusals } from '@kassis/addon-testkit';
 import { HOST_API_VERSION } from '../../../packages/shared-config/src/hostApiVersion.ts';
 import type { AdkIssue, CommandResult, JsonObject } from './types.ts';
 import { commandResult, isRecordValue, kadkIssue, operationalIssue, readJson } from './issues.ts';
@@ -181,16 +182,69 @@ function hostApiIssue(dir: string): { issue: AdkIssue | null; range: string; com
   return { issue: null, range, compatible: true };
 }
 
+function addonTier(dir: string): { tier: 1 | 2; addonId: string } {
+  const file = path.join(dir, 'manifest.json');
+  if (!fs.existsSync(file)) return { tier: 2, addonId: '' };
+  try {
+    const parsed = readJson(file);
+    if (!isRecordValue(parsed)) return { tier: 2, addonId: '' };
+    const tier = parsed.tier === 1 ? 1 : 2;
+    const addonId = typeof parsed.id === 'string' ? parsed.id : '';
+    return { tier, addonId };
+  } catch (error) {
+    if (!(error instanceof SyntaxError) && !(error instanceof Error)) throw error;
+    return { tier: 2, addonId: '' };
+  }
+}
+
+function tierRefusalIssuesFromScanned(
+  scanned: ReturnType<typeof checkAddonTierRefusals>,
+  tier: 1 | 2,
+  addonId: string
+): AdkIssue[] {
+  return scanned.map((issue) =>
+    kadkIssue(issue.code, issue.file, issue.line, {
+      file: issue.file,
+      method: issue.method,
+      tier: String(tier),
+      id: addonId,
+    })
+  );
+}
+
+export interface DoctorProjectOptions {
+  readonly requirements?: boolean;
+}
+
 /** Local setup checks. Registry output is a username or empty, never a token. */
-export async function doctorProject(dir: string): Promise<CommandResult> {
+export async function doctorProject(
+  dir: string,
+  options: DoctorProjectOptions = {}
+): Promise<CommandResult> {
   const node = nodeIssue();
   const registry = registryIssue();
   const signing = signingIssue();
   const instance = await instanceIssue();
   const hostApi = hostApiIssue(dir);
-  const issues = [node, registry.issue, signing.issue, instance.issue, hostApi.issue].filter(
+  const manifest = addonTier(dir);
+  const setupIssues = [node, registry.issue, signing.issue, instance.issue, hostApi.issue].filter(
     (issue): issue is AdkIssue => issue !== null
   );
+  const scannedRefusals = options.requirements
+    ? checkAddonTierRefusals(dir, manifest.tier)
+    : [];
+  const refusalIssues = tierRefusalIssuesFromScanned(
+    scannedRefusals,
+    manifest.tier,
+    manifest.addonId
+  );
+  const issues = [...setupIssues, ...refusalIssues];
+  const refusalsPayload: JsonObject[] = scannedRefusals.map((issue) => ({
+    code: issue.code,
+    file: issue.file,
+    line: issue.line,
+    method: issue.method,
+  }));
   const data: JsonObject = {
     nodeVersion: process.version,
     nodeOk: node === null,
@@ -202,6 +256,11 @@ export async function doctorProject(dir: string): Promise<CommandResult> {
     hostApiVersion: HOST_API_VERSION,
     hostApiRange: hostApi.range,
     hostApiCompatible: hostApi.compatible,
+    addonTier: manifest.tier,
+    tierRefusals: refusalIssues.length,
+    ...(options.requirements
+      ? { requirementsScan: true, refusals: refusalsPayload }
+      : {}),
   };
   return commandResult(issues, data);
 }

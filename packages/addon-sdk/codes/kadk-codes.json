@@ -353,6 +353,15 @@
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-218"
     },
     {
+      "code": "KADK-219",
+      "category": "boundaries",
+      "severity": "error",
+      "title": "Facade call refused for this tier",
+      "message": "{file} calls {method}, which tier {tier} addons cannot use",
+      "fix": "Use a facade allowed for your tier in @kassis/addon-sdk/tier-matrix.json, pick tier 1 when appropriate, or consume another addon through requires.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-219"
+    },
+    {
       "code": "KADK-301",
       "category": "data",
       "severity": "error",

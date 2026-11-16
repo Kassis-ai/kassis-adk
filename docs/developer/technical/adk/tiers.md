@@ -55,4 +55,5 @@ These keys are read from Settings. A missing or invalid value refuses to start t
 | Date       | Change                                                                                                                                                                    |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-11-16 | Documented `@kassis/addon-sdk/tier-matrix.json` as the packaged tier capability matrix; CI checks it against `TIER2_FACADE_METHODS`.                                      |
+| 2026-11-16 | `kassis-addon doctor --requirements` scans addon source for `ctx` calls the manifest tier cannot use and reports KADK-219 before build.                                    |
 | 2026-10-28 | Tier 2 calls the host facades over RPC. Events and jobs are delivered to the child and retried on the existing queues. The child cannot call `approvals.applyRegistered`. |
