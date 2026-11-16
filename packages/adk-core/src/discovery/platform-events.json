@@ -4521,6 +4521,55 @@
       }
     },
     {
+      "name": "entity.link_candidate_proposed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "entity.link_candidate_proposed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "sourceEntityId",
+          "targetEntityId",
+          "detector"
+        ],
+        "properties": {
+          "sourceEntityId": {
+            "type": "string"
+          },
+          "targetEntityId": {
+            "type": "string"
+          },
+          "detector": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          },
+          "evidence": {
+            "type": "object"
+          },
+          "relationshipType": {
+            "type": "string"
+          },
+          "detectorVersion": {
+            "type": "string"
+          },
+          "blockingKey": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "correlationId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "entity.link_discovered",
       "source": "platform",
       "schema": {
@@ -4562,6 +4611,56 @@
           }
         },
         "additionalProperties": true
+      }
+    },
+    {
+      "name": "entity.linked",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "entity.linked",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "ownerType",
+          "ownerId",
+          "entityId"
+        ],
+        "properties": {
+          "ownerType": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "role": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "linkedBy": {
+            "type": [
+              "integer",
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "integer",
+              "number",
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
       }
     },
     {
@@ -4624,6 +4723,52 @@
           }
         },
         "additionalProperties": true
+      }
+    },
+    {
+      "name": "entity.unlinked",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "entity.unlinked",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {
+          "ownerType": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "role": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "unlinkedBy": {
+            "type": [
+              "integer",
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "integer",
+              "number",
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
       }
     },
     {
