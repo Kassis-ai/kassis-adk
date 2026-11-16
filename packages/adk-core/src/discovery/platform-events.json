@@ -4125,6 +4125,98 @@
       }
     },
     {
+      "name": "entity.completeness_critical",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "entity.completeness_critical",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "entityId",
+          "score"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "entityId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "score": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "entity.completeness_incomplete",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "entity.completeness_incomplete",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "entityId",
+          "score"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "entityId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "score": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "entity.link_discovered",
       "source": "platform",
       "schema": {
@@ -6896,6 +6988,358 @@
       }
     },
     {
+      "name": "list.archived",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "list.archived",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "listId",
+          "title",
+          "tenantId"
+        ],
+        "properties": {
+          "listId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "tenantId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list.created",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "list.created",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "listId",
+          "title",
+          "listType",
+          "tenantId"
+        ],
+        "properties": {
+          "listId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "listType": {
+            "type": "string"
+          },
+          "tenantId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list.deleted",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "list.deleted",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list.entry.added",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "list.entry.added",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "listId",
+          "entityId",
+          "tenantId"
+        ],
+        "properties": {
+          "listId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "entityId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "entryId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "tenantId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list.entry.removed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "list.entry.removed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "listId",
+          "entityId",
+          "tenantId"
+        ],
+        "properties": {
+          "listId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "entityId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "entryId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "tenantId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list.purged",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "list.purged",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list.restored",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "list.restored",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "notification.failed",
       "source": "platform",
       "schema": {
@@ -7130,6 +7574,339 @@
       }
     },
     {
+      "name": "party.case_opened",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "party.case_opened",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {
+          "entityId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "caseId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "party.created",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "party.created",
+        "version": 2,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "entity": {
+            "type": "object"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "partyId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "display_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "party_type": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "type_typed": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "identifier": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "registration_number": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "created_date": {
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
+          },
+          "updated_date": {
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
+          },
+          "changes": {
+            "type": [
+              "object",
+              "array",
+              "null"
+            ]
+          },
+          "newStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previousStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previousOwnership": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "metadata": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "custom_data": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "party.deleted",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "party.deleted",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "party.identifier_expiring",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "party.identifier_expiring",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {
+          "entityId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "party.kyc_expired",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "party.kyc_expired",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {
+          "entityId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "party.merged",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "party.merged",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "targetId",
+          "sourceId"
+        ],
+        "properties": {
+          "targetId": {
+            "type": "string"
+          },
+          "sourceId": {
+            "type": "string"
+          },
+          "sourceDisplayName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "party.pep_hit",
       "source": "platform",
       "schema": {
@@ -7164,6 +7941,464 @@
       }
     },
     {
+      "name": "party.profile_updated",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "party.profile_updated",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "entityId"
+        ],
+        "properties": {
+          "entityId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "changes": {
+            "type": "object"
+          },
+          "registryStatusMismatch": {
+            "type": "object",
+            "properties": {
+              "registryStatus": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "localStatus": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "dataset": {
+                "type": "string"
+              },
+              "field": {
+                "type": "string"
+              },
+              "trusted": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "fallbacks": {
+                "type": "array"
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "party.purged",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "party.purged",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "party.registry.enrich_requested",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "party.registry.enrich_requested",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {
+          "entityId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "depth": {
+            "type": [
+              "number",
+              "integer",
+              "null"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "party.registry.enriched",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "party.registry.enriched",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "entityId",
+          "provider",
+          "datasets",
+          "userId"
+        ],
+        "properties": {
+          "entityId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "provider": {
+            "type": "string"
+          },
+          "datasets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "party.relationship_changed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "party.relationship_changed",
+        "version": 2,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "eventId",
+          "timestamp",
+          "entity"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "entity": {
+            "type": "object"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "partyId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "display_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "party_type": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "type_typed": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "identifier": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "registration_number": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "created_date": {
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
+          },
+          "updated_date": {
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
+          },
+          "changes": {
+            "type": [
+              "object",
+              "array",
+              "null"
+            ]
+          },
+          "newStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previousStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previousOwnership": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "metadata": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "custom_data": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "party.restored",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "party.restored",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "party.review_completed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "party.review_completed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "entityId"
+        ],
+        "properties": {
+          "entityId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "decision": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
       "name": "party.sanctions_hit",
       "source": "platform",
       "schema": {
@@ -7192,6 +8427,44 @@
           },
           "previousHitsCount": {
             "type": "number"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "party.screening.requested",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "party.screening.requested",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "entityId"
+        ],
+        "properties": {
+          "entityId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "listId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "partyId": {
+            "type": [
+              "string",
+              "number"
+            ]
           }
         },
         "additionalProperties": true
@@ -7237,6 +8510,314 @@
       }
     },
     {
+      "name": "party.status_changed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "party.status_changed",
+        "version": 2,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "eventId",
+          "timestamp",
+          "entity"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "entity": {
+            "type": "object"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "partyId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "display_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "party_type": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "type_typed": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "identifier": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "registration_number": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "created_date": {
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
+          },
+          "updated_date": {
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
+          },
+          "changes": {
+            "type": [
+              "object",
+              "array",
+              "null"
+            ]
+          },
+          "newStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previousStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previousOwnership": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "metadata": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "custom_data": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "party.updated",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "party.updated",
+        "version": 2,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "type": "object"
+          },
+          "entity": {
+            "type": "object"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "partyId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "display_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "party_type": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "type_typed": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "identifier": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "registration_number": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "created_date": {
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
+          },
+          "updated_date": {
+            "type": [
+              "string",
+              "object",
+              "null"
+            ]
+          },
+          "changes": {
+            "type": [
+              "object",
+              "array",
+              "null"
+            ]
+          },
+          "newStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previousStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previousOwnership": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "metadata": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "custom_data": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
       "name": "policy.evaluation.requested",
       "source": "platform",
       "schema": {
@@ -7271,6 +8852,296 @@
             "type": "string"
           },
           "ruleName": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "questionnaire.answer.committed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "questionnaire.answer.committed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "domain",
+          "responseId",
+          "subject_type",
+          "subject_id",
+          "questionnaireId",
+          "questionId",
+          "questionLibraryId",
+          "actorEmail"
+        ],
+        "properties": {
+          "domain": {
+            "type": "string"
+          },
+          "responseId": {
+            "type": "string"
+          },
+          "subject_type": {
+            "type": "string"
+          },
+          "subject_id": {
+            "type": "string"
+          },
+          "questionnaireId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "questionId": {
+            "type": "string"
+          },
+          "questionLibraryId": {
+            "type": "string"
+          },
+          "actorEmail": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "questionnaire.edd_completed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "questionnaire.edd_completed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "type",
+          "resourceType",
+          "resource",
+          "resourceId",
+          "entityId",
+          "responseId",
+          "failures",
+          "failureCount"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resource": {
+            "type": "object"
+          },
+          "resourceId": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "responseId": {
+            "type": "string"
+          },
+          "failureCount": {
+            "type": "number"
+          },
+          "failures": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "question_id"
+              ],
+              "properties": {
+                "question_id": {
+                  "type": "string"
+                },
+                "risk_factor": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "questionnaire.response.completed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "questionnaire.response.completed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "domain",
+          "responseId",
+          "subject_type",
+          "subject_id",
+          "questionnaireId",
+          "actorEmail",
+          "completedAt",
+          "eventId",
+          "resourceType",
+          "resourceId",
+          "score",
+          "tags",
+          "tag_ids"
+        ],
+        "properties": {
+          "domain": {
+            "type": "string"
+          },
+          "responseId": {
+            "type": "string"
+          },
+          "subject_type": {
+            "type": "string"
+          },
+          "subject_id": {
+            "type": "string"
+          },
+          "questionnaireId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "actorEmail": {
+            "type": "string"
+          },
+          "completedAt": {
+            "type": "string"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "score": {
+            "type": "number"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tag_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "questionnaire.response.opened",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "questionnaire.response.opened",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "domain",
+          "responseId",
+          "subject_type",
+          "subject_id",
+          "questionnaireId",
+          "actorEmail"
+        ],
+        "properties": {
+          "domain": {
+            "type": "string"
+          },
+          "responseId": {
+            "type": "string"
+          },
+          "subject_type": {
+            "type": "string"
+          },
+          "subject_id": {
+            "type": "string"
+          },
+          "questionnaireId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "actorEmail": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "questionnaire.response.reopened",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "questionnaire.response.reopened",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "domain",
+          "responseId",
+          "subject_type",
+          "subject_id",
+          "actorEmail",
+          "reason"
+        ],
+        "properties": {
+          "domain": {
+            "type": "string"
+          },
+          "responseId": {
+            "type": "string"
+          },
+          "subject_type": {
+            "type": "string"
+          },
+          "subject_id": {
+            "type": "string"
+          },
+          "actorEmail": {
+            "type": "string"
+          },
+          "reason": {
             "type": "string"
           }
         },
