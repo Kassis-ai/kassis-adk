@@ -2,14 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { addonDataSchemaName } from '@kassis/addon-sdk';
 import type { AdkIssue, CommandResult } from './types.ts';
-import {
-  commandResult,
-  failure,
-  isRecordValue,
-  kadkIssue,
-  operationalIssue,
-  readJson,
-} from './issues.ts';
+import { commandResult, failure, isRecordValue, kadkIssue, readJson } from './issues.ts';
 import { initProject } from './projectCommands.ts';
 
 const NAME_RE = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
@@ -398,21 +391,6 @@ function scaffoldMigration(
   if (!fs.existsSync(down)) fs.writeFileSync(down, migrationDownSql(schema, table));
 
   const issues: AdkIssue[] = [];
-  let tier = 2;
-  const rawTier = loaded.manifest.tier;
-  if (typeof rawTier === 'number') tier = rawTier;
-  else if (typeof rawTier === 'string') tier = Number(rawTier);
-  if (tier === 2) {
-    issues.push(
-      operationalIssue(
-        'ADK-SCAFFOLD',
-        'warning',
-        'Tier 2 migrations do not run on install or update until host work S2.02 lands.',
-        'Keep the SQL and manifest entries; deploy migration execution after S2.02.',
-        'manifest.json'
-      )
-    );
-  }
 
   return commandResult(issues, {
     kind: 'migration',

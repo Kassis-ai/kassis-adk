@@ -38,7 +38,8 @@ Seeds and migrations this kit depends on:
 | `database/migrations/20261028_addon_publisher_key_add_policy.sql` | Existing databases that applied the first seed still need this row. Without it, key add returns 503.                                                                                                    |
 | `database/migrations/20261028_addon_deployment_staged.sql`        | `DeploymentState.staged`, and the approval policies for an addon install and for a rollback that widens access.                                                                                         |
 | `database/migrations/20261026_db_roles_audit_owner.sql`           | `kassis_app` and the audit owner.                                                                                                                                                                       |
-| `database/migrations/20261116_addon_database_roles.sql`           | Per-addon migration role and run-time role for schema `addon_<id>`. Apply with the release ledger. Install does not call it yet.                                                                       |
+| `database/migrations/20261116_addon_database_roles.sql`           | Per-addon migration role and run-time role for schema `addon_<id>`. Apply with the release ledger. Tier 2 install calls it.                                                                              |
+| `database/migrations/20261116_addon_schema_migrations.sql`        | Ledger and apply function for tier 2 package up scripts. Apply after the roles step, before a backend that installs those packages.                                                                     |
 
 **Prod empty volume.** Prod compose does not load the full schema on an empty volume. Only the roles script runs. Restore a backup or apply the release ledger. On-prem does load the day-0 schema, because that file is the new-site install. Details are in the release steps.
 
@@ -67,6 +68,14 @@ On-prem uses `docker-compose.onprem.yml`. Air-gapped install uses the bundle fro
 `GET /api/v1/adk/catalog` needs a signed-in user with `system.admin`. `GET /api/v1/adk/version` stays open and still returns only `hostApi`.
 
 The catalog is built from `@kassis/addon-sdk` tier-matrix data and the host registries. It lists facade method names with tier flags and the permission each call needs, capability ids with version and owning addon, event names with their JSON schemas, host slot, deep-link and source names, and reserved permission namespaces. It does not return capability implementations, settings values, tenant rows, or secrets.
+
+## Tier 2 package migrations
+
+Installing or updating a tier 2 package applies `migrations/*.up.sql` from that package. The host provisions schema `addon_<id>` (hyphens in the id become underscores), then runs each pending up script as role `addon_<id>_migrate` inside the install or update lease. The script and its checksum row commit together. A script that fails leaves that script unapplied; scripts that already committed stay applied, and the install or update stops. A script whose file changed after it was applied is refused. The same file name in two packages is two rows. The app role is not a member of the migration role.
+
+Each script must be ordinary SQL that can run in one transaction. It cannot contain psql commands, its own `COMMIT`, or the text `$kassis_mig$`. One script has to finish within the server's interactive transaction timeout (`PRISMA_TX_TIMEOUT_MS`, 30 seconds by default). There is no schema dump before the run; a failed script rolls back with its ledger row. Down scripts are not run on install or update. Uninstall does not export or drop the schema.
+
+Tier 1 packages are not migrated by this path.
 
 ## Uninstall retention
 
@@ -104,6 +113,7 @@ The override lowers Postgres memory, gives schema init a longer health start per
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-11-16 | Disable lets in-flight tier 1 requests, jobs, and event handlers finish, and does not start new ones. An in-flight tier 2 call is rejected; the HTTP route answers 503 `tier 2 addon <id> stopped`.                                                                    |
 | 2026-11-16 | The live lab workflow starts its own compose stack, loads day-0 seeds, applies the release ledger, and builds the dev host image from the commit. It runs at 05:30 UTC and on demand. It does not deploy to the cloud demo.                                          |
+| 2026-11-16 | Tier 2 install and update apply package up scripts as `addon_<id>_migrate`, one transaction per script with its checksum. Apply release step `20261116-addon-schema-migrations` first. Tier 1 is unchanged. Uninstall does not drop the schema. |
 | 2026-11-16 | `GET /api/v1/adk/catalog` returns facade names, event schemas, capability ids, host slot names and reserved permission namespaces for `system.admin`. It does not return implementations or secrets.                                                                   |
 | 2026-11-16 | Runtime-load UIs re-read `addons/ui-catalog` and `addons/frontend-catalog` on disable, unknown enablement, and tab focus (at most once per minute).                                                                                                                      |
 | 2026-11-16 | Tier 1 `import()` is keyed by manifest `contentHash` so hot updates load new server code; disable then enable of the same hash reuses the module. Authors must avoid module-level mutable state.                                                                       |

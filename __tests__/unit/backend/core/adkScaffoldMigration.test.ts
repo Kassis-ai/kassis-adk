@@ -23,12 +23,10 @@ function scaffoldMigrationOnFreshAddon(name: string): { dir: string; result: Ret
 }
 
 describe('scaffold migration', () => {
-  it('writes up/down SQL, data.schema, database.ownedTables, and warns for tier 2', () => {
+  it('writes up/down SQL, data.schema and database.ownedTables', () => {
     const { dir, result } = scaffoldMigrationOnFreshAddon('snapshot');
     try {
-      expect(
-        result.issues.some((issue) => issue.severity === 'warning' && issue.code === 'ADK-SCAFFOLD')
-      ).toBe(true);
+      expect(result.issues).toEqual([]);
       const manifest = JSON.parse(fs.readFileSync(path.join(dir, 'manifest.json'), 'utf8'));
       const schema = addonDataSchemaName('acme-widget');
       const qualified = `${schema}.acme_widget_snapshot`;
