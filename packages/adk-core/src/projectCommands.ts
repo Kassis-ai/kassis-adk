@@ -103,7 +103,7 @@ export function checkProject(dir: string): CommandResult {
   } catch (error) {
     return failure(
       messageOf(error),
-      'Install ajv and keep the manifest schema in the repository.',
+      'Install @kassis/addon-sdk and keep the manifest schema in the repository.',
       'ADK-USAGE'
     );
   }
