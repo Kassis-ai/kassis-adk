@@ -61,7 +61,7 @@ node scripts/adk-live-lab.mjs --only=H
 
 `--only=H` copies the fixture outside the checkout, signs it with a new acme key, and trusts that key only through `KASSIS_PUBLISHER_TRUST_FILE` (`/addons-installed/lab-hot-toggle-trust.json` inside the backend container). It does not edit `publisher-trust.json`. The private key stays in `~/.kassis/keys`. After maker/checker approval it loops `GET /api/v1/adk/version` while it `POST`s `disable` and `enable` six times. The version route must stay 200. `GET /api/v1/addons/acme-swift-approval/release-policy` must answer while the addon is enabled (200, or 503 when the approval policy is not enforced) and fail cleanly while it is disabled (404, or 503 `not running` / `stopped`). The workflow runs this step after L1–L22.
 
-Until the tier 2 route bridge forwards the request body, that release-policy route is the probe. `POST /messages` returns 503 `tier2-route-body-not-forwarded` on the current runner. `GAPS.md` in the fixture records FR-57 (configuration frozen at initialize) and FR-60 (runner-owned `health.path`).
+The tier 2 route bridge forwards the method, path, query, JSON body, and the caller principal. `GET /release-policy` remains a probe that does not need a body. A configuration save pushes the operator document into a running child (`config.replace`). When the manifest sets `health.path` and the addon mounted that route, a 5xx from the route marks the child unhealthy.
 
 ## Changelog
 
