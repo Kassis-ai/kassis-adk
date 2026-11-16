@@ -1,7 +1,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import type { CommandResult } from './types.ts';
-import { commandResult, failure, isRecordValue, kadkIssue, readJson } from './issues.ts';
+import { addonDataSchemaName } from '@kassis/addon-sdk';
+import type { AdkIssue, CommandResult } from './types.ts';
+import {
+  commandResult,
+  failure,
+  isRecordValue,
+  kadkIssue,
+  operationalIssue,
+  readJson,
+} from './issues.ts';
 import { initProject } from './projectCommands.ts';
 
 const NAME_RE = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
@@ -329,7 +337,50 @@ function scaffoldJob(
   return commandResult([], { kind: 'job', name: job, files });
 }
 
-function scaffoldMigration(dir: string, name: string): CommandResult {
+function ownedTableBaseName(addonId: string, name: string): string {
+  return `${addonId.replace(/-/g, '_')}_${name.replace(/-/g, '_')}`;
+}
+
+function migrationUpSql(schema: string, table: string): string {
+  return `-- Create owned table in the addon schema.
+CREATE TABLE IF NOT EXISTS ${schema}.${table} (
+  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+`;
+}
+
+function migrationDownSql(schema: string, table: string): string {
+  return `-- Reverses the matching up script.
+DROP TABLE IF EXISTS ${schema}.${table};
+`;
+}
+
+function scaffoldMigration(
+  dir: string,
+  loaded: { file: string; manifest: Record<string, unknown> },
+  name: string
+): CommandResult {
+  const id = String(loaded.manifest.id);
+  const schema = addonDataSchemaName(id);
+  const table = ownedTableBaseName(id, name);
+  const qualified = `${schema}.${table}`;
+
+  const data = isRecordValue(loaded.manifest.data) ? { ...loaded.manifest.data } : {};
+  if (typeof data.schema !== 'string') {
+    data.schema = schema;
+  }
+  loaded.manifest.data = data;
+
+  const database = isRecordValue(loaded.manifest.database) ? { ...loaded.manifest.database } : {};
+  const ownedTables = Array.isArray(database.ownedTables) ? [...database.ownedTables] : [];
+  if (!ownedTables.includes(qualified)) {
+    ownedTables.push(qualified);
+  }
+  database.ownedTables = ownedTables;
+  loaded.manifest.database = database;
+  writeManifest(loaded.file, loaded.manifest);
+
   const folder = path.join(dir, 'migrations');
   fs.mkdirSync(folder, { recursive: true });
   const numbers = fs
@@ -341,12 +392,35 @@ function scaffoldMigration(dir: string, name: string): CommandResult {
   const stem = `${next}_${name}`;
   const up = path.join(folder, `${stem}.up.sql`);
   const down = path.join(folder, `${stem}.down.sql`);
-  if (!fs.existsSync(up)) fs.writeFileSync(up, `-- ${stem}\n`);
-  if (!fs.existsSync(down)) fs.writeFileSync(down, `-- Reverses ${stem}.up.sql.\n`);
-  return commandResult([], {
+  if (!fs.existsSync(up)) fs.writeFileSync(up, migrationUpSql(schema, table));
+  if (!fs.existsSync(down)) fs.writeFileSync(down, migrationDownSql(schema, table));
+
+  const issues: AdkIssue[] = [];
+  let tier = 2;
+  const rawTier = loaded.manifest.tier;
+  if (typeof rawTier === 'number') tier = rawTier;
+  else if (typeof rawTier === 'string') tier = Number(rawTier);
+  if (tier === 2) {
+    issues.push(
+      operationalIssue(
+        'ADK-SCAFFOLD',
+        'warning',
+        'Tier 2 migrations do not run on install or update until host work S2.02 lands.',
+        'Keep the SQL and manifest entries; deploy migration execution after S2.02.',
+        'manifest.json'
+      )
+    );
+  }
+
+  return commandResult(issues, {
     kind: 'migration',
     name: stem,
-    files: [path.join('migrations', `${stem}.up.sql`), path.join('migrations', `${stem}.down.sql`)],
+    table: qualified,
+    files: [
+      path.join('migrations', `${stem}.up.sql`),
+      path.join('migrations', `${stem}.down.sql`),
+      'manifest.json',
+    ],
   });
 }
 
@@ -405,6 +479,6 @@ export function scaffoldProject(input: {
   if (input.kind === 'capability') return scaffoldCapability(loaded, input.name);
   if (input.kind === 'event') return scaffoldEvent(input.dir, loaded, input.name);
   if (input.kind === 'job') return scaffoldJob(input.dir, loaded, input.name);
-  if (input.kind === 'migration') return scaffoldMigration(input.dir, input.name);
+  if (input.kind === 'migration') return scaffoldMigration(input.dir, loaded, input.name);
   return scaffoldSlot(loaded, input.name);
 }
