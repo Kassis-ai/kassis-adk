@@ -11,7 +11,10 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 
 export function guardrailCatalogPath() {
   const beside = path.join(here, 'guardrails.json');
-  if (globalThis.__KASSIS_ADK_PACKED__ === true && fs.existsSync(beside)) return beside;
+  if (globalThis.__KASSIS_ADK_PACKED__ === true) {
+    if (fs.existsSync(beside)) return beside;
+    return require.resolve('@kassis/addon-sdk/guardrails.json');
+  }
   const repoPath = path.resolve(here, '../../packages/addon-sdk/guardrails.json');
   if (fs.existsSync(repoPath)) return repoPath;
   if (fs.existsSync(beside)) return beside;

@@ -12,7 +12,10 @@ import { kadkIssue } from './certifyAttestation.mjs';
 const require = createRequire(import.meta.url);
 const here = path.dirname(fileURLToPath(import.meta.url));
 const besideList = path.join(here, 'banned-dependencies.json');
-const repoList = path.resolve(here, '../../packages/addon-sdk/banned-dependencies.json');
+const repoList =
+  globalThis.__KASSIS_ADK_PACKED__ === true
+    ? ''
+    : path.resolve(here, '../../packages/addon-sdk/banned-dependencies.json');
 const bannedList = require(fs.existsSync(repoList) ? repoList : besideList);
 
 const CREATE_TABLE =
