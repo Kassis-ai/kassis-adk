@@ -385,6 +385,14 @@ export interface TestCoreFacades {
       value: JsonPrimitive | JsonObject
     ): Promise<{ readonly saved: true }>;
   };
+  readonly communication: {
+    send(principal: TestPrincipal, input: JsonObject): Promise<JsonObject>;
+    list(principal: TestPrincipal, query: JsonObject): Promise<readonly JsonObject[]>;
+    registerAccess(
+      ownerType: string,
+      canAccess: (principal: TestPrincipal, ownerId: string) => Promise<boolean>
+    ): Disposable;
+  };
 }
 
 export interface TestAddonContext {

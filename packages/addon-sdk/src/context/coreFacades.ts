@@ -5,6 +5,16 @@
 import type { Disposable } from '../disposable.js';
 import type { JsonObject, JsonValue } from '../json.js';
 import type { AddonPrincipal } from './addonIdentity.js';
+import type { CommunicationFacade } from './communicationFacade.js';
+
+export type {
+  CommunicationAccessCheck,
+  CommunicationFacade,
+  CommunicationListQuery,
+  CommunicationMessage,
+  CommunicationSendInput,
+  CommunicationSendResult,
+} from './communicationFacade.js';
 
 export interface CaseRecord {
   readonly id: string;
@@ -210,4 +220,5 @@ export interface CoreFacades {
   readonly entities: EntitiesFacade;
   readonly documents: DocumentsFacade;
   readonly users: UsersFacade;
+  readonly communication: CommunicationFacade;
 }

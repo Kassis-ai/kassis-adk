@@ -65,6 +65,7 @@ These keys are read from Settings. A missing or invalid value refuses to start t
 
 | Date       | Change                                                                                                                                                                    |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-16 | Tier 2 may call `ctx.core.communication.send`, `list` and `registerAccess`. Record access calls the child with `communication.access` and fails closed. |
 | 2026-11-16 | Host writes `ADDON_DATA_WRITE` on every tier 2 `ctx.data.execute` and on each execute statement in `ctx.data.transaction`.                                              |
 | 2026-11-16 | Tier 2 `ctx.extend.*` registers only points named in manifest `extends`. Callbacks use `extend.callback`, the acting principal, and `addons.capabilities.timeoutMs`. A disabled, crashed, or slow child fails closed. |
 | 2026-11-16 | Container runner dials pre-started containers over TCP. No Docker socket. Network policy allows only RPC port 7400 and the egress proxy on 7401. The process runner stays the default until `KASSIS_TIER2_CONTAINER_RUNNERS` is set. |

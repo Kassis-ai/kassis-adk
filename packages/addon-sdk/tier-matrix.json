@@ -103,6 +103,24 @@
       "permission": "principal"
     },
     {
+      "method": "ctx.core.communication.list",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.core.communication.registerAccess",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
+      "method": "ctx.core.communication.send",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
       "method": "ctx.core.documents.create",
       "tier1": true,
       "tier2": true,

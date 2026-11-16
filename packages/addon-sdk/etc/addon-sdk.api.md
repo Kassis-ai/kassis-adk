@@ -881,6 +881,75 @@ export type CommunicableContribution = {
     sendPermissions: readonly string[];
 };
 
+// Warning: (ae-missing-release-tag) "CommunicationAccessCheck" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export type CommunicationAccessCheck = (principal: AddonPrincipal, ownerId: string) => Promise<boolean>;
+
+// Warning: (ae-missing-release-tag) "CommunicationFacade" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface CommunicationFacade {
+    // (undocumented)
+    list(principal: AddonPrincipal, query: CommunicationListQuery): Promise<readonly CommunicationMessage[]>;
+    registerAccess(ownerType: string, canAccess: CommunicationAccessCheck): Disposable;
+    // (undocumented)
+    send(principal: AddonPrincipal, input: CommunicationSendInput): Promise<CommunicationSendResult>;
+}
+
+// Warning: (ae-missing-release-tag) "CommunicationListQuery" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface CommunicationListQuery {
+    // (undocumented)
+    readonly ownerId: string;
+    // (undocumented)
+    readonly ownerType: string;
+}
+
+// Warning: (ae-missing-release-tag) "CommunicationMessage" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export interface CommunicationMessage {
+    // (undocumented)
+    readonly id: string;
+    // (undocumented)
+    readonly sentAt: string | null;
+    // (undocumented)
+    readonly status: string | null;
+    // (undocumented)
+    readonly subject: string;
+    // (undocumented)
+    readonly to: string;
+}
+
+// Warning: (ae-missing-release-tag) "CommunicationSendInput" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface CommunicationSendInput {
+    // (undocumented)
+    readonly body: string;
+    // (undocumented)
+    readonly ownerId: string;
+    // (undocumented)
+    readonly ownerType: string;
+    // (undocumented)
+    readonly subject: string;
+    readonly templateKey?: string;
+    // (undocumented)
+    readonly to: string | readonly string[];
+}
+
+// Warning: (ae-missing-release-tag) "CommunicationSendResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface CommunicationSendResult {
+    // (undocumented)
+    readonly emailId: string;
+    // (undocumented)
+    readonly status: string;
+}
+
 // Warning: (ae-missing-release-tag) "CoreFacades" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -889,6 +958,8 @@ export interface CoreFacades {
     readonly approvals: ApprovalsFacade;
     // (undocumented)
     readonly cases: CasesFacade;
+    // (undocumented)
+    readonly communication: CommunicationFacade;
     // (undocumented)
     readonly documents: DocumentsFacade;
     // (undocumented)

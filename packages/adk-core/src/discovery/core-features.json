@@ -128,12 +128,12 @@
       "need": "send email",
       "aliases": ["email user", "communication", "mail", "communicable"],
       "coreFeature": "Communication",
-      "facade": "ctx.extend.registerCommunicable",
+      "facade": "ctx.core.communication.send",
       "extensionPoint": "ctx.extend.registerCommunicable",
-      "summary": "Own communication for addon record types via registerCommunicable. A typed ctx.core.communication facade is planned (S2.15).",
-      "example": "ctx.extend.registerCommunicable({ ownerType: 'acme-widget.item', viewPermission: 'acme-widget.view', sendPermission: 'acme-widget.send' });",
+      "summary": "Register the record type, then send and list through ctx.core.communication. Mail accounts stay in core.",
+      "example": "await ctx.core.communication.send(principal, { ownerType: 'acme-widget.item', ownerId, to, subject, body });",
       "doNot": "Do not add a private mail client or SMTP library.",
-      "note": "ctx.core.communication.send / list land in S2.15; until then use communicable registration plus host mail UI."
+      "note": "Owner registration is ctx.extend.registerCommunicable. Tier 2 still refuses that call until communicable is a manifest extend id (S2.19). send and list refuse an owner type this addon did not register."
     },
     {
       "id": "publish-event",
