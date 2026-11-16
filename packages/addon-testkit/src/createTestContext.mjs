@@ -267,6 +267,8 @@ export function createTestContext(options = {}) {
   const prompts = [];
   /** @type {object[]} */
   const routes = [];
+  /** @type {object[]} */
+  const extend = [];
 
   return {
     addon: { id: addonId, version, tier },
@@ -292,6 +294,7 @@ export function createTestContext(options = {}) {
       core,
       prompts,
       routes,
+      extend,
     },
     audit: {
       /**
@@ -493,7 +496,7 @@ export function createTestContext(options = {}) {
     prompts: createPromptsFake(prompts),
     capabilities: createTierGuardedCapabilities(tier),
     locks: createTierGuardedLocks(tier),
-    extend: createTierGuardedExtend(tier),
+    extend: createTierGuardedExtend(tier, extend),
     data: createTierGuardedData(tier),
   };
 }

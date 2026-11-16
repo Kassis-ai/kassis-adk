@@ -9,7 +9,7 @@ sidebar_label: ADK error codes
 **Status:** GA
 **Version checked:** 2026-10-28
 **Technical owner:** Unassigned
-**Last reviewed:** 2026-11-16 (KADK-125 to KADK-129, KADK-313, KADK-314, KADK-316 to KADK-318)
+**Last reviewed:** 2026-11-16 (KADK-125 to KADK-129, KADK-223, KADK-313, KADK-314, KADK-316 to KADK-318)
 
 Every check of the addon development kit reports a stable `KADK-NNN` code with a message, a fix hint and a link to this page. The catalog is data: `packages/addon-sdk/codes/kadk-codes.json`, read through `listKadkCodes()` and `getKadkCode()` in `@kassis/addon-sdk`. A test keeps this page and the catalog in step (one anchor per code, no extra anchors).
 
@@ -487,6 +487,15 @@ A published code keeps its number, category and meaning. A retired code is marke
 - Message: `Add-on '{id}' registered '{value}', which is not in extends`
 - Fix: Add '{value}' to extends in the manifest.
 - Reported by: tier 2 `ctx.extend.*` when the point is missing from manifest `extends`
+
+<a id="kadk-223"></a>
+
+### KADK-223 Extension name is already registered
+
+- Severity: error
+- Message: `Add-on '{id}' cannot register '{value}' on '{path}'; another registration already owns that name`
+- Fix: Use a name this add-on owns, or disable the add-on that registered '{value}'.
+- Reported by: tier 2 wave 1 registration when another addon or a core type already owns the name
 
 ## 3xx Data
 
@@ -1134,6 +1143,7 @@ A published code keeps its number, category and meaning. A retired code is marke
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-11-16 | KADK-125 to KADK-129 and KADK-314, KADK-316 to KADK-318 when a process pack key, file, permission, record type, or reference is wrong. KADK-313 warns when the kind has no host JSON Schema, so the body is not checked. |
 | 2026-11-16 | KADK-723 soft budgets without BUDGETS.md reason. KADK-724–728 engineering practice (timeouts, pagination, i18n, idempotent handlers, no module state). `kassis-addon budgets` / `engineering`; certify applies the same gates. |
+| 2026-11-16 | KADK-223 when two tier 2 registrations claim the same wave 1 name.                                                                                                                                                        |
 | 2026-11-16 | KADK-222 when a tier 2 addon registers a `ctx.extend` point that manifest `extends` does not name.                                                                                                                          |
 | 2026-11-16 | KADK-221 when package.json depends on a banned mail, scheduler, upload, storage, auth, database, UI kit, or LLM package. KADK-310 when an owned or created table is a private approval, notification, audit, user, or role table. KADK-311 warns when REUSE.md explains that table. KADK-312 warns when an owned table has no database.tableNotes core alternative. |
 | 2026-11-16 | KADK-720 when PLAN.md is missing. KADK-721 when a requirement row has no rung. KADK-722 when the rung is not configuration, extension-point, facade, own-code, or gap. `kassis-addon plan` writes `.kassis/evidence/requirement-mapping.json`; certify applies the same gate. |

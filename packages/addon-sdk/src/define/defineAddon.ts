@@ -2,7 +2,8 @@
  * Compile-time mandatory contract (S2.17). A record type cannot omit access, deletion,
  * sensitivity, or an audit subject. An addon manifest slice that owns tables cannot omit
  * retention. `check` already reports KADK-124 and KADK-309 for the same manifest rules.
- * Host registration of these parts is a later wave (S2.19).
+ * The child registers audit subject, record access, and deletable through ctx.extend.
+ * The tier 2 host binds those calls (S2.19). Scaffold generation is S2.20.
  */
 import type { AddonContext, AddonModule } from '../context/addonContext.js';
 import type { AddonDeclarations } from '../context/addonDeclarations.js';

@@ -52,17 +52,19 @@ export function createTierGuardedLocks(tier) {
 
 /**
  * @param {1 | 2} tier
+ * @param {object[]} recorded
  * @returns {object}
  */
-export function createTierGuardedExtend(tier) {
+export function createTierGuardedExtend(tier, recorded) {
   return new Proxy(
     {},
     {
       get(_target, prop) {
         if (typeof prop !== 'string' || prop === 'then') return undefined;
         const method = `ctx.extend.${prop}`;
-        return () => {
+        return (input) => {
           assertCtxMethodAllowed(tier, method);
+          recorded.push({ method: prop, input: input ?? null });
           return disposable();
         };
       },

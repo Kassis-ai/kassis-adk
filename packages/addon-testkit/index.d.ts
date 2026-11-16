@@ -152,6 +152,11 @@ export interface RecordedPromptsCall {
   readonly pack: JsonObject;
 }
 
+export interface RecordedExtendCall {
+  readonly method: string;
+  readonly input: unknown;
+}
+
 export interface RecordedRoutesCall {
   readonly op: 'mount';
   readonly options: JsonObject | null;
@@ -419,6 +424,7 @@ export interface TestAddonContext {
     readonly core: RecordedCoreCall[];
     readonly prompts: RecordedPromptsCall[];
     readonly routes: RecordedRoutesCall[];
+    readonly extend: RecordedExtendCall[];
   };
   readonly audit: {
     record(principal: TestPrincipal, action: string, detail: AuditDetailInput): Promise<void>;

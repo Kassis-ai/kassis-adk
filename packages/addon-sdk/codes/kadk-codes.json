@@ -461,6 +461,15 @@
       "docs": "docs/developer/reference/adk-error-codes.md#kadk-222"
     },
     {
+      "code": "KADK-223",
+      "category": "boundaries",
+      "severity": "error",
+      "title": "Extension name is already registered",
+      "message": "Add-on '{id}' cannot register '{value}' on '{path}'; another registration already owns that name",
+      "fix": "Use a name this add-on owns, or disable the add-on that registered '{value}'.",
+      "docs": "docs/developer/reference/adk-error-codes.md#kadk-223"
+    },
+    {
       "code": "KADK-301",
       "category": "data",
       "severity": "error",

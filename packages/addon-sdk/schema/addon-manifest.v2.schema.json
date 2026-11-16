@@ -512,6 +512,7 @@
         "predictionCapability",
         "questionnaireDomain",
         "questionnaireDomainAdapter",
+        "recordAccess",
         "riskFactors",
         "shutdownHook"
       ]

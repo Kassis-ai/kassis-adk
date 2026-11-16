@@ -26,6 +26,7 @@ export const MANIFEST_EXTEND_POINT_IDS = [
   'predictionCapability',
   'questionnaireDomain',
   'questionnaireDomainAdapter',
+  'recordAccess',
   'riskFactors',
   'shutdownHook',
 ] as const;
