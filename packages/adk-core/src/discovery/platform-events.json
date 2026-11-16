@@ -3,6 +3,74 @@
   "description": "Platform event schemas for offline ADK MCP discovery (list_events / get_event_schema).",
   "events": [
     {
+      "name": "activity.logged",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "activity.logged",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {
+          "entityType": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "activityType": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "oldValue": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "newValue": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "integer",
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "userName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "opId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "activityContext": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "addon.lifecycle.changed",
       "source": "platform",
       "schema": {
@@ -28,6 +96,85 @@
           },
           "metadata": {
             "type": "object"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "assignment.added",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "assignment.added",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": [
+              "integer",
+              "number"
+            ]
+          },
+          "memberRole": {
+            "type": "string"
+          },
+          "responsibility": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assignmentScope": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assignedBy": {
+            "type": [
+              "integer",
+              "number",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "assignment.removed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "assignment.removed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": [
+              "integer",
+              "number"
+            ]
+          },
+          "memberRole": {
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -3982,6 +4129,69 @@
       }
     },
     {
+      "name": "echo.archived",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "echo.archived",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {
+          "echoId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "echo.created",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "echo.created",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {
+          "echoId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "version": {
+            "type": "integer"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "email.dead_letter",
       "source": "platform",
       "schema": {
@@ -7077,6 +7287,259 @@
       }
     },
     {
+      "name": "knowledge_base.entry_created",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "knowledge_base.entry_created",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "entry"
+        ],
+        "properties": {
+          "entry": {
+            "type": "object"
+          },
+          "actor": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "knowledge_base.entry_deleted",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "knowledge_base.entry_deleted",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {
+          "entryId": {
+            "type": [
+              "integer",
+              "number"
+            ]
+          },
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "actor": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "knowledge_base.entry_purged",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "knowledge_base.entry_purged",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "knowledge_base.entry_restored",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "knowledge_base.entry_restored",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "knowledge_base.entry_updated",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "knowledge_base.entry_updated",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "entry"
+        ],
+        "properties": {
+          "entry": {
+            "type": "object"
+          },
+          "actor": {
+            "type": [
+              "object",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "knowledge_base.query_resolved",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "knowledge_base.query_resolved",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "queryHash",
+          "format",
+          "sources",
+          "chunksFound",
+          "user",
+          "timestamp"
+        ],
+        "properties": {
+          "queryHash": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          },
+          "sources": {
+            "type": "array"
+          },
+          "chunksFound": {
+            "type": "integer"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": [
+                  "string",
+                  "number",
+                  "null"
+                ]
+              },
+              "email": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false
+          },
+          "timestamp": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "list.archived",
       "source": "platform",
       "schema": {
@@ -7429,6 +7892,76 @@
       }
     },
     {
+      "name": "note.added",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "note.added",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "entityType",
+          "entityId",
+          "noteId"
+        ],
+        "properties": {
+          "entityType": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "noteId": {
+            "type": [
+              "integer",
+              "number"
+            ]
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number",
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "note.deleted",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "note.deleted",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "noteId",
+          "entityType",
+          "entityId"
+        ],
+        "properties": {
+          "noteId": {
+            "type": [
+              "integer",
+              "number"
+            ]
+          },
+          "entityType": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "notification.failed",
       "source": "platform",
       "schema": {
@@ -7584,6 +8117,40 @@
       }
     },
     {
+      "name": "party.adverse_media_hit",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "party.adverse_media_hit",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "entityId",
+          "events"
+        ],
+        "properties": {
+          "entityId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "events": {
+            "type": "array"
+          },
+          "previousEventsCount": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
       "name": "party.adverse_media.analyzed",
       "source": "platform",
       "schema": {
@@ -7623,40 +8190,6 @@
           },
           "runId": {
             "type": "string"
-          }
-        },
-        "additionalProperties": true
-      }
-    },
-    {
-      "name": "party.adverse_media_hit",
-      "source": "platform",
-      "schema": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "eventName": "party.adverse_media_hit",
-        "version": 1,
-        "compatibility": "backward",
-        "type": "object",
-        "required": [
-          "entityId",
-          "events"
-        ],
-        "properties": {
-          "entityId": {
-            "type": "string",
-            "minLength": 1
-          },
-          "userId": {
-            "type": [
-              "string",
-              "number"
-            ]
-          },
-          "events": {
-            "type": "array"
-          },
-          "previousEventsCount": {
-            "type": "number"
           }
         },
         "additionalProperties": true
@@ -9273,6 +9806,254 @@
       }
     },
     {
+      "name": "record.archived",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "record.archived",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "record.deleted",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "record.deleted",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "record.owner_registered",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "record.owner_registered",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "family",
+          "tableName"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "tableName": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "record.purged",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "record.purged",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "record.restored",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "record.restored",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
+        "properties": {
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "risk.calculated",
       "source": "platform",
       "schema": {
@@ -9765,6 +10546,319 @@
           },
           "effectiveAt": {
             "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "system.addon.publisher_trust.invalidated",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "system.addon.publisher_trust.invalidated",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "fingerprint"
+        ],
+        "properties": {
+          "fingerprint": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "system.addon.registered",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "system.addon.registered",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {
+          "addonName": {
+            "type": "string"
+          },
+          "addonId": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "mountPath": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "system.audit_log.requested",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "system.audit_log.requested",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {
+          "actionType": {
+            "type": "string"
+          },
+          "entityType": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "userEmail": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "details": {
+            "type": "object"
+          },
+          "status": {
+            "type": "string"
+          },
+          "ipAddress": {
+            "type": "string"
+          },
+          "tenantId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "system.ready",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "system.ready",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {
+          "status": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "tag.added",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "tag.added",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "resourceType",
+          "resourceId",
+          "tagName",
+          "tagNameNormalized",
+          "addonKey",
+          "baseResourceType"
+        ],
+        "properties": {
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": "string"
+          },
+          "tagName": {
+            "type": "string"
+          },
+          "tagNameNormalized": {
+            "type": "string"
+          },
+          "createdByUserId": {
+            "type": [
+              "integer",
+              "number",
+              "null"
+            ]
+          },
+          "addonKey": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "baseResourceType": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "tag.owner_registered",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "tag.owner_registered",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "resourceType",
+          "meta"
+        ],
+        "properties": {
+          "resourceType": {
+            "type": "string"
+          },
+          "meta": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "tag.removed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "tag.removed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "resourceType",
+          "resourceId",
+          "tagNameNormalized",
+          "addonKey",
+          "baseResourceType"
+        ],
+        "properties": {
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": "string"
+          },
+          "tagNameNormalized": {
+            "type": "string"
+          },
+          "addonKey": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "baseResourceType": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "timeline.event_added",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "timeline.event_added",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {
+          "entityType": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "eventType": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "source": {
+            "type": "string"
+          },
+          "createdBy": {
+            "type": [
+              "integer",
+              "number",
+              "null"
+            ]
+          },
+          "metadata": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "timeline.event_deleted",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "timeline.event_deleted",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [],
+        "properties": {
+          "entityType": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "eventType": {
+            "type": "string"
+          },
+          "timelineEventId": {
+            "type": [
+              "integer",
+              "number"
+            ]
           }
         },
         "additionalProperties": false
