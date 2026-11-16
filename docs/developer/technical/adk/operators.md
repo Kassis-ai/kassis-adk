@@ -15,6 +15,8 @@ Addon pages that set `ui.runtimeLoad` load from `/runtime-addons.json` (hashed f
 
 After the first boot load, the browser re-reads the UI catalog and `addons/frontend-catalog` when an addon is reported disabled or unknown, when `AddonGuard` unloads a disabled addon, and when the tab regains focus. Those refreshes are capped at one full cycle per minute (no faster polling loop).
 
+Tier 1 server modules load with a `contentHash` query on the entry `import()` URL when the manifest carries `contentHash`, so an approved update with a new hash loads new server code without a backend restart. Disable then enable the same installed folder reuses the cached module for that hash. Tier 1 addon authors must not keep mutable state at module scope (top-level `let`, caches, or singletons); use `initialize()` / disposers or per-request state instead.
+
 ## Release steps and seeds
 
 Day-0 and later SQL are listed in [release steps](../deployment/release-steps.md). Apply them with `npm run release:apply` on a database that already exists. A rebuild does not re-run init scripts.
@@ -80,6 +82,7 @@ Enable and disable reach MCP without a process restart. List and call read `GET 
 | Date       | Change                                                                                                                                                                                                                                                                 |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-11-16 | Runtime-load UIs re-read `addons/ui-catalog` and `addons/frontend-catalog` on disable, unknown enablement, and tab focus (at most once per minute).                                                                                                                      |
+| 2026-11-16 | Tier 1 `import()` is keyed by manifest `contentHash` so hot updates load new server code; disable then enable of the same hash reuses the module. Authors must avoid module-level mutable state.                                                                       |
 | 2026-11-16 | Uninstall applies v2 `data.retention` (`retain`, `archive`, `purge`) and still accepts v1 `delete`. `purge` adds one `retention_purge` audit row. Prefixed tables left behind fail the residual check for `delete` and `purge`.                                        |
 | 2026-11-16 | MCP list and call follow addon enablement from `GET /api/v1/addons/status`, cached for `MCP_ADDON_STATUS_CACHE_MS` (default five seconds). A failed read withholds addon tools. Core tools stay. A process restart is not required.                                      |
 | 2026-11-14 | `KASSIS_DEVHOST_ATTACH` makes `kassis-addon dev` join that container's network and secrets and run as `RUN_MODE=api`.                                                                                                                                                    |
