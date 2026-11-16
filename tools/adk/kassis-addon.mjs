@@ -89,7 +89,7 @@ Runs node --test in ./test. Prints "No test directory" and exits 0 when that fol
 `,
   dev: `Usage: kassis-addon dev [--image <name>] [--json]
 
-Starts Docker or Podman. The image is --image, then KASSIS_DEVHOST_IMAGE, then ~/.kassis/devhost.json, then ghcr.io/kassis-ai/kassis-devhost:latest. Pulls the image when it is not already local. Does not build an image. The container publishes on 127.0.0.1.
+Starts Docker or Podman. The image is --image, then KASSIS_DEVHOST_IMAGE, then ~/.kassis/devhost.json, then ghcr.io/kassis-ai/kassis-devhost:latest. Pulls the image when it is not already local. Does not build an image. The container publishes on 127.0.0.1. Also starts a tier 2 runner on an internal network. Neither container receives a Docker socket.
 `,
   migrate: `Usage: kassis-addon migrate <up|down|status|claim> [--target <url>] [--json]
 
