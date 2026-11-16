@@ -47,10 +47,25 @@ Pack only after certify passes. It writes `index.json` and `README.md` in the ou
 node tools/adk/kassis-addon.mjs pack --out=evidence
 ```
 
+## Reference addon
+
+`__tests__/fixtures/acme-swift-approval` is the BRD-ADK-001 Mode A addon (`acme-swift-approval`, publisher `acme`, tier 2). `node scripts/adk-reference-build.mjs` packs the public `@kassis` tarballs, copies the fixture outside the checkout, and certifies it twice. The second pass signs with `kassis-addon keys generate --publisher=acme` and packages. The private key stays in `~/.kassis/keys`. The script does not deploy and does not register the key.
+
+`node scripts/adk-reference-build.mjs --check-fixture` only checks the fixture id, publisher, tier and that `GAPS.md` names FR-57 and FR-60.
+
+Install and toggle, once the acme key is registered and the package is approved onto the lab:
+
+- `kassis-addon deploy --instance=<lab>`
+- `POST /api/v1/addons/acme-swift-approval/enable`
+- `POST /api/v1/addons/acme-swift-approval/disable`
+
+Until the tier 2 route bridge forwards the request body, probe `GET /api/v1/addons/acme-swift-approval/release-policy`. `POST /messages` returns 503 `tier2-route-body-not-forwarded` on the current runner. `GAPS.md` in the fixture records FR-57 (configuration frozen at initialize) and FR-60 (runner-owned `health.path`).
+
 ## Changelog
 
 | Date       | Change                                                                                                                                                                                                        |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-16 | Reference addon `acme-swift-approval` is certified twice by `scripts/adk-reference-build.mjs`. Live deploy stays outside that script. |
 | 2026-11-16 | `createTestContext` allows tier 2 wave 6 `extend` methods and records them. License and shutdown extend methods, locks, `capabilities.register`, and Prisma data helpers still throw KADK-219. |
 | 2026-11-16 | `createTestContext` fakes every `AddonContext` area (core.*, risk, settings, flags, notify, prompts, config, routes.principalOf) with recorders; SDK key walk fails when a member has no fake. |
 | 2026-11-16 | Certify records `adk.requirement-plan-mapped` and `adk.attest-pinned-profile` in `checks.json` beside requirements tracing. |

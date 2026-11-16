@@ -1,0 +1,126 @@
+{
+  "manifestVersion": 2,
+  "id": "acme-swift-approval",
+  "name": "SWIFT Message Approval",
+  "version": "0.1.0",
+  "publisher": "acme",
+  "tier": 2,
+  "hostApi": "^1.0.0",
+  "resources": { "memoryMb": 256 },
+  "health": { "path": "/health" },
+  "entrypoints": { "main": "dist/server/index.js" },
+  "permissions": [
+    {
+      "name": "acme-swift-approval.view",
+      "displayName": "View SWIFT messages",
+      "description": "See the page, the list and the details"
+    },
+    {
+      "name": "acme-swift-approval.ingest",
+      "displayName": "Submit SWIFT messages",
+      "description": "Submit messages through the route. Given to the payment system only."
+    },
+    {
+      "name": "acme-swift-approval.approve",
+      "displayName": "Approve SWIFT messages",
+      "description": "See the Approve and Reject buttons"
+    },
+    {
+      "name": "acme-swift-approval.admin",
+      "displayName": "Administer SWIFT approval settings",
+      "description": "See and change the settings tab"
+    }
+  ],
+  "audit": {
+    "actions": [
+      "acme-swift-approval.message.received",
+      "acme-swift-approval.message.refused",
+      "acme-swift-approval.message.approved",
+      "acme-swift-approval.message.rejected",
+      "acme-swift-approval.message.expired"
+    ]
+  },
+  "events": {
+    "publishes": [
+      {
+        "name": "acme-swift-approval.message.approved",
+        "schema": "events/message-approved.schema.json"
+      },
+      {
+        "name": "acme-swift-approval.message.rejected",
+        "schema": "events/message-rejected.schema.json"
+      }
+    ]
+  },
+  "jobs": { "types": ["acme-swift-approval.expire"] },
+  "config": {
+    "schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "allowedMessageTypes": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["MT103", "MT202"] },
+          "default": ["MT103", "MT202"]
+        },
+        "highValueThresholds": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "default": { "CHF": "1000000", "EUR": "1000000", "USD": "1000000" }
+        },
+        "maxAmountPerMessage": { "type": ["string", "null"], "default": null },
+        "expiryHours": { "type": "integer", "minimum": 1, "maximum": 168, "default": 24 },
+        "requireApproveComment": { "type": "boolean", "default": false },
+        "notifyApprovers": { "type": "boolean", "default": true }
+      }
+    }
+  },
+  "data": { "schema": "addon_acme_swift_approval", "retention": "retain" },
+  "database": {
+    "ownedTables": [
+      "addon_acme_swift_approval.swift_messages",
+      "addon_acme_swift_approval.swift_message_history"
+    ],
+    "tableNotes": [
+      {
+        "table": "addon_acme_swift_approval.swift_messages",
+        "notCoreRecord": "not a case or party",
+        "why": "A SWIFT payment message is the addon's own queue item. It is not a case, party, or approval request."
+      },
+      {
+        "table": "addon_acme_swift_approval.swift_message_history",
+        "notCoreRecord": "not the audit log",
+        "why": "Status changes of a SWIFT message stay with that message. The audit log remains the core record of who did what."
+      }
+    ]
+  },
+  "extends": ["auditSubject", "recordAccess", "deletable", "approvable"],
+  "resourceTypes": [
+    {
+      "type": "acme:swift-message",
+      "label": "SWIFT message",
+      "sensitivity": "confidential",
+      "abilities": { "search": false, "preview": true },
+      "viewPermissions": ["acme-swift-approval.view"],
+      "table": "addon_acme_swift_approval.swift_messages"
+    }
+  ],
+  "ui": {
+    "entryFile": "index.js",
+    "runtimeLoad": true,
+    "contributions": {
+      "nav": [
+        {
+          "section": "Payments",
+          "name": "SWIFT approvals",
+          "href": "/acme-swift-approval/approvals",
+          "permission": "acme-swift-approval.view"
+        }
+      ],
+      "settingsTabs": [{ "id": "acme-swift-approval", "label": "SWIFT approvals" }]
+    }
+  },
+  "metadata": {
+    "description": "BRD-ADK-001 Mode A reference addon. Release queue for outgoing SWIFT messages."
+  }
+}

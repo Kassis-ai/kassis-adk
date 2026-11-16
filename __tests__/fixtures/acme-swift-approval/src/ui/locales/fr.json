@@ -1,0 +1,53 @@
+{
+  "pages": {
+    "approvals": {
+      "title": "Approbations SWIFT",
+      "empty": "Aucun message en attente de libération",
+      "receivedAt": "Reçu",
+      "messageType": "Type",
+      "reference": "Référence",
+      "senderBic": "BIC émetteur",
+      "receiverBic": "BIC destinataire",
+      "valueDate": "Date de valeur",
+      "currency": "Devise",
+      "amount": "Montant",
+      "highValue": "Montant élevé",
+      "status": "Statut",
+      "filterStatus": "Statut",
+      "filterType": "Type de message",
+      "filterCurrency": "Devise",
+      "filterFrom": "Date de valeur du",
+      "filterTo": "Date de valeur au",
+      "applyFilters": "Appliquer les filtres",
+      "previous": "Page précédente",
+      "next": "Page suivante",
+      "close": "Fermer",
+      "rawText": "Message brut",
+      "copy": "Copier le message brut",
+      "copied": "Copié",
+      "approve": "Approuver",
+      "reject": "Rejeter",
+      "comment": "Commentaire",
+      "rejectCommentShort": "Le rejet exige un commentaire d'au moins 10 caractères",
+      "approveCommentRequired": "L'approbation exige un commentaire d'au moins 10 caractères",
+      "orderingCustomer": "Donneur d'ordre",
+      "beneficiary": "Bénéficiaire",
+      "remittanceInfo": "Motif",
+      "loadError": "La liste n'a pas pu être chargée"
+    }
+  },
+  "settings": {
+    "title": "Paramètres d'approbation SWIFT",
+    "allowedMessageTypes": "Types de messages autorisés",
+    "mt103": "MT103",
+    "mt202": "MT202",
+    "thresholds": "Seuils de montant élevé",
+    "maxAmount": "Montant maximum par message",
+    "expiryHours": "Heures avant expiration",
+    "requireApproveComment": "Exiger un commentaire pour approuver",
+    "notifyApprovers": "Notifier les approbateurs",
+    "save": "Enregistrer",
+    "saved": "Paramètres enregistrés",
+    "saveError": "Les paramètres n'ont pas pu être enregistrés"
+  }
+}
