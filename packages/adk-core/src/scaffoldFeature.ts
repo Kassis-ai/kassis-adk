@@ -19,6 +19,13 @@ function pascal(name: string): string {
     .join('');
 }
 
+function camelFromKebab(name: string): string {
+  const parts = name.split('-');
+  return parts
+    .map((part, index) => (index === 0 ? part : part.charAt(0).toUpperCase() + part.slice(1)))
+    .join('');
+}
+
 function loadManifest(
   dir: string
 ): { file: string; manifest: Record<string, unknown> } | CommandResult {
@@ -60,22 +67,69 @@ function ensureArray(record: Record<string, unknown>, key: string): unknown[] {
   return [];
 }
 
+function ensureExpressDependency(dir: string): boolean {
+  const pkgPath = path.join(dir, 'package.json');
+  if (!fs.existsSync(pkgPath)) return false;
+  const parsed = readJson(pkgPath);
+  if (!isRecordValue(parsed)) return false;
+  const deps = isRecordValue(parsed.dependencies) ? { ...parsed.dependencies } : {};
+  if (typeof deps.express === 'string') return false;
+  deps.express = '^5.3.0';
+  parsed.dependencies = deps;
+  fs.writeFileSync(pkgPath, `${JSON.stringify(parsed, null, 2)}\n`);
+  return true;
+}
+
+function wireRouteMount(dir: string, name: string): string | null {
+  const initFile = path.join(dir, 'src', 'server', 'index.ts');
+  if (!fs.existsSync(initFile)) return null;
+  const mountFn = `mount${pascal(name)}`;
+  const importLine = `import { ${mountFn} } from './routes/${name}.js';`;
+  let text = fs.readFileSync(initFile, 'utf8');
+  if (text.includes(`${mountFn}(ctx)`)) return null;
+  if (!text.includes(importLine)) {
+    const sdkImport = "import type { AddonContext } from '@kassis/addon-sdk';";
+    if (text.includes(sdkImport)) {
+      text = text.replace(sdkImport, `${sdkImport}\n${importLine}`);
+    } else {
+      text = `${importLine}\n${text}`;
+    }
+  }
+  const initMatch = /export async function initialize\(ctx: AddonContext\): Promise<void> \{/;
+  if (!initMatch.test(text)) return null;
+  text = text.replace(
+    initMatch,
+    `export async function initialize(ctx: AddonContext): Promise<void> {\n  ${mountFn}(ctx);`
+  );
+  fs.writeFileSync(initFile, text);
+  return 'src/server/index.ts';
+}
+
 function routeFile(dir: string, id: string, name: string): string {
   const relative = path.join('src', 'server', 'routes', `${name}.ts`);
   const target = path.join(dir, relative);
   if (fs.existsSync(target)) return relative;
   fs.mkdirSync(path.dirname(target), { recursive: true });
   const permission = `${id}.${name}`;
-  const text = `import type { AddonContext, AddonRouter, RouteMountOptions } from '@kassis/addon-sdk';
+  const routeConst = `${camelFromKebab(name)}Route`;
+  const text = `import express from 'express';
+import type { AddonContext, AddonRouter, RouteMountOptions } from '@kassis/addon-sdk';
 
-export const ${name.replace(/-/g, '_')}Route: RouteMountOptions = {
+export const ${routeConst}: RouteMountOptions = {
   permission: '${permission}',
   path: '/${name}',
 };
 
+export function create${pascal(name)}Router(): AddonRouter {
+  const router = express.Router();
+  router.get('/', (_req, res) => {
+    res.status(200).json({ ok: true, route: '${name}' });
+  });
+  return router;
+}
+
 export function mount${pascal(name)}(ctx: AddonContext): void {
-  const handler: AddonRouter = (() => undefined) as AddonRouter;
-  ctx.routes.mount(handler, ${name.replace(/-/g, '_')}Route);
+  ctx.routes.mount(create${pascal(name)}Router(), ${routeConst});
 }
 `;
   fs.writeFileSync(target, text);
@@ -98,8 +152,13 @@ function scaffoldRoute(
   const permission = `${id}.${name}`;
   addPermission(loaded.manifest, permission);
   writeManifest(loaded.file, loaded.manifest);
+  const addedExpress = ensureExpressDependency(dir);
   const file = routeFile(dir, id, name);
-  return commandResult([], { kind: 'route', name: permission, files: [file, 'manifest.json'] });
+  const files = [file, 'manifest.json'];
+  const initPatch = wireRouteMount(dir, name);
+  if (initPatch) files.push(initPatch);
+  if (addedExpress) files.push('package.json');
+  return commandResult([], { kind: 'route', name: permission, files });
 }
 
 function scaffoldCapability(
