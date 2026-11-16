@@ -39,6 +39,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "control-room.alert.updated",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "required": [
           "alertId",
@@ -64,6 +66,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "control-room.breach.escalated",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "additionalProperties": true
       }
@@ -74,6 +78,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "control-room.clearance.approved",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "additionalProperties": true
       }
@@ -84,6 +90,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "control-room.deal.created",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "required": [
           "dealId",
@@ -110,6 +118,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "control-room.deal.phase_changed",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "required": [
           "dealId",
@@ -136,6 +146,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "control-room.deal.updated",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "required": [
           "dealId",
@@ -161,6 +173,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "control-room.wallcross.approved",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "additionalProperties": true
       }
@@ -171,6 +185,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "entity.adverse_media_hit",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "required": [
           "entityId",
@@ -200,6 +216,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "entity.link_discovered",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "required": [
           "sourceEntityId",
@@ -242,6 +260,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "entity.pep_hit",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "required": [
           "entityId",
@@ -271,6 +291,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "entity.sanctions_hit",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "required": [
           "entityId",
@@ -300,6 +322,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "graph.analyzed",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "required": [
           "graphId",
@@ -343,6 +367,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "graph.case_linked",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "required": [
           "graphId",
@@ -376,6 +402,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "graph.completed",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "required": [
           "graphId",
@@ -412,6 +440,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "graph.created",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "required": [
           "graphId",
@@ -452,6 +482,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "graph.deleted",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "required": [
           "graphId",
@@ -492,6 +524,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "graph.generated",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "required": [
           "graphId",
@@ -552,6 +586,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "graph.updated",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "required": [
           "graphId",
@@ -598,6 +634,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.graph.generation_requested",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "anyOf": [
           {
@@ -677,6 +715,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "party.adverse_media.analyzed",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "required": [
           "type",
@@ -720,6 +760,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "party.adverse_media_hit",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "required": [
           "entityId",
@@ -752,6 +794,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "party.pep_hit",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "required": [
           "entityId",
@@ -784,6 +828,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "party.sanctions_hit",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "required": [
           "entityId",
@@ -816,6 +862,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "party.screening.resolved",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "required": [
           "entityId",
@@ -853,6 +901,8 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "risk.calculated",
+        "version": 1,
+        "compatibility": "backward",
         "type": "object",
         "required": [
           "graphId",
