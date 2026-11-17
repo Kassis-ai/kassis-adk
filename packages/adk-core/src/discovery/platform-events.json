@@ -5000,6 +5000,27 @@
             "type": "string",
             "minLength": 1,
             "pattern": "\\S"
+          },
+          "ownerType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ownerId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "recipient": {
+            "type": "string"
+          },
+          "subject": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "additionalProperties": false
