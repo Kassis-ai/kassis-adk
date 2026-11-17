@@ -107,7 +107,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "assignment.added",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [],
@@ -120,8 +120,9 @@
           },
           "userId": {
             "type": [
-              "integer",
-              "number"
+              "string",
+              "number",
+              "integer"
             ]
           },
           "memberRole": {
@@ -141,8 +142,9 @@
           },
           "assignedBy": {
             "type": [
-              "integer",
+              "string",
               "number",
+              "integer",
               "null"
             ]
           }
@@ -156,7 +158,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "assignment.removed",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [],
@@ -169,8 +171,9 @@
           },
           "userId": {
             "type": [
-              "integer",
-              "number"
+              "string",
+              "number",
+              "integer"
             ]
           },
           "memberRole": {
@@ -185,7 +188,7 @@
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": 2,
+        "version": 3,
         "compatibility": "backward",
         "type": "object",
         "eventName": "calendar.event_created",
@@ -204,7 +207,10 @@
             ]
           },
           "ownerType": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "ownerId": {
             "type": [
@@ -536,7 +542,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.assigned",
-        "version": 2,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -571,7 +577,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "caseId": {
             "type": [
@@ -673,23 +680,23 @@
           "due_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "created_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "template_id": {
             "type": [
@@ -716,11 +723,17 @@
             ]
           },
           "flow_template_version": {
-            "type": [
-              "number",
-              "string",
-              "object",
-              "null"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string",
+                "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "custom_data": {
@@ -777,16 +790,16 @@
           "due_soon_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "overdue_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "oldStatus": {
             "type": [
@@ -810,9 +823,9 @@
           "updatedAt": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "escalated": {
             "type": "boolean"
@@ -857,7 +870,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.created",
-        "version": 2,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -892,7 +905,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "caseId": {
             "type": [
@@ -994,23 +1008,23 @@
           "due_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "created_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "template_id": {
             "type": [
@@ -1037,11 +1051,17 @@
             ]
           },
           "flow_template_version": {
-            "type": [
-              "number",
-              "string",
-              "object",
-              "null"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string",
+                "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "custom_data": {
@@ -1098,16 +1118,16 @@
           "due_soon_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "overdue_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "oldStatus": {
             "type": [
@@ -1131,9 +1151,9 @@
           "updatedAt": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "escalated": {
             "type": "boolean"
@@ -1231,7 +1251,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.due_soon",
-        "version": 2,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -1266,7 +1286,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "caseId": {
             "type": [
@@ -1368,23 +1389,23 @@
           "due_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "created_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "template_id": {
             "type": [
@@ -1411,11 +1432,17 @@
             ]
           },
           "flow_template_version": {
-            "type": [
-              "number",
-              "string",
-              "object",
-              "null"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string",
+                "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "custom_data": {
@@ -1472,16 +1499,16 @@
           "due_soon_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "overdue_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "oldStatus": {
             "type": [
@@ -1505,9 +1532,9 @@
           "updatedAt": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "escalated": {
             "type": "boolean"
@@ -1552,7 +1579,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.escalated",
-        "version": 2,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -1587,7 +1614,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "caseId": {
             "type": [
@@ -1689,23 +1717,23 @@
           "due_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "created_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "template_id": {
             "type": [
@@ -1732,11 +1760,17 @@
             ]
           },
           "flow_template_version": {
-            "type": [
-              "number",
-              "string",
-              "object",
-              "null"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string",
+                "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "custom_data": {
@@ -1793,16 +1827,16 @@
           "due_soon_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "overdue_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "oldStatus": {
             "type": [
@@ -1826,9 +1860,9 @@
           "updatedAt": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "escalated": {
             "type": "boolean"
@@ -1873,7 +1907,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.overdue",
-        "version": 2,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -1908,7 +1942,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "caseId": {
             "type": [
@@ -2010,23 +2045,23 @@
           "due_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "created_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "template_id": {
             "type": [
@@ -2053,11 +2088,17 @@
             ]
           },
           "flow_template_version": {
-            "type": [
-              "number",
-              "string",
-              "object",
-              "null"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string",
+                "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "custom_data": {
@@ -2114,16 +2155,16 @@
           "due_soon_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "overdue_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "oldStatus": {
             "type": [
@@ -2147,9 +2188,9 @@
           "updatedAt": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "escalated": {
             "type": "boolean"
@@ -2300,7 +2341,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.status_changed",
-        "version": 2,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -2335,7 +2376,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "caseId": {
             "type": [
@@ -2437,23 +2479,23 @@
           "due_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "created_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "template_id": {
             "type": [
@@ -2480,11 +2522,17 @@
             ]
           },
           "flow_template_version": {
-            "type": [
-              "number",
-              "string",
-              "object",
-              "null"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string",
+                "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "custom_data": {
@@ -2541,16 +2589,16 @@
           "due_soon_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "overdue_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "oldStatus": {
             "type": [
@@ -2574,9 +2622,9 @@
           "updatedAt": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "escalated": {
             "type": "boolean"
@@ -2621,7 +2669,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.updated",
-        "version": 2,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -2656,7 +2704,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "caseId": {
             "type": [
@@ -2758,23 +2807,23 @@
           "due_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "created_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "template_id": {
             "type": [
@@ -2801,11 +2850,17 @@
             ]
           },
           "flow_template_version": {
-            "type": [
-              "number",
-              "string",
-              "object",
-              "null"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string",
+                "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "custom_data": {
@@ -2862,16 +2917,16 @@
           "due_soon_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "overdue_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "oldStatus": {
             "type": [
@@ -2895,9 +2950,9 @@
           "updatedAt": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "escalated": {
             "type": "boolean"
@@ -2969,10 +3024,137 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "control-room.breach.escalated",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
-        "additionalProperties": true
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "breach_type",
+          "severity",
+          "status",
+          "fromStatus",
+          "toStatus",
+          "created_by",
+          "actor",
+          "timestamp",
+          "eventId"
+        ],
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "alert_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "breach_type": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string"
+          },
+          "subject_user_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "deal_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "fromStatus": {
+            "type": "string"
+          },
+          "toStatus": {
+            "type": "string"
+          },
+          "escalated_to": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "escalated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "regulatory_report_required": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "regulatory_report_reference": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "created_by": {
+            "type": "number"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "actor": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "eventId": {
+            "type": "string"
+          }
+        }
       }
     },
     {
@@ -2981,10 +3163,180 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "control-room.clearance.approved",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
-        "additionalProperties": true
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "employee_user_id",
+          "trade_direction",
+          "quantity",
+          "status",
+          "fromStatus",
+          "toStatus",
+          "created_by",
+          "actor",
+          "timestamp",
+          "eventId"
+        ],
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "employee_user_id": {
+            "type": "number"
+          },
+          "security_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "security_identifier": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "security_type": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "trade_direction": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "string",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$"
+          },
+          "estimated_price": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$"
+          },
+          "currency": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "broker_account_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "fromStatus": {
+            "type": "string"
+          },
+          "toStatus": {
+            "type": "string"
+          },
+          "pathway_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "tier_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "current_step": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "assigned_approver_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "approved_by": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "approved_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "expires_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "created_by": {
+            "type": "number"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "actor": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "eventId": {
+            "type": "string"
+          }
+        }
       }
     },
     {
@@ -3076,10 +3428,120 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "control-room.wallcross.approved",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
-        "additionalProperties": true
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "deal_id",
+          "status",
+          "fromStatus",
+          "toStatus",
+          "requested_by",
+          "created_by",
+          "actor",
+          "timestamp",
+          "eventId"
+        ],
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "deal_id": {
+            "type": "number"
+          },
+          "employee_user_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "fromStatus": {
+            "type": "string"
+          },
+          "toStatus": {
+            "type": "string"
+          },
+          "requested_by": {
+            "type": "number"
+          },
+          "approved_by": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "approved_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "wall_cross_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "created_by": {
+            "type": "number"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "actor": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "eventId": {
+            "type": "string"
+          }
+        }
       }
     },
     {
@@ -3528,7 +3990,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "document.incomplete",
-        "version": 2,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -3563,7 +4025,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "documentId": {
             "type": [
@@ -3645,9 +4108,9 @@
           "updatedAt": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "correlationId": {
             "type": "string"
@@ -3676,9 +4139,9 @@
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           }
         },
         "additionalProperties": true
@@ -3931,7 +4394,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "document.updated",
-        "version": 2,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -3966,7 +4429,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "documentId": {
             "type": [
@@ -4048,9 +4512,9 @@
           "updatedAt": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "correlationId": {
             "type": "string"
@@ -4079,9 +4543,9 @@
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           }
         },
         "additionalProperties": true
@@ -4093,7 +4557,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "document.uploaded",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -4128,7 +4592,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "documentId": {
             "type": [
@@ -4424,7 +4889,7 @@
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "eventName": "email.queued",
@@ -4443,10 +4908,8 @@
             "type": "string"
           },
           "scheduleAt": {
-            "type": [
-              "string",
-              "object"
-            ]
+            "type": "string",
+            "format": "date-time"
           },
           "ownerType": {
             "type": [
@@ -4519,13 +4982,12 @@
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "eventName": "email.sent",
         "required": [
-          "emailId",
-          "messageId"
+          "emailId"
         ],
         "properties": {
           "emailId": {
@@ -4535,7 +4997,9 @@
             ]
           },
           "messageId": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
           }
         },
         "additionalProperties": false
@@ -4921,7 +5385,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "finding.lacking_evidence",
-        "version": 2,
+        "version": 3,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -4956,7 +5420,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "investigationId": {
             "type": [
@@ -5012,12 +5477,13 @@
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": 2,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "eventName": "flag.added",
         "required": [
-          "userId"
+          "userId",
+          "flagId"
         ],
         "properties": {
           "type": {
@@ -5053,7 +5519,8 @@
             ]
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "eventId": {
             "type": "string"
@@ -5093,7 +5560,7 @@
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "eventName": "flag.raised",
@@ -5132,7 +5599,8 @@
             ]
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "eventId": {
             "type": "string"
@@ -5152,7 +5620,7 @@
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "eventName": "flag.removed",
@@ -5200,7 +5668,8 @@
             ]
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "eventId": {
             "type": "string"
@@ -5901,12 +6370,219 @@
       }
     },
     {
+      "name": "iam.org_unit.changed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "iam.org_unit.changed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "action",
+          "orgUnitId",
+          "unitType"
+        ],
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "update",
+              "delete"
+            ]
+          },
+          "orgUnitId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "unitType": {
+            "type": "string"
+          },
+          "headUserId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "iam.permission_cache.invalidated",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "iam.permission_cache.invalidated",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "userId"
+        ],
+        "properties": {
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "role": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "iam.rbac.changed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "iam.rbac.changed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "userId",
+          "reason"
+        ],
+        "properties": {
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "groupId": {
+            "type": "integer"
+          },
+          "permissionKey": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "iam.user.created",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "iam.user.created",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "userId",
+          "email",
+          "role",
+          "departmentIds"
+        ],
+        "properties": {
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "email": {
+            "type": "string"
+          },
+          "role": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "departmentIds": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "iam.user.deleted",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "iam.user.deleted",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "userId"
+        ],
+        "properties": {
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "iam.user.updated",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "iam.user.updated",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "userId",
+          "email",
+          "role",
+          "departmentIds"
+        ],
+        "properties": {
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "email": {
+            "type": "string"
+          },
+          "role": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "departmentIds": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "investigation.assigned",
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.assigned",
-        "version": 2,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -5941,7 +6617,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "investigationId": {
             "type": [
@@ -6134,9 +6811,9 @@
           "closed_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           }
         },
         "additionalProperties": true
@@ -6148,12 +6825,342 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.created",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
-        "required": [],
-        "properties": {},
-        "additionalProperties": false
+        "additionalProperties": false,
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "investigation",
+          "eventId",
+          "timestamp",
+          "investigationId",
+          "id",
+          "title",
+          "status",
+          "stage",
+          "priority",
+          "actor"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "investigationId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": "number"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "summary": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "objective": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "lead_investigator_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "created_by": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "due_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "started_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "target_completion_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "closed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "trigger_source": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "trigger_reference_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "investigations_source": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "visibility_scope": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "key_question": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "auto_generated": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "actor": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "resource": {
+            "$ref": "#/$defs/investigationKey"
+          },
+          "investigation": {
+            "$ref": "#/$defs/investigationKey"
+          }
+        },
+        "$defs": {
+          "investigationKey": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "title",
+              "status",
+              "stage",
+              "priority"
+            ],
+            "properties": {
+              "id": {
+                "type": "number"
+              },
+              "title": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "stage": {
+                "type": "string"
+              },
+              "priority": {
+                "type": "string"
+              },
+              "summary": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "objective": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "lead_investigator_id": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "created_by": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "due_date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "started_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "target_completion_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "closed_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "created_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "updated_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "trigger_source": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "trigger_reference_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "investigations_source": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "visibility_scope": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "key_question": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "auto_generated": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
       }
     },
     {
@@ -6215,7 +7222,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.finding_documentation_missing",
-        "version": 2,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -6250,7 +7257,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "investigationId": {
             "type": [
@@ -6443,9 +7451,9 @@
           "closed_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           }
         },
         "additionalProperties": true
@@ -6457,7 +7465,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.finding_high_risk",
-        "version": 2,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -6492,7 +7500,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "investigationId": {
             "type": [
@@ -6685,9 +7694,9 @@
           "closed_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           }
         },
         "additionalProperties": true
@@ -6699,7 +7708,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.finding_unresolved",
-        "version": 2,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -6734,7 +7743,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "investigationId": {
             "type": [
@@ -6927,9 +7937,9 @@
           "closed_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           }
         },
         "additionalProperties": true
@@ -7128,7 +8138,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.stage_changed",
-        "version": 2,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -7163,7 +8173,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "investigationId": {
             "type": [
@@ -7356,9 +8367,9 @@
           "closed_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           }
         },
         "additionalProperties": true
@@ -7370,7 +8381,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.status_changed",
-        "version": 2,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -7405,7 +8416,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "investigationId": {
             "type": [
@@ -7598,9 +8610,9 @@
           "closed_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           }
         },
         "additionalProperties": true
@@ -7612,12 +8624,472 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.updated",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
-        "required": [],
-        "properties": {},
-        "additionalProperties": false
+        "additionalProperties": false,
+        "required": [
+          "type",
+          "resourceType",
+          "resourceId",
+          "resource",
+          "investigation",
+          "eventId",
+          "timestamp",
+          "investigationId",
+          "id",
+          "title",
+          "status",
+          "stage",
+          "priority",
+          "actor",
+          "updatedAt",
+          "changedFields",
+          "statusChanged",
+          "stageChanged",
+          "before",
+          "after"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "investigationId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "id": {
+            "type": "number"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "summary": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "objective": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "lead_investigator_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "created_by": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "due_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "started_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "target_completion_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "closed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "trigger_source": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "trigger_reference_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "investigations_source": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "visibility_scope": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "key_question": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "auto_generated": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "changedFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "statusChanged": {
+            "type": "boolean"
+          },
+          "stageChanged": {
+            "type": "boolean"
+          },
+          "actor": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "before": {
+            "$ref": "#/$defs/changedValues"
+          },
+          "after": {
+            "$ref": "#/$defs/changedValues"
+          },
+          "resource": {
+            "$ref": "#/$defs/investigationKey"
+          },
+          "investigation": {
+            "$ref": "#/$defs/investigationKey"
+          }
+        },
+        "$defs": {
+          "changedValues": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "summary": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "objective": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "status": {
+                "type": "string"
+              },
+              "stage": {
+                "type": "string"
+              },
+              "priority": {
+                "type": "string"
+              },
+              "lead_investigator_id": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "due_date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "started_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "target_completion_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "closed_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "trigger_source": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "trigger_reference_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "investigations_source": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "visibility_scope": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "key_question": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "auto_generated": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              }
+            }
+          },
+          "investigationKey": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "title",
+              "status",
+              "stage",
+              "priority"
+            ],
+            "properties": {
+              "id": {
+                "type": "number"
+              },
+              "title": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "stage": {
+                "type": "string"
+              },
+              "priority": {
+                "type": "string"
+              },
+              "summary": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "objective": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "lead_investigator_id": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "created_by": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "due_date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "started_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "target_completion_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "closed_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "created_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "updated_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "trigger_source": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "trigger_reference_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "investigations_source": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "visibility_scope": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "key_question": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "auto_generated": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
       }
     },
     {
@@ -7652,31 +9124,54 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "knowledge_base.entry_deleted",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
-        "required": [],
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
         "properties": {
-          "entryId": {
-            "type": [
-              "integer",
-              "number"
-            ]
-          },
           "family": {
             "type": "string"
           },
           "id": {
             "type": "string"
           },
+          "reason": {
+            "type": "string"
+          },
           "actor": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
           }
         },
-        "additionalProperties": true
+        "additionalProperties": false
       }
     },
     {
@@ -7823,7 +9318,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "knowledge_base.query_resolved",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -7867,7 +9362,8 @@
             "additionalProperties": false
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false
@@ -8417,7 +9913,7 @@
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "eventName": "notification.requested",
@@ -8463,6 +9959,7 @@
               "userId": {
                 "type": [
                   "number",
+                  "string",
                   "null"
                 ]
               }
@@ -8695,7 +10192,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "party.created",
-        "version": 2,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [],
@@ -8722,7 +10219,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "entityId": {
             "type": [
@@ -8787,16 +10285,16 @@
           "created_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "changes": {
             "type": [
@@ -9239,7 +10737,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "party.relationship_changed",
-        "version": 2,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -9274,7 +10772,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "entityId": {
             "type": [
@@ -9339,16 +10838,16 @@
           "created_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "changes": {
             "type": [
@@ -9597,7 +11096,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "party.status_changed",
-        "version": 2,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -9632,7 +11131,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "entityId": {
             "type": [
@@ -9697,16 +11197,16 @@
           "created_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "changes": {
             "type": [
@@ -9755,7 +11255,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "party.updated",
-        "version": 2,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [],
@@ -9782,7 +11282,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "entityId": {
             "type": [
@@ -9847,16 +11348,16 @@
           "created_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "changes": {
             "type": [
@@ -11265,7 +12766,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "tag.added",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -11291,8 +12792,9 @@
           },
           "createdByUserId": {
             "type": [
-              "integer",
+              "string",
               "number",
+              "integer",
               "null"
             ]
           },
@@ -11378,7 +12880,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "timeline.event_added",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [],
@@ -11409,8 +12911,9 @@
           },
           "createdBy": {
             "type": [
-              "integer",
+              "string",
               "number",
+              "integer",
               "null"
             ]
           },
@@ -11635,7 +13138,7 @@
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "eventName": "workflow.ended",
@@ -11673,7 +13176,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "caseId": {
             "type": [
@@ -11742,7 +13246,7 @@
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "eventName": "workflow.step_completed",
@@ -11780,7 +13284,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "caseId": {
             "type": [
