@@ -5406,17 +5406,20 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "finding.lacking_evidence",
-        "version": 3,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
+        "additionalProperties": false,
         "required": [
           "type",
           "resourceType",
           "resourceId",
           "resource",
+          "finding",
           "eventId",
           "timestamp",
-          "finding"
+          "investigationId",
+          "id"
         ],
         "properties": {
           "type": {
@@ -5430,12 +5433,6 @@
               "string",
               "number"
             ]
-          },
-          "resource": {
-            "type": "object"
-          },
-          "finding": {
-            "type": "object"
           },
           "eventId": {
             "type": "string"
@@ -5451,25 +5448,7 @@
             ]
           },
           "id": {
-            "type": [
-              "string",
-              "number"
-            ]
-          },
-          "evidence_count": {
-            "type": [
-              "number",
-              "null"
-            ]
-          },
-          "missing_evidence": {
-            "type": "boolean"
-          },
-          "correlationId": {
-            "type": [
-              "string",
-              "number"
-            ]
+            "type": "number"
           },
           "title": {
             "type": "string"
@@ -5483,14 +5462,75 @@
               "null"
             ]
           },
+          "evidence_count": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "missing_evidence": {
+            "type": "boolean"
+          },
           "documentation": {
             "type": "boolean"
           },
           "documentation_missing": {
             "type": "boolean"
+          },
+          "correlationId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "resource": {
+            "$ref": "#/$defs/findingSnapshot"
+          },
+          "finding": {
+            "$ref": "#/$defs/findingSnapshot"
           }
         },
-        "additionalProperties": true
+        "$defs": {
+          "findingSnapshot": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "number"
+              },
+              "title": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "risk_score": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "evidence_count": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "missing_evidence": {
+                "type": "boolean"
+              },
+              "documentation": {
+                "type": "boolean"
+              },
+              "documentation_missing": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
       }
     },
     {
@@ -7243,17 +7283,20 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.finding_documentation_missing",
-        "version": 4,
+        "version": 5,
         "compatibility": "backward",
         "type": "object",
+        "additionalProperties": false,
         "required": [
           "type",
           "resourceType",
           "resourceId",
           "resource",
+          "investigation",
           "eventId",
           "timestamp",
-          "investigation"
+          "investigationId",
+          "finding"
         ],
         "properties": {
           "type": {
@@ -7267,12 +7310,6 @@
               "string",
               "number"
             ]
-          },
-          "resource": {
-            "type": "object"
-          },
-          "investigation": {
-            "type": "object"
           },
           "eventId": {
             "type": "string"
@@ -7288,12 +7325,18 @@
             ]
           },
           "id": {
-            "type": [
-              "string",
-              "number"
-            ]
+            "type": "number"
           },
           "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "priority": {
             "type": "string"
           },
           "summary": {
@@ -7308,62 +7351,67 @@
               "null"
             ]
           },
-          "status": {
-            "type": "string"
-          },
-          "stage": {
-            "type": "string"
-          },
-          "priority": {
-            "type": "string"
-          },
           "tags": {
-            "type": "array"
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
-          "metadata": {
+          "lead_investigator_id": {
             "type": [
-              "object",
+              "number",
               "null"
             ]
           },
-          "ai_summary": {
+          "created_by": {
             "type": [
-              "object",
-              "string",
+              "number",
               "null"
             ]
           },
-          "visibility_scope": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "closure_notes": {
+          "due_date": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
-          "auto_generated": {
-            "type": [
-              "boolean",
-              "null"
-            ]
-          },
-          "investigations_source": {
+          "started_at": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "format": "date-time"
+          },
+          "target_completion_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "closed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
           },
           "trigger_source": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "trigger_description": {
             "type": [
               "string",
               "null"
@@ -7375,72 +7423,29 @@
               "null"
             ]
           },
+          "investigations_source": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "visibility_scope": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "key_question": {
             "type": [
               "string",
               "null"
             ]
           },
-          "primary_subjects": {
+          "auto_generated": {
             "type": [
-              "array",
+              "boolean",
               "null"
             ]
-          },
-          "key_findings": {
-            "type": [
-              "array",
-              "null"
-            ]
-          },
-          "required_actions": {
-            "type": [
-              "array",
-              "null"
-            ]
-          },
-          "stage_guidance": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "previousStatus": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "newStatus": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "previousStage": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "newStage": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "assignments": {
-            "type": "array"
-          },
-          "assigned_to": {
-            "type": [
-              "string",
-              "number",
-              "null"
-            ]
-          },
-          "finding": {
-            "type": "object"
           },
           "correlationId": {
             "type": [
@@ -7448,36 +7453,183 @@
               "number"
             ]
           },
-          "risk_score": {
-            "type": [
-              "number",
-              "null"
-            ]
+          "finding": {
+            "$ref": "#/$defs/findingSnapshot"
           },
-          "evidence_count": {
-            "type": [
-              "number",
-              "null"
-            ]
+          "resource": {
+            "$ref": "#/$defs/investigationKey"
           },
-          "missing_evidence": {
-            "type": "boolean"
-          },
-          "documentation": {
-            "type": "boolean"
-          },
-          "documentation_missing": {
-            "type": "boolean"
-          },
-          "closed_at": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
+          "investigation": {
+            "$ref": "#/$defs/investigationKey"
           }
         },
-        "additionalProperties": true
+        "$defs": {
+          "investigationKey": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "number"
+              },
+              "title": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "stage": {
+                "type": "string"
+              },
+              "priority": {
+                "type": "string"
+              },
+              "summary": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "objective": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "lead_investigator_id": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "created_by": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "due_date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "started_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "target_completion_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "closed_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "created_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "updated_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "trigger_source": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "trigger_reference_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "investigations_source": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "visibility_scope": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "key_question": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "auto_generated": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              }
+            }
+          },
+          "findingSnapshot": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "title": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "risk_score": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "evidence_count": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "missing_evidence": {
+                "type": "boolean"
+              },
+              "documentation": {
+                "type": "boolean"
+              },
+              "documentation_missing": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
       }
     },
     {
@@ -7486,17 +7638,20 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.finding_high_risk",
-        "version": 4,
+        "version": 5,
         "compatibility": "backward",
         "type": "object",
+        "additionalProperties": false,
         "required": [
           "type",
           "resourceType",
           "resourceId",
           "resource",
+          "investigation",
           "eventId",
           "timestamp",
-          "investigation"
+          "investigationId",
+          "finding"
         ],
         "properties": {
           "type": {
@@ -7510,12 +7665,6 @@
               "string",
               "number"
             ]
-          },
-          "resource": {
-            "type": "object"
-          },
-          "investigation": {
-            "type": "object"
           },
           "eventId": {
             "type": "string"
@@ -7531,12 +7680,18 @@
             ]
           },
           "id": {
-            "type": [
-              "string",
-              "number"
-            ]
+            "type": "number"
           },
           "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "priority": {
             "type": "string"
           },
           "summary": {
@@ -7551,62 +7706,67 @@
               "null"
             ]
           },
-          "status": {
-            "type": "string"
-          },
-          "stage": {
-            "type": "string"
-          },
-          "priority": {
-            "type": "string"
-          },
           "tags": {
-            "type": "array"
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
-          "metadata": {
+          "lead_investigator_id": {
             "type": [
-              "object",
+              "number",
               "null"
             ]
           },
-          "ai_summary": {
+          "created_by": {
             "type": [
-              "object",
-              "string",
+              "number",
               "null"
             ]
           },
-          "visibility_scope": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "closure_notes": {
+          "due_date": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
-          "auto_generated": {
-            "type": [
-              "boolean",
-              "null"
-            ]
-          },
-          "investigations_source": {
+          "started_at": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "format": "date-time"
+          },
+          "target_completion_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "closed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
           },
           "trigger_source": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "trigger_description": {
             "type": [
               "string",
               "null"
@@ -7618,72 +7778,29 @@
               "null"
             ]
           },
+          "investigations_source": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "visibility_scope": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "key_question": {
             "type": [
               "string",
               "null"
             ]
           },
-          "primary_subjects": {
+          "auto_generated": {
             "type": [
-              "array",
+              "boolean",
               "null"
             ]
-          },
-          "key_findings": {
-            "type": [
-              "array",
-              "null"
-            ]
-          },
-          "required_actions": {
-            "type": [
-              "array",
-              "null"
-            ]
-          },
-          "stage_guidance": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "previousStatus": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "newStatus": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "previousStage": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "newStage": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "assignments": {
-            "type": "array"
-          },
-          "assigned_to": {
-            "type": [
-              "string",
-              "number",
-              "null"
-            ]
-          },
-          "finding": {
-            "type": "object"
           },
           "correlationId": {
             "type": [
@@ -7691,36 +7808,183 @@
               "number"
             ]
           },
-          "risk_score": {
-            "type": [
-              "number",
-              "null"
-            ]
+          "finding": {
+            "$ref": "#/$defs/findingSnapshot"
           },
-          "evidence_count": {
-            "type": [
-              "number",
-              "null"
-            ]
+          "resource": {
+            "$ref": "#/$defs/investigationKey"
           },
-          "missing_evidence": {
-            "type": "boolean"
-          },
-          "documentation": {
-            "type": "boolean"
-          },
-          "documentation_missing": {
-            "type": "boolean"
-          },
-          "closed_at": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
+          "investigation": {
+            "$ref": "#/$defs/investigationKey"
           }
         },
-        "additionalProperties": true
+        "$defs": {
+          "investigationKey": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "number"
+              },
+              "title": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "stage": {
+                "type": "string"
+              },
+              "priority": {
+                "type": "string"
+              },
+              "summary": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "objective": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "lead_investigator_id": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "created_by": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "due_date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "started_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "target_completion_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "closed_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "created_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "updated_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "trigger_source": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "trigger_reference_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "investigations_source": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "visibility_scope": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "key_question": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "auto_generated": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              }
+            }
+          },
+          "findingSnapshot": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "title": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "risk_score": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "evidence_count": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "missing_evidence": {
+                "type": "boolean"
+              },
+              "documentation": {
+                "type": "boolean"
+              },
+              "documentation_missing": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
       }
     },
     {
@@ -7729,17 +7993,20 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.finding_unresolved",
-        "version": 4,
+        "version": 5,
         "compatibility": "backward",
         "type": "object",
+        "additionalProperties": false,
         "required": [
           "type",
           "resourceType",
           "resourceId",
           "resource",
+          "investigation",
           "eventId",
           "timestamp",
-          "investigation"
+          "investigationId",
+          "finding"
         ],
         "properties": {
           "type": {
@@ -7753,12 +8020,6 @@
               "string",
               "number"
             ]
-          },
-          "resource": {
-            "type": "object"
-          },
-          "investigation": {
-            "type": "object"
           },
           "eventId": {
             "type": "string"
@@ -7774,12 +8035,18 @@
             ]
           },
           "id": {
-            "type": [
-              "string",
-              "number"
-            ]
+            "type": "number"
           },
           "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "priority": {
             "type": "string"
           },
           "summary": {
@@ -7794,62 +8061,67 @@
               "null"
             ]
           },
-          "status": {
-            "type": "string"
-          },
-          "stage": {
-            "type": "string"
-          },
-          "priority": {
-            "type": "string"
-          },
           "tags": {
-            "type": "array"
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
-          "metadata": {
+          "lead_investigator_id": {
             "type": [
-              "object",
+              "number",
               "null"
             ]
           },
-          "ai_summary": {
+          "created_by": {
             "type": [
-              "object",
-              "string",
+              "number",
               "null"
             ]
           },
-          "visibility_scope": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "closure_notes": {
+          "due_date": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
-          "auto_generated": {
-            "type": [
-              "boolean",
-              "null"
-            ]
-          },
-          "investigations_source": {
+          "started_at": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "format": "date-time"
+          },
+          "target_completion_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "closed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
           },
           "trigger_source": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "trigger_description": {
             "type": [
               "string",
               "null"
@@ -7861,72 +8133,29 @@
               "null"
             ]
           },
+          "investigations_source": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "visibility_scope": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "key_question": {
             "type": [
               "string",
               "null"
             ]
           },
-          "primary_subjects": {
+          "auto_generated": {
             "type": [
-              "array",
+              "boolean",
               "null"
             ]
-          },
-          "key_findings": {
-            "type": [
-              "array",
-              "null"
-            ]
-          },
-          "required_actions": {
-            "type": [
-              "array",
-              "null"
-            ]
-          },
-          "stage_guidance": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "previousStatus": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "newStatus": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "previousStage": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "newStage": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "assignments": {
-            "type": "array"
-          },
-          "assigned_to": {
-            "type": [
-              "string",
-              "number",
-              "null"
-            ]
-          },
-          "finding": {
-            "type": "object"
           },
           "correlationId": {
             "type": [
@@ -7934,36 +8163,183 @@
               "number"
             ]
           },
-          "risk_score": {
-            "type": [
-              "number",
-              "null"
-            ]
+          "finding": {
+            "$ref": "#/$defs/findingSnapshot"
           },
-          "evidence_count": {
-            "type": [
-              "number",
-              "null"
-            ]
+          "resource": {
+            "$ref": "#/$defs/investigationKey"
           },
-          "missing_evidence": {
-            "type": "boolean"
-          },
-          "documentation": {
-            "type": "boolean"
-          },
-          "documentation_missing": {
-            "type": "boolean"
-          },
-          "closed_at": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
+          "investigation": {
+            "$ref": "#/$defs/investigationKey"
           }
         },
-        "additionalProperties": true
+        "$defs": {
+          "investigationKey": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "number"
+              },
+              "title": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "stage": {
+                "type": "string"
+              },
+              "priority": {
+                "type": "string"
+              },
+              "summary": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "objective": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "lead_investigator_id": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "created_by": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "due_date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "started_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "target_completion_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "closed_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "created_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "updated_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "trigger_source": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "trigger_reference_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "investigations_source": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "visibility_scope": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "key_question": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "auto_generated": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              }
+            }
+          },
+          "findingSnapshot": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "title": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "risk_score": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "evidence_count": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "missing_evidence": {
+                "type": "boolean"
+              },
+              "documentation": {
+                "type": "boolean"
+              },
+              "documentation_missing": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
       }
     },
     {
@@ -8159,17 +8535,26 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.stage_changed",
-        "version": 4,
+        "version": 5,
         "compatibility": "backward",
         "type": "object",
+        "additionalProperties": false,
         "required": [
           "type",
           "resourceType",
           "resourceId",
           "resource",
+          "investigation",
           "eventId",
           "timestamp",
-          "investigation"
+          "investigationId",
+          "id",
+          "title",
+          "status",
+          "stage",
+          "priority",
+          "previousStage",
+          "newStage"
         ],
         "properties": {
           "type": {
@@ -8183,12 +8568,6 @@
               "string",
               "number"
             ]
-          },
-          "resource": {
-            "type": "object"
-          },
-          "investigation": {
-            "type": "object"
           },
           "eventId": {
             "type": "string"
@@ -8204,12 +8583,18 @@
             ]
           },
           "id": {
-            "type": [
-              "string",
-              "number"
-            ]
+            "type": "number"
           },
           "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "priority": {
             "type": "string"
           },
           "summary": {
@@ -8224,62 +8609,67 @@
               "null"
             ]
           },
-          "status": {
-            "type": "string"
-          },
-          "stage": {
-            "type": "string"
-          },
-          "priority": {
-            "type": "string"
-          },
           "tags": {
-            "type": "array"
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
-          "metadata": {
+          "lead_investigator_id": {
             "type": [
-              "object",
+              "number",
               "null"
             ]
           },
-          "ai_summary": {
+          "created_by": {
             "type": [
-              "object",
-              "string",
+              "number",
               "null"
             ]
           },
-          "visibility_scope": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "closure_notes": {
+          "due_date": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
-          "auto_generated": {
-            "type": [
-              "boolean",
-              "null"
-            ]
-          },
-          "investigations_source": {
+          "started_at": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "format": "date-time"
+          },
+          "target_completion_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "closed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
           },
           "trigger_source": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "trigger_description": {
             "type": [
               "string",
               "null"
@@ -8291,45 +8681,27 @@
               "null"
             ]
           },
+          "investigations_source": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "visibility_scope": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "key_question": {
             "type": [
               "string",
               "null"
             ]
           },
-          "primary_subjects": {
+          "auto_generated": {
             "type": [
-              "array",
-              "null"
-            ]
-          },
-          "key_findings": {
-            "type": [
-              "array",
-              "null"
-            ]
-          },
-          "required_actions": {
-            "type": [
-              "array",
-              "null"
-            ]
-          },
-          "stage_guidance": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "previousStatus": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "newStatus": {
-            "type": [
-              "string",
+              "boolean",
               "null"
             ]
           },
@@ -8345,55 +8717,145 @@
               "null"
             ]
           },
-          "assignments": {
-            "type": "array"
+          "resource": {
+            "$ref": "#/$defs/investigationKey"
           },
-          "assigned_to": {
-            "type": [
-              "string",
-              "number",
-              "null"
-            ]
-          },
-          "finding": {
-            "type": "object"
-          },
-          "correlationId": {
-            "type": [
-              "string",
-              "number"
-            ]
-          },
-          "risk_score": {
-            "type": [
-              "number",
-              "null"
-            ]
-          },
-          "evidence_count": {
-            "type": [
-              "number",
-              "null"
-            ]
-          },
-          "missing_evidence": {
-            "type": "boolean"
-          },
-          "documentation": {
-            "type": "boolean"
-          },
-          "documentation_missing": {
-            "type": "boolean"
-          },
-          "closed_at": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
+          "investigation": {
+            "$ref": "#/$defs/investigationKey"
           }
         },
-        "additionalProperties": true
+        "$defs": {
+          "investigationKey": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "title",
+              "status",
+              "stage",
+              "priority"
+            ],
+            "properties": {
+              "id": {
+                "type": "number"
+              },
+              "title": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "stage": {
+                "type": "string"
+              },
+              "priority": {
+                "type": "string"
+              },
+              "summary": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "objective": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "lead_investigator_id": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "created_by": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "due_date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "started_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "target_completion_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "closed_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "created_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "updated_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "trigger_source": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "trigger_reference_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "investigations_source": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "visibility_scope": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "key_question": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "auto_generated": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
       }
     },
     {
@@ -8402,17 +8864,26 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.status_changed",
-        "version": 4,
+        "version": 5,
         "compatibility": "backward",
         "type": "object",
+        "additionalProperties": false,
         "required": [
           "type",
           "resourceType",
           "resourceId",
           "resource",
+          "investigation",
           "eventId",
           "timestamp",
-          "investigation"
+          "investigationId",
+          "id",
+          "title",
+          "status",
+          "stage",
+          "priority",
+          "previousStatus",
+          "newStatus"
         ],
         "properties": {
           "type": {
@@ -8426,12 +8897,6 @@
               "string",
               "number"
             ]
-          },
-          "resource": {
-            "type": "object"
-          },
-          "investigation": {
-            "type": "object"
           },
           "eventId": {
             "type": "string"
@@ -8447,12 +8912,18 @@
             ]
           },
           "id": {
-            "type": [
-              "string",
-              "number"
-            ]
+            "type": "number"
           },
           "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "priority": {
             "type": "string"
           },
           "summary": {
@@ -8467,62 +8938,67 @@
               "null"
             ]
           },
-          "status": {
-            "type": "string"
-          },
-          "stage": {
-            "type": "string"
-          },
-          "priority": {
-            "type": "string"
-          },
           "tags": {
-            "type": "array"
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
-          "metadata": {
+          "lead_investigator_id": {
             "type": [
-              "object",
+              "number",
               "null"
             ]
           },
-          "ai_summary": {
+          "created_by": {
             "type": [
-              "object",
-              "string",
+              "number",
               "null"
             ]
           },
-          "visibility_scope": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "closure_notes": {
+          "due_date": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
-          "auto_generated": {
-            "type": [
-              "boolean",
-              "null"
-            ]
-          },
-          "investigations_source": {
+          "started_at": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "format": "date-time"
+          },
+          "target_completion_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "closed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
           },
           "trigger_source": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "trigger_description": {
             "type": [
               "string",
               "null"
@@ -8534,33 +9010,27 @@
               "null"
             ]
           },
+          "investigations_source": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "visibility_scope": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "key_question": {
             "type": [
               "string",
               "null"
             ]
           },
-          "primary_subjects": {
+          "auto_generated": {
             "type": [
-              "array",
-              "null"
-            ]
-          },
-          "key_findings": {
-            "type": [
-              "array",
-              "null"
-            ]
-          },
-          "required_actions": {
-            "type": [
-              "array",
-              "null"
-            ]
-          },
-          "stage_guidance": {
-            "type": [
-              "string",
+              "boolean",
               "null"
             ]
           },
@@ -8576,67 +9046,145 @@
               "null"
             ]
           },
-          "previousStage": {
-            "type": [
-              "string",
-              "null"
-            ]
+          "resource": {
+            "$ref": "#/$defs/investigationKey"
           },
-          "newStage": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "assignments": {
-            "type": "array"
-          },
-          "assigned_to": {
-            "type": [
-              "string",
-              "number",
-              "null"
-            ]
-          },
-          "finding": {
-            "type": "object"
-          },
-          "correlationId": {
-            "type": [
-              "string",
-              "number"
-            ]
-          },
-          "risk_score": {
-            "type": [
-              "number",
-              "null"
-            ]
-          },
-          "evidence_count": {
-            "type": [
-              "number",
-              "null"
-            ]
-          },
-          "missing_evidence": {
-            "type": "boolean"
-          },
-          "documentation": {
-            "type": "boolean"
-          },
-          "documentation_missing": {
-            "type": "boolean"
-          },
-          "closed_at": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
+          "investigation": {
+            "$ref": "#/$defs/investigationKey"
           }
         },
-        "additionalProperties": true
+        "$defs": {
+          "investigationKey": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "title",
+              "status",
+              "stage",
+              "priority"
+            ],
+            "properties": {
+              "id": {
+                "type": "number"
+              },
+              "title": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "stage": {
+                "type": "string"
+              },
+              "priority": {
+                "type": "string"
+              },
+              "summary": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "objective": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "lead_investigator_id": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "created_by": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "due_date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "started_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "target_completion_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "closed_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "created_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "updated_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "trigger_source": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "trigger_reference_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "investigations_source": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "visibility_scope": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "key_question": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "auto_generated": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
       }
     },
     {
