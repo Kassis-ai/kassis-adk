@@ -107,7 +107,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "assignment.added",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [],
@@ -120,8 +120,9 @@
           },
           "userId": {
             "type": [
-              "integer",
-              "number"
+              "string",
+              "number",
+              "integer"
             ]
           },
           "memberRole": {
@@ -141,8 +142,9 @@
           },
           "assignedBy": {
             "type": [
-              "integer",
+              "string",
               "number",
+              "integer",
               "null"
             ]
           }
@@ -156,7 +158,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "assignment.removed",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [],
@@ -169,8 +171,9 @@
           },
           "userId": {
             "type": [
-              "integer",
-              "number"
+              "string",
+              "number",
+              "integer"
             ]
           },
           "memberRole": {
@@ -8417,7 +8420,7 @@
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "eventName": "notification.requested",
@@ -8463,6 +8466,7 @@
               "userId": {
                 "type": [
                   "number",
+                  "string",
                   "null"
                 ]
               }
@@ -11265,7 +11269,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "tag.added",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -11291,8 +11295,9 @@
           },
           "createdByUserId": {
             "type": [
-              "integer",
+              "string",
               "number",
+              "integer",
               "null"
             ]
           },
@@ -11378,7 +11383,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "timeline.event_added",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [],
@@ -11409,8 +11414,9 @@
           },
           "createdBy": {
             "type": [
-              "integer",
+              "string",
               "number",
+              "integer",
               "null"
             ]
           },
