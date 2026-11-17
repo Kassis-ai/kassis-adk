@@ -3024,10 +3024,137 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "control-room.breach.escalated",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
-        "additionalProperties": true
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "breach_type",
+          "severity",
+          "status",
+          "fromStatus",
+          "toStatus",
+          "created_by",
+          "actor",
+          "timestamp",
+          "eventId"
+        ],
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "alert_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "breach_type": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string"
+          },
+          "subject_user_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "deal_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "fromStatus": {
+            "type": "string"
+          },
+          "toStatus": {
+            "type": "string"
+          },
+          "escalated_to": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "escalated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "regulatory_report_required": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "regulatory_report_reference": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "created_by": {
+            "type": "number"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "actor": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "eventId": {
+            "type": "string"
+          }
+        }
       }
     },
     {
@@ -3036,10 +3163,180 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "control-room.clearance.approved",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
-        "additionalProperties": true
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "employee_user_id",
+          "trade_direction",
+          "quantity",
+          "status",
+          "fromStatus",
+          "toStatus",
+          "created_by",
+          "actor",
+          "timestamp",
+          "eventId"
+        ],
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "employee_user_id": {
+            "type": "number"
+          },
+          "security_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "security_identifier": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "security_type": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "trade_direction": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "string",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$"
+          },
+          "estimated_price": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$"
+          },
+          "currency": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "broker_account_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "fromStatus": {
+            "type": "string"
+          },
+          "toStatus": {
+            "type": "string"
+          },
+          "pathway_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "tier_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "current_step": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "assigned_approver_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "approved_by": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "approved_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "expires_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "created_by": {
+            "type": "number"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "actor": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "eventId": {
+            "type": "string"
+          }
+        }
       }
     },
     {
@@ -3131,10 +3428,120 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "control-room.wallcross.approved",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
-        "additionalProperties": true
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "deal_id",
+          "status",
+          "fromStatus",
+          "toStatus",
+          "requested_by",
+          "created_by",
+          "actor",
+          "timestamp",
+          "eventId"
+        ],
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "deal_id": {
+            "type": "number"
+          },
+          "employee_user_id": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "fromStatus": {
+            "type": "string"
+          },
+          "toStatus": {
+            "type": "string"
+          },
+          "requested_by": {
+            "type": "number"
+          },
+          "approved_by": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "approved_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "wall_cross_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "created_by": {
+            "type": "number"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "actor": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "eventId": {
+            "type": "string"
+          }
+        }
       }
     },
     {
@@ -5070,7 +5477,7 @@
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": 3,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "eventName": "flag.added",
@@ -5112,7 +5519,8 @@
             ]
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "eventId": {
             "type": "string"
