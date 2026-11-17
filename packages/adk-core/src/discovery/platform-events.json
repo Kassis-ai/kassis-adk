@@ -5908,6 +5908,213 @@
       }
     },
     {
+      "name": "iam.org_unit.changed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "iam.org_unit.changed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "action",
+          "orgUnitId",
+          "unitType"
+        ],
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "update",
+              "delete"
+            ]
+          },
+          "orgUnitId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "unitType": {
+            "type": "string"
+          },
+          "headUserId": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "iam.permission_cache.invalidated",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "iam.permission_cache.invalidated",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "userId"
+        ],
+        "properties": {
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "role": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "iam.rbac.changed",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "iam.rbac.changed",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "userId",
+          "reason"
+        ],
+        "properties": {
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "groupId": {
+            "type": "integer"
+          },
+          "permissionKey": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "iam.user.created",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "iam.user.created",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "userId",
+          "email",
+          "role",
+          "departmentIds"
+        ],
+        "properties": {
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "email": {
+            "type": "string"
+          },
+          "role": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "departmentIds": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "iam.user.deleted",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "iam.user.deleted",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "userId"
+        ],
+        "properties": {
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "iam.user.updated",
+      "source": "platform",
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "eventName": "iam.user.updated",
+        "version": 1,
+        "compatibility": "backward",
+        "type": "object",
+        "required": [
+          "userId",
+          "email",
+          "role",
+          "departmentIds"
+        ],
+        "properties": {
+          "userId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "email": {
+            "type": "string"
+          },
+          "role": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "departmentIds": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "investigation.assigned",
       "source": "platform",
       "schema": {
