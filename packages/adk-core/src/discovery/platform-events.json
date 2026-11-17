@@ -236,16 +236,10 @@
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": 2,
+        "version": 3,
         "compatibility": "backward",
         "type": "object",
         "eventName": "calendar.event_deleted",
-        "required": [
-          "eventId",
-          "ownerType",
-          "ownerId",
-          "caseId"
-        ],
         "properties": {
           "eventId": {
             "type": [
@@ -280,8 +274,62 @@
               "integer",
               "null"
             ]
+          },
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
           }
         },
+        "anyOf": [
+          {
+            "required": [
+              "eventId",
+              "ownerType",
+              "ownerId",
+              "caseId"
+            ]
+          },
+          {
+            "required": [
+              "family",
+              "id",
+              "actor"
+            ]
+          }
+        ],
         "additionalProperties": false
       }
     },
@@ -7831,14 +7879,9 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "list.archived",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
-        "required": [
-          "listId",
-          "title",
-          "tenantId"
-        ],
         "properties": {
           "listId": {
             "type": [
@@ -7854,8 +7897,61 @@
               "string",
               "number"
             ]
+          },
+          "family": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
           }
         },
+        "anyOf": [
+          {
+            "required": [
+              "listId",
+              "title",
+              "tenantId"
+            ]
+          },
+          {
+            "required": [
+              "family",
+              "id",
+              "actor"
+            ]
+          }
+        ],
         "additionalProperties": false
       }
     },
@@ -8222,7 +8318,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "note.deleted",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -8234,7 +8330,8 @@
           "noteId": {
             "type": [
               "integer",
-              "number"
+              "number",
+              "string"
             ]
           },
           "entityType": {
