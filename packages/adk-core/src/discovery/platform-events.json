@@ -1187,6 +1187,10 @@
               "number",
               "null"
             ]
+          },
+          "automationDepth": {
+            "type": "integer",
+            "minimum": 0
           }
         },
         "additionalProperties": false
@@ -5591,6 +5595,10 @@
           },
           "tenantId": {
             "type": "string"
+          },
+          "automationDepth": {
+            "type": "integer",
+            "minimum": 0
           }
         },
         "additionalProperties": true
@@ -5734,6 +5742,10 @@
           },
           "eventId": {
             "type": "string"
+          },
+          "automationDepth": {
+            "type": "integer",
+            "minimum": 0
           }
         },
         "additionalProperties": false
