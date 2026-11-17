@@ -542,7 +542,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.assigned",
-        "version": 2,
+        "version": 3,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -679,23 +679,23 @@
           "due_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "created_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "template_id": {
             "type": [
@@ -722,11 +722,17 @@
             ]
           },
           "flow_template_version": {
-            "type": [
-              "number",
-              "string",
-              "object",
-              "null"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string",
+                "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "custom_data": {
@@ -783,16 +789,16 @@
           "due_soon_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "overdue_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "oldStatus": {
             "type": [
@@ -816,9 +822,9 @@
           "updatedAt": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "escalated": {
             "type": "boolean"
@@ -863,7 +869,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.created",
-        "version": 2,
+        "version": 3,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -1000,23 +1006,23 @@
           "due_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "created_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "template_id": {
             "type": [
@@ -1043,11 +1049,17 @@
             ]
           },
           "flow_template_version": {
-            "type": [
-              "number",
-              "string",
-              "object",
-              "null"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string",
+                "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "custom_data": {
@@ -1104,16 +1116,16 @@
           "due_soon_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "overdue_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "oldStatus": {
             "type": [
@@ -1137,9 +1149,9 @@
           "updatedAt": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "escalated": {
             "type": "boolean"
@@ -1237,7 +1249,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.due_soon",
-        "version": 2,
+        "version": 3,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -1374,23 +1386,23 @@
           "due_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "created_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "template_id": {
             "type": [
@@ -1417,11 +1429,17 @@
             ]
           },
           "flow_template_version": {
-            "type": [
-              "number",
-              "string",
-              "object",
-              "null"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string",
+                "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "custom_data": {
@@ -1478,16 +1496,16 @@
           "due_soon_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "overdue_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "oldStatus": {
             "type": [
@@ -1511,9 +1529,9 @@
           "updatedAt": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "escalated": {
             "type": "boolean"
@@ -1558,7 +1576,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.escalated",
-        "version": 2,
+        "version": 3,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -1695,23 +1713,23 @@
           "due_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "created_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "template_id": {
             "type": [
@@ -1738,11 +1756,17 @@
             ]
           },
           "flow_template_version": {
-            "type": [
-              "number",
-              "string",
-              "object",
-              "null"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string",
+                "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "custom_data": {
@@ -1799,16 +1823,16 @@
           "due_soon_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "overdue_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "oldStatus": {
             "type": [
@@ -1832,9 +1856,9 @@
           "updatedAt": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "escalated": {
             "type": "boolean"
@@ -1879,7 +1903,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.overdue",
-        "version": 2,
+        "version": 3,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -2016,23 +2040,23 @@
           "due_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "created_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "template_id": {
             "type": [
@@ -2059,11 +2083,17 @@
             ]
           },
           "flow_template_version": {
-            "type": [
-              "number",
-              "string",
-              "object",
-              "null"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string",
+                "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "custom_data": {
@@ -2120,16 +2150,16 @@
           "due_soon_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "overdue_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "oldStatus": {
             "type": [
@@ -2153,9 +2183,9 @@
           "updatedAt": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "escalated": {
             "type": "boolean"
@@ -2306,7 +2336,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.status_changed",
-        "version": 2,
+        "version": 3,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -2443,23 +2473,23 @@
           "due_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "created_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "template_id": {
             "type": [
@@ -2486,11 +2516,17 @@
             ]
           },
           "flow_template_version": {
-            "type": [
-              "number",
-              "string",
-              "object",
-              "null"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string",
+                "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "custom_data": {
@@ -2547,16 +2583,16 @@
           "due_soon_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "overdue_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "oldStatus": {
             "type": [
@@ -2580,9 +2616,9 @@
           "updatedAt": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "escalated": {
             "type": "boolean"
@@ -2627,7 +2663,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.updated",
-        "version": 2,
+        "version": 3,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -2764,23 +2800,23 @@
           "due_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "created_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "template_id": {
             "type": [
@@ -2807,11 +2843,17 @@
             ]
           },
           "flow_template_version": {
-            "type": [
-              "number",
-              "string",
-              "object",
-              "null"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string",
+                "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "custom_data": {
@@ -2868,16 +2910,16 @@
           "due_soon_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "overdue_sent_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "oldStatus": {
             "type": [
@@ -2901,9 +2943,9 @@
           "updatedAt": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "escalated": {
             "type": "boolean"
@@ -3534,7 +3576,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "document.incomplete",
-        "version": 2,
+        "version": 3,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -3651,9 +3693,9 @@
           "updatedAt": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "correlationId": {
             "type": "string"
@@ -3682,9 +3724,9 @@
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           }
         },
         "additionalProperties": true
@@ -3937,7 +3979,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "document.updated",
-        "version": 2,
+        "version": 3,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -4054,9 +4096,9 @@
           "updatedAt": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "correlationId": {
             "type": "string"
@@ -4085,9 +4127,9 @@
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           }
         },
         "additionalProperties": true
@@ -4430,7 +4472,7 @@
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "eventName": "email.queued",
@@ -4449,10 +4491,8 @@
             "type": "string"
           },
           "scheduleAt": {
-            "type": [
-              "string",
-              "object"
-            ]
+            "type": "string",
+            "format": "date-time"
           },
           "ownerType": {
             "type": [
@@ -6121,7 +6161,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.assigned",
-        "version": 2,
+        "version": 3,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -6349,9 +6389,9 @@
           "closed_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           }
         },
         "additionalProperties": true
@@ -6430,7 +6470,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.finding_documentation_missing",
-        "version": 2,
+        "version": 3,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -6658,9 +6698,9 @@
           "closed_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           }
         },
         "additionalProperties": true
@@ -6672,7 +6712,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.finding_high_risk",
-        "version": 2,
+        "version": 3,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -6900,9 +6940,9 @@
           "closed_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           }
         },
         "additionalProperties": true
@@ -6914,7 +6954,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.finding_unresolved",
-        "version": 2,
+        "version": 3,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -7142,9 +7182,9 @@
           "closed_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           }
         },
         "additionalProperties": true
@@ -7343,7 +7383,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.stage_changed",
-        "version": 2,
+        "version": 3,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -7571,9 +7611,9 @@
           "closed_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           }
         },
         "additionalProperties": true
@@ -7585,7 +7625,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.status_changed",
-        "version": 2,
+        "version": 3,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -7813,9 +7853,9 @@
           "closed_at": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           }
         },
         "additionalProperties": true
@@ -8934,7 +8974,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "party.created",
-        "version": 2,
+        "version": 3,
         "compatibility": "backward",
         "type": "object",
         "required": [],
@@ -9026,16 +9066,16 @@
           "created_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "changes": {
             "type": [
@@ -9478,7 +9518,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "party.relationship_changed",
-        "version": 2,
+        "version": 3,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -9578,16 +9618,16 @@
           "created_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "changes": {
             "type": [
@@ -9836,7 +9876,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "party.status_changed",
-        "version": 2,
+        "version": 3,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -9936,16 +9976,16 @@
           "created_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "changes": {
             "type": [
@@ -9994,7 +10034,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "party.updated",
-        "version": 2,
+        "version": 3,
         "compatibility": "backward",
         "type": "object",
         "required": [],
@@ -10086,16 +10126,16 @@
           "created_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "updated_date": {
             "type": [
               "string",
-              "object",
               "null"
-            ]
+            ],
+            "format": "date-time"
           },
           "changes": {
             "type": [
