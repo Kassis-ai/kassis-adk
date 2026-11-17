@@ -10285,152 +10285,149 @@
       "name": "party.created",
       "source": "platform",
       "schema": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "eventName": "party.created",
-        "version": 4,
-        "compatibility": "backward",
-        "type": "object",
-        "required": [],
-        "properties": {
-          "type": {
-            "type": "string"
-          },
-          "resourceType": {
-            "type": "string"
-          },
-          "resourceId": {
-            "type": [
-              "string",
-              "number"
-            ]
-          },
-          "resource": {
-            "type": "object"
-          },
-          "entity": {
-            "type": "object"
-          },
-          "eventId": {
-            "type": "string"
-          },
-          "timestamp": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "entityId": {
-            "type": [
-              "string",
-              "number"
-            ]
-          },
-          "id": {
-            "type": [
-              "string",
-              "number"
-            ]
-          },
-          "partyId": {
-            "type": [
-              "string",
-              "number"
-            ]
-          },
-          "name": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "display_name": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "status": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "party_type": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "type_typed": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "identifier": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "registration_number": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "created_date": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
-          },
-          "updated_date": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
-          },
-          "changes": {
-            "type": [
-              "object",
-              "array",
-              "null"
-            ]
-          },
-          "newStatus": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "previousStatus": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "previousOwnership": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "metadata": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "custom_data": {
-            "type": [
-              "object",
-              "null"
-            ]
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "eventName": "party.created",
+          "version": 5,
+          "compatibility": "backward",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "resourceType",
+            "resourceId",
+            "resource",
+            "entity",
+            "party",
+            "entityId",
+            "partyId",
+            "id",
+            "eventId",
+            "timestamp",
+            "changes"
+          ],
+          "properties": {
+            "type": {
+              "type": "string"
+            },
+            "resourceType": {
+              "type": "string"
+            },
+            "resourceId": {
+              "type": [
+                "string",
+                "number"
+              ]
+            },
+            "resource": {
+              "type": "object"
+            },
+            "entity": {
+              "type": "object"
+            },
+            "party": {
+              "type": "object"
+            },
+            "eventId": {
+              "type": "string"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "entityId": {
+              "type": [
+                "string",
+                "number"
+              ]
+            },
+            "partyId": {
+              "type": [
+                "string",
+                "number"
+              ]
+            },
+            "id": {
+              "type": [
+                "string",
+                "number"
+              ]
+            },
+            "name": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "display_name": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "status": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "party_type": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "type_typed": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "identifier": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "registration_number": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "created_date": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            },
+            "updated_date": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            },
+            "changes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "metadata": {
+              "type": [
+                "object",
+                "null"
+              ]
+            },
+            "custom_data": {
+              "type": [
+                "object",
+                "null"
+              ]
+            }
           }
-        },
-        "additionalProperties": true
-      }
+        }
     },
     {
       "name": "party.deleted",
@@ -11348,152 +11345,149 @@
       "name": "party.updated",
       "source": "platform",
       "schema": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "eventName": "party.updated",
-        "version": 4,
-        "compatibility": "backward",
-        "type": "object",
-        "required": [],
-        "properties": {
-          "type": {
-            "type": "string"
-          },
-          "resourceType": {
-            "type": "string"
-          },
-          "resourceId": {
-            "type": [
-              "string",
-              "number"
-            ]
-          },
-          "resource": {
-            "type": "object"
-          },
-          "entity": {
-            "type": "object"
-          },
-          "eventId": {
-            "type": "string"
-          },
-          "timestamp": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "entityId": {
-            "type": [
-              "string",
-              "number"
-            ]
-          },
-          "id": {
-            "type": [
-              "string",
-              "number"
-            ]
-          },
-          "partyId": {
-            "type": [
-              "string",
-              "number"
-            ]
-          },
-          "name": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "display_name": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "status": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "party_type": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "type_typed": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "identifier": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "registration_number": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "created_date": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
-          },
-          "updated_date": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
-          },
-          "changes": {
-            "type": [
-              "object",
-              "array",
-              "null"
-            ]
-          },
-          "newStatus": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "previousStatus": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "previousOwnership": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "metadata": {
-            "type": [
-              "object",
-              "null"
-            ]
-          },
-          "custom_data": {
-            "type": [
-              "object",
-              "null"
-            ]
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "eventName": "party.updated",
+          "version": 5,
+          "compatibility": "backward",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "resourceType",
+            "resourceId",
+            "resource",
+            "entity",
+            "party",
+            "entityId",
+            "partyId",
+            "id",
+            "eventId",
+            "timestamp",
+            "changes"
+          ],
+          "properties": {
+            "type": {
+              "type": "string"
+            },
+            "resourceType": {
+              "type": "string"
+            },
+            "resourceId": {
+              "type": [
+                "string",
+                "number"
+              ]
+            },
+            "resource": {
+              "type": "object"
+            },
+            "entity": {
+              "type": "object"
+            },
+            "party": {
+              "type": "object"
+            },
+            "eventId": {
+              "type": "string"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "entityId": {
+              "type": [
+                "string",
+                "number"
+              ]
+            },
+            "partyId": {
+              "type": [
+                "string",
+                "number"
+              ]
+            },
+            "id": {
+              "type": [
+                "string",
+                "number"
+              ]
+            },
+            "name": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "display_name": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "status": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "party_type": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "type_typed": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "identifier": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "registration_number": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "created_date": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            },
+            "updated_date": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            },
+            "changes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "metadata": {
+              "type": [
+                "object",
+                "null"
+              ]
+            },
+            "custom_data": {
+              "type": [
+                "object",
+                "null"
+              ]
+            }
           }
-        },
-        "additionalProperties": true
-      }
+        }
     },
     {
       "name": "policy.evaluation.requested",
