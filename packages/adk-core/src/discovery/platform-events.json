@@ -7656,31 +7656,54 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "knowledge_base.entry_deleted",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
-        "required": [],
+        "required": [
+          "family",
+          "id",
+          "actor"
+        ],
         "properties": {
-          "entryId": {
-            "type": [
-              "integer",
-              "number"
-            ]
-          },
           "family": {
             "type": "string"
           },
           "id": {
             "type": "string"
           },
+          "reason": {
+            "type": "string"
+          },
           "actor": {
-            "type": [
-              "object",
-              "null"
-            ]
+            "type": "object",
+            "required": [
+              "userId",
+              "userEmail"
+            ],
+            "properties": {
+              "userId": {
+                "type": [
+                  "string",
+                  "number"
+                ]
+              },
+              "userEmail": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
           }
         },
-        "additionalProperties": true
+        "additionalProperties": false
       }
     },
     {
