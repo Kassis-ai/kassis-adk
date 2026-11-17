@@ -542,7 +542,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.assigned",
-        "version": 3,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -577,7 +577,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "caseId": {
             "type": [
@@ -869,7 +870,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.created",
-        "version": 3,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -904,7 +905,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "caseId": {
             "type": [
@@ -1249,7 +1251,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.due_soon",
-        "version": 3,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -1284,7 +1286,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "caseId": {
             "type": [
@@ -1576,7 +1579,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.escalated",
-        "version": 3,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -1611,7 +1614,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "caseId": {
             "type": [
@@ -1903,7 +1907,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.overdue",
-        "version": 3,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -1938,7 +1942,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "caseId": {
             "type": [
@@ -2336,7 +2341,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.status_changed",
-        "version": 3,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -2371,7 +2376,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "caseId": {
             "type": [
@@ -2663,7 +2669,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "case.updated",
-        "version": 3,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -2698,7 +2704,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "caseId": {
             "type": [
@@ -3576,7 +3583,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "document.incomplete",
-        "version": 3,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -3611,7 +3618,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "documentId": {
             "type": [
@@ -3979,7 +3987,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "document.updated",
-        "version": 3,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -4014,7 +4022,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "documentId": {
             "type": [
@@ -4141,7 +4150,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "document.uploaded",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -4176,7 +4185,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "documentId": {
             "type": [
@@ -4968,7 +4978,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "finding.lacking_evidence",
-        "version": 2,
+        "version": 3,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -5003,7 +5013,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "investigationId": {
             "type": [
@@ -5141,7 +5152,7 @@
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "eventName": "flag.raised",
@@ -5180,7 +5191,8 @@
             ]
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "eventId": {
             "type": "string"
@@ -5200,7 +5212,7 @@
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "eventName": "flag.removed",
@@ -5248,7 +5260,8 @@
             ]
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "eventId": {
             "type": "string"
@@ -6161,7 +6174,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.assigned",
-        "version": 3,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -6196,7 +6209,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "investigationId": {
             "type": [
@@ -6800,7 +6814,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.finding_documentation_missing",
-        "version": 3,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -6835,7 +6849,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "investigationId": {
             "type": [
@@ -7042,7 +7057,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.finding_high_risk",
-        "version": 3,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -7077,7 +7092,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "investigationId": {
             "type": [
@@ -7284,7 +7300,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.finding_unresolved",
-        "version": 3,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -7319,7 +7335,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "investigationId": {
             "type": [
@@ -7713,7 +7730,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.stage_changed",
-        "version": 3,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -7748,7 +7765,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "investigationId": {
             "type": [
@@ -7955,7 +7973,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "investigation.status_changed",
-        "version": 3,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -7990,7 +8008,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "investigationId": {
             "type": [
@@ -8891,7 +8910,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "knowledge_base.query_resolved",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -8935,7 +8954,8 @@
             "additionalProperties": false
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false
@@ -9764,7 +9784,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "party.created",
-        "version": 3,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [],
@@ -9791,7 +9811,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "entityId": {
             "type": [
@@ -10308,7 +10329,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "party.relationship_changed",
-        "version": 3,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -10343,7 +10364,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "entityId": {
             "type": [
@@ -10666,7 +10688,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "party.status_changed",
-        "version": 3,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [
@@ -10701,7 +10723,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "entityId": {
             "type": [
@@ -10824,7 +10847,7 @@
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "eventName": "party.updated",
-        "version": 3,
+        "version": 4,
         "compatibility": "backward",
         "type": "object",
         "required": [],
@@ -10851,7 +10874,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "entityId": {
             "type": [
@@ -12706,7 +12730,7 @@
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "eventName": "workflow.ended",
@@ -12744,7 +12768,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "caseId": {
             "type": [
@@ -12813,7 +12838,7 @@
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": 1,
+        "version": 2,
         "compatibility": "backward",
         "type": "object",
         "eventName": "workflow.step_completed",
@@ -12851,7 +12876,8 @@
             "type": "string"
           },
           "timestamp": {
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "caseId": {
             "type": [
