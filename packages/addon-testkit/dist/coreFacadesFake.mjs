@@ -232,5 +232,32 @@ export function createCoreFacadesFake(tier, recorded) {
                 return { saved: true };
             },
         },
+        communication: {
+            /**
+             * @param {unknown} principal
+             * @param {object} input
+             */
+            async send(principal, input) {
+                note('ctx.core.communication.send', 'communication', 'send', { principal, input });
+                return { emailId: 'mail-1', status: 'sent' };
+            },
+            /**
+             * @param {unknown} principal
+             * @param {object} query
+             */
+            async list(principal, query) {
+                note('ctx.core.communication.list', 'communication', 'list', { principal, query });
+                return [];
+            },
+            /**
+             * @param {string} ownerType
+             */
+            registerAccess(ownerType) {
+                note('ctx.core.communication.registerAccess', 'communication', 'registerAccess', {
+                    ownerType,
+                });
+                return disposable();
+            },
+        },
     };
 }
