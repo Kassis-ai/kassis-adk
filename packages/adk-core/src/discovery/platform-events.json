@@ -5015,12 +5015,13 @@
       "source": "platform",
       "schema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": 2,
+        "version": 3,
         "compatibility": "backward",
         "type": "object",
         "eventName": "flag.added",
         "required": [
-          "userId"
+          "userId",
+          "flagId"
         ],
         "properties": {
           "type": {
