@@ -3143,7 +3143,39 @@
         "compatibility": "backward",
         "type": "object",
         "required": [],
-        "properties": {},
+        "properties": {
+          "dealId": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "previousStage": {
+            "type": "string"
+          },
+          "crmSystem": {
+            "type": "string"
+          },
+          "raw": {
+            "type": [
+              "object",
+              "array",
+              "string",
+              "number",
+              "boolean",
+              "null"
+            ]
+          },
+          "connectorType": {
+            "type": "string"
+          },
+          "instanceId": {
+            "type": "string"
+          },
+          "tenantId": {
+            "type": "string"
+          }
+        },
         "additionalProperties": false
       }
     },
@@ -3157,7 +3189,39 @@
         "compatibility": "backward",
         "type": "object",
         "required": [],
-        "properties": {},
+        "properties": {
+          "dealId": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "previousStage": {
+            "type": "string"
+          },
+          "crmSystem": {
+            "type": "string"
+          },
+          "raw": {
+            "type": [
+              "object",
+              "array",
+              "string",
+              "number",
+              "boolean",
+              "null"
+            ]
+          },
+          "connectorType": {
+            "type": "string"
+          },
+          "instanceId": {
+            "type": "string"
+          },
+          "tenantId": {
+            "type": "string"
+          }
+        },
         "additionalProperties": false
       }
     },
@@ -3222,7 +3286,39 @@
         "compatibility": "backward",
         "type": "object",
         "required": [],
-        "properties": {},
+        "properties": {
+          "dealId": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "previousStage": {
+            "type": "string"
+          },
+          "crmSystem": {
+            "type": "string"
+          },
+          "raw": {
+            "type": [
+              "object",
+              "array",
+              "string",
+              "number",
+              "boolean",
+              "null"
+            ]
+          },
+          "connectorType": {
+            "type": "string"
+          },
+          "instanceId": {
+            "type": "string"
+          },
+          "tenantId": {
+            "type": "string"
+          }
+        },
         "additionalProperties": false
       }
     },
@@ -4954,7 +5050,52 @@
         "type": "object",
         "eventName": "flag.raised",
         "required": [],
-        "properties": {},
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string"
+          },
+          "resourceId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "flagType": {
+            "type": "string"
+          },
+          "flagId": {
+            "type": [
+              "string",
+              "number",
+              "integer"
+            ]
+          },
+          "action": {
+            "type": "string"
+          },
+          "userId": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "dryRun": {
+            "type": "boolean"
+          },
+          "tenantId": {
+            "type": "string"
+          }
+        },
         "additionalProperties": false
       }
     },
@@ -8123,12 +8264,52 @@
           "recipient": {
             "type": "string"
           },
+          "title": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "meta": {
+            "type": "object"
+          },
+          "ownerType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "ownerId": {
             "type": [
               "string",
               "number",
               "null"
             ]
+          },
+          "link": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "actor": {
+            "type": "object",
+            "properties": {
+              "userId": {
+                "type": [
+                  "number",
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false
+          },
+          "dedupeKey": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -8215,12 +8396,49 @@
           "recipient": {
             "type": "string"
           },
+          "title": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "meta": {
+            "type": "object"
+          },
+          "ownerType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "ownerId": {
             "type": [
               "string",
               "number",
               "null"
             ]
+          },
+          "link": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "actor": {
+            "type": "object",
+            "properties": {
+              "userId": {
+                "type": [
+                  "number",
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false
+          },
+          "dedupeKey": {
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -10412,7 +10630,38 @@
         "compatibility": "backward",
         "type": "object",
         "required": [],
-        "properties": {},
+        "properties": {
+          "modelId": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "subjectType": {
+            "type": "string"
+          },
+          "entityType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "formula": {
+            "type": "string"
+          },
+          "factorWeights": {
+            "type": "object"
+          },
+          "thresholdSchemeId": {
+            "type": "string"
+          },
+          "groupCaps": {
+            "type": "object"
+          },
+          "missingFactorPolicy": {
+            "type": "string"
+          }
+        },
         "additionalProperties": false
       }
     },
@@ -10469,7 +10718,84 @@
         "compatibility": "backward",
         "type": "object",
         "required": [],
-        "properties": {},
+        "properties": {
+          "providerId": {
+            "type": "string"
+          },
+          "subjectType": {
+            "type": "string"
+          },
+          "subjectId": {
+            "type": "string"
+          },
+          "tenantId": {
+            "type": "string"
+          },
+          "entityType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "domain": {
+            "type": "string"
+          },
+          "correlationId": {
+            "type": "string"
+          },
+          "signals": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "domain": {
+                  "type": "string"
+                },
+                "factorCode": {
+                  "type": "string"
+                },
+                "score": {
+                  "type": "number"
+                },
+                "rawValue": {
+                  "type": [
+                    "object",
+                    "array",
+                    "string",
+                    "number",
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "confidence": {
+                  "type": "number"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "computationMode": {
+                  "type": "string"
+                },
+                "evidence": {
+                  "type": "object"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "effectiveAt": {
+                  "type": "string"
+                },
+                "expiresAt": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
         "additionalProperties": false
       }
     },
@@ -10633,7 +10959,29 @@
         "compatibility": "backward",
         "type": "object",
         "required": [],
-        "properties": {},
+        "properties": {
+          "subscriberId": {
+            "type": "string"
+          },
+          "subscriptionType": {
+            "type": "string"
+          },
+          "filter": {
+            "type": "object"
+          },
+          "deliveryTier": {
+            "type": "string"
+          },
+          "subjectType": {
+            "type": "string"
+          },
+          "subjectId": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          }
+        },
         "additionalProperties": false
       }
     },
@@ -11124,7 +11472,64 @@
         "type": "object",
         "eventName": "workflow.approval_requested",
         "required": [],
-        "properties": {},
+        "properties": {
+          "entityType": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "userId": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "requestId": {
+            "type": "string"
+          },
+          "subjectType": {
+            "type": "string"
+          },
+          "subjectId": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "actorUserId": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "eligibleUserIds": {
+            "type": "array",
+            "items": {
+              "type": [
+                "number",
+                "string"
+              ]
+            }
+          },
+          "policyId": {
+            "type": "string"
+          },
+          "policyVersion": {
+            "type": "integer"
+          }
+        },
         "additionalProperties": false
       }
     },
