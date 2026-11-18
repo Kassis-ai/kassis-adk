@@ -17,7 +17,7 @@ Grant the four addon permissions to the roles that need them:
 - `acme-swift-approval.view` — operators who open the queue.
 - `acme-swift-approval.ingest` — the payment system that POSTs messages.
 - `acme-swift-approval.approve` — approvers.
-- `acme-swift-approval.admin` — people who should change settings. The settings tab itself is visible to system administrators (see `GAPS.md`).
+- `acme-swift-approval.admin` — people who should change settings and see the Settings tab (`ui.contributions.settingsTabs[].permissions`).
 
 Install the signed package with `kassis-addon deploy --instance=<lab>` after the `acme` publisher key is registered and approved. Toggle the installed addon with:
 

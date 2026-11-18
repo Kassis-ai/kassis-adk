@@ -11,7 +11,7 @@ P1 and P2 are the data and approval facades this addon calls (`ctx.data`, `ctx.c
 | Id | Result | Evidence |
 | --- | --- | --- |
 | AT-01 | blocked | Live POST is gated by the first permission (`view`), and the child does not receive the caller. Unit ingest is covered in `test/server/messages.test.ts`. |
-| AT-02 | blocked | Live POST body is not forwarded. Unit ingest returns 202, `requestId`, and audit `received`. FR-35 notification is a gap. |
+| AT-02 | blocked | Live POST was not run. Unit ingest returns 202, `requestId`, and audit `received`. The host can list holders with `ctx.core.users.listByPermission`. The fixture still does not call `ctx.notify.send`. |
 | AT-03 | blocked live / pass in unit | Invalid BIC returns 422, stores nothing, audits `refused`. |
 | AT-04 | blocked live / pass in unit | Duplicate sender and reference returns 409. |
 | AT-05 | blocked live / pass in unit | Missing threshold and a large EUR amount are high value. |
@@ -24,9 +24,9 @@ P1 and P2 are the data and approval facades this addon calls (`ctx.data`, `ctx.c
 | AT-12 | blocked | FR-25. Policy condition for a second approver is not confirmed. |
 | AT-13 | blocked live / pass in unit | Expiry with `expiryHours: 1` marks an old pending row EXPIRED. A second run is a no-op. |
 | AT-14 | blocked | FR-57. Configuration is frozen at initialize. |
-| AT-15 | blocked | Settings tab has no permission field. See FR-56 in `GAPS.md`. |
+| AT-15 | blocked live / pass in unit | Manifest declares `settingsTabs[].permissions`. Live Settings was not opened. |
 | AT-16 | blocked | FR-60. Runner health is not the addon's policy check. `GET /release-policy` is the addon probe. |
-| AT-17 | blocked | FR-61. No MCP tool. |
+| AT-17 | blocked live / pass in unit | `contributions.mcp` and `tools` export; see `test/mcp/list-pending.mcp.test.ts`. Live MCP call not run. |
 | AT-18 | blocked live / pass in unit | Audit and event JSON from the unit ingest and decision do not contain `Lab Customer AG`. |
 | AT-19 | blocked | No lab restart. |
 | AT-20 | blocked | No lab, and no first-party page was opened. |

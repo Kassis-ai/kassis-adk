@@ -398,7 +398,11 @@
                   "icon": { "type": "string" },
                   "group": { "type": "string" },
                   "order": { "type": "number" },
-                  "keywords": { "type": "array", "items": { "type": "string" } }
+                  "keywords": { "type": "array", "items": { "type": "string" } },
+                  "permissions": {
+                    "type": "array",
+                    "items": { "type": "string", "minLength": 1 }
+                  }
                 }
               }
             }

@@ -383,6 +383,7 @@ export interface TestCoreFacades {
       userId: number,
       permission: string
     ): Promise<boolean>;
+    listByPermission(principal: TestPrincipal, permission: string): Promise<readonly number[]>;
     getPreference(principal: TestPrincipal, key: string): Promise<JsonPrimitive | JsonObject | null>;
     setPreference(
       principal: TestPrincipal,

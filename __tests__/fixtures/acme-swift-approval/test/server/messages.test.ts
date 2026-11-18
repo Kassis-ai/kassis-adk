@@ -25,7 +25,13 @@ const manifest = JSON.parse(fs.readFileSync(path.join(addonRoot, 'manifest.json'
   resources: { memoryMb: number };
   permissions: { name: string }[];
   audit: { actions: string[] };
-  ui: { contributions: { nav: { section: string; name: string; permission: string }[]; settingsTabs: { id: string }[] } };
+  ui: {
+    contributions: {
+      nav: { section: string; name: string; permission: string }[];
+      settingsTabs: { id: string; permissions?: string[] }[];
+    };
+  };
+  contributions?: { mcp?: { entry: string; tools: string[] } };
   data: { retention: string };
   health: { path: string };
 };
@@ -371,6 +377,10 @@ describe('acme-swift-approval messages', () => {
     assert.equal(manifest.ui.contributions.nav[0]?.name, 'SWIFT approvals');
     assert.equal(manifest.ui.contributions.nav[0]?.permission, 'acme-swift-approval.view');
     assert.equal(manifest.ui.contributions.settingsTabs[0]?.id, 'acme-swift-approval');
+    assert.deepEqual(manifest.ui.contributions.settingsTabs[0]?.permissions, [
+      'acme-swift-approval.admin',
+    ]);
+    assert.deepEqual(manifest.contributions?.mcp?.tools, ['acme-swift-approval.list_pending']);
     const ui = fs.readFileSync(path.join(addonRoot, 'src/ui/index.ts'), 'utf8');
     const page = fs.readFileSync(path.join(addonRoot, 'src/ui/pages/ApprovalsPage.tsx'), 'utf8');
     assert.match(ui, /settingsTabSlot\(ADDON_ID\)/);

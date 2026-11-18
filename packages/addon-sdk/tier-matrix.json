@@ -187,6 +187,12 @@
       "permission": "principal"
     },
     {
+      "method": "ctx.core.users.listByPermission",
+      "tier1": true,
+      "tier2": true,
+      "permission": "principal"
+    },
+    {
       "method": "ctx.core.users.setPreference",
       "tier1": true,
       "tier2": true,
