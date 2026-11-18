@@ -2828,6 +2828,7 @@ export interface UsersFacade {
     getPreference(principal: AddonPrincipal, key: string): Promise<JsonValue | null>;
     // (undocumented)
     hasPermission(principal: AddonPrincipal, userId: number, permission: string): Promise<boolean>;
+    listByPermission(principal: AddonPrincipal, permission: string): Promise<readonly number[]>;
     // (undocumented)
     setPreference(principal: AddonPrincipal, key: string, value: JsonValue): Promise<PreferenceWriteResult>;
 }

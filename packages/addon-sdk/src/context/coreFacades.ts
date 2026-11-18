@@ -204,6 +204,11 @@ export type PreferenceWriteResult =
 export interface UsersFacade {
   get(principal: AddonPrincipal, userId: number): Promise<UserSummary | null>;
   hasPermission(principal: AddonPrincipal, userId: number, permission: string): Promise<boolean>;
+  /**
+   * Active user ids that hold `permission`. The permission must be one this addon declared.
+   * The grant check is the same as hasPermission.
+   */
+  listByPermission(principal: AddonPrincipal, permission: string): Promise<readonly number[]>;
   /** The principal's own preference, in the addon's namespace. */
   getPreference(principal: AddonPrincipal, key: string): Promise<JsonValue | null>;
   setPreference(

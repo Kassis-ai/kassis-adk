@@ -216,6 +216,17 @@ export function createCoreFacadesFake(tier, recorded) {
       },
       /**
        * @param {unknown} principal
+       * @param {string} permission
+       */
+      async listByPermission(principal, permission) {
+        note('ctx.core.users.listByPermission', 'users', 'listByPermission', {
+          principal,
+          permission,
+        });
+        return [];
+      },
+      /**
+       * @param {unknown} principal
        * @param {string} key
        */
       async getPreference(principal, key) {

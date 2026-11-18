@@ -124,6 +124,17 @@
       "doNot": "Do not create a private user or role table."
     },
     {
+      "id": "list-permission-holders",
+      "need": "list users who hold a permission",
+      "aliases": ["permission holders", "recipient list", "who can approve", "users by permission"],
+      "coreFeature": "Users and RBAC",
+      "facade": "ctx.core.users.listByPermission",
+      "extensionPoint": null,
+      "summary": "Ask the host for active user ids that hold a permission this addon declared. Do not hardcode the recipient list.",
+      "example": "const userIds = await ctx.core.users.listByPermission(principal, 'acme-widget.approve');",
+      "doNot": "Do not hardcode approver user ids or query the users table for grants."
+    },
+    {
       "id": "send-email",
       "need": "send email",
       "aliases": ["email user", "communication", "mail", "communicable"],

@@ -117,7 +117,19 @@
           "permission": "acme-swift-approval.view"
         }
       ],
-      "settingsTabs": [{ "id": "acme-swift-approval", "label": "SWIFT approvals" }]
+      "settingsTabs": [
+        {
+          "id": "acme-swift-approval",
+          "label": "SWIFT approvals",
+          "permissions": ["acme-swift-approval.admin"]
+        }
+      ]
+    }
+  },
+  "contributions": {
+    "mcp": {
+      "entry": "dist/mcp/contribution.js",
+      "tools": ["acme-swift-approval.list_pending"]
     }
   },
   "metadata": {

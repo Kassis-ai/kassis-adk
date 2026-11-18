@@ -30,9 +30,7 @@ Needed: the route bridge forwards body, query and the authenticated principal, a
 
 ## GAP FR-35
 
-`ctx.notify.registerType('acme-swift-approval.message.waiting')` runs at initialize. `ctx.notify.send` is not called. The users facade has no list-by-permission, so there is no recipient list for `acme-swift-approval.approve`.
-
-Needed: a host call that returns the user ids holding a permission, or a notification audience of "holders of this permission".
+Closed on the host. `ctx.core.users.listByPermission(principal, permission)` returns the active user ids that hold a permission declared on the addon. The grant is the stored one, including `system.admin` when the permission is not sensitive. A scoped API key on the request is not applied. A permission the addon did not declare is refused. The fixture still does not call `ctx.notify.send`.
 
 ## GAP FR-25
 
@@ -46,7 +44,7 @@ A rejected message does not notify the operators who viewed it. Could.
 
 ## GAP FR-61
 
-`acme-swift-approval.list_pending` is not implemented. The addon build does not emit an MCP bundle. AT-17 is blocked. Could.
+Closed in the fixture: `contributions.mcp`, `src/mcp/contribution.ts`, and `tools` on the server entry implement `acme-swift-approval.list_pending`. AT-17 still needs a live MCP call on a stack.
 
 ## GAP NFR-04
 
@@ -54,6 +52,4 @@ Accept latency and the 5,000-row list target were not measured. This environment
 
 ## GAP FR-56 visibility
 
-`ui.contributions.settingsTabs` has no permission field. Omitted tabs are shown to system administrators. The BRD asks for `acme-swift-approval.admin`. The slot is still registered with `settingsTabSlot('acme-swift-approval')`.
-
-Needed: a permission field on the settings tab contribution, or a documented rule that system-admin visibility satisfies AT-15.
+Closed: manifest v2 allows `permissions` on `ui.contributions.settingsTabs`; this addon declares `acme-swift-approval.admin`. AT-15 still needs a live Settings session without that permission.
