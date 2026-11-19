@@ -94,7 +94,8 @@ describe('adk signing golden vectors (S3.01)', () => {
     expect(signing?.keyId).toBe(vectors.testFixtureSigning.keyIdSha256);
   });
 
-  it.each(Object.entries(vectors.firstPartyAddons))(
+  // First-party addons and the host key exist only in the Kassis repository.
+  it.skipIf(!fs.existsSync(path.join(repoRoot, 'addons'))).each(Object.entries(vectors.firstPartyAddons))(
     '%s first-party addon matches golden hashes and signature',
     async (addonId, golden) => {
       const addonDir = path.join(repoRoot, 'addons', addonId);
