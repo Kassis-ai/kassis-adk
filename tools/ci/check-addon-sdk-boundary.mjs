@@ -237,8 +237,9 @@ export function findPackageBoundaryViolations(packageRoot, options = {}) {
 }
 
 function main() {
-  // Copies are compared against the host only in a Kassis checkout; kassis-adk has no server/.
-  const hostCheckout = fs.existsSync(path.join(ROOT, 'server'));
+  // Copies are compared against the host only in a Kassis checkout. kassis-adk can have a stray
+  // server/ folder (an npm install --prefix server in the wrong window), so look for the key.
+  const hostCheckout = fs.existsSync(path.join(ROOT, 'server', 'keys', 'addon_verification_public.key'));
   const drift = hostCheckout ? publicKeyCopyDrift() || syncedCopyDrift() : '';
   if (drift) {
     console.error(`ci:packages:addon-sdk-boundary failed — ${drift}`);

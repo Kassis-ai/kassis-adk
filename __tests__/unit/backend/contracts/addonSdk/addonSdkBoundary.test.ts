@@ -66,7 +66,7 @@ describe('ci:packages:addon-sdk-boundary', () => {
   });
 
   // kassis-adk has no host copy to compare against; the host repository runs this check.
-  it.skipIf(!fs.existsSync(path.resolve('server')))('keeps the vendored public key identical to the host copy', () => {
+  it.skipIf(!fs.existsSync(path.resolve('server/keys/addon_verification_public.key')))('keeps the vendored public key identical to the host copy', () => {
     expect(publicKeyCopyDrift()).toBe('');
   });
 
