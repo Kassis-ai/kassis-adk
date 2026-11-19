@@ -105,7 +105,7 @@ claim assigns history rows written by an older ADK (no addon id) to this addon, 
 `,
   doctor: `Usage: kassis-addon doctor [--requirements] [--json]
 
-Checks the Node version, GitHub Packages login (the token is not printed), signing key files, instance reachability, and manifest hostApi against HOST_API_VERSION. With --requirements, scans addon source for ctx facade calls that the manifest tier cannot use (tier-matrix.json).
+Checks the Node version, that the npm registry answers, signing key files, instance reachability, and manifest hostApi against HOST_API_VERSION. With --requirements, scans addon source for ctx facade calls that the manifest tier cannot use (tier-matrix.json).
 `,
   plan: `Usage: kassis-addon plan [--json]
 
@@ -280,7 +280,7 @@ function printSuccess(command, data) {
   if (command === 'doctor') {
     process.stdout.write(`Node ${data.nodeVersion}\n`);
     process.stdout.write(
-      data.registryOk ? `Registry ${data.registryUser}\n` : 'Registry not logged in\n'
+      data.registryOk ? 'Registry reachable\n' : 'Registry not reachable\n'
     );
     process.stdout.write(`Signing keys ${data.signingKeys}\n`);
     process.stdout.write(

@@ -13,7 +13,7 @@ import { runNpm } from '../tools/adk/airgap-bundle.mjs';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const packagesDir = path.join(repoRoot, 'packages');
-const REGISTRY = 'https://npm.pkg.github.com';
+const REGISTRY = 'https://registry.npmjs.org/';
 const SOURCE_EXT = ['.ts', '.tsx', '.mts'];
 /**
  * Every public package packs JavaScript. Do not add names here.

@@ -70,13 +70,13 @@ The script builds the six dist packages, packs them, and installs those tarballs
 
 A tag `adk/vX.Y.Z` runs `.github/workflows/adk-release.yml`. The version after `adk/v` must match every package in the single changesets `fixed` group. The workflow reads that group from `.changeset/config.json`. It does not keep a second package list, so a package added to the group is built, tested, and published with the rest.
 
-The workflow builds those packages, runs the kit unit tests (not the full monorepo suite), packs each one, writes a CycloneDX SBOM (`sbom.cdx.json`), and signs the tarballs and `checksums.txt` with the Stage A cosign key. It then publishes those exact tarballs to GitHub Packages with `npm publish --provenance` and attaches `kassis-adk-X.Y.Z-airgap.zip`, its `.sha256`, and its `.sig` to the GitHub release for the tag. `verify.sh` inside the zip checks `checksums.txt` with the bundled `cosign.pub`. Compare that public key with the copy distributed on a separate channel before trusting the bundle. The workflow does not create or push the tag.
+The workflow builds those packages, runs the kit unit tests (not the full monorepo suite), packs each one, writes a CycloneDX SBOM (`sbom.cdx.json`), and signs the tarballs and `checksums.txt` with the Stage A cosign key. It then publishes those exact tarballs publicly to npmjs.com under the `@kassis` org (`npm publish --access public`). It adds `--provenance` only when the repository is public and the runner is GitHub-hosted, because npm refuses provenance from a private repository. It then attaches `kassis-adk-X.Y.Z-airgap.zip`, its `.sha256`, and its `.sig` to the GitHub release for the tag. `verify.sh` inside the zip checks `checksums.txt` with the bundled `cosign.pub`. Compare that public key with the copy distributed on a separate channel before trusting the bundle. The workflow does not create or push the tag.
 
 Repository secrets, set in GitHub and not committed:
 
 | Secret | Role |
 | --- | --- |
-| `NPM_TOKEN` | Registry token. The workflow passes it as `NODE_AUTH_TOKEN` for `https://npm.pkg.github.com`. |
+| `NPM_TOKEN` | npmjs.com granular access token with read and write on the `@kassis` packages. The workflow passes it as `NODE_AUTH_TOKEN` for `https://registry.npmjs.org`. After the first publish, prefer npm trusted publishing for each package and retire the token. |
 | `COSIGN_PRIVATE_KEY` | Same key as the [client release pipeline](../deployment/release-pipeline.md). |
 | `COSIGN_PASSWORD` | Password for that key. |
 

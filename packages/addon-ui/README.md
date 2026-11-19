@@ -55,7 +55,7 @@ Addons may import `@kassis/addon-ui` directly (allowed by addon import check) or
 
 ## Workspace vs published
 
-Monorepo `exports` point at `src/index.ts`. The published tarball uses rolled `dist/index.d.ts` and the empty `dist/index.js` shim after `prepack`. GitHub Packages: `publishConfig.registry` is `https://npm.pkg.github.com`, access `restricted`.
+Monorepo `exports` point at `src/index.ts`. The published tarball uses rolled `dist/index.d.ts` and the empty `dist/index.js` shim after `prepack`. npmjs.com: `publishConfig.registry` is `https://registry.npmjs.org/`, access `public`.
 
 ## Boundary
 

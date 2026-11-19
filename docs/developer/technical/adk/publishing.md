@@ -9,7 +9,7 @@ Version rules are in the [semver policy](../addons/semver-policy.md). Do not bum
 
 ## npm registry (kit packages)
 
-`@kassis/addon-sdk`, `@kassis/adk-core`, `@kassis/mcp-contract`, `@kassis/addon-cli`, and `@kassis/addon-testkit` share kit version `0.1.0`. `@kassis/addon-ui`, `@kassis/host-sdk`, and `@kassis/agent-kit` publish on their own lines and are also `0.1.0` today. All of them publish to GitHub Packages with restricted access and npm provenance. `manifest.hostApi` stays `^1.0.0`. Workspace layout, API Extractor reports, changesets, and air-gap bundling are described in [Maintainers](./maintainers.md) for people working in the kassis repository. The `@kassis/adk-core` tarball ships compiled JavaScript. Use `@kassis/addon-cli` for commands.
+`@kassis/addon-sdk`, `@kassis/adk-core`, `@kassis/mcp-contract`, `@kassis/addon-cli`, and `@kassis/addon-testkit` share kit version `0.1.0`. `@kassis/addon-ui`, `@kassis/host-sdk`, and `@kassis/agent-kit` publish on their own lines and are also `0.1.0` today. All of them publish publicly to npmjs.com under the `@kassis` scope, with npm provenance once the source repository is public. `manifest.hostApi` stays `^1.0.0`. Workspace layout, API Extractor reports, changesets, and air-gap bundling are described in [Maintainers](./maintainers.md) for people working in the kassis repository. The `@kassis/adk-core` tarball ships compiled JavaScript. Use `@kassis/addon-cli` for commands.
 
 ## Addon package
 
@@ -27,6 +27,7 @@ The install path is `addons-installed/<id>/<version>/`. The version must be high
 
 | Date       | Change                                                                                                                                                                                         |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-19 | Kit packages publish publicly to npmjs.com under `@kassis`. Provenance is added when the source repository is public.                                                                       |
 | 2026-11-19 | `@kassis/adk-core` npm pack ships compiled JavaScript in `dist`. `hostApi` stays `^1.0.0`.                                                                                                    |
 | 2026-11-19 | Kit version group is `0.1.0`, including `@kassis/adk-core` and `@kassis/mcp-contract`. `hostApi` stays `^1.0.0`. |
 | 2026-11-19 | Kit publish workflow moved to [Maintainers](./maintainers.md); this page covers addon `.addon` packages and deploy.                                                                           |

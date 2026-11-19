@@ -44,9 +44,8 @@
     "ajv": "^8.17.1"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com",
-    "access": "restricted",
-    "provenance": true,
+    "registry": "https://registry.npmjs.org/",
+    "access": "public",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "exports": {

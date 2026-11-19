@@ -171,8 +171,10 @@ function assertTier2Rung2(addonDir) {
     throw new Error('init did not set ui.entryFile to index.js');
   }
   const npmrc = fs.readFileSync(path.join(addonDir, '.npmrc'), 'utf8');
-  if (!npmrc.includes('${NODE_AUTH_TOKEN}')) throw new Error('scaffold .npmrc does not use NODE_AUTH_TOKEN');
-  if (/_authToken=(?!\$\{NODE_AUTH_TOKEN\})/.test(npmrc)) throw new Error('scaffold .npmrc contains a token');
+  if (!npmrc.includes('@kassis:registry=https://registry.npmjs.org/')) {
+    throw new Error('scaffold .npmrc does not pin @kassis to registry.npmjs.org');
+  }
+  if (/_authToken=/.test(npmrc)) throw new Error('scaffold .npmrc contains a token');
   if (!fs.existsSync(path.join(addonDir, 'src/ui/index.ts'))) {
     throw new Error('init did not copy the rung 2 UI source');
   }

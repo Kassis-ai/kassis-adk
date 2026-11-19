@@ -99,6 +99,7 @@ Use `npm test` for the template. The CLI `test` command runs `node --test` in `.
 
 | Date       | Change                                                                                                                                                                               |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2026-11-19 | The template `.npmrc` pins `@kassis` to `https://registry.npmjs.org/` with no token. The certify workflow no longer needs a packages secret.                                          |
 | 2026-11-19 | Quickstart uses `npx kassis-addon` only; repository entry points moved to [Maintainers](./maintainers.md).                                                                             |
 | 2026-11-16 | `dev` starts a tier 2 runner container on an internal network. The backend container does not receive a Docker socket.                                                                |
 | 2026-11-11 | `migrate` keeps history per addon, applies each script with its history row in one transaction, detects edited scripts, and adds `claim` (F024, F025).                               |
