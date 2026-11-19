@@ -1,0 +1,16 @@
+{
+  "id": "golden-kassis-first-party",
+  "name": "ADK signing golden (kassis first party)",
+  "version": "0.0.0-golden",
+  "publisher": "kassis-corp",
+  "hostApiVersion": "1.0.0",
+  "entrypoints": {
+    "main": "dist/index.js"
+  },
+  "signing": {
+    "alg": "ed25519",
+    "keyId": "356e54cf22ea5fc96546be2e8e1cd71091b10d56dfecb0964dc7ccfe118a92da"
+  },
+  "contentHash": "sha256-f0f2870c18c2c8009bbb8faa15ffbb41180dc3272f65554ba934c54482d42fe9",
+  "signature": "478df2aab89d0c0069a8ee77ecfb8cf35e2736300bea267cb18b47e6c84bb062336dcc9805948e9132a752da6dde9eaffd0f9d75b0b83b334d57f15a5b49de00"
+}
