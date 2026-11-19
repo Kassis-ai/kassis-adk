@@ -1,0 +1,42 @@
+{
+  "name": "@kassis/adk-protocol",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Canonical JSON, content hash, signature verification, publisher trust, and deployment evidence shared by the host and the kit.",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kassis-ai/kassis.git",
+    "directory": "packages/adk-protocol"
+  },
+  "main": "./src/index.mjs",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.mjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "node build.mjs",
+    "prepack": "npm run build && node ../../scripts/pack-publish-fields.mjs apply",
+    "postpack": "node ../../scripts/pack-publish-fields.mjs restore"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "restricted",
+    "provenance": true,
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js",
+        "default": "./dist/index.js"
+      }
+    }
+  }
+}

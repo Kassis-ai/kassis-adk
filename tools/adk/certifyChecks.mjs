@@ -100,7 +100,7 @@ export function cliPackageVersion() {
 function contentHashModulePath() {
   const beside = path.join(here, 'addonContentHash.mjs');
   if (fs.existsSync(beside)) return beside;
-  return path.resolve(here, '../../server/core/addon-deployment/addonContentHash.mjs');
+  return path.resolve(here, '../../packages/adk-protocol/src/addonContentHash.mjs');
 }
 
 function contentHashOf(addonDir) {

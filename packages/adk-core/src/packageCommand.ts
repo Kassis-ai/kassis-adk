@@ -12,7 +12,7 @@ import {
   computeAddonContentHash,
   isContentHash,
   listAddonContentFiles,
-} from '../../../server/core/addon-deployment/addonContentHash.mjs';
+} from '@kassis/adk-protocol';
 import type { CommandResult, JsonObject, JsonValue } from './types.ts';
 import { commandResult, failure, isRecordValue, readJson } from './issues.ts';
 

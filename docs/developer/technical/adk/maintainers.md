@@ -21,9 +21,12 @@ npm pack --pack-destination ./packs ./packages/host-sdk
 npm pack --pack-destination ./packs ./packages/agent-kit
 npm pack --pack-destination ./packs ./packages/addon-cli
 npm pack --pack-destination ./packs ./packages/mcp-contract
+npm pack --pack-destination ./packs ./packages/adk-protocol
 ```
 
-`@kassis/addon-sdk`, `@kassis/adk-core`, `@kassis/mcp-contract`, `@kassis/addon-cli`, and `@kassis/addon-testkit` are one changesets `fixed` group at `0.1.0`. `npm pack` of `@kassis/mcp-contract` runs its prepack and ships `dist`. `npm pack` of `@kassis/adk-core` still ships TypeScript sources. The maintainer air-gap bundle below copies those sources and does not add an adk-core tarball. The tag release bundle is separate: it packs every package in the fixed group. `HOST_API_VERSION` stays `1.0.0`. See the [semver policy](../addons/semver-policy.md).
+`@kassis/addon-sdk`, `@kassis/adk-core`, `@kassis/adk-protocol`, `@kassis/mcp-contract`, `@kassis/addon-cli`, and `@kassis/addon-testkit` are one changesets `fixed` group at `0.1.0`. `npm pack` of `@kassis/mcp-contract` and `@kassis/adk-protocol` runs prepack and ships `dist`. `npm pack` of `@kassis/adk-core` still ships TypeScript sources. The maintainer air-gap bundle below copies those sources and does not add an adk-core tarball. The tag release bundle is separate: it packs every package in the fixed group. `HOST_API_VERSION` stays `1.0.0`. See the [semver policy](../addons/semver-policy.md).
+
+Canonical JSON, content hash (`contentHash` and `uiContentHash`), Ed25519 verify, publisher trust evaluation, and the deployment evidence summary are `@kassis/adk-protocol` (`packages/adk-protocol/src`). The content-hash scope file is `packages/adk-protocol/src/addonContentHash.config.json`. The seeded publisher file stays at `server/core/addon-platform/trust/publisher-trust.json`. The server and `tools/adk` barrels point the package at that file. Do not edit it when moving code. Server paths `canonicalJson.mjs`, `addonContentHash.mjs`, `publisherTrust.mjs`, and `evidenceSummary.ts` re-export the package.
 
 `node scripts/pack-public-packages.mjs` builds the six dist packages, packs them, installs those tarballs in an empty folder, imports each entry with plain Node, and type-checks the public subpaths.
 
@@ -99,7 +102,7 @@ The override lowers Postgres memory, gives schema init a longer health start per
 
 | What you see                                                         | What to do                                                                                                                                                                      |
 | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Backend crash: `Cannot find module '/tools/adk/evidenceSummary.mjs'` | The production image must copy `tools/adk/evidenceSummary.mjs` and symlink `/tools` to `/app/tools`. Rebuild the backend image from this repository.                              |
+| Backend crash: `Cannot find module '@kassis/adk-protocol'` | The host imports that package for canonical JSON, content hash, trust, and evidence. Image stages that copy `packages/addon-sdk` must also copy `packages/adk-protocol`. That copy is not in the Dockerfiles yet. |
 
 ## Coding-agent profile sources
 
@@ -109,6 +112,7 @@ The signed profile is `tools/adk/profiles/addon-coding-agent.json` (version 2). 
 
 | Date       | Change                                                                                                                                                                                                                          |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-19 | `@kassis/adk-protocol` is in the kit group at `0.1.0`. Content-hash scope and canonical JSON live in that package. The publisher seed file stays under `server/core/addon-platform/trust/`.                                   |
 | 2026-11-19 | Tag `adk/v*` runs the kit release workflow: build, kit unit tests, provenance publish of the changesets fixed group, SBOM, and a cosign-signed air-gap zip on the GitHub release.                                              |
 | 2026-11-19 | Client ADK pages no longer name repository paths. Maintainer-only commands and live-lab detail live on this page.                                                                                                              |
 | 2026-11-16 | Live lab workflow runs `--only=H` after L1–L22; host-sdk prepack may fall back to a resolve stub when the API report is stale; addon-cli may pack with `--ignore-scripts` when prepack still points at the repository.             |

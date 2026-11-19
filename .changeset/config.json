@@ -6,6 +6,7 @@
     [
       "@kassis/addon-sdk",
       "@kassis/adk-core",
+      "@kassis/adk-protocol",
       "@kassis/mcp-contract",
       "@kassis/addon-cli",
       "@kassis/addon-testkit"

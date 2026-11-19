@@ -19,7 +19,7 @@ async function loadSignerModule(fileName, repoRelative) {
 async function canonicalString(body) {
   const loaded = await loadSignerModule(
     'canonicalJson.mjs',
-    '../../server/core/addon-deployment/canonicalJson.mjs'
+    '../../packages/adk-protocol/src/canonicalJson.mjs'
   );
   return loaded.buildCanonicalManifestString(body);
 }
@@ -51,7 +51,7 @@ export async function signManifestFile(manifestPath, keyPath) {
   };
   const { computeAddonContentHash, computeUiContentHash } = await loadSignerModule(
     'addonContentHash.mjs',
-    '../../server/core/addon-deployment/addonContentHash.mjs'
+    '../../packages/adk-protocol/src/addonContentHash.mjs'
   );
   const addonDir = path.dirname(manifestPath);
   // manifest.json is outside the hash scope, so writing this field does not change the digest.

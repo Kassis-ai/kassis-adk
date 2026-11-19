@@ -106,15 +106,15 @@ function copyIntoLib(source, name) {
 }
 
 copyIntoLib(
-  path.join(repoRoot, 'server/core/addon-deployment/canonicalJson.mjs'),
+  path.join(repoRoot, 'packages/adk-protocol/src/canonicalJson.mjs'),
   'canonicalJson.mjs'
 );
 copyIntoLib(
-  path.join(repoRoot, 'server/core/addon-deployment/addonContentHash.mjs'),
+  path.join(repoRoot, 'packages/adk-protocol/src/addonContentHash.mjs'),
   'addonContentHash.mjs'
 );
 copyIntoLib(
-  path.join(repoRoot, 'server/core/addon-deployment/addonContentHash.config.json'),
+  path.join(repoRoot, 'packages/adk-protocol/src/addonContentHash.config.json'),
   'addonContentHash.config.json'
 );
 copyIntoLib(

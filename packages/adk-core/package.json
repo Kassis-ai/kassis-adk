@@ -29,6 +29,7 @@
   "dependencies": {
     "@kassis/addon-sdk": "0.1.0",
     "@kassis/addon-testkit": "0.1.0",
+    "@kassis/adk-protocol": "0.1.0",
     "@modelcontextprotocol/sdk": "1.32.2"
   },
   "publishConfig": {
