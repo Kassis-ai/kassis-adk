@@ -1,16 +1,12 @@
+import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { configurePublisherTrustSeed } from '@kassis/adk-protocol';
-import { checkoutFile, isPacked } from './kitPaths.mjs';
+import { isPacked } from './kitPaths.mjs';
 
+// The kit owns its seed copy (packages/adk-core/trust). The packed CLI reads the copy beside lib/.
 if (!isPacked()) {
-  const seed = checkoutFile(
-    import.meta.url,
-    'server',
-    'core',
-    'addon-platform',
-    'trust',
-    'publisher-trust.json'
-  );
-  if (seed) configurePublisherTrustSeed(seed);
+  const seed = fileURLToPath(new URL('../../trust/publisher-trust.json', import.meta.url));
+  if (fs.existsSync(seed)) configurePublisherTrustSeed(seed);
 }
 
 export {

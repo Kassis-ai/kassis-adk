@@ -8,8 +8,6 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-
 export function signTarball(tarballPath, privateKeyHex) {
   const privateKey = crypto.createPrivateKey({
     key: Buffer.from(privateKeyHex.trim(), 'hex'),
@@ -25,11 +23,9 @@ export function signTarball(tarballPath, privateKeyHex) {
 function main() {
   const tarball = process.argv[2];
   const keyFlag = process.argv.find((arg) => arg.startsWith('--key='));
-  const keyPath = keyFlag
-    ? path.resolve(keyFlag.slice('--key='.length))
-    : path.join(repoRoot, 'server/keys/addon_signing_private.key');
-  if (!tarball || !fs.existsSync(tarball)) {
-    console.error('Usage: node tools/adk/sign-tarball.mjs <file.tgz> [--key=<path>]');
+  const keyPath = keyFlag ? path.resolve(keyFlag.slice('--key='.length)) : '';
+  if (!tarball || !fs.existsSync(tarball) || !keyPath) {
+    console.error('Usage: node tools/adk/sign-tarball.mjs <file.tgz> --key=<path>');
     process.exit(1);
   }
   if (!fs.existsSync(keyPath)) {

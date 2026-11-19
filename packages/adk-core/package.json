@@ -29,12 +29,13 @@
   "files": [
     "dist",
     "keys",
-    "profiles"
+    "profiles",
+    "trust"
   ],
   "scripts": {
     "build": "node build.mjs",
-    "prepack": "npm run build && node ../../scripts/pack-publish-fields.mjs apply",
-    "postpack": "node ../../scripts/pack-publish-fields.mjs restore"
+    "prepack": "npm run build && node ../../tools/adk/pack-publish-fields.mjs apply",
+    "postpack": "node ../../tools/adk/pack-publish-fields.mjs restore"
   },
   "dependencies": {
     "@kassis/addon-sdk": "0.1.0",

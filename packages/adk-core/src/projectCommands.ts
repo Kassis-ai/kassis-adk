@@ -57,10 +57,9 @@ import {
   kadkIssue,
   operationalIssue,
   readJson,
-  redactSecrets,
-  repoRoot,
 } from './issues.ts';
 import { runProcess } from './processRun.ts';
+import { signWithHostSigner } from './hostSigner.ts';
 
 function messageOf(error: unknown): string {
   return error instanceof Error ? error.message : 'command failed';
@@ -505,35 +504,7 @@ export async function signProject(
   const manifest = readObject(manifestPath);
   const id = manifest ? stringField(manifest, 'id') : '';
   if (!id) return failure('manifest.json needs an id', 'Set id in manifest.json before sign.');
-  if (!key) {
-    const bundled = path.join(repoRoot(), 'tools/signing/sign-all-addons.mjs');
-    if (!fs.existsSync(bundled)) {
-      return failure(
-        'sign --key=<path> is required outside the Kassis repository',
-        'Pass --key with the publisher private key file.',
-        'ADK-KEY'
-      );
-    }
-    const result = runProcess(process.execPath, [bundled, `--only=${id}`], 120000, {
-      cwd: repoRoot(),
-    });
-    if (result.stdout) onLog?.({ stream: 'stdout', text: result.stdout });
-    if (result.stderr) onLog?.({ stream: 'stderr', text: result.stderr });
-    if (result.timedOut) {
-      return failure(
-        'sign did not finish',
-        'Run the repo signer again for this addon id.',
-        'ADK-USAGE'
-      );
-    }
-    if (result.status !== 0) {
-      return failure(
-        redactSecrets(result.stderr.trim() || 'sign failed'),
-        'Fix the signer error and run sign again.'
-      );
-    }
-    return commandResult([], { id });
-  }
+  if (!key) return signWithHostSigner(id, onLog);
   try {
     await signManifestFile(manifestPath, path.resolve(key));
     return commandResult([], { id });

@@ -16,8 +16,8 @@
   ],
   "scripts": {
     "build": "node build.mjs",
-    "prepack": "npm run build && node ../../scripts/pack-publish-fields.mjs apply",
-    "postpack": "node ../../scripts/pack-publish-fields.mjs restore"
+    "prepack": "npm run build && node ../../tools/adk/pack-publish-fields.mjs apply",
+    "postpack": "node ../../tools/adk/pack-publish-fields.mjs restore"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",

@@ -160,10 +160,7 @@ function copyIntoLib(source, name) {
 copyIntoLib(path.join(protocolSrc, 'canonicalJson.mjs'), 'canonicalJson.mjs');
 copyIntoLib(path.join(protocolSrc, 'addonContentHash.mjs'), 'addonContentHash.mjs');
 copyIntoLib(path.join(protocolSrc, 'addonContentHash.config.json'), 'addonContentHash.config.json');
-copyIntoLib(
-  path.join(repoRoot, 'server/core/addon-platform/trust/publisher-trust.json'),
-  'publisher-trust.json'
-);
+copyIntoLib(path.join(coreRoot, 'trust', 'publisher-trust.json'), 'publisher-trust.json');
 copyIntoLib(
   path.join(coreRoot, 'keys', 'addon_verification_public.key'),
   'addon_verification_public.key'

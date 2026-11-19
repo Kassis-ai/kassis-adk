@@ -24,23 +24,45 @@ export const PUBLIC_KEY_COPIES = [
   'server/keys/addon_verification_public.key',
 ];
 
+/** Kit-owned copy first, host copy second. Each pair must stay byte-identical. */
+export const SYNCED_COPIES = [
+  ['packages/adk-core/trust/publisher-trust.json', 'server/core/addon-platform/trust/publisher-trust.json'],
+  ['tools/adk/pack-publish-fields.mjs', 'scripts/pack-publish-fields.mjs'],
+];
+
+/**
+ * @param {readonly string[]} copies
+ * @param {string} label
+ * @param {string} rootDir
+ */
+function copyDrift(copies, label, rootDir) {
+  const buffers = copies.map((rel) => {
+    const file = path.join(rootDir, rel);
+    return fs.existsSync(file) ? fs.readFileSync(file) : null;
+  });
+  if (buffers.some((buf) => buf === null)) return `${label} copy missing: ${copies.join(' , ')}`;
+  for (let i = 1; i < buffers.length; i += 1) {
+    if (!buffers[0].equals(buffers[i])) return `${label} drift: ${copies[0]} !== ${copies[i]}`;
+  }
+  return '';
+}
+
 /**
  * @param {string} [rootDir]
  * @returns {string} empty when the copies match, otherwise the drift message
  */
 export function publicKeyCopyDrift(rootDir = ROOT) {
-  const buffers = PUBLIC_KEY_COPIES.map((rel) => {
-    const file = path.join(rootDir, rel);
-    if (!fs.existsSync(file)) return null;
-    return fs.readFileSync(file);
-  });
-  if (buffers.some((buf) => buf === null)) {
-    return `public key copy missing: ${PUBLIC_KEY_COPIES.join(' , ')}`;
-  }
-  for (let i = 1; i < buffers.length; i += 1) {
-    if (!buffers[0].equals(buffers[i])) {
-      return `public key drift: ${PUBLIC_KEY_COPIES[0]} !== ${PUBLIC_KEY_COPIES[i]}`;
-    }
+  return copyDrift(PUBLIC_KEY_COPIES, 'public key', rootDir);
+}
+
+/**
+ * @param {string} [rootDir]
+ * @returns {string} empty when every synced pair matches, otherwise the first drift message
+ */
+export function syncedCopyDrift(rootDir = ROOT) {
+  for (const pair of SYNCED_COPIES) {
+    const drift = copyDrift(pair, 'synced file', rootDir);
+    if (drift) return drift;
   }
   return '';
 }
@@ -215,7 +237,7 @@ export function findPackageBoundaryViolations(packageRoot, options = {}) {
 }
 
 function main() {
-  const drift = publicKeyCopyDrift();
+  const drift = publicKeyCopyDrift() || syncedCopyDrift();
   if (drift) {
     console.error(`ci:packages:addon-sdk-boundary failed — ${drift}`);
     process.exit(1);

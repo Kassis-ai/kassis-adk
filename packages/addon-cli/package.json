@@ -30,8 +30,8 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "prepack": "node prepack.mjs && npm run build && node ../../scripts/pack-publish-fields.mjs apply",
-    "postpack": "node ../../scripts/pack-publish-fields.mjs restore"
+    "prepack": "node prepack.mjs && npm run build && node ../../tools/adk/pack-publish-fields.mjs apply",
+    "postpack": "node ../../tools/adk/pack-publish-fields.mjs restore"
   },
   "dependencies": {
     "@kassis/addon-testkit": "0.1.0",
