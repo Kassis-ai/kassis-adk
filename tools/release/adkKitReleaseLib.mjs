@@ -13,13 +13,11 @@ export const INDEX_FILE = 'index.json';
 export const SBOM_FILE = 'sbom.cdx.json';
 export const PUBLIC_KEY_FILE = 'cosign.pub';
 
-/** Kit unit tests only. Not the monorepo suite. */
-export const KIT_UNIT_GLOBS = [
-  '__tests__/unit/backend/core/adk*.test.ts',
-  '__tests__/unit/backend/core/addonCliPack.test.ts',
-  '__tests__/unit/backend/contracts/addonSdk',
-  '__tests__/unit/backend/ops/adkKitRelease.test.js',
-];
+/**
+ * Path filters for the release test run. vitest matches them as path prefixes, not
+ * globs, so a pattern like adk*.test.ts matched nothing. Every unit test here is a kit test.
+ */
+export const KIT_UNIT_GLOBS = ['__tests__/unit/'];
 
 const TAG_VERSION =
   /^adk\/v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/;

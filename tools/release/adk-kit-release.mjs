@@ -34,7 +34,8 @@ import {
 } from './adkKitReleaseLib.mjs';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const VITEST_CONFIG = '__tests__/config/vitest.workspace.js';
+// The kit's own vitest config at the repository root.
+const VITEST_CONFIG = 'vitest.config.mjs';
 
 /** @param {string} name @returns {string} */
 function flag(name) {
