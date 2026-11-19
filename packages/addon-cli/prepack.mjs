@@ -165,7 +165,7 @@ copyIntoLib(
   'publisher-trust.json'
 );
 copyIntoLib(
-  path.join(repoRoot, 'server/keys/addon_verification_public.key'),
+  path.join(coreRoot, 'keys', 'addon_verification_public.key'),
   'addon_verification_public.key'
 );
 copyIntoLib(packageEntry('@kassis/addon-sdk/codes/kadk-codes.json'), 'kadk-codes.json');

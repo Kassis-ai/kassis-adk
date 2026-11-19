@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import {
   findPackageBoundaryViolations,
+  publicKeyCopyDrift,
   stripLiteralBodiesForImportScan,
 } from '../../../../../tools/ci/check-addon-sdk-boundary.mjs';
 
@@ -43,6 +44,7 @@ afterEach(() => {
 describe('ci:packages:addon-sdk-boundary', () => {
   it.each([
     ['packages/addon-sdk', {}],
+    ['packages/addon-testkit', { allowNodeBuiltins: true }],
     ['packages/adk-protocol', { allowNodeBuiltins: true }],
     ['packages/adk-core', { allowNodeBuiltins: true }],
     ['packages/mcp-contract', { allowNodeBuiltins: true }],
@@ -50,9 +52,21 @@ describe('ci:packages:addon-sdk-boundary', () => {
     expect(findPackageBoundaryViolations(path.resolve(rel), options)).toEqual([]);
   });
 
-  it('ignores import syntax inside string literals', () => {
-    const source = 'const tpl = `import x from "../../server/index.js";`;';
-    expect(stripLiteralBodiesForImportScan(source).includes('import')).toBe(false);
+  it('ignores import syntax inside template text and keeps real imports', () => {
+    const hidden = 'const tpl = `import x from "../../server/index.js";`;';
+    expect(stripLiteralBodiesForImportScan(hidden).includes('import')).toBe(false);
+    const interpolated = 'export const x = `pre ${import("../../server/index.js")}`;';
+    expect(stripLiteralBodiesForImportScan(interpolated)).toContain(
+      'import("../../server/index.js")'
+    );
+    const specifier = 'export const y = import(`../../server/${name}.js`);';
+    expect(stripLiteralBodiesForImportScan(specifier)).toContain("import('../../server/.js')");
+    const url = 'const s = "http://example.com"; import { x } from "../../server/index.js";';
+    expect(stripLiteralBodiesForImportScan(url)).toContain('from "../../server/index.js"');
+  });
+
+  it('keeps the vendored public key identical to the host copy', () => {
+    expect(publicKeyCopyDrift()).toBe('');
   });
 
   it('passes imports inside the package and declared dependencies', () => {
@@ -83,6 +97,20 @@ describe('ci:packages:addon-sdk-boundary', () => {
       'KADK-202 server/core/z.js',
       'KADK-202 ../../server/index.js',
     ]);
+  });
+
+  it('fails on an import inside a template interpolation (KADK-202)', () => {
+    const root = tempPackage({
+      'src/bad.ts': 'export const x = `pre ${import("../../server/index.js")}`;',
+    });
+    expect(codes(root)).toEqual(['KADK-202 ../../server/index.js']);
+  });
+
+  it('fails on a template import specifier that leaves the package (KADK-202)', () => {
+    const root = tempPackage({
+      'src/bad.ts': 'export const y = import(`../../server/${name}.js`);',
+    });
+    expect(codes(root)).toEqual(['KADK-202 ../../server/.js']);
   });
 
   it('fails on a relative path that leaves the package (KADK-204)', () => {

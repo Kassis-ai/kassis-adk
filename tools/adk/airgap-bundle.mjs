@@ -396,7 +396,7 @@ export function writeAirgapBundle(outDir, root = repoRoot, options = {}) {
   const keyOut = path.join(outDir, 'keys');
   fs.mkdirSync(keyOut, { recursive: true });
   fs.copyFileSync(
-    path.join(root, 'server/keys/addon_verification_public.key'),
+    path.join(root, 'packages/adk-core/keys/addon_verification_public.key'),
     path.join(keyOut, 'addon_verification_public.key')
   );
   fs.writeFileSync(path.join(outDir, 'sbom.json'), `${JSON.stringify(buildSbom(root), null, 2)}\n`);

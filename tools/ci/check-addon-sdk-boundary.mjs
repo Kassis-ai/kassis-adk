@@ -12,8 +12,39 @@ import fs from 'node:fs';
 import { builtinModules } from 'node:module';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { stripLiteralBodiesForImportScan } from './stripImportScanLiterals.mjs';
+
+export { stripLiteralBodiesForImportScan };
 
 const ROOT = process.cwd();
+
+/** Public verification key copies. Bytes must match. The kit copy is the one prepack and the air-gap bundle read. */
+export const PUBLIC_KEY_COPIES = [
+  'packages/adk-core/keys/addon_verification_public.key',
+  'server/keys/addon_verification_public.key',
+];
+
+/**
+ * @param {string} [rootDir]
+ * @returns {string} empty when the copies match, otherwise the drift message
+ */
+export function publicKeyCopyDrift(rootDir = ROOT) {
+  const buffers = PUBLIC_KEY_COPIES.map((rel) => {
+    const file = path.join(rootDir, rel);
+    if (!fs.existsSync(file)) return null;
+    return fs.readFileSync(file);
+  });
+  if (buffers.some((buf) => buf === null)) {
+    return `public key copy missing: ${PUBLIC_KEY_COPIES.join(' , ')}`;
+  }
+  for (let i = 1; i < buffers.length; i += 1) {
+    if (!buffers[0].equals(buffers[i])) {
+      return `public key drift: ${PUBLIC_KEY_COPIES[0]} !== ${PUBLIC_KEY_COPIES[i]}`;
+    }
+  }
+  return '';
+}
+
 const SCAN_EXTENSIONS = new Set(['.ts', '.tsx', '.mts', '.cts', '.js', '.jsx', '.mjs', '.cjs']);
 const SKIP_DIR_NAMES = new Set(['node_modules', 'dist', 'coverage', '.git']);
 /** @kassis/* packages verified to import nothing outside themselves (dependency order). */
@@ -29,6 +60,11 @@ const NODE_BUILTINS = new Set(builtinModules);
 /** @type {Array<{ dir: string, label: string, allowNodeBuiltins: boolean }>} */
 const KIT_PACKAGE_SCANS = [
   { dir: path.join(ROOT, 'packages', 'addon-sdk'), label: '@kassis/addon-sdk', allowNodeBuiltins: false },
+  {
+    dir: path.join(ROOT, 'packages', 'addon-testkit'),
+    label: '@kassis/addon-testkit',
+    allowNodeBuiltins: true,
+  },
   {
     dir: path.join(ROOT, 'packages', 'adk-protocol'),
     label: '@kassis/adk-protocol',
@@ -48,78 +84,6 @@ const KIT_PACKAGE_SCANS = [
 
 const IMPORT_RE =
   /(?:\bimport\s+[^;]*?\bfrom\s*['"]([^'"]+)['"]|\bimport\s*\(\s*['"]([^'"]+)['"]\s*\)|\brequire\s*\(\s*['"]([^'"]+)['"]\s*\)|\bexport\s+[^;]*?\bfrom\s*['"]([^'"]+)['"]|\bimport\s+['"]([^'"]+)['"])/g;
-
-/**
- * Remove comments and string/template literals so generated scaffold snippets do not false-positive.
- * @param {string} source
- * @returns {string}
- */
-export function stripLiteralBodiesForImportScan(source) {
-  let out = '';
-  let i = 0;
-  while (i < source.length) {
-    const ch = source[i];
-    const next = source[i + 1];
-    if (ch === '/' && next === '/') {
-      i += 2;
-      while (i < source.length && source[i] !== '\n') i += 1;
-      continue;
-    }
-    if (ch === '/' && next === '*') {
-      i += 2;
-      while (i < source.length && !(source[i] === '*' && source[i + 1] === '/')) i += 1;
-      i += 2;
-      continue;
-    }
-    if (ch === '`') {
-      i += 1;
-      while (i < source.length) {
-        const cur = source[i];
-        if (cur === '\\') {
-          i += 2;
-          continue;
-        }
-        if (cur === '$' && source[i + 1] === '{') {
-          i += 2;
-          let depth = 1;
-          while (i < source.length && depth > 0) {
-            const inner = source[i];
-            if (inner === '"' || inner === "'" || inner === '`') {
-              const nested = inner;
-              i += 1;
-              while (i < source.length) {
-                if (source[i] === '\\') {
-                  i += 2;
-                  continue;
-                }
-                if (source[i] === nested) {
-                  i += 1;
-                  break;
-                }
-                i += 1;
-              }
-              continue;
-            }
-            if (inner === '{') depth += 1;
-            if (inner === '}') depth -= 1;
-            i += 1;
-          }
-          continue;
-        }
-        if (cur === '`') {
-          i += 1;
-          break;
-        }
-        i += 1;
-      }
-      out += ' ';
-      continue;
-    }
-    out += ch;
-    i += 1;
-  }
-  return out;
-}
 
 /**
  * @param {string} dir
@@ -251,6 +215,11 @@ export function findPackageBoundaryViolations(packageRoot, options = {}) {
 }
 
 function main() {
+  const drift = publicKeyCopyDrift();
+  if (drift) {
+    console.error(`ci:packages:addon-sdk-boundary failed — ${drift}`);
+    process.exit(1);
+  }
   let failed = false;
   for (const { dir, label, allowNodeBuiltins } of KIT_PACKAGE_SCANS) {
     const violations = findPackageBoundaryViolations(dir, { allowNodeBuiltins });
