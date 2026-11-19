@@ -2,7 +2,7 @@
 /**
  * Golden vectors for addon manifest signing (S3.01). Any drift in
  * canonical JSON, content hash, UI hash, or Ed25519 verification must fail here
- * before @kassis/adk-protocol moves code out of server/core/addon-deployment.
+ * against @kassis/adk-protocol (must stay aligned with host verification).
  */
 import crypto from 'node:crypto';
 import fs from 'node:fs';
@@ -11,10 +11,10 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import {
+  buildCanonicalManifestString,
   computeAddonContentHash,
   computeUiContentHash,
-} from '../../../../server/core/addon-deployment/addonContentHash.mjs';
-import { buildCanonicalManifestString } from '../../../../server/core/addon-deployment/canonicalJson.mjs';
+} from '@kassis/adk-protocol';
 const repoRoot = path.resolve(import.meta.dirname, '../../../..');
 const fixtureRoot = path.join(repoRoot, '__tests__/fixtures/adk-signing-golden');
 const vectors = JSON.parse(

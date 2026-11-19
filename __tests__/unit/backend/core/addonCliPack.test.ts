@@ -5,7 +5,7 @@ import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { computeAddonContentHash } from '../../../../server/core/addon-deployment/addonContentHash.mjs';
+import { computeAddonContentHash } from '@kassis/adk-protocol';
 import { signManifestFile } from '../../../../tools/adk/signManifest.mjs';
 
 describe('addon cli package', () => {

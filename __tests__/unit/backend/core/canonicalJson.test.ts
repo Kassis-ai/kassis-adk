@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   buildCanonicalManifestString,
   canonicalJsonStringify,
-} from '../../../../server/core/addon-deployment/canonicalJson.mjs';
+} from '@kassis/adk-protocol';
 
 describe('canonicalJsonStringify', () => {
   it('sorts object keys at every depth and writes no whitespace', () => {
