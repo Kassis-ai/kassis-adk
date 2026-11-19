@@ -3,6 +3,7 @@
  * the repository. Data files the bundle reads by path are copied beside lib/.
  * The private signing key is never copied.
  */
+import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -20,6 +21,16 @@ const external = [
   'es-module-lexer',
   '@kassis/addon-testkit',
 ];
+
+const syncClientDocs = spawnSync(process.execPath, [path.join(repoRoot, 'tools/adk/sync-client-docs.mjs')], {
+  cwd: repoRoot,
+  encoding: 'utf8',
+});
+if (syncClientDocs.status !== 0) {
+  throw new Error(
+    `sync-client-docs failed\n${syncClientDocs.stdout ?? ''}\n${syncClientDocs.stderr ?? ''}`
+  );
+}
 
 fs.rmSync(lib, { recursive: true, force: true });
 fs.mkdirSync(lib, { recursive: true });
@@ -134,6 +145,9 @@ fs.cpSync(
   path.join(lib, 'discovery'),
   { recursive: true }
 );
+fs.cpSync(path.join(repoRoot, 'packages/adk-core/src/client-docs'), path.join(lib, 'client-docs'), {
+  recursive: true,
+});
 fs.cpSync(
   path.join(repoRoot, 'templates/kassis-addon'),
   path.join(pkgRoot, 'templates/kassis-addon'),

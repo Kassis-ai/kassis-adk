@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "description": "Bundled ADK doc excerpts for offline search_docs. Full pages remain under docs/developer/technical/adk; S3.12 ships them in the CLI package.",
+  "description": "Bundled ADK doc excerpts for offline search_docs. Full pages ship as packages/adk-core/src/client-docs and lib/client-docs in @kassis/addon-cli prepack.",
   "documents": [
     {
       "id": "addon-anatomy",

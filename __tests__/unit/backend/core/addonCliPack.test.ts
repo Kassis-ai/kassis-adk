@@ -22,6 +22,21 @@ describe('addon cli package', () => {
     expect(leaked).toEqual([]);
   });
 
+  it('packs full client ADK docs under lib/client-docs', () => {
+    const result = spawnSync('npm', ['pack', '--dry-run', '--json'], {
+      cwd: 'packages/addon-cli',
+      encoding: 'utf8',
+      shell: true,
+    });
+    expect(result.status).toBe(0);
+    const start = result.stdout.indexOf('[');
+    const filePaths = (
+      JSON.parse(result.stdout.slice(start))[0].files as Array<{ path: string }>
+    ).map((row) => row.path.replace(/\\/g, '/'));
+    expect(filePaths.some((p) => p.endsWith('lib/client-docs/quickstart.md'))).toBe(true);
+    expect(filePaths.some((p) => p.includes('maintainers.md'))).toBe(false);
+  });
+
   it('writes the content hash the host checks before it signs', async () => {
     const dir = await mkdtemp(path.join(tmpdir(), 'addon-sign-'));
     const keyDir = await mkdtemp(path.join(tmpdir(), 'addon-sign-key-'));
