@@ -24,6 +24,7 @@ const COMMANDS = [
   'sbom',
   'deploy',
   'status',
+  'rollback',
   'sign',
   'keys',
   'certify',
@@ -55,6 +56,7 @@ Commands:
   sbom          Write sbom.json for this addon
   deploy        Upload a .addon and print the approval request id
   status        Print installed and pending versions
+  rollback      Switch an addon back to a kept version
   sign          Sign the manifest
   keys          generate, export-public, or register
   certify       Attestation gate
@@ -139,6 +141,10 @@ Uploads the .addon to POST /api/v1/addon-security/deploy and prints the approval
 
 Prints installed and pending versions from GET /api/v1/platform/addons/installations. Token: KASSIS_ADK_TOKEN. The response is the addon id, active version, publisher, and pending versions.
 `,
+  rollback: `Usage: kassis-addon rollback --instance <url> <addon-id> <target-version> [--json]
+
+Calls POST /api/v1/platform/addons/<addon-id>/rollback with { "targetVersion": "<target-version>" }. --instance <url> and --instance=<url> both work. Token: KASSIS_ADK_TOKEN. HTTP 200 switches the active version and prints the addon id and version. HTTP 202 holds the request for approval and prints the approval request id.
+`,
   sign: `Usage: kassis-addon sign [--key <path>] [--json]
 
 Inside this repository, omit --key to use the repo signer. Outside it, --key is required.
@@ -220,6 +226,12 @@ function printSuccess(command, data) {
   if (command === 'deploy' && typeof data.requestId === 'string')
     process.stdout.write(`${data.requestId}\n`);
   if (command === 'status') printStatus(data.installations);
+  if (command === 'rollback') {
+    if (typeof data.requestId === 'string' && data.requestId) process.stdout.write(`${data.requestId}\n`);
+    else if (typeof data.addonId === 'string' && typeof data.version === 'string') {
+      process.stdout.write(`${data.addonId} ${data.version}\n`);
+    }
+  }
   if (command === 'rules') printLines(data.files);
   if (command === 'keys' && typeof data.fingerprint === 'string') {
     process.stdout.write(`${data.fingerprint}\n${data.publicKey}\n${data.file}\n`);
@@ -337,6 +349,7 @@ try {
     command,
     subcommand: parsed.positionals[1] ?? '',
     positional: parsed.positionals[1] ?? '',
+    positional2: parsed.positionals[2] ?? '',
     cwd: process.cwd(),
     imageFlag: typeof parsed.values.image === 'string' ? parsed.values.image : undefined,
     followLogs: command === 'dev' && !json,

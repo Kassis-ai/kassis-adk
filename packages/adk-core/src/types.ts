@@ -51,6 +51,7 @@ export interface CommandRequest {
   readonly command: string;
   readonly subcommand: string;
   readonly positional: string;
+  readonly positional2: string;
   readonly cwd: string;
   readonly flags: CommandFlags;
   /** Undefined when --image was not passed. An empty string means the flag was passed blank. */

@@ -24,7 +24,13 @@ import { startDevHost } from './devHost.ts';
 import { migrateProject } from './migrateCommand.ts';
 import { doctorProject } from './doctor.ts';
 import { scaffoldProject } from './scaffoldFeature.ts';
-import { deployProject, packageProject, sbomProject, statusProject } from './packageCommand.ts';
+import {
+  deployProject,
+  packageProject,
+  rollbackProject,
+  sbomProject,
+  statusProject,
+} from './packageCommand.ts';
 
 function projectDir(request: CommandRequest): string {
   if (request.flags.dir) return path.resolve(request.cwd, request.flags.dir);
@@ -67,6 +73,8 @@ export async function runCommand(request: CommandRequest): Promise<CommandResult
       return deployProject(dir, flags.instance, request.positional, request.cwd);
     case 'status':
       return statusProject(flags.instance);
+    case 'rollback':
+      return rollbackProject(flags.instance, request.positional, request.positional2);
     case 'certify':
       return certifyProject(dir);
     case 'build':

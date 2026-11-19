@@ -345,8 +345,14 @@ function adkToken(code: string): CommandResult | string {
   return token;
 }
 
+function platformCommandLabel(code: string): string {
+  if (code === 'ADK-DEPLOY') return 'deploy';
+  if (code === 'ADK-ROLLBACK') return 'rollback';
+  return 'status';
+}
+
 function instanceTarget(instance: string, pathname: string, code: string): URL | CommandResult {
-  const command = code === 'ADK-DEPLOY' ? 'deploy' : 'status';
+  const command = platformCommandLabel(code);
   if (!instance.trim()) {
     return failure(
       `${command} --instance=<url> is required`,
@@ -554,6 +560,74 @@ function installationsJson(rows: readonly InstallationView[]): JsonValue[] {
     publisher: row.publisher,
     pendingVersions: [...row.pendingVersions],
   }));
+}
+
+/** Switches an installed addon back to a kept version. The token is KASSIS_ADK_TOKEN. */
+export async function rollbackProject(
+  instance: string,
+  addonId: string,
+  targetVersion: string
+): Promise<CommandResult> {
+  try {
+    const id = plainText(addonId);
+    const version = plainText(targetVersion);
+    if (!id) {
+      return failure(
+        'addon id is required',
+        'Pass the addon id as the first argument after rollback.',
+        'ADK-ROLLBACK'
+      );
+    }
+    if (!version) {
+      return failure(
+        'targetVersion is required',
+        'Pass the target version as the second argument.',
+        'ADK-ROLLBACK'
+      );
+    }
+    const pathname = `/api/v1/platform/addons/${encodeURIComponent(id)}/rollback`;
+    const target = instanceTarget(instance, pathname, 'ADK-ROLLBACK');
+    if (isResult(target)) return target;
+    const token = adkToken('ADK-ROLLBACK');
+    if (isResult(token)) return token;
+    const response = await fetch(target, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ targetVersion: version }),
+      redirect: 'manual',
+      signal: AbortSignal.timeout(REQUEST_MS),
+    });
+    const text = await response.text();
+    if (response.status !== 200 && response.status !== 202) {
+      return failure(
+        errorText(response.status, text, 'Rollback'),
+        'Check the token, the instance URL, system.admin, and that the version folder exists.',
+        'ADK-ROLLBACK'
+      );
+    }
+    const data = responseData(parseBody(text));
+    const outcome = data ? stringField(data, 'outcome') : '';
+    if (outcome !== 'switched' && outcome !== 'held') {
+      return failure(
+        'Rollback did not return an outcome',
+        'The instance should return outcome switched or held.',
+        'ADK-ROLLBACK'
+      );
+    }
+    return commandResult([], {
+      outcome,
+      addonId: data ? stringField(data, 'addonId') : id,
+      version: data ? stringField(data, 'version') : version,
+      requestId: data ? stringField(data, 'requestId') : '',
+      deploymentId: data ? stringField(data, 'deploymentId') : '',
+      httpStatus: response.status,
+    });
+  } catch (error) {
+    return failure(messageOf(error), 'Check the instance URL.', 'ADK-ROLLBACK');
+  }
 }
 
 /** Reads installed and pending versions. The token is KASSIS_ADK_TOKEN. */
