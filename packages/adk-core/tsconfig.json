@@ -8,9 +8,9 @@
     "rootDir": "src",
     "strict": true,
     "skipLibCheck": true,
-    "noEmit": true,
     "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
     "resolveJsonModule": true
   },
-  "include": ["src"]
+  "include": ["src/**/*.ts"]
 }

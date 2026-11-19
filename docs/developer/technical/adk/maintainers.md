@@ -24,7 +24,7 @@ npm pack --pack-destination ./packs ./packages/mcp-contract
 npm pack --pack-destination ./packs ./packages/adk-protocol
 ```
 
-`@kassis/addon-sdk`, `@kassis/adk-core`, `@kassis/adk-protocol`, `@kassis/mcp-contract`, `@kassis/addon-cli`, and `@kassis/addon-testkit` are one changesets `fixed` group at `0.1.0`. `npm pack` of `@kassis/mcp-contract` and `@kassis/adk-protocol` runs prepack and ships `dist`. `npm pack` of `@kassis/adk-core` still ships TypeScript sources. The maintainer air-gap bundle below copies those sources and does not add an adk-core tarball. The tag release bundle is separate: it packs every package in the fixed group. `HOST_API_VERSION` stays `1.0.0`. See the [semver policy](../addons/semver-policy.md).
+`@kassis/addon-sdk`, `@kassis/adk-core`, `@kassis/adk-protocol`, `@kassis/mcp-contract`, `@kassis/addon-cli`, and `@kassis/addon-testkit` are one changesets `fixed` group at `0.1.0`. `npm pack` of `@kassis/mcp-contract`, `@kassis/adk-protocol`, and `@kassis/adk-core` runs prepack and ships `dist`. Inside this checkout the package entry stays `src/` so Node can run the TypeScript. The maintainer air-gap bundle below copies adk-core sources and does not add an adk-core tarball. The tag release bundle is separate: it packs every package in the fixed group. `HOST_API_VERSION` stays `1.0.0`. See the [semver policy](../addons/semver-policy.md).
 
 Canonical JSON, content hash (`contentHash` and `uiContentHash`), Ed25519 verify, publisher trust evaluation, and the deployment evidence summary are `@kassis/adk-protocol` (`packages/adk-protocol/src`). The content-hash scope file is `packages/adk-protocol/src/addonContentHash.config.json`. The seeded publisher file stays at `server/core/addon-platform/trust/publisher-trust.json`. The server and `tools/adk` barrels point the package at that file. Do not edit it when moving code. Server paths `canonicalJson.mjs`, `addonContentHash.mjs`, `publisherTrust.mjs`, and `evidenceSummary.ts` re-export the package.
 
@@ -53,7 +53,7 @@ node tools/adk/package-sbom.mjs
 node tools/adk/airgap-bundle.mjs --out=./airgap
 ```
 
-The bundle contains the SDK, the testkit, the template, the public verification key, `sbom.json`, the six public package tarballs, `packages/adk-core` sources, the CLI entry `tools/adk/kassis-addon.mjs`, and `checksums.txt`. It refuses to include the private signing key.
+The bundle contains the SDK, the testkit, the template, the public verification key, `sbom.json`, the six public package tarballs, `packages/adk-core` sources, the CLI entry `tools/adk/kassis-addon.mjs`, and `checksums.txt`. It refuses to include the private signing key. `tools/adk/kassis-addon.mjs` is a wrapper. The command script and the engine modules live in `packages/adk-core`. `tools/adk` keeps that wrapper, the MCP wrapper, API surface, the air-gap bundle, package SBOM, client-doc sync, tarball signing, and the coding profiles.
 
 ## Clean-room verification
 
@@ -112,6 +112,7 @@ The signed profile is `tools/adk/profiles/addon-coding-agent.json` (version 2). 
 
 | Date       | Change                                                                                                                                                                                                                          |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-19 | ADK engine and the two CLI scripts live in `packages/adk-core`. `npm pack` of that package ships `dist`. `tools/adk` keeps repo maintenance and thin wrappers. The publisher seed file stays under `server/core/addon-platform/trust/`. |
 | 2026-11-19 | `Dockerfile.server` copies and builds `packages/adk-protocol` and links `@kassis/adk-protocol` for production and development targets (S3.07). Dev entrypoint links the package when node_modules volumes are stale.             |
 | 2026-11-19 | `@kassis/adk-protocol` is in the kit group at `0.1.0`. Content-hash scope and canonical JSON live in that package. The publisher seed file stays under `server/core/addon-platform/trust/`.                                   |
 | 2026-11-19 | Tag `adk/v*` runs the kit release workflow: build, kit unit tests, provenance publish of the changesets fixed group, SBOM, and a cosign-signed air-gap zip on the GitHub release.                                              |

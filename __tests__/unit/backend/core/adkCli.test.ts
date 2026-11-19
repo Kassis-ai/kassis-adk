@@ -150,6 +150,13 @@ describe('addon CLI', () => {
         'adk.requirements-traced:0',
         'adk.requirement-plan-mapped:0',
         'adk.attest-pinned-profile:0',
+        'adk.thin-addon-budgets:0',
+        'adk.mandatory-contract-intact:0',
+        'adk.outbound-timeouts:0',
+        'adk.pagination-and-query-caps:0',
+        'adk.ui-i18n:0',
+        'adk.idempotent-handlers:0',
+        'adk.no-module-state:0',
       ]);
       expect(
         checks.checks.every(

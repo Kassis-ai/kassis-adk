@@ -1,53 +1,53 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { checkAddonImports } from '@kassis/addon-testkit';
-import { initAddon } from '../../../tools/adk/scaffold.mjs';
+import { initAddon } from './engine/scaffold.mjs';
 import {
   certifyAttestation,
   kadkIssue as catalogIssue,
-} from '../../../tools/adk/certifyAttestation.mjs';
+} from './engine/certifyAttestation.mjs';
 import {
   blankAttestation,
   buildProfileLock,
   packEvidence,
-} from '../../../tools/adk/profileLock.mjs';
-import { writeAgentRuleFiles } from '../../../tools/adk/agentRules.mjs';
+} from './engine/profileLock.mjs';
+import { writeAgentRuleFiles } from './engine/agentRules.mjs';
 import {
   downloadProfile,
   readBundledProfile,
   verifyProfileSignature,
-} from '../../../tools/adk/profileBundle.mjs';
-import { submitCertifiedRun } from '../../../tools/adk/registryRun.mjs';
-import { buildAddon } from '../../../tools/adk/addonBuild.mjs';
-import { signManifestFile } from '../../../tools/adk/signManifest.mjs';
+} from './engine/profileBundle.mjs';
+import { submitCertifiedRun } from './engine/registryRun.mjs';
+import { buildAddon } from './engine/addonBuild.mjs';
+import { signManifestFile } from './engine/signManifest.mjs';
 import {
   exportPublicKey,
   generatePublisherKey,
   registerPublisherKey,
-} from '../../../tools/adk/publisherKeys.mjs';
-import { recordMachineChecks } from '../../../tools/adk/certifyChecks.mjs';
+} from './engine/publisherKeys.mjs';
+import { recordMachineChecks } from './engine/certifyChecks.mjs';
 import {
   auditRequirementsTracing,
   writeRequirementsCoverage,
-} from '../../../tools/adk/requirementsTrace.mjs';
+} from './engine/requirementsTrace.mjs';
 import {
   auditRequirementPlan,
   writeRequirementMapping,
-} from '../../../tools/adk/requirementPlan.mjs';
-import { auditReuseCore, writeReuseCoreEvidence } from '../../../tools/adk/reuseCore.mjs';
+} from './engine/requirementPlan.mjs';
+import { auditReuseCore, writeReuseCoreEvidence } from './engine/reuseCore.mjs';
 import {
   auditThinAddonBudgets,
   writeThinAddonBudgetsEvidence,
-} from '../../../tools/adk/thinAddonBudgets.mjs';
+} from './engine/thinAddonBudgets.mjs';
 import {
   auditEngineeringPractice,
   writeEngineeringPracticeEvidence,
-} from '../../../tools/adk/engineeringPractice.mjs';
-import { auditProcessPacks } from '../../../tools/adk/processPacks.mjs';
+} from './engine/engineeringPractice.mjs';
+import { auditProcessPacks } from './engine/processPacks.mjs';
 import {
   auditMandatoryContract,
   writeMandatoryContractEvidence,
-} from '../../../tools/adk/mandatoryContract.mjs';
+} from './engine/mandatoryContract.mjs';
 import type { AdkIssue, CommandResult, JsonObject, LogListener } from './types.ts';
 import { checkManifestDirectory } from './manifestCheck.ts';
 import {

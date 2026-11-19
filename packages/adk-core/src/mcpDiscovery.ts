@@ -182,7 +182,18 @@ export function getGuardrail(args: Record<string, unknown>): CommandResult {
       { id }
     );
   }
-  return commandResult([], { mode: 'offline', guardrail: row });
+  return commandResult([], {
+    mode: 'offline',
+    guardrail: {
+      id: row.id,
+      group: row.group,
+      level: row.level,
+      check: row.check,
+      kadkCode: row.kadkCode,
+      fixHint: row.fixHint,
+      ...(row.inProfile ? { inProfile: true } : {}),
+    },
+  });
 }
 
 export function getTierMatrix(args: Record<string, unknown> = {}): CommandResult {

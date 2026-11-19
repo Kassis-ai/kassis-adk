@@ -16,10 +16,10 @@ const packagesDir = path.join(repoRoot, 'packages');
 const REGISTRY = 'https://npm.pkg.github.com';
 const SOURCE_EXT = ['.ts', '.tsx', '.mts'];
 /**
- * S3.04 replaces this with a JavaScript dist prepack. Do not add packages.
+ * Every public package packs JavaScript. Do not add names here.
  * @type {ReadonlySet<string>}
  */
-const TYPESCRIPT_PACK_ALLOW = new Set(['@kassis/adk-core']);
+const TYPESCRIPT_PACK_ALLOW = new Set();
 
 /** @param {string} entry */
 function isSourceEntry(entry) {

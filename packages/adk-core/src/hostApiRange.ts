@@ -1,3 +1,6 @@
+/** Instance host API. Addon manifest hostApi ranges must accept this version. */
+export const HOST_API_VERSION = '1.0.0';
+
 /** hostApi ranges accepted by the manifest schema, compared with HOST_API_VERSION. */
 
 export interface SemVer {

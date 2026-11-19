@@ -2,10 +2,9 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { checkAddonTierRefusals } from '@kassis/addon-testkit';
-import { HOST_API_VERSION } from '../../../packages/shared-config/src/hostApiVersion.ts';
 import type { AdkIssue, CommandResult, JsonObject } from './types.ts';
 import { commandResult, isRecordValue, kadkIssue, operationalIssue, readJson } from './issues.ts';
-import { hostApiSatisfies, parseSemVer } from './hostApiRange.ts';
+import { HOST_API_VERSION, hostApiSatisfies, parseSemVer } from './hostApiRange.ts';
 import { runProcess } from './processRun.ts';
 
 const PROBE_MS = 8000;

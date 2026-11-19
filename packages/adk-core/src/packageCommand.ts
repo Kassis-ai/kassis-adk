@@ -7,7 +7,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
-import { writeAddonSbom } from '../../../tools/adk/addonSbom.mjs';
+import { writeAddonSbom } from './engine/addonSbom.mjs';
 import {
   computeAddonContentHash,
   isContentHash,

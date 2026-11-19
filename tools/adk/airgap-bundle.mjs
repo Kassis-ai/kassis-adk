@@ -2,8 +2,8 @@
  * Air-gap bundle: SDK, testkit, template, public verification key, SBOM,
  * the six dist package tarballs, adk-core sources, the CLI entry
  * tools/adk/kassis-addon.mjs, and checksums.txt.
- * adk-core is in the kit version group. This bundle copies its sources
- * because the published entry is still TypeScript.
+ * adk-core is in the kit version group. npm pack ships dist.
+ * This bundle still copies sources so the CLI entry can run without a build.
  * There is no separate CLI binary. The private signing key is not included.
  *
  *   node tools/adk/airgap-bundle.mjs --out=<dir>
