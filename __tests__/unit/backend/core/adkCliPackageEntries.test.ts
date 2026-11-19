@@ -1,13 +1,8 @@
-import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 const repo = path.resolve(import.meta.dirname, '../../../..');
-
-function sha256(file: string): string {
-  return createHash('sha256').update(fs.readFileSync(file)).digest('hex');
-}
 
 describe('@kassis/addon-cli package entries', () => {
   it('does not resolve tools/adk from the bin or prepack', () => {
@@ -22,22 +17,34 @@ describe('@kassis/addon-cli package entries', () => {
     }
   });
 
-  it('keeps the packed coding profiles identical to tools/adk', () => {
-    const source = path.join(repo, 'tools/adk/profiles');
-    const copy = path.join(repo, 'packages/adk-core/profiles');
+  it('keeps coding profiles only in @kassis/adk-core', () => {
+    expect(fs.existsSync(path.join(repo, 'tools/adk/profiles'))).toBe(false);
     const names = fs
-      .readdirSync(source)
+      .readdirSync(path.join(repo, 'packages/adk-core/profiles'))
       .filter((name) => name.endsWith('.json'))
       .sort();
-    expect(names.length).toBeGreaterThan(0);
-    expect(
-      fs
-        .readdirSync(copy)
-        .filter((name) => name.endsWith('.json'))
-        .sort()
-    ).toEqual(names);
-    for (const name of names) {
-      expect(sha256(path.join(copy, name)), name).toBe(sha256(path.join(source, name)));
-    }
+    expect(names).toEqual([
+      'addon-coding-agent.json',
+      'addon-coding-agent.v1.json',
+      'addon-coding-agent.v3.draft.json',
+    ]);
+    const build = fs.readFileSync(path.join(repo, 'packages/adk-core/build.mjs'), 'utf8');
+    expect(build).not.toContain('tools/adk');
+    expect(build).toContain("path.join(pkgRoot, 'profiles')");
+    const bundle = fs.readFileSync(
+      path.join(repo, 'packages/adk-core/src/engine/profileBundle.mjs'),
+      'utf8'
+    );
+    expect(bundle).not.toContain('tools');
+    const scaffold = fs.readFileSync(
+      path.join(repo, 'packages/adk-core/src/engine/scaffold.mjs'),
+      'utf8'
+    );
+    const packedReturn = scaffold.indexOf(
+      "if (globalThis.__KASSIS_ADK_PACKED__ === true) return 'kassis-addon';"
+    );
+    const repoProbe = scaffold.indexOf('tools/adk/kassis-addon.mjs');
+    expect(packedReturn).toBeGreaterThan(-1);
+    expect(repoProbe).toBeGreaterThan(packedReturn);
   });
 });

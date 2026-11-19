@@ -25,7 +25,7 @@ const here = moduleDir(import.meta.url);
 
 function cliScript() {
   const beside = path.join(here, 'kassis-addon.mjs');
-  if (fs.existsSync(beside)) return beside;
+  if (globalThis.__KASSIS_ADK_PACKED__ === true || fs.existsSync(beside)) return beside;
   return checkoutFile(import.meta.url, 'tools', 'adk', 'kassis-addon.mjs') || beside;
 }
 const OUTPUT_STORED_MAX = 4000;

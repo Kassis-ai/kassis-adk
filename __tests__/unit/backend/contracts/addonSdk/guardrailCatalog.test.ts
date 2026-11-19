@@ -32,10 +32,10 @@ describe('@kassis/addon-sdk guardrails.json (S2.45)', () => {
   it('covers signed v2 and unsigned v3 draft profile keys', () => {
     const ids = new Set(listGuardrailCatalogEntries().map((row) => row.id));
     const v2 = profileKeys(
-      path.join(repo, 'tools/adk/profiles/addon-coding-agent.json')
+      path.join(repo, 'packages/adk-core/profiles/addon-coding-agent.json')
     );
     const v3 = profileKeys(
-      path.join(repo, 'tools/adk/profiles/addon-coding-agent.v3.draft.json')
+      path.join(repo, 'packages/adk-core/profiles/addon-coding-agent.v3.draft.json')
     );
     for (const key of [...new Set([...v2, ...v3])]) {
       expect(ids.has(key), `catalogue missing ${key}`).toBe(true);

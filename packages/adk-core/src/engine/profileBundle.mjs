@@ -11,8 +11,8 @@ import { besideThenCheckout } from './kitPaths.mjs';
 const profilesDir = besideThenCheckout(
   import.meta.url,
   'profiles',
-  'tools',
-  'adk',
+  'packages',
+  'adk-core',
   'profiles'
 );
 const publicKeyPath = besideThenCheckout(

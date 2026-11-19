@@ -8,7 +8,7 @@ import { recordMachineChecks } from '../../../../tools/adk/certifyChecks.mjs';
 import { verifyProfileSignature } from '../../../../tools/adk/profileBundle.mjs';
 
 const repo = path.resolve(import.meta.dirname, '../../../..');
-const draftPath = path.join(repo, 'tools/adk/profiles/addon-coding-agent.v3.draft.json');
+const draftPath = path.join(repo, 'packages/adk-core/profiles/addon-coding-agent.v3.draft.json');
 const skillKeys = [
   'adk.add-route',
   'adk.add-table',

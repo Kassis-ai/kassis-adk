@@ -53,7 +53,7 @@ node tools/adk/package-sbom.mjs
 node tools/adk/airgap-bundle.mjs --out=./airgap
 ```
 
-The bundle contains the SDK, the testkit, the template, the public verification key, `sbom.json`, the six public package tarballs, `packages/adk-core` sources, the CLI entry `tools/adk/kassis-addon.mjs`, and `checksums.txt`. It refuses to include the private signing key. `tools/adk/kassis-addon.mjs` is a wrapper. The command script and the engine modules live in `packages/adk-core`. `tools/adk` keeps that wrapper, the MCP wrapper, API surface, the air-gap bundle, package SBOM, client-doc sync, tarball signing, and the coding profiles.
+The bundle contains the SDK, the testkit, the template, the public verification key, `sbom.json`, the six public package tarballs, `packages/adk-core` sources, the CLI entry `tools/adk/kassis-addon.mjs`, and `checksums.txt`. It refuses to include the private signing key. `tools/adk/kassis-addon.mjs` is a wrapper. The command script and the engine modules live in `packages/adk-core`. `tools/adk` keeps that wrapper, the MCP wrapper, API surface, the air-gap bundle, package SBOM, client-doc sync, and tarball signing. Coding profiles live only in `packages/adk-core/profiles`.
 
 ## Clean-room verification
 
@@ -108,13 +108,14 @@ The override lowers Postgres memory, gives schema init a longer health start per
 
 ## Coding-agent profile sources
 
-The signed profile is `tools/adk/profiles/addon-coding-agent.json` (version 2). Version 1 stays at `tools/adk/profiles/addon-coding-agent.v1.json`. The unsigned version 3 draft is `tools/adk/profiles/addon-coding-agent.v3.draft.json` (awaiting sign/publish, decision D7). The CLI pack reads a byte copy of those files at `packages/adk-core/profiles`. Do not edit the copy. Replace it with the same bytes when the signed file changes.
+The signed profile is `packages/adk-core/profiles/addon-coding-agent.json` (version 2). Version 1 stays at `packages/adk-core/profiles/addon-coding-agent.v1.json`. The unsigned version 3 draft is `packages/adk-core/profiles/addon-coding-agent.v3.draft.json` (awaiting sign/publish, decision D7). That directory is the only copy. `packages/adk-core/build.mjs` copies it into `dist/engine/profiles`, and the CLI pack copies the same files beside `lib/`. Do not add a second copy under `tools/adk`. Signing replaces these bytes; do not hand-edit the JSON.
 
 ## Changelog
 
 | Date       | Change                                                                                                                                                                                                                          |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-11-19 | `@kassis/addon-cli` bin and prepack load `@kassis/adk-core` CLI entries and kit files from package exports. Prepack does not resolve `tools/adk`. The pack reads the byte copy under `packages/adk-core/profiles`. |
+| 2026-11-19 | Coding profiles live only in `packages/adk-core/profiles`. The package build copies that directory into dist. Packed `init` writes the `kassis-addon` command. |
+| 2026-11-19 | `@kassis/addon-cli` bin and prepack load `@kassis/adk-core` CLI entries and kit files from package exports. Prepack does not resolve `tools/adk`. The pack reads `packages/adk-core/profiles`. |
 | 2026-11-19 | `Dockerfile.mcp` copies and links `@kassis/adk-protocol`. The backend image copies and links `@kassis/adk-core` for `@kassis/adk-core/mandatory-contract` and no longer copies `tools/adk` evidence or contract wrappers. |
 | 2026-11-19 | ADK engine and the two CLI scripts live in `packages/adk-core`. `npm pack` of that package ships `dist`. `tools/adk` keeps repo maintenance and thin wrappers. The publisher seed file stays under `server/core/addon-platform/trust/`. |
 | 2026-11-19 | `Dockerfile.server` copies and builds `packages/adk-protocol` and links `@kassis/adk-protocol` for production and development targets (S3.07). Dev entrypoint links the package when node_modules volumes are stale.             |

@@ -48,6 +48,11 @@ describe('installed kassis-addon CLI', () => {
       const init = runCli(client, ['init', '--id', 'demo', '--publisher', 'acme', '--dir', 'demo']);
       expect(init.status, init.stderr).toBe(0);
       expect(fs.existsSync(path.join(client, 'demo', 'manifest.json'))).toBe(true);
+      const demoPkg = JSON.parse(
+        fs.readFileSync(path.join(client, 'demo', 'package.json'), 'utf8')
+      ) as { scripts: { build: string } };
+      expect(demoPkg.scripts.build).toBe('kassis-addon build');
+      expect(demoPkg.scripts.build).not.toContain('tools/adk');
       const check = runCli(client, ['check', '--json', '--dir', 'demo']);
       expect(check.status, `${check.stdout}\n${check.stderr}`).toBe(0);
       expect(check.stdout).toContain('"ok":true');

@@ -11,8 +11,14 @@ import path from 'node:path';
 const ROOT = process.cwd();
 const CATALOG_PATH = path.join(ROOT, 'packages', 'addon-sdk', 'guardrails.json');
 const KADK_PATH = path.join(ROOT, 'packages', 'addon-sdk', 'codes', 'kadk-codes.json');
-const PROFILE_V2 = path.join(ROOT, 'tools', 'adk', 'profiles', 'addon-coding-agent.json');
-const PROFILE_V3_DRAFT = path.join(ROOT, 'tools', 'adk', 'profiles', 'addon-coding-agent.v3.draft.json');
+const PROFILE_V2 = path.join(ROOT, 'packages', 'adk-core', 'profiles', 'addon-coding-agent.json');
+const PROFILE_V3_DRAFT = path.join(
+  ROOT,
+  'packages',
+  'adk-core',
+  'profiles',
+  'addon-coding-agent.v3.draft.json'
+);
 
 const GROUPS = new Set(['A', 'B', 'C', 'D', 'E', 'F']);
 const LEVELS = new Set(['L1', 'L2', 'L3', 'L4', 'L5']);

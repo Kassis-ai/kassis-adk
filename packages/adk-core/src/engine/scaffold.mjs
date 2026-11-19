@@ -87,6 +87,8 @@ function localSpec(addonDir, packageName, fallback) {
 }
 
 function cliCommand() {
+  // Prepack replaces this flag with true and drops the checkout path from the bundle.
+  if (globalThis.__KASSIS_ADK_PACKED__ === true) return 'kassis-addon';
   const repoCli = path.resolve(templateDir, '../../tools/adk/kassis-addon.mjs');
   if (!fs.existsSync(repoCli)) return 'kassis-addon';
   return `node "${repoCli.split(path.sep).join('/')}"`;

@@ -6,7 +6,7 @@ import { attestPinnedProfileCheck } from '../../../../tools/adk/certifyChecks.mj
 import { buildProfileLock } from '../../../../tools/adk/profileLock.mjs';
 
 const repo = path.resolve(import.meta.dirname, '../../../..');
-const draftPath = path.join(repo, 'tools/adk/profiles/addon-coding-agent.v3.draft.json');
+const draftPath = path.join(repo, 'packages/adk-core/profiles/addon-coding-agent.v3.draft.json');
 
 function writeJson(file: string, value: object): void {
   fs.mkdirSync(path.dirname(file), { recursive: true });

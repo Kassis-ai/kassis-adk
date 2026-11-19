@@ -30,7 +30,7 @@ fs.cpSync(path.join(pkgRoot, 'src/discovery'), path.join(dist, 'discovery'), { r
 fs.cpSync(path.join(pkgRoot, 'src/client-docs'), path.join(dist, 'client-docs'), {
   recursive: true,
 });
-fs.cpSync(path.join(repoRoot, 'tools/adk/profiles'), path.join(dist, 'engine/profiles'), {
+fs.cpSync(path.join(pkgRoot, 'profiles'), path.join(dist, 'engine/profiles'), {
   recursive: true,
 });
 fs.copyFileSync(
