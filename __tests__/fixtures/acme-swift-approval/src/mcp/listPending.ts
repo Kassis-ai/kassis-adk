@@ -32,13 +32,12 @@ export async function listPendingForMcp(ctx: AddonContext): Promise<readonly Lis
   }));
 }
 
-export function createListPendingHandler(
-  ctxOf: () => AddonContext | null
-): (args: Record<string, unknown>) => Promise<{ messages: readonly ListPendingRow[] }> {
-  return async () => {
-    const ctx = ctxOf();
-    if (!ctx) throw new Error('addon is not initialized');
-    const messages = await listPendingForMcp(ctx);
-    return { messages };
-  };
+/** Tier 2 tool handler. The host passes the addon context as the second argument. */
+export async function listPendingTool(
+  _args: Record<string, unknown>,
+  ctx: AddonContext | null
+): Promise<{ messages: readonly ListPendingRow[] }> {
+  if (!ctx) throw new Error('addon is not initialized');
+  const messages = await listPendingForMcp(ctx);
+  return { messages };
 }

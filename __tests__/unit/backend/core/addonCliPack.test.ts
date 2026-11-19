@@ -24,6 +24,7 @@ describe('addon cli package', () => {
 
   it('writes the content hash the host checks before it signs', async () => {
     const dir = await mkdtemp(path.join(tmpdir(), 'addon-sign-'));
+    const keyDir = await mkdtemp(path.join(tmpdir(), 'addon-sign-key-'));
     try {
       await writeFile(path.join(dir, 'marker.txt'), 'marker\n');
       await writeFile(
@@ -32,7 +33,7 @@ describe('addon cli package', () => {
       );
       const { privateKey } = generateKeyPairSync('ed25519');
       const exported = privateKey.export({ format: 'der', type: 'pkcs8' });
-      const keyPath = path.join(dir, 'publisher.hex');
+      const keyPath = path.join(keyDir, 'publisher.hex');
       await writeFile(keyPath, Buffer.from(exported).toString('hex'));
       await signManifestFile(path.join(dir, 'manifest.json'), keyPath);
       const signed = JSON.parse(await readFile(path.join(dir, 'manifest.json'), 'utf8')) as {
@@ -43,6 +44,7 @@ describe('addon cli package', () => {
       expect(signed.signature).toMatch(/^[0-9a-f]+$/);
     } finally {
       await rm(dir, { recursive: true });
+      await rm(keyDir, { recursive: true });
     }
   });
 });

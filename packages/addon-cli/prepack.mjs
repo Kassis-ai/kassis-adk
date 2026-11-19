@@ -107,10 +107,6 @@ copyIntoLib(
   'addonContentHash.config.json'
 );
 copyIntoLib(
-  path.join(repoRoot, 'server/core/addon-platform/trust/publisherTrust.mjs'),
-  'publisherTrust.mjs'
-);
-copyIntoLib(
   path.join(repoRoot, 'server/core/addon-platform/trust/publisher-trust.json'),
   'publisher-trust.json'
 );

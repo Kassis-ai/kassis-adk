@@ -2,7 +2,7 @@ import { defineAddon } from '@kassis/addon-sdk';
 import type { AddonPrincipal, AddonRouter } from '@kassis/addon-sdk';
 import { registerApprovals } from './approvals.js';
 import { createDispatcher } from './http.js';
-import { bindMcpRuntimeContext, tools } from './mcpTools.js';
+import { tools } from './mcpTools.js';
 import { expirePending } from './messages/expire.js';
 
 export { createMessageRecordType } from './approvals.js';
@@ -44,7 +44,6 @@ const addon = defineAddon({
       path: '/',
     });
     await registerApprovals(ctx);
-    bindMcpRuntimeContext(ctx);
     ctx.notify.registerType(NOTICE, {
       category: 'acme-swift-approval',
       defaultChannels: ['in_app'],
