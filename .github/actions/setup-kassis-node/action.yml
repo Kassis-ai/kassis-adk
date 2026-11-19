@@ -1,0 +1,16 @@
+name: Setup Kassis Node
+description: Node 22 with the npm cache and npm ci for the kassis-adk workspace
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+      with:
+        node-version: '22'
+        cache: npm
+        cache-dependency-path: package-lock.json
+
+    - name: Install dependencies
+      shell: bash
+      run: npm ci --no-audit --no-fund

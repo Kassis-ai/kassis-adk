@@ -1,0 +1,44 @@
+{
+  "name": "kassis-adk",
+  "private": true,
+  "type": "module",
+  "description": "Kassis addon development kit. Published as @kassis/* on npmjs.com.",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": [
+    "packages/addon-sdk",
+    "packages/adk-protocol",
+    "packages/mcp-contract",
+    "packages/addon-testkit",
+    "packages/adk-core",
+    "packages/agent-kit",
+    "packages/addon-ui",
+    "packages/addon-cli"
+  ],
+  "scripts": {
+    "build": "npm run build -w packages/addon-sdk -w packages/adk-protocol -w packages/mcp-contract -w packages/addon-testkit -w packages/adk-core -w packages/agent-kit -w packages/addon-ui -w packages/addon-cli",
+    "test": "vitest run",
+    "gate": "node tools/ci/run-kit-gate.mjs",
+    "adk:api-extract": "node tools/adk/api-surface.mjs",
+    "adk:clean-room": "node scripts/adk-clean-room.mjs",
+    "adk:sync-client-docs": "node tools/adk/sync-client-docs.mjs",
+    "ci:packages:addon-sdk-boundary": "node tools/ci/check-addon-sdk-boundary.mjs",
+    "ci:packages:publish-config": "node scripts/check-package-publishing.mjs",
+    "ci:adk:guardrails-catalog": "node tools/ci/check-guardrail-catalog.mjs",
+    "ci:adk:client-docs": "node tools/ci/check-adk-client-docs.mjs",
+    "ci:adk:cli-client-docs": "node tools/ci/check-adk-cli-client-docs.mjs"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^3.0.3",
+    "@microsoft/api-extractor": "^7.60.0",
+    "@types/node": "^25.0.9",
+    "@types/react": "^19.3.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "typescript": "^5.9.3",
+    "vitest": "^5.1.0",
+    "yaml": "^2.9.1"
+  }
+}

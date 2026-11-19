@@ -1,0 +1,12 @@
+node_modules/
+dist/
+lib/
+temp/
+coverage/
+*.tgz
+*.prepack-backup
+.env
+.env.*
+!.env.example
+packages/addon-cli/templates/
+packages/addon-cli/schema/
