@@ -79,6 +79,23 @@ function discoveryDir(): string {
   return path.join(moduleDir(), 'discovery');
 }
 
+function clientDocsDir(): string {
+  if (packedCli()) return path.join(moduleDir(), 'client-docs');
+  return path.join(discoveryDir(), '..', 'client-docs');
+}
+
+function readBundledDocText(id: string, indexText: string): string {
+  const bundled = path.join(clientDocsDir(), `${id}.md`);
+  try {
+    if (fs.existsSync(bundled)) {
+      return fs.readFileSync(bundled, 'utf8');
+    }
+  } catch {
+    // fall through to index excerpt
+  }
+  return indexText;
+}
+
 function tierMatrixPath(): string {
   if (packedCli()) return path.join(moduleDir(), 'tier-matrix.json');
   return require.resolve('@kassis/addon-sdk/tier-matrix.json');
@@ -213,7 +230,12 @@ export function loadDocs(): readonly DocEntry[] {
     if (!isRecordValue(item)) continue;
     if (typeof item.id !== 'string' || typeof item.path !== 'string') continue;
     if (typeof item.title !== 'string' || typeof item.text !== 'string') continue;
-    docs.push({ id: item.id, path: item.path, title: item.title, text: item.text });
+    docs.push({
+      id: item.id,
+      path: item.path,
+      title: item.title,
+      text: readBundledDocText(item.id, item.text),
+    });
   }
   return docs;
 }

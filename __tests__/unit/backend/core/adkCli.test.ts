@@ -55,7 +55,7 @@ describe('addon CLI', () => {
   it('accepts the signed coding-agent profile snapshot', () => {
     expect(verifyProfileSignature(readBundledProfile('addon-coding-agent'))).toBe(true);
     const version1 = JSON.parse(
-      fs.readFileSync(path.join(repo, 'tools/adk/profiles/addon-coding-agent.v1.json'), 'utf8')
+      fs.readFileSync(path.join(repo, 'packages/adk-core/profiles/addon-coding-agent.v1.json'), 'utf8')
     );
     expect(version1.version).toBe('1');
     expect(verifyProfileSignature(version1)).toBe(true);
@@ -150,6 +150,13 @@ describe('addon CLI', () => {
         'adk.requirements-traced:0',
         'adk.requirement-plan-mapped:0',
         'adk.attest-pinned-profile:0',
+        'adk.thin-addon-budgets:0',
+        'adk.mandatory-contract-intact:0',
+        'adk.outbound-timeouts:0',
+        'adk.pagination-and-query-caps:0',
+        'adk.ui-i18n:0',
+        'adk.idempotent-handlers:0',
+        'adk.no-module-state:0',
       ]);
       expect(
         checks.checks.every(

@@ -2,14 +2,13 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { checkAddonTierRefusals } from '@kassis/addon-testkit';
-import { HOST_API_VERSION } from '../../../packages/shared-config/src/hostApiVersion.ts';
 import type { AdkIssue, CommandResult, JsonObject } from './types.ts';
 import { commandResult, isRecordValue, kadkIssue, operationalIssue, readJson } from './issues.ts';
-import { hostApiSatisfies, parseSemVer } from './hostApiRange.ts';
+import { HOST_API_VERSION, hostApiSatisfies, parseSemVer } from './hostApiRange.ts';
 import { runProcess } from './processRun.ts';
 
 const PROBE_MS = 8000;
-const REGISTRY = 'https://npm.pkg.github.com';
+const REGISTRY = 'https://registry.npmjs.org/';
 const MIN_NODE = 20;
 
 function nodeIssue(): AdkIssue | null {
@@ -25,37 +24,18 @@ function nodeIssue(): AdkIssue | null {
   );
 }
 
-function registryIssue(): { issue: AdkIssue | null; user: string } {
+function registryIssue(): AdkIssue | null {
   const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
-  const result = runProcess(npm, ['whoami', '--registry', REGISTRY], PROBE_MS);
-  if (result.timedOut) {
-    return {
-      user: '',
-      issue: operationalIssue(
-        'ADK-REGISTRY',
-        'warning',
-        'The GitHub Packages login check did not finish.',
-        `Run npm login --registry ${REGISTRY}.`,
-        '',
-        null
-      ),
-    };
-  }
-  const user = result.stdout.trim();
-  if (result.status === 0 && /^[A-Za-z0-9-]{1,39}$/.test(user)) {
-    return { user, issue: null };
-  }
-  return {
-    user: '',
-    issue: operationalIssue(
-      'ADK-REGISTRY',
-      'warning',
-      'GitHub Packages login was not found.',
-      `Run npm login --registry ${REGISTRY}. The token is not printed.`,
-      '',
-      null
-    ),
-  };
+  const result = runProcess(npm, ['ping', '--registry', REGISTRY], PROBE_MS);
+  if (!result.timedOut && result.status === 0) return null;
+  return operationalIssue(
+    'ADK-REGISTRY',
+    'warning',
+    result.timedOut ? 'The npm registry check did not finish.' : 'The npm registry did not answer.',
+    `Check the network or proxy, then run npm ping --registry ${REGISTRY}.`,
+    '',
+    null
+  );
 }
 
 function signingIssue(): { issue: AdkIssue | null; count: number } {
@@ -216,7 +196,7 @@ export interface DoctorProjectOptions {
   readonly requirements?: boolean;
 }
 
-/** Local setup checks. Registry output is a username or empty, never a token. */
+/** Local setup checks. The registry check pings npmjs.com; no login is needed. */
 export async function doctorProject(
   dir: string,
   options: DoctorProjectOptions = {}
@@ -227,7 +207,7 @@ export async function doctorProject(
   const instance = await instanceIssue();
   const hostApi = hostApiIssue(dir);
   const manifest = addonTier(dir);
-  const setupIssues = [node, registry.issue, signing.issue, instance.issue, hostApi.issue].filter(
+  const setupIssues = [node, registry, signing.issue, instance.issue, hostApi.issue].filter(
     (issue): issue is AdkIssue => issue !== null
   );
   const scannedRefusals = options.requirements
@@ -248,8 +228,7 @@ export async function doctorProject(
   const data: JsonObject = {
     nodeVersion: process.version,
     nodeOk: node === null,
-    registryUser: registry.user,
-    registryOk: registry.issue === null,
+    registryOk: registry === null,
     signingKeys: signing.count,
     instanceUrl: instance.url,
     instanceReachable: instance.reachable,

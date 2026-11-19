@@ -32,13 +32,14 @@ describe('installed kassis-addon CLI', () => {
     fs.mkdirSync(packs);
     fs.mkdirSync(client);
     try {
-      runNpm(['pack', '--workspace', '@kassis/addon-cli', '--pack-destination', packs], repo);
+      runNpm(['pack', '--workspace', '@kassis/addon-sdk', '--pack-destination', packs], repo);
       runNpm(['pack', '--workspace', '@kassis/addon-testkit', '--pack-destination', packs], repo);
+      runNpm(['pack', '--workspace', '@kassis/addon-cli', '--pack-destination', packs], repo);
       const tarballs = fs
         .readdirSync(packs)
         .filter((name) => name.endsWith('.tgz'))
         .map((name) => path.join(packs, name));
-      expect(tarballs).toHaveLength(2);
+      expect(tarballs).toHaveLength(3);
       runNpm(['init', '-y'], client);
       runNpm(['install', ...tarballs, '--no-fund', '--no-audit'], client);
       const version = runCli(client, ['--version']);
@@ -47,6 +48,11 @@ describe('installed kassis-addon CLI', () => {
       const init = runCli(client, ['init', '--id', 'demo', '--publisher', 'acme', '--dir', 'demo']);
       expect(init.status, init.stderr).toBe(0);
       expect(fs.existsSync(path.join(client, 'demo', 'manifest.json'))).toBe(true);
+      const demoPkg = JSON.parse(
+        fs.readFileSync(path.join(client, 'demo', 'package.json'), 'utf8')
+      ) as { scripts: { build: string } };
+      expect(demoPkg.scripts.build).toBe('kassis-addon build');
+      expect(demoPkg.scripts.build).not.toContain('tools/adk');
       const check = runCli(client, ['check', '--json', '--dir', 'demo']);
       expect(check.status, `${check.stdout}\n${check.stderr}`).toBe(0);
       expect(check.stdout).toContain('"ok":true');
@@ -58,30 +64,52 @@ describe('installed kassis-addon CLI', () => {
         'lib',
         'kassis-adk-mcp.mjs'
       );
-      const message = JSON.stringify({
-        jsonrpc: '2.0',
-        id: 1,
-        method: 'initialize',
-        params: {
-          protocolVersion: '2024-11-05',
-          capabilities: {},
-          clientInfo: { name: 'lab', version: '0' },
+      const messages = [
+        {
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'initialize',
+          params: {
+            protocolVersion: '2024-11-05',
+            capabilities: {},
+            clientInfo: { name: 'lab', version: '0' },
+          },
         },
-      });
+        { jsonrpc: '2.0', method: 'notifications/initialized' },
+        {
+          jsonrpc: '2.0',
+          id: 2,
+          method: 'tools/call',
+          params: { name: 'search_docs', arguments: { query: 'Tier' } },
+        },
+      ]
+        .map((row) => JSON.stringify(row))
+        .join('\n');
       const started = spawnSync(process.execPath, [mcp], {
-        input: `${message}\n`,
+        input: `${messages}\n`,
         encoding: 'utf8',
         timeout: 15000,
       });
       expect(started.status === 0 || started.status === null, started.stderr).toBe(true);
       expect(started.stdout).toContain('protocolVersion');
+      expect(started.stdout).toContain('Tier');
+      const synced = runCli(client, ['sync', '--json', '--dir', path.join(client, 'synced')]);
+      expect(synced.status, `${synced.stdout}\n${synced.stderr}`).toBe(0);
+      expect(synced.stdout).toContain('"ok":true');
       const lib = path.join(client, 'node_modules', '@kassis', 'addon-cli', 'lib');
+      expect(fs.existsSync(path.join(lib, 'publisher-trust.json'))).toBe(true);
+      expect(fs.existsSync(path.join(lib, 'client-docs', 'maintainers.md'))).toBe(false);
       const files: string[] = [];
       walk(lib, files);
       for (const file of files) {
         const text = fs.readFileSync(file, 'utf8');
         expect(text, file).not.toContain('packages/');
-        expect(text, file).not.toContain(".ts'");
+        // The record-type scaffold writes this import into the addon's test. It is not a CLI import.
+        const withoutScaffold = text.replaceAll(
+          "from '../../src/server/record-types/${name}.ts'",
+          ''
+        );
+        expect(withoutScaffold, file).not.toContain(".ts'");
       }
     } finally {
       fs.rmSync(root, { recursive: true, force: true });

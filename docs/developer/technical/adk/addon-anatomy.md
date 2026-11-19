@@ -2,7 +2,7 @@
 
 **Status:** GA
 **Version checked:** 2026-10-28
-**Technical owner:** Unassigned
+**Technical owner:** Platform Engineering (ADK)
 **Last reviewed:** 2026-11-16
 
 ## Manifest

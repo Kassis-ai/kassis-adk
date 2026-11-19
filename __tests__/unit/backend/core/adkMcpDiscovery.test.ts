@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import fs from 'node:fs';
+import path from 'node:path';
 import {
   findCoreFeature,
   getEventSchema,
@@ -114,8 +116,17 @@ describe('offline ADK MCP discovery tools (S2.38 / S2.50)', () => {
     expect(result.ok).toBe(true);
     expect(result.data.mode).toBe('offline');
     expect(Number(result.data.count)).toBeGreaterThan(0);
-    const results = result.data.results as { path: string; excerpt: string }[];
+    const results = result.data.results as { path: string; excerpt: string; id: string }[];
     expect(results[0]?.excerpt.length).toBeGreaterThan(0);
+    const tiersPath = path.join(
+      process.cwd(),
+      'packages/adk-core/src/client-docs/tiers.md'
+    );
+    const tiersOnDisk = fs.readFileSync(tiersPath, 'utf8');
+    expect(tiersOnDisk).toContain('Tier 2');
+    const tiersHit = results.find((row) => row.id === 'tiers');
+    expect(tiersHit).toBeTruthy();
+    expect(tiersHit?.excerpt).toContain('Tier');
   });
 
   it('get_example returns scaffold and facade examples', () => {

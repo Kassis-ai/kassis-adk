@@ -1,0 +1,21 @@
+{
+  "id": "golden-client-ui",
+  "name": "ADK signing golden (client UI)",
+  "version": "0.0.0-golden",
+  "publisher": "acme-bank",
+  "hostApiVersion": "1.0.0",
+  "ui": {
+    "entryFile": "app.js",
+    "mountPath": "/addons-ui/golden-client-ui"
+  },
+  "entrypoints": {
+    "main": "dist/server.js"
+  },
+  "signing": {
+    "alg": "ed25519",
+    "keyId": "356e54cf22ea5fc96546be2e8e1cd71091b10d56dfecb0964dc7ccfe118a92da"
+  },
+  "contentHash": "sha256-8703aa46c587f419e3a9c49e31fe714fac008ba956640c60a0f213eff211246b",
+  "uiContentHash": "sha256-2b793e966ed14d59b170feab8bc90eceb1eb6a1ad478b50cb5a107c2ae8adfc2",
+  "signature": "2fd76103287b1184abe684f2e7d71e483f180d0335a72599f51ebce05a47cbc102570d3233925cae632d2f4b8111fad5420232fca5b73340daeff2b16b335a0c"
+}

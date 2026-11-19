@@ -22,5 +22,10 @@ export {
   explainProject,
   initProject,
 } from './projectCommands.ts';
-export { deployProject, packageProject, statusProject } from './packageCommand.ts';
+export {
+  deployProject,
+  packageProject,
+  rollbackProject,
+  statusProject,
+} from './packageCommand.ts';
 export { scaffoldProject } from './scaffoldFeature.ts';

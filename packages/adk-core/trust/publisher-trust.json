@@ -1,0 +1,21 @@
+{
+  "publishers": [
+    {
+      "id": "kassis",
+      "displayName": "Kassis",
+      "allowedTiers": [1, 2],
+      "idPrefixes": ["*"],
+      "status": "active"
+    }
+  ],
+  "keys": [
+    {
+      "fingerprint": "59e5e119565daeb9fcd196965b0c1da32112c7a343bd95fc4724e6c722fceef3",
+      "publisherId": "kassis",
+      "publicKeyDerHex": "302a300506032b6570032100fe0dc06c8b0998b27f9cc96635e77df2a6a93f72fde1b4fedf2775b23cdbf9a0",
+      "status": "current",
+      "notBefore": null,
+      "notAfter": null
+    }
+  ]
+}

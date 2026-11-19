@@ -1,30 +1,52 @@
 {
   "name": "@kassis/adk-core",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
-  "description": "Command library for kassis-addon and kassis-adk-mcp. It returns results and does not print or exit. Private until it is published to GitHub Packages.",
+  "description": "Command library for kassis-addon and kassis-adk-mcp. Returns results; callers handle printing and exit codes.",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kassis-ai/kassis.git",
+    "directory": "packages/adk-core"
+  },
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {
     ".": {
       "types": "./src/index.ts",
       "default": "./src/index.ts"
-    }
+    },
+    "./mandatory-contract": {
+      "types": "./src/engine/mandatoryContract.d.mts",
+      "default": "./src/engine/mandatoryContract.mjs"
+    },
+    "./cli/kassis-addon": "./src/cli/kassis-addon.mjs",
+    "./cli/kassis-adk-mcp": "./src/cli/kassis-adk-mcp.mjs",
+    "./profiles/addon-coding-agent.json": "./profiles/addon-coding-agent.json",
+    "./profiles/addon-coding-agent.v1.json": "./profiles/addon-coding-agent.v1.json",
+    "./profiles/addon-coding-agent.v3.draft.json": "./profiles/addon-coding-agent.v3.draft.json"
   },
   "files": [
-    "src",
-    "dist"
+    "dist",
+    "keys",
+    "profiles",
+    "trust"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json"
+    "build": "node build.mjs",
+    "prepack": "npm run build && node ../../tools/adk/pack-publish-fields.mjs apply",
+    "postpack": "node ../../tools/adk/pack-publish-fields.mjs restore"
   },
   "dependencies": {
-    "@kassis/addon-sdk": "1.0.0",
+    "@kassis/addon-sdk": "0.1.0",
     "@kassis/addon-testkit": "0.1.0",
-    "@modelcontextprotocol/sdk": "1.32.2"
+    "@kassis/adk-protocol": "0.1.0",
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "ajv": "^8.17.1"
   },
   "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "exports": {
@@ -32,7 +54,15 @@
         "types": "./dist/index.d.ts",
         "import": "./dist/index.js",
         "default": "./dist/index.js"
-      }
+      },
+      "./mandatory-contract": {
+        "types": "./dist/engine/mandatoryContract.d.mts",
+        "import": "./dist/engine/mandatoryContract.mjs",
+        "default": "./dist/engine/mandatoryContract.mjs"
+      },
+      "./profiles/addon-coding-agent.json": "./profiles/addon-coding-agent.json",
+      "./profiles/addon-coding-agent.v1.json": "./profiles/addon-coding-agent.v1.json",
+      "./profiles/addon-coding-agent.v3.draft.json": "./profiles/addon-coding-agent.v3.draft.json"
     }
   }
 }

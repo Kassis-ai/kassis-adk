@@ -6,4 +6,4 @@ The server bundle is `dist/server/index.js`. When this addon has a UI, the host 
 
 Import host types from `@kassis/addon-sdk`. Do not import `server/` or `@/features`.
 
-`npm install` reads `@kassis` packages from GitHub Packages. Create a token with `read:packages` and set `NODE_AUTH_TOKEN` in the environment. `.npmrc` references that variable and does not store the token.
+`npm install` reads the public `@kassis` packages from npmjs.com. No token is needed. `.npmrc` pins the `@kassis` scope to that registry.

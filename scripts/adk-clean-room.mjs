@@ -6,7 +6,7 @@
  *   node scripts/adk-clean-room.mjs --airgap --bundle=<dir>
  *
  * The default run uses this repository checkout. It does not deploy, approve,
- * or call a live Kassis instance. adk-core is private and is not packed.
+ * or call a live Kassis instance. adk-core is versioned with the kit and is not packed.
  * --airgap runs only when the bundle directory is already populated. It installs
  * file: tarballs from that bundle and refuses the npm registry.
  */
@@ -15,8 +15,8 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { computeAddonContentHash, computeUiContentHash } from '../server/core/addon-deployment/addonContentHash.mjs';
-import { resolveManifestTrust } from '../server/core/addon-platform/trust/publisherTrust.mjs';
+import { computeAddonContentHash, computeUiContentHash } from '@kassis/adk-protocol';
+import { resolveManifestTrust } from '@kassis/adk-protocol';
 import {
   AIRGAP_TOOLCHAIN,
   PUBLIC_PACKAGE_NAMES,
@@ -171,8 +171,10 @@ function assertTier2Rung2(addonDir) {
     throw new Error('init did not set ui.entryFile to index.js');
   }
   const npmrc = fs.readFileSync(path.join(addonDir, '.npmrc'), 'utf8');
-  if (!npmrc.includes('${NODE_AUTH_TOKEN}')) throw new Error('scaffold .npmrc does not use NODE_AUTH_TOKEN');
-  if (/_authToken=(?!\$\{NODE_AUTH_TOKEN\})/.test(npmrc)) throw new Error('scaffold .npmrc contains a token');
+  if (!npmrc.includes('@kassis:registry=https://registry.npmjs.org/')) {
+    throw new Error('scaffold .npmrc does not pin @kassis to registry.npmjs.org');
+  }
+  if (/_authToken=/.test(npmrc)) throw new Error('scaffold .npmrc contains a token');
   if (!fs.existsSync(path.join(addonDir, 'src/ui/index.ts'))) {
     throw new Error('init did not copy the rung 2 UI source');
   }

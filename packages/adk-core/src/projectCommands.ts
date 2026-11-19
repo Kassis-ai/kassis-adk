@@ -1,53 +1,53 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { checkAddonImports } from '@kassis/addon-testkit';
-import { initAddon } from '../../../tools/adk/scaffold.mjs';
+import { initAddon } from './engine/scaffold.mjs';
 import {
   certifyAttestation,
   kadkIssue as catalogIssue,
-} from '../../../tools/adk/certifyAttestation.mjs';
+} from './engine/certifyAttestation.mjs';
 import {
   blankAttestation,
   buildProfileLock,
   packEvidence,
-} from '../../../tools/adk/profileLock.mjs';
-import { writeAgentRuleFiles } from '../../../tools/adk/agentRules.mjs';
+} from './engine/profileLock.mjs';
+import { writeAgentRuleFiles } from './engine/agentRules.mjs';
 import {
   downloadProfile,
   readBundledProfile,
   verifyProfileSignature,
-} from '../../../tools/adk/profileBundle.mjs';
-import { submitCertifiedRun } from '../../../tools/adk/registryRun.mjs';
-import { buildAddon } from '../../../tools/adk/addonBuild.mjs';
-import { signManifestFile } from '../../../tools/adk/signManifest.mjs';
+} from './engine/profileBundle.mjs';
+import { submitCertifiedRun } from './engine/registryRun.mjs';
+import { buildAddon } from './engine/addonBuild.mjs';
+import { signManifestFile } from './engine/signManifest.mjs';
 import {
   exportPublicKey,
   generatePublisherKey,
   registerPublisherKey,
-} from '../../../tools/adk/publisherKeys.mjs';
-import { recordMachineChecks } from '../../../tools/adk/certifyChecks.mjs';
+} from './engine/publisherKeys.mjs';
+import { recordMachineChecks } from './engine/certifyChecks.mjs';
 import {
   auditRequirementsTracing,
   writeRequirementsCoverage,
-} from '../../../tools/adk/requirementsTrace.mjs';
+} from './engine/requirementsTrace.mjs';
 import {
   auditRequirementPlan,
   writeRequirementMapping,
-} from '../../../tools/adk/requirementPlan.mjs';
-import { auditReuseCore, writeReuseCoreEvidence } from '../../../tools/adk/reuseCore.mjs';
+} from './engine/requirementPlan.mjs';
+import { auditReuseCore, writeReuseCoreEvidence } from './engine/reuseCore.mjs';
 import {
   auditThinAddonBudgets,
   writeThinAddonBudgetsEvidence,
-} from '../../../tools/adk/thinAddonBudgets.mjs';
+} from './engine/thinAddonBudgets.mjs';
 import {
   auditEngineeringPractice,
   writeEngineeringPracticeEvidence,
-} from '../../../tools/adk/engineeringPractice.mjs';
-import { auditProcessPacks } from '../../../tools/adk/processPacks.mjs';
+} from './engine/engineeringPractice.mjs';
+import { auditProcessPacks } from './engine/processPacks.mjs';
 import {
   auditMandatoryContract,
   writeMandatoryContractEvidence,
-} from '../../../tools/adk/mandatoryContract.mjs';
+} from './engine/mandatoryContract.mjs';
 import type { AdkIssue, CommandResult, JsonObject, LogListener } from './types.ts';
 import { checkManifestDirectory } from './manifestCheck.ts';
 import {
@@ -57,10 +57,9 @@ import {
   kadkIssue,
   operationalIssue,
   readJson,
-  redactSecrets,
-  repoRoot,
 } from './issues.ts';
 import { runProcess } from './processRun.ts';
+import { signWithHostSigner } from './hostSigner.ts';
 
 function messageOf(error: unknown): string {
   return error instanceof Error ? error.message : 'command failed';
@@ -505,35 +504,7 @@ export async function signProject(
   const manifest = readObject(manifestPath);
   const id = manifest ? stringField(manifest, 'id') : '';
   if (!id) return failure('manifest.json needs an id', 'Set id in manifest.json before sign.');
-  if (!key) {
-    const bundled = path.join(repoRoot(), 'tools/signing/sign-all-addons.mjs');
-    if (!fs.existsSync(bundled)) {
-      return failure(
-        'sign --key=<path> is required outside the Kassis repository',
-        'Pass --key with the publisher private key file.',
-        'ADK-KEY'
-      );
-    }
-    const result = runProcess(process.execPath, [bundled, `--only=${id}`], 120000, {
-      cwd: repoRoot(),
-    });
-    if (result.stdout) onLog?.({ stream: 'stdout', text: result.stdout });
-    if (result.stderr) onLog?.({ stream: 'stderr', text: result.stderr });
-    if (result.timedOut) {
-      return failure(
-        'sign did not finish',
-        'Run the repo signer again for this addon id.',
-        'ADK-USAGE'
-      );
-    }
-    if (result.status !== 0) {
-      return failure(
-        redactSecrets(result.stderr.trim() || 'sign failed'),
-        'Fix the signer error and run sign again.'
-      );
-    }
-    return commandResult([], { id });
-  }
+  if (!key) return signWithHostSigner(id, onLog);
   try {
     await signManifestFile(manifestPath, path.resolve(key));
     return commandResult([], { id });

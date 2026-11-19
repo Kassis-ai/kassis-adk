@@ -5,6 +5,8 @@ import { pathToFileURL, fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const packed = path.join(here, '../lib/kassis-adk-mcp.mjs');
-const source = path.resolve(here, '../../../tools/adk/kassis-adk-mcp.mjs');
-const target = fs.existsSync(packed) ? packed : source;
-await import(pathToFileURL(target).href);
+if (fs.existsSync(packed)) {
+  await import(pathToFileURL(packed).href);
+} else {
+  await import('@kassis/adk-core/cli/kassis-adk-mcp');
+}

@@ -3,8 +3,14 @@
   "version": "0.1.0",
   "type": "module",
   "description": "Assertions a coding agent uses to prove an addon pack and that source stays off the host.",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kassis-ai/kassis.git",
+    "directory": "packages/addon-testkit"
+  },
   "dependencies": {
-    "@kassis/addon-sdk": "1.0.0",
+    "@kassis/addon-sdk": "0.1.0",
     "es-module-lexer": "^2.1.0",
     "typescript": "^5.9.3"
   },
@@ -21,13 +27,12 @@
   ],
   "scripts": {
     "build": "node build.mjs",
-    "prepack": "node build.mjs && node ../../scripts/pack-publish-fields.mjs apply",
-    "postpack": "node ../../scripts/pack-publish-fields.mjs restore"
+    "prepack": "node build.mjs && node ../../tools/adk/pack-publish-fields.mjs apply",
+    "postpack": "node ../../tools/adk/pack-publish-fields.mjs restore"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com",
-    "access": "restricted",
-    "provenance": true,
+    "registry": "https://registry.npmjs.org/",
+    "access": "public",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "exports": {

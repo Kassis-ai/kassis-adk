@@ -1,0 +1,19 @@
+{
+  "id": "canonical-only",
+  "version": "1.0.0",
+  "routing": {
+    "mountPath": "/api/v1/addons/canonical-only",
+    "auth": true
+  },
+  "nested": {
+    "z": 1,
+    "�": 2,
+    "é": 3
+  },
+  "list": [
+    "b",
+    "a",
+    3
+  ],
+  "publisher": "test"
+}

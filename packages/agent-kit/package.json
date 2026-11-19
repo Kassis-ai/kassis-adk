@@ -16,13 +16,12 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "prepack": "npm run build && node ../../scripts/pack-publish-fields.mjs apply",
-    "postpack": "node ../../scripts/pack-publish-fields.mjs restore"
+    "prepack": "npm run build && node ../../tools/adk/pack-publish-fields.mjs apply",
+    "postpack": "node ../../tools/adk/pack-publish-fields.mjs restore"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com",
-    "access": "restricted",
-    "provenance": true,
+    "registry": "https://registry.npmjs.org/",
+    "access": "public",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "exports": {

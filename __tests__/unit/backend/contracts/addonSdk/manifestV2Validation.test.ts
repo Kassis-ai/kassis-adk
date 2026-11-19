@@ -455,7 +455,8 @@ describe('validateManifestV2', () => {
     });
   });
 
-  it('reports every current v1 addon manifest as not v2 (KADK-104)', () => {
+  // First-party addons live in the host repository only.
+  it.skipIf(!fs.existsSync(path.resolve('addons')))('reports every current v1 addon manifest as not v2 (KADK-104)', () => {
     const addonsDir = path.resolve('addons');
     const manifests = fs
       .readdirSync(addonsDir, { withFileTypes: true })

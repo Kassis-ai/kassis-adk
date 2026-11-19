@@ -3,7 +3,7 @@ import {
   diffManifestSurface,
   summarizeDeploymentEvidence,
   type ManifestSnapshot,
-} from '../../../../server/core/addon-deployment/evidenceSummary.js';
+} from '@kassis/adk-protocol';
 
 const previous: ManifestSnapshot = {
   tier: 1,

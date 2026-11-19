@@ -1,0 +1,157 @@
+# ADK kit release. On tag adk/vX.Y.Z:
+#
+#   build     every package in the single changesets fixed group
+#   test      kit unit tests only (see KIT_UNIT_GLOBS in tools/release/adkKitReleaseLib.mjs)
+#   pack      npm tarballs, CycloneDX SBOM, public cosign key
+#   sign      cosign signatures for each tarball, checksums.txt, and the zip
+#   publish   those tarballs to npmjs.com (public), with provenance when the repo is public
+#   release   attach the air-gap zip, its sha256, and its signature to the GitHub release
+#
+# The package list is read from .changeset/config.json. Do not add names here.
+# A tag push is maintainer-only. This workflow does not create or push tags.
+# Every third-party action is pinned to a commit SHA (the tag is in the comment).
+# Signing uses the Stage A release key. There is no unsigned path.
+#
+# Repository secrets: NPM_TOKEN (npmjs.com granular token with publish rights on @kassis, required);
+#   COSIGN_PRIVATE_KEY, COSIGN_PASSWORD (required, same key as the client release).
+# Repository file: deploy/release/cosign.pub.
+# See docs/developer/technical/adk/maintainers.md.
+
+name: ADK kit release
+
+on:
+  push:
+    tags: ['adk/v*']
+
+permissions:
+  contents: read
+
+env:
+  COSIGN_VERSION: v2.4.1
+
+jobs:
+  release:
+    name: Release kit
+    runs-on: ${{ vars.CI_SELF_HOSTED == 'true' && fromJSON('["self-hosted","linux","kassis-ci"]') || 'ubuntu-latest' }}
+    timeout-minutes: 60
+    permissions:
+      contents: write
+      id-token: write
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Release secrets are configured
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          [ -n "$NPM_TOKEN" ] || { echo "::error::NPM_TOKEN repository secret is required."; exit 1; }
+          [ -n "$COSIGN_PRIVATE_KEY" ] && [ -n "$COSIGN_PASSWORD" ] \
+            || { echo "::error::COSIGN_PRIVATE_KEY and COSIGN_PASSWORD are required. Unsigned releases are not allowed."; exit 1; }
+          [ -f deploy/release/cosign.pub ] \
+            || { echo "::error::Commit the matching public key as deploy/release/cosign.pub."; exit 1; }
+
+      - name: Setup Kassis Node
+        uses: ./.github/actions/setup-kassis-node
+
+      - name: Tag matches the fixed group
+        run: node tools/release/adk-kit-release.mjs check-tag --tag "${GITHUB_REF_NAME}"
+
+      - name: Build kit packages
+        run: node tools/release/adk-kit-release.mjs build
+
+      - name: Kit unit tests
+        run: node tools/release/adk-kit-release.mjs test
+
+      - name: Pack tarballs and SBOM
+        run: node tools/release/adk-kit-release.mjs pack --out=dist/adk-airgap --source-sha "${GITHUB_SHA}"
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@398d4b0eeef1380460a10c8013a76f728fb906ac # v3
+        with:
+          cosign-release: ${{ env.COSIGN_VERSION }}
+
+      - name: Sign tarballs
+        env:
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          signed=0
+          for tarball in dist/adk-airgap/packs/*.tgz; do
+            cosign sign-blob --yes --tlog-upload=false --key env://COSIGN_PRIVATE_KEY \
+              --output-signature "${tarball}.sig" "$tarball"
+            signed=$((signed + 1))
+          done
+          [ "$signed" -ge 1 ] || { echo "::error::no kit tarballs to sign"; exit 1; }
+
+      - name: Checksums
+        run: node tools/release/adk-kit-release.mjs checksums --dir=dist/adk-airgap
+
+      - name: Sign checksums
+        env:
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          cosign sign-blob --yes --tlog-upload=false --key env://COSIGN_PRIVATE_KEY \
+            --output-signature dist/adk-airgap/checksums.txt.sig dist/adk-airgap/checksums.txt
+
+      - name: Air-gap archive
+        id: archive
+        run: |
+          set -euo pipefail
+          zip=$(node tools/release/adk-kit-release.mjs archive --dir=dist/adk-airgap)
+          echo "zip=${zip}" >> "$GITHUB_OUTPUT"
+
+      - name: Sign the archive
+        env:
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          cosign sign-blob --yes --tlog-upload=false --key env://COSIGN_PRIVATE_KEY \
+            --output-signature "${{ steps.archive.outputs.zip }}.sig" "${{ steps.archive.outputs.zip }}"
+
+      - name: Upload air-gap bundle
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: adk-airgap
+          path: |
+            ${{ steps.archive.outputs.zip }}
+            ${{ steps.archive.outputs.zip }}.sha256
+            ${{ steps.archive.outputs.zip }}.sig
+
+      - name: Authenticate to the package registry
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: '22'
+          registry-url: https://registry.npmjs.org
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish kit tarballs with provenance
+        env:
+          ADK_KIT_PUBLISH: '1'
+          # npm provenance needs a public repository and a GitHub-hosted runner.
+          ADK_KIT_PROVENANCE: ${{ (github.event.repository.private || vars.CI_SELF_HOSTED == 'true') && '0' || '1' }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: node tools/release/adk-kit-release.mjs publish --dir=dist/adk-airgap
+
+      - name: Attach the bundle to the GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          zip="${{ steps.archive.outputs.zip }}"
+          version="${GITHUB_REF_NAME#adk/v}"
+          gh release create "$GITHUB_REF_NAME" \
+            "$zip" "${zip}.sha256" "${zip}.sig" \
+            --title "ADK kit ${version}" \
+            --notes-file dist/adk-airgap/RELEASE.txt

@@ -2,8 +2,8 @@
 
 **Status:** GA
 **Version checked:** 2026-10-28
-**Technical owner:** Unassigned
-**Last reviewed:** 2026-11-16
+**Technical owner:** Platform Engineering (ADK)
+**Last reviewed:** 2026-11-19
 
 `@kassis/addon-testkit` checks an evidence pack. `checkAddonImports` is the import boundary used by `assertNoHostImports` and by the CLI `conformance` command.
 
@@ -44,22 +44,10 @@ Pack only after certify passes. It writes `index.json` and `README.md` in the ou
 - the content hash, the signer fingerprint (`signing.keyId`) and the CLI version
 
 ```bash
-node tools/adk/kassis-addon.mjs pack --out=evidence
+npx kassis-addon pack --out=evidence
 ```
 
-## Reference addon
-
-`__tests__/fixtures/acme-swift-approval` is the BRD-ADK-001 Mode A addon (`acme-swift-approval`, publisher `acme`, tier 2). `node scripts/adk-reference-build.mjs` packs the public `@kassis` tarballs, copies the fixture outside the checkout, and certifies it twice. The second pass signs with `kassis-addon keys generate --publisher=acme` and packages. The private key stays in `~/.kassis/keys`. The script does not deploy and does not register the key.
-
-`node scripts/adk-reference-build.mjs --check-fixture` only checks the fixture id, publisher, tier and that `GAPS.md` names FR-57 and FR-60.
-
-The live lab repeats that toggle under load:
-
-```bash
-node scripts/adk-live-lab.mjs --only=H
-```
-
-`--only=H` copies the fixture outside the checkout, signs it with a new acme key, and trusts that key only through `KASSIS_PUBLISHER_TRUST_FILE` (`/addons-installed/lab-hot-toggle-trust.json` inside the backend container). It does not edit `publisher-trust.json`. The private key stays in `~/.kassis/keys`. After maker/checker approval it loops `GET /api/v1/adk/version` while it `POST`s `disable` and `enable` six times. The version route must stay 200. `GET /api/v1/addons/acme-swift-approval/release-policy` must answer while the addon is enabled (200, or 503 when the approval policy is not enforced) and fail cleanly while it is disabled (404, or 503 `not running` / `stopped`). The workflow runs this step after L1–L22.
+Repository CI builds the reference addon `acme-swift-approval` and runs the hot-toggle live lab. See [Maintainers](./maintainers.md).
 
 The tier 2 route bridge forwards the method, path, query, JSON body, and the caller principal. `GET /release-policy` remains a probe that does not need a body. A configuration save pushes the operator document into a running child (`config.replace`). When the manifest sets `health.path` and the addon mounted that route, a 5xx from the route marks the child unhealthy.
 
@@ -67,8 +55,9 @@ The tier 2 route bridge forwards the method, path, query, JSON body, and the cal
 
 | Date       | Change                                                                                                                                                                                                        |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-11-16 | `node scripts/adk-live-lab.mjs --only=H` toggles `acme-swift-approval` under a core request loop. The acme key is trusted only through the lab trust file. |
-| 2026-11-16 | Reference addon `acme-swift-approval` is certified twice by `scripts/adk-reference-build.mjs`. Live deploy stays outside that script. |
+| 2026-11-19 | Reference-addon and live-lab detail moved to [Maintainers](./maintainers.md). Pack uses `npx kassis-addon`.                                                                                                      |
+| 2026-11-16 | Live lab hot-toggle runs under a core request loop. The acme key is trusted only through the lab trust file. |
+| 2026-11-16 | Reference addon `acme-swift-approval` is certified twice in repository CI. Live deploy stays outside that script. |
 | 2026-11-16 | `createTestContext` allows tier 2 wave 6 `extend` methods and records them. License and shutdown extend methods, locks, `capabilities.register`, and Prisma data helpers still throw KADK-219. |
 | 2026-11-16 | `createTestContext` fakes every `AddonContext` area (core.*, risk, settings, flags, notify, prompts, config, routes.principalOf) with recorders; SDK key walk fails when a member has no fake. |
 | 2026-11-16 | Certify records `adk.requirement-plan-mapped` and `adk.attest-pinned-profile` in `checks.json` beside requirements tracing. |

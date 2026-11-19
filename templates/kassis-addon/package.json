@@ -12,7 +12,7 @@
     "certify": "kassis-addon certify"
   },
   "dependencies": {
-    "@kassis/addon-sdk": "^1.0.0",
+    "@kassis/addon-sdk": "^0.1.0",
     "@kassis/addon-testkit": "^0.1.0"
   },
   "devDependencies": {

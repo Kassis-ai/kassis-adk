@@ -52,6 +52,7 @@ describe('kassis-addon init', () => {
       expect(fs.existsSync(path.join(dir, '.gitignore'))).toBe(true);
       expect(fs.existsSync(path.join(dir, '.npmrc'))).toBe(true);
       const pkg = JSON.parse(fs.readFileSync(path.join(dir, 'package.json'), 'utf8'));
+      expect(pkg.scripts.build).toContain('tools/adk/kassis-addon.mjs');
       expect(pkg.scripts.build).toContain('build');
       expect(pkg.scripts['build:server']).toContain('--only=server');
       expect(pkg.scripts['build:ui']).toContain('--only=ui');

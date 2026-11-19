@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "S3.01 golden vectors — recomputed values must stay byte-identical through adk-protocol extraction",
+  "testFixtureSigning": {
+    "note": "TEST ONLY — Ed25519 key used only for synthetic fixture addons under synthetic/",
+    "publicKeySpkiDerHex": "302a300506032b6570032100a76f5b3acccf84ee554a2e7b63bd9fbc73053feba0c5bfbd233a84aff82dd53e",
+    "keyIdSha256": "356e54cf22ea5fc96546be2e8e1cd71091b10d56dfecb0964dc7ccfe118a92da"
+  },
+  "synthetic": {
+    "kassis-first-party": {
+      "addonDir": "synthetic/kassis-first-party",
+      "canonicalSha256": "91be0e6dfa99e6125e68928966655e5f9b985aeea1cf8c01c073053dc6ad791c",
+      "canonicalString": "{\"contentHash\":\"sha256-f0f2870c18c2c8009bbb8faa15ffbb41180dc3272f65554ba934c54482d42fe9\",\"entrypoints\":{\"main\":\"dist/index.js\"},\"hostApiVersion\":\"1.0.0\",\"id\":\"golden-kassis-first-party\",\"name\":\"ADK signing golden (kassis first party)\",\"publisher\":\"kassis-corp\",\"signing\":{\"alg\":\"ed25519\",\"keyId\":\"356e54cf22ea5fc96546be2e8e1cd71091b10d56dfecb0964dc7ccfe118a92da\"},\"version\":\"0.0.0-golden\"}",
+      "contentHash": "sha256-f0f2870c18c2c8009bbb8faa15ffbb41180dc3272f65554ba934c54482d42fe9",
+      "uiContentHash": null,
+      "signature": "478df2aab89d0c0069a8ee77ecfb8cf35e2736300bea267cb18b47e6c84bb062336dcc9805948e9132a752da6dde9eaffd0f9d75b0b83b334d57f15a5b49de00",
+      "signatureValid": true
+    },
+    "client-with-ui": {
+      "addonDir": "synthetic/client-with-ui",
+      "canonicalSha256": "5ca294ffdf5b2ad2cb25bde0e6e6efa24f475cd60fcc7aefd4359191763c3ede",
+      "canonicalString": "{\"contentHash\":\"sha256-8703aa46c587f419e3a9c49e31fe714fac008ba956640c60a0f213eff211246b\",\"entrypoints\":{\"main\":\"dist/server.js\"},\"hostApiVersion\":\"1.0.0\",\"id\":\"golden-client-ui\",\"name\":\"ADK signing golden (client UI)\",\"publisher\":\"acme-bank\",\"signing\":{\"alg\":\"ed25519\",\"keyId\":\"356e54cf22ea5fc96546be2e8e1cd71091b10d56dfecb0964dc7ccfe118a92da\"},\"ui\":{\"entryFile\":\"app.js\",\"mountPath\":\"/addons-ui/golden-client-ui\"},\"uiContentHash\":\"sha256-2b793e966ed14d59b170feab8bc90eceb1eb6a1ad478b50cb5a107c2ae8adfc2\",\"version\":\"0.0.0-golden\"}",
+      "contentHash": "sha256-8703aa46c587f419e3a9c49e31fe714fac008ba956640c60a0f213eff211246b",
+      "uiContentHash": "sha256-2b793e966ed14d59b170feab8bc90eceb1eb6a1ad478b50cb5a107c2ae8adfc2",
+      "signature": "2fd76103287b1184abe684f2e7d71e483f180d0335a72599f51ebce05a47cbc102570d3233925cae632d2f4b8111fad5420232fca5b73340daeff2b16b335a0c",
+      "signatureValid": true
+    }
+  },
+  "canonicalEdge": {
+    "canonicalSha256": "08668f23b60f792d7ec6c919b2b206ad0535b6327e0388e66062c964a41bd4c6",
+    "canonicalString": "{\"id\":\"canonical-only\",\"list\":[\"b\",\"a\",3],\"nested\":{\"z\":1,\"é\":3,\"�\":2},\"publisher\":\"test\",\"routing\":{\"auth\":true,\"mountPath\":\"/api/v1/addons/canonical-only\"},\"version\":\"1.0.0\"}"
+  },
+  "firstPartyAddons": {
+    "aml-services-core": {
+      "canonicalSha256": "471ed36acbd5148b7fe3c126d72d5685a79f86d8555478e09b499e26c4c48e5b",
+      "contentHash": "sha256-cc538352e60aca6c367a1c1e5531a557d095fbdf82313133aa8d2b1b9338aef1",
+      "uiContentHash": null,
+      "signature": "c2e5a075007184317dc45e503dfacb9e70711382e1e90b0d953e2c36e6da27ed0672903e0f4d6a7bf5dc837f429bae562ea2792a9e5cb57a9e73f516ef98a80f",
+      "signatureValid": true
+    },
+    "aml-txn-bridge": {
+      "canonicalSha256": "79e6ff68a4e31d2cad839f810b9e61c620219c98e31d2ef0c1cee9c24df78657",
+      "contentHash": "sha256-afacd8a2e452361badd793834614599ca3ed5dac9b45343d0e29564a67b3a677",
+      "uiContentHash": null,
+      "signature": "275c33d3b85779dfdf9976c5e298b1d0d52e76151374c77c8e156b3fc4e8f644293df3ae52a67343d6189623767fc7bde09415b2752847ea780cf3b691570205",
+      "signatureValid": true
+    },
+    "control-room": {
+      "canonicalSha256": "2fdfbf6c3019c31b24071294c9b7258fe0943f7b8669fba8c5e0f327fe09c035",
+      "contentHash": "sha256-7496bfb14b2da15581293931bb79ae954d08a9b52b7f3cdf2ddb4d8082dc2449",
+      "uiContentHash": null,
+      "signature": "7189f2022aef0792290a149536e75e602feee3a75c93915f0f61715b4721b210a43f323da2101e66d1945a5a1380720b3bdd63c654d341ba1792f08e62da0e0b",
+      "signatureValid": true
+    },
+    "document-intelligence": {
+      "canonicalSha256": "4294fff332468a6696b7933d088f2bc4a5c28e4b6cc1a48a6de756ce68ca015b",
+      "contentHash": "sha256-ca598eec1c1cd1720ad53a9f2c408aaaaa453e11313ba7205e63dd04600d6783",
+      "uiContentHash": null,
+      "signature": "f5c653cc2ac0f0dfc4f1124787add8b19af8e32082d00fb2cf91e06106cc0a4b30a4a395ff4de53761ff1e030acd7caa0127ee85ffe0b84f69c31a80bbcdaf0e",
+      "signatureValid": true
+    },
+    "investigation-panel": {
+      "canonicalSha256": "6ab01a361b4c5c26a7a45704e4102f2d958c3dd4b2cfa5ec0e707a4b0ec16847",
+      "contentHash": "sha256-2d55fc19d405306326b864600816b9df9262708b4c54d05de8d1fb0997df4818",
+      "uiContentHash": null,
+      "signature": "5c2961e3d3ab2c79e6509d4112ae9564d28f643222eb4664fd4abde2566f9510c5bf1e4567f91ecd4e2b5fa4abd122cdf51c82f4e48b63ef851e9400edc0aa0c",
+      "signatureValid": true
+    },
+    "list-management": {
+      "canonicalSha256": "3517e1b77b2af752870ad6a37e492fdad9a38790c462b104a17c433a5230fb91",
+      "contentHash": "sha256-893c1eb7a9ec4b709ad8e14012c60d4f94673e5b82e3bb431329b37478195688",
+      "uiContentHash": null,
+      "signature": "cd663534db38fcf83d00165360cb040a825a7aebc39e15321f017235e127241c160e2dd63e4ca8a74e1bb6f6f2a21b4b0a045c76a08b7795a85f1ced63972709",
+      "signatureValid": true
+    },
+    "market-data-core": {
+      "canonicalSha256": "dbae7e9ee157b6330fd9755d47aad23681df0cfc651485398ac7f2be0a64a15d",
+      "contentHash": "sha256-f8bafb11e93271d5c2354cbe6bc9c3dc57b91d04496cb964af766d7bbd6e6092",
+      "uiContentHash": null,
+      "signature": "cd8bb4f1e5731724c738bb78178fc0a9ba7109c743d655bd8cf0093423fb2fea1582f1f22358d6d6a483e65c2791c0f8adc1acae69e9b4ecc7782b5b084d7006",
+      "signatureValid": true
+    },
+    "party-management": {
+      "canonicalSha256": "ce6d8bb5bbaf6783aee6acc75eff367c15d304292eefcf52b875246b674f17f6",
+      "contentHash": "sha256-b44aa57c594ebcc5a3d3f080b67c46eee1838281dbbbc077500c364ec340bebb",
+      "uiContentHash": null,
+      "signature": "08ec3a895d47ccfdd217650b07d5eeb253c71b9929004208f94e30f26bd3c2b3d59181dd9d4ce5d691f4d74525ed10095ccb11f03799bb053f0935b86ccb7505",
+      "signatureValid": true
+    },
+    "ubo-panel": {
+      "canonicalSha256": "3f1db1ac07e5e52f75a5be950d785f35f803567b97f317ac7a2676c14ba6d677",
+      "contentHash": "sha256-8fd56ca22b81951061f44aa9201e609bba33d067d198d02c47ab886524a6f9cf",
+      "uiContentHash": null,
+      "signature": "532e4221fc618f770041be641d1e9579895e96cbea93602e8314d731db9ee6854600d2b6a06633ba04b52024658d3faafb831abf7b613cbf77f70244caec4404",
+      "signatureValid": true
+    }
+  }
+}

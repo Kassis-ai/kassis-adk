@@ -13,8 +13,6 @@ jobs:
         with:
           node-version: 24
       - run: npm install
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.KASSIS_PACKAGES_TOKEN }}
       - run: npm run build
       - run: npm test
       - run: npm run check

@@ -1,4 +1,4 @@
 export {
   buildCanonicalManifestString,
   canonicalJsonStringify,
-} from '../../server/core/addon-deployment/canonicalJson.mjs';
+} from '@kassis/adk-protocol';
