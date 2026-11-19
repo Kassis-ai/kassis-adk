@@ -4,7 +4,7 @@
 #   test      kit unit tests only (see KIT_UNIT_GLOBS in tools/release/adkKitReleaseLib.mjs)
 #   pack      npm tarballs, CycloneDX SBOM, public cosign key
 #   sign      cosign signatures for each tarball, checksums.txt, and the zip
-#   publish   those tarballs to npmjs.com (public), with provenance when the repo is public
+#   stage     those tarballs on npmjs.com (public); a maintainer approves each with 2FA
 #   release   attach the air-gap zip, its sha256, and its signature to the GitHub release
 #
 # The package list is read from .changeset/config.json. Do not add names here.
@@ -12,7 +12,7 @@
 # Every third-party action is pinned to a commit SHA (the tag is in the comment).
 # Signing uses the Stage A release key. There is no unsigned path.
 #
-# Repository secrets: NPM_TOKEN (npmjs.com granular token with publish rights on @kassis, required);
+# Repository secrets: NPM_TOKEN (npmjs.com granular token, Read and write (stage only) on @kassis, required);
 #   COSIGN_PRIVATE_KEY, COSIGN_PASSWORD (required, same key as the client release).
 # Repository file: deploy/release/cosign.pub.
 # See docs/developer/technical/adk/maintainers.md.
@@ -136,7 +136,10 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish kit tarballs with provenance
+      - name: npm with staged publishing (11.15 or newer)
+        run: npm install -g npm@^11.15.0
+
+      - name: Stage kit tarballs for approval on npmjs.com
         env:
           ADK_KIT_PUBLISH: '1'
           # npm provenance needs a public repository and a GitHub-hosted runner.

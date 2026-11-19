@@ -222,10 +222,11 @@ function publish() {
     }
     const tarball = path.join(dir, item.file);
     if (!fs.existsSync(tarball)) throw new Error(`tarball is missing: ${item.file}`);
-    process.stdout.write(`publish ${item.name}\n`);
+    process.stdout.write(`stage ${item.name}\n`);
     // npm provenance needs a public source repository on a GitHub-hosted runner.
     const provenance = process.env.ADK_KIT_PROVENANCE === '1' ? ['--provenance'] : [];
-    runNpm(['publish', tarball, ...provenance, '--access', 'public'], repoRoot, 'inherit');
+    // Staged: a maintainer approves each version with 2FA on npmjs.com before it goes live.
+    runNpm(['stage', 'publish', tarball, ...provenance, '--access', 'public'], repoRoot, 'inherit');
   }
 }
 

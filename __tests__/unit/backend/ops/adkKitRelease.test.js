@@ -135,6 +135,8 @@ describe('ADK kit release workflow', () => {
     expect(text).toContain('adk-kit-release.mjs publish');
     const publisher = fs.readFileSync(path.join(repoRoot, 'tools/release/adk-kit-release.mjs'), 'utf8');
     expect(publisher).toContain("'--provenance'");
+    expect(publisher).toContain("['stage', 'publish', tarball");
+    expect(text).toContain('npm install -g npm@^11.15.0');
     expect(text).not.toContain('@kassis/');
     expect(text).not.toContain('git push');
     expect(text).not.toContain('git tag');
