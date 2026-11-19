@@ -102,7 +102,7 @@ The override lowers Postgres memory, gives schema init a longer health start per
 
 | What you see                                                         | What to do                                                                                                                                                                      |
 | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Backend crash: `Cannot find module '@kassis/adk-protocol'` | The host imports that package for canonical JSON, content hash, trust, and evidence. Image stages that copy `packages/addon-sdk` must also copy `packages/adk-protocol`. That copy is not in the Dockerfiles yet. |
+| Backend crash: `Cannot find module '@kassis/adk-protocol'` | The host imports that package for canonical JSON, content hash, trust, and evidence. `Dockerfile.server` copies and links `packages/adk-protocol` in every stage that copies `packages/addon-sdk`; production runs `node build.mjs` because `.dockerignore` drops `dist`. Rebuild the backend image when an old layer predates that change. |
 
 ## Coding-agent profile sources
 
@@ -112,6 +112,7 @@ The signed profile is `tools/adk/profiles/addon-coding-agent.json` (version 2). 
 
 | Date       | Change                                                                                                                                                                                                                          |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-19 | `Dockerfile.server` copies and builds `packages/adk-protocol` and links `@kassis/adk-protocol` for production and development targets (S3.07). Dev entrypoint links the package when node_modules volumes are stale.             |
 | 2026-11-19 | `@kassis/adk-protocol` is in the kit group at `0.1.0`. Content-hash scope and canonical JSON live in that package. The publisher seed file stays under `server/core/addon-platform/trust/`.                                   |
 | 2026-11-19 | Tag `adk/v*` runs the kit release workflow: build, kit unit tests, provenance publish of the changesets fixed group, SBOM, and a cosign-signed air-gap zip on the GitHub release.                                              |
 | 2026-11-19 | Client ADK pages no longer name repository paths. Maintainer-only commands and live-lab detail live on this page.                                                                                                              |
