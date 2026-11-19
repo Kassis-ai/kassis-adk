@@ -1,8 +1,14 @@
 {
   "name": "@kassis/addon-sdk",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "type": "module",
   "description": "Public addon contract: AddonContext types, manifest v2 schema and validator, KADK error codes.",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kassis-ai/kassis.git",
+    "directory": "packages/addon-sdk"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

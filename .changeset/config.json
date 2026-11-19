@@ -2,7 +2,15 @@
   "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
   "changelog": "@changesets/cli/changelog",
   "commit": false,
-  "fixed": [],
+  "fixed": [
+    [
+      "@kassis/addon-sdk",
+      "@kassis/adk-core",
+      "@kassis/mcp-contract",
+      "@kassis/addon-cli",
+      "@kassis/addon-testkit"
+    ]
+  ],
   "linked": [],
   "access": "restricted",
   "baseBranch": "main",
