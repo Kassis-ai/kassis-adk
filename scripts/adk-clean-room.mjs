@@ -16,7 +16,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { computeAddonContentHash, computeUiContentHash } from '@kassis/adk-protocol';
-import { resolveManifestTrust } from '../server/core/addon-platform/trust/publisherTrust.mjs';
+import { resolveManifestTrust } from '@kassis/adk-protocol';
 import {
   AIRGAP_TOOLCHAIN,
   PUBLIC_PACKAGE_NAMES,

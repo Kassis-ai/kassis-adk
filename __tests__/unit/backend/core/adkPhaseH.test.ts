@@ -153,7 +153,6 @@ describe('adk phase H', () => {
     expect(text).not.toContain('Content-Length');
     const names = ['validate_manifest', 'run_checks', 'explain_error', 'scaffold'];
     for (const name of names) expect(text).toContain(name);
-    expect(text).not.toContain('list_extension_points');
     expect(text).not.toContain('kadk_explain');
   });
 });

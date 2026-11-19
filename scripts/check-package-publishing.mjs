@@ -20,6 +20,12 @@ const SOURCE_EXT = ['.ts', '.tsx', '.mts'];
  * @type {ReadonlySet<string>}
  */
 const TYPESCRIPT_PACK_ALLOW = new Set();
+/**
+ * Committed entries that point at dist on purpose. addon-sdk resolves dist since S2.39;
+ * every consumer builds it first. Do not add names here.
+ * @type {ReadonlySet<string>}
+ */
+const COMMITTED_DIST_ALLOW = new Set(['@kassis/addon-sdk']);
 
 /** @param {string} entry */
 function isSourceEntry(entry) {
@@ -142,7 +148,7 @@ function failures() {
     collectEntries(committed.main, entries);
     collectEntries(committed.types, entries);
     collectEntries(committed.exports, entries);
-    if (entries.length === 0) continue;
+    if (entries.length === 0 || COMMITTED_DIST_ALLOW.has(committed.name)) continue;
     const pointsAtSource = entries.some((entry) => entry.includes('/src/') || entry.startsWith('./src'));
     if (!pointsAtSource) {
       found.push(`${committed.name} committed package.json does not point at src/`);
@@ -159,4 +165,4 @@ if (found.length > 0) {
   process.stderr.write(`${found.join('\n')}\n`);
   process.exit(1);
 }
-process.stdout.write('public @kassis packages publish to GitHub Packages\n');
+process.stdout.write('public @kassis packages publish to npmjs.com\n');

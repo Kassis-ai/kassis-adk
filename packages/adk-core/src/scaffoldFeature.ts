@@ -5,6 +5,7 @@ import type { AdkIssue, CommandResult } from './types.ts';
 import { commandResult, failure, isRecordValue, kadkIssue, readJson } from './issues.ts';
 import { initProject } from './projectCommands.ts';
 import { scaffoldRecordType } from './scaffoldRecordType.ts';
+import { wireInitializeCall } from './scaffoldWire.ts';
 
 const NAME_RE = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
 const KINDS = [
@@ -94,28 +95,7 @@ function ensureExpressDependency(dir: string): boolean {
 }
 
 function wireJobRegister(dir: string, name: string): string | null {
-  const initFile = path.join(dir, 'src', 'server', 'index.ts');
-  if (!fs.existsSync(initFile)) return null;
-  const registerFn = `register${pascal(name)}`;
-  const importLine = `import { ${registerFn} } from './jobs/${name}.js';`;
-  let text = fs.readFileSync(initFile, 'utf8');
-  if (text.includes(`${registerFn}(ctx)`)) return null;
-  if (!text.includes(importLine)) {
-    const sdkImport = "import type { AddonContext } from '@kassis/addon-sdk';";
-    if (text.includes(sdkImport)) {
-      text = text.replace(sdkImport, `${sdkImport}\n${importLine}`);
-    } else {
-      text = `${importLine}\n${text}`;
-    }
-  }
-  const initMatch = /export async function initialize\(ctx: AddonContext\): Promise<void> \{/;
-  if (!initMatch.test(text)) return null;
-  text = text.replace(
-    initMatch,
-    `export async function initialize(ctx: AddonContext): Promise<void> {\n  ${registerFn}(ctx);`
-  );
-  fs.writeFileSync(initFile, text);
-  return 'src/server/index.ts';
+  return wireInitializeCall(dir, `register${pascal(name)}`, `jobs/${name}`);
 }
 
 function jobFile(dir: string, id: string, name: string): string {
@@ -143,28 +123,7 @@ export function register${pascal(name)}(ctx: AddonContext): void {
 }
 
 function wireRouteMount(dir: string, name: string): string | null {
-  const initFile = path.join(dir, 'src', 'server', 'index.ts');
-  if (!fs.existsSync(initFile)) return null;
-  const mountFn = `mount${pascal(name)}`;
-  const importLine = `import { ${mountFn} } from './routes/${name}.js';`;
-  let text = fs.readFileSync(initFile, 'utf8');
-  if (text.includes(`${mountFn}(ctx)`)) return null;
-  if (!text.includes(importLine)) {
-    const sdkImport = "import type { AddonContext } from '@kassis/addon-sdk';";
-    if (text.includes(sdkImport)) {
-      text = text.replace(sdkImport, `${sdkImport}\n${importLine}`);
-    } else {
-      text = `${importLine}\n${text}`;
-    }
-  }
-  const initMatch = /export async function initialize\(ctx: AddonContext\): Promise<void> \{/;
-  if (!initMatch.test(text)) return null;
-  text = text.replace(
-    initMatch,
-    `export async function initialize(ctx: AddonContext): Promise<void> {\n  ${mountFn}(ctx);`
-  );
-  fs.writeFileSync(initFile, text);
-  return 'src/server/index.ts';
+  return wireInitializeCall(dir, `mount${pascal(name)}`, `routes/${name}`);
 }
 
 function routeFile(dir: string, id: string, name: string): string {

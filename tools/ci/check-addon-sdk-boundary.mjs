@@ -237,7 +237,9 @@ export function findPackageBoundaryViolations(packageRoot, options = {}) {
 }
 
 function main() {
-  const drift = publicKeyCopyDrift() || syncedCopyDrift();
+  // Copies are compared against the host only in a Kassis checkout; kassis-adk has no server/.
+  const hostCheckout = fs.existsSync(path.join(ROOT, 'server'));
+  const drift = hostCheckout ? publicKeyCopyDrift() || syncedCopyDrift() : '';
   if (drift) {
     console.error(`ci:packages:addon-sdk-boundary failed — ${drift}`);
     process.exit(1);
