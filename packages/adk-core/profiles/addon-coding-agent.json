@@ -1,0 +1,175 @@
+{
+  "profileId": "addon-coding-agent",
+  "version": "2",
+  "guardrails": [
+    {
+      "key": "adk.work-in-own-repo",
+      "severity": "blocking",
+      "title": "Work only in your addon repository",
+      "rule": "Work only in this repository. Kassis core is a dependency, never a file to edit.",
+      "verification": "self"
+    },
+    {
+      "key": "adk.sdk-imports-only",
+      "severity": "blocking",
+      "title": "Import only from the SDK and your own code",
+      "rule": "Import only from @kassis/* packages and your own src/. Never resolve host services by name.",
+      "verification": "self"
+    },
+    {
+      "key": "adk.lowest-rung",
+      "severity": "advisory",
+      "title": "Choose the lowest rung",
+      "rule": "Choose the lowest rung: configuration first, a declarative addon second, code last. State the rung you chose and why in the change summary.",
+      "verification": "self"
+    },
+    {
+      "key": "adk.declared-permissions-and-audit",
+      "severity": "blocking",
+      "title": "Declare permissions and audit every write",
+      "rule": "Every route declares a permission in your addon namespace. Every write goes through ctx.data or a host facade and records an audit action declared in the manifest.",
+      "verification": "self"
+    },
+    {
+      "key": "adk.event-schemas-and-null-capabilities",
+      "severity": "blocking",
+      "title": "Give every event a schema and handle missing capabilities",
+      "rule": "Every published event has a schema. Every consumed capability handles null, because the addon that provides it can be switched off.",
+      "verification": "self"
+    },
+    {
+      "key": "adk.reversible-migrations",
+      "severity": "blocking",
+      "title": "Make every migration reversible",
+      "rule": "Every migration has a down script, or is marked irreversible with a reason.",
+      "verification": "self"
+    },
+    {
+      "key": "adk.declare-widened-access",
+      "severity": "blocking",
+      "title": "Declare any widened access",
+      "rule": "Never widen permissions, egress hosts or data access without saying so in the change summary.",
+      "verification": "self"
+    },
+    {
+      "key": "adk.certify",
+      "severity": "blocking",
+      "title": "Pass certify before you finish",
+      "rule": "Run kassis addon certify before you say you are done, and fix every error. Certify runs check, conformance, build and test, and those results are the only machine evidence.",
+      "verification": "machine",
+      "checkIds": [
+        "kassis-addon-check",
+        "kassis-addon-conformance",
+        "kassis-addon-build",
+        "kassis-addon-test"
+      ]
+    },
+    {
+      "key": "adk.document-changes",
+      "severity": "advisory",
+      "title": "Document what you built",
+      "rule": "When a change is described by Kassisdoc, update the business page, the technical page, or both, and link the business page from the technical guide. Also update README.md and CHANGELOG.md.",
+      "verification": "self"
+    },
+    {
+      "key": "adk.no-unrequested-refactors",
+      "severity": "blocking",
+      "title": "Do not refactor code you were not asked to change",
+      "rule": "Do not refactor code you were not asked to change.",
+      "verification": "self"
+    },
+    {
+      "key": "adk.attest-pinned-profile",
+      "severity": "blocking",
+      "title": "Read your pinned guardrails and attest to them",
+      "rule": "At the start, read the guardrails and skills of your pinned profile (kassis adk sync). Before you say you are done, fill in .kassis/attestation.json with one answer per guardrail.",
+      "verification": "self"
+    }
+  ],
+  "previousVersion": {
+    "profileId": "addon-coding-agent",
+    "version": "1",
+    "guardrails": [
+      {
+        "key": "adk.work-in-own-repo",
+        "severity": "blocking",
+        "title": "Work only in your addon repository",
+        "rule": "Work only in this repository. Kassis core is a dependency, never a file to edit.",
+        "verification": "self"
+      },
+      {
+        "key": "adk.sdk-imports-only",
+        "severity": "blocking",
+        "title": "Import only from the SDK and your own code",
+        "rule": "Import only from @kassis/* packages and your own src/. Never resolve host services by name.",
+        "verification": "self"
+      },
+      {
+        "key": "adk.lowest-rung",
+        "severity": "advisory",
+        "title": "Choose the lowest rung",
+        "rule": "Choose the lowest rung: configuration first, a declarative addon second, code last. State the rung you chose and why in the change summary.",
+        "verification": "self"
+      },
+      {
+        "key": "adk.declared-permissions-and-audit",
+        "severity": "blocking",
+        "title": "Declare permissions and audit every write",
+        "rule": "Every route declares a permission in your addon namespace. Every write goes through ctx.data or a host facade and records an audit action declared in the manifest.",
+        "verification": "self"
+      },
+      {
+        "key": "adk.event-schemas-and-null-capabilities",
+        "severity": "blocking",
+        "title": "Give every event a schema and handle missing capabilities",
+        "rule": "Every published event has a schema. Every consumed capability handles null, because the addon that provides it can be switched off.",
+        "verification": "self"
+      },
+      {
+        "key": "adk.reversible-migrations",
+        "severity": "blocking",
+        "title": "Make every migration reversible",
+        "rule": "Every migration has a down script, or is marked irreversible with a reason.",
+        "verification": "self"
+      },
+      {
+        "key": "adk.declare-widened-access",
+        "severity": "blocking",
+        "title": "Declare any widened access",
+        "rule": "Never widen permissions, egress hosts or data access without saying so in the change summary.",
+        "verification": "self"
+      },
+      {
+        "key": "adk.certify",
+        "severity": "blocking",
+        "title": "Pass certify before you finish",
+        "rule": "Run kassis addon certify before you say you are done, and fix every error.",
+        "verification": "machine",
+        "checkId": "kassis-addon-certify"
+      },
+      {
+        "key": "adk.document-changes",
+        "severity": "advisory",
+        "title": "Document what you built",
+        "rule": "When a change is described by Kassisdoc, update the business page, the technical page, or both, and link the business page from the technical guide. Also update README.md and CHANGELOG.md.",
+        "verification": "self"
+      },
+      {
+        "key": "adk.no-unrequested-refactors",
+        "severity": "blocking",
+        "title": "Do not refactor code you were not asked to change",
+        "rule": "Do not refactor code you were not asked to change.",
+        "verification": "self"
+      },
+      {
+        "key": "adk.attest-pinned-profile",
+        "severity": "blocking",
+        "title": "Read your pinned guardrails and attest to them",
+        "rule": "At the start, read the guardrails and skills of your pinned profile (kassis adk sync). Before you say you are done, fill in .kassis/attestation.json with one answer per guardrail.",
+        "verification": "self"
+      }
+    ],
+    "signature": "8c824b2dd3a91bff121eb290990034fd8ef316c5077b2c509830607bd7c02f2c9ad3cc4363265816bf8c73ed89e54f8767cd9e529a251d17bd37e9e20baa3902"
+  },
+  "signature": "1c77239ec6f34f313f3df2d87f5dfd7f3a1761fa9be09e844490cd01982d0efdfb17e04ee548163d80cb643558cb64c320f5f09685a48c2d720c7b624a541c02"
+}

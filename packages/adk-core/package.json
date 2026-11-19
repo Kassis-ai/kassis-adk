@@ -19,10 +19,16 @@
     "./mandatory-contract": {
       "types": "./src/engine/mandatoryContract.d.mts",
       "default": "./src/engine/mandatoryContract.mjs"
-    }
+    },
+    "./cli/kassis-addon": "./src/cli/kassis-addon.mjs",
+    "./cli/kassis-adk-mcp": "./src/cli/kassis-adk-mcp.mjs",
+    "./profiles/addon-coding-agent.json": "./profiles/addon-coding-agent.json",
+    "./profiles/addon-coding-agent.v1.json": "./profiles/addon-coding-agent.v1.json",
+    "./profiles/addon-coding-agent.v3.draft.json": "./profiles/addon-coding-agent.v3.draft.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "profiles"
   ],
   "scripts": {
     "build": "node build.mjs",
@@ -52,7 +58,10 @@
         "types": "./dist/engine/mandatoryContract.d.mts",
         "import": "./dist/engine/mandatoryContract.mjs",
         "default": "./dist/engine/mandatoryContract.mjs"
-      }
+      },
+      "./profiles/addon-coding-agent.json": "./profiles/addon-coding-agent.json",
+      "./profiles/addon-coding-agent.v1.json": "./profiles/addon-coding-agent.v1.json",
+      "./profiles/addon-coding-agent.v3.draft.json": "./profiles/addon-coding-agent.v3.draft.json"
     }
   }
 }

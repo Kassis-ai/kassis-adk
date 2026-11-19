@@ -9,7 +9,7 @@ This page is for people who build, verify, and ship the Addon Development Kit fr
 
 ## Workspace packages and CLI entry
 
-Inside the kassis checkout, `kassis-addon` is `tools/adk/kassis-addon.mjs`. `npm run create-addon` forwards to `init`. The MCP server entry is `tools/adk/kassis-adk-mcp.mjs`.
+Inside the kassis checkout, `kassis-addon` is `tools/adk/kassis-addon.mjs`. `npm run create-addon` forwards to `init`. The MCP server entry is `tools/adk/kassis-adk-mcp.mjs`. Those two files are wrappers. `@kassis/addon-cli` bin and prepack load `@kassis/adk-core/cli/kassis-addon` and `@kassis/adk-core/cli/kassis-adk-mcp`. They do not resolve `tools/adk`. Prepack copies client docs from the package mirror. Refresh that mirror with `node tools/adk/sync-client-docs.mjs` before packing when the client pages changed.
 
 Public workspaces live under `packages/`. Offline maintainer pack:
 
@@ -108,12 +108,13 @@ The override lowers Postgres memory, gives schema init a longer health start per
 
 ## Coding-agent profile sources
 
-The signed profile is `tools/adk/profiles/addon-coding-agent.json` (version 2). Version 1 stays at `tools/adk/profiles/addon-coding-agent.v1.json`. The unsigned version 3 draft is `tools/adk/profiles/addon-coding-agent.v3.draft.json` (awaiting sign/publish, decision D7).
+The signed profile is `tools/adk/profiles/addon-coding-agent.json` (version 2). Version 1 stays at `tools/adk/profiles/addon-coding-agent.v1.json`. The unsigned version 3 draft is `tools/adk/profiles/addon-coding-agent.v3.draft.json` (awaiting sign/publish, decision D7). The CLI pack reads a byte copy of those files at `packages/adk-core/profiles`. Do not edit the copy. Replace it with the same bytes when the signed file changes.
 
 ## Changelog
 
 | Date       | Change                                                                                                                                                                                                                          |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-19 | `@kassis/addon-cli` bin and prepack load `@kassis/adk-core` CLI entries and kit files from package exports. Prepack does not resolve `tools/adk`. The pack reads the byte copy under `packages/adk-core/profiles`. |
 | 2026-11-19 | `Dockerfile.mcp` copies and links `@kassis/adk-protocol`. The backend image copies and links `@kassis/adk-core` for `@kassis/adk-core/mandatory-contract` and no longer copies `tools/adk` evidence or contract wrappers. |
 | 2026-11-19 | ADK engine and the two CLI scripts live in `packages/adk-core`. `npm pack` of that package ships `dist`. `tools/adk` keeps repo maintenance and thin wrappers. The publisher seed file stays under `server/core/addon-platform/trust/`. |
 | 2026-11-19 | `Dockerfile.server` copies and builds `packages/adk-protocol` and links `@kassis/adk-protocol` for production and development targets (S3.07). Dev entrypoint links the package when node_modules volumes are stale.             |
