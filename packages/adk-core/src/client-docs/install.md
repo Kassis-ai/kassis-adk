@@ -30,7 +30,25 @@ Install `@kassis/addon-cli` and run `npx kassis-addon`. `--version` reads that p
 
 ## Air-gapped bundle
 
-Download the kit air-gap bundle from your release channel (checksums and signatures ship with the bundle). Extract it to a directory such as `./airgap`. Install dependencies with `file:` tarballs listed in `checksums.txt` and verify hashes before use. The bundle includes the SDK, testkit, template, public verification key, `sbom.json`, and the six public package tarballs. It refuses to include a private signing key.
+Every kit release attaches a signed bundle to its GitHub release: https://github.com/Kassis-ai/kassis-adk/releases (tag `adk/vX.Y.Z`). Download three files from the release:
+
+| File | What it is |
+| --- | --- |
+| `kassis-adk-X.Y.Z-airgap.zip` | The bundle: package tarballs, `sbom.cdx.json`, `checksums.txt`, `checksums.txt.sig`, `cosign.pub`, `verify.sh` |
+| `kassis-adk-X.Y.Z-airgap.zip.sha256` | SHA-256 of the zip |
+| `kassis-adk-X.Y.Z-airgap.zip.sig` | cosign signature of the zip |
+
+Verify before you install. You need [cosign](https://docs.sigstore.dev/cosign/system_config/installation/) and the Kassis release public key. The key's SHA-256 is `2b65f3b60e9cebbf81da5419286dd105c79801d29e33aff47cd252285f34aad5`; check it against the copy Kassis gives you on a separate channel (email or your support contract), not only the copy inside the zip.
+
+```bash
+sha256sum -c kassis-adk-X.Y.Z-airgap.zip.sha256
+cosign verify-blob --key cosign.pub --insecure-ignore-tlog=true \
+  --signature kassis-adk-X.Y.Z-airgap.zip.sig kassis-adk-X.Y.Z-airgap.zip
+unzip kassis-adk-X.Y.Z-airgap.zip -d airgap
+sh airgap/verify.sh
+```
+
+`verify.sh` checks `checksums.txt.sig` with the bundled `cosign.pub`, then every file hash in `checksums.txt`. Stop if any step fails. Then install with the `file:` tarballs under `airgap/packs/`. The bundle contains the public verification key and no private signing key.
 
 After install, run `npx kassis-addon init` and the [Quickstart](./quickstart.md) flow without the npm registry.
 
@@ -40,6 +58,7 @@ Kit maintainers who build the bundle from the kassis repository use [Maintainers
 
 | Date       | Change                                                                                                                                                        |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-19 | Air-gapped bundle: download from the kassis-adk GitHub release and verify with cosign; release key fingerprint published. |
 | 2026-11-19 | The kit packages publish publicly to npmjs.com under `@kassis`. Installs need no token.                                                                         |
 | 2026-11-19 | Addon installs use `@kassis/addon-sdk` `^0.1.0`. `hostApi` stays `^1.0.0`. See the [semver policy](../addons/semver-policy.md). |
 | 2026-11-19 | Client install docs use registry and air-gap bundles only; repository pack scripts moved to [Maintainers](./maintainers.md).                                   |
