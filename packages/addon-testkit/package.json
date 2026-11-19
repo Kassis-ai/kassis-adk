@@ -6,7 +6,7 @@
   "license": "UNLICENSED",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Kassis-ai/kassis.git",
+    "url": "git+https://github.com/Kassis-ai/kassis-adk.git",
     "directory": "packages/addon-testkit"
   },
   "dependencies": {
