@@ -8,6 +8,7 @@ const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const node = process.execPath;
 
 const STEPS = [
+  ['lockfile platform packages', node, ['tools/ci/check-lockfile-platforms.mjs', 'package-lock.json']],
   ['build every package', npm, ['run', 'build']],
   ['kit boundary', node, ['tools/ci/check-addon-sdk-boundary.mjs']],
   ['guardrail catalogue', node, ['tools/ci/check-guardrail-catalog.mjs']],

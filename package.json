@@ -26,7 +26,8 @@
     "ci:packages:publish-config": "node scripts/check-package-publishing.mjs",
     "ci:adk:guardrails-catalog": "node tools/ci/check-guardrail-catalog.mjs",
     "ci:adk:client-docs": "node tools/ci/check-adk-client-docs.mjs",
-    "ci:adk:cli-client-docs": "node tools/ci/check-adk-cli-client-docs.mjs"
+    "ci:adk:cli-client-docs": "node tools/ci/check-adk-cli-client-docs.mjs",
+    "ci:deps:lockfile-platforms": "node tools/ci/check-lockfile-platforms.mjs package-lock.json"
   },
   "devDependencies": {
     "@changesets/cli": "^3.0.3",
