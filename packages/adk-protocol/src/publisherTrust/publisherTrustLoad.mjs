@@ -2,10 +2,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { PublisherTrustError } from './publisherTrustError.mjs';
 import { mergePublisherTrust } from './publisherTrustMerge.mjs';
 import { normalizePublisherTrust } from './publisherTrustNormalize.mjs';
 
 // The host and the kit pass the repository seed via configurePublisherTrustSeed.
+// The seeded file stays with the host. This module does not ship a second copy.
 // The packed addon-cli bundles this module into lib/ and copies the seed beside it.
 const here = path.dirname(fileURLToPath(import.meta.url));
 const TTL_MS = 15_000;
@@ -37,7 +39,9 @@ function policyFilePath() {
     return path.join(here, 'publisher-trust.json');
   }
   if (configuredPolicyPath) return configuredPolicyPath;
-  return path.join(here, '..', 'publisher-trust.json');
+  throw new PublisherTrustError(
+    'Publisher trust seed is not configured. Call configurePublisherTrustSeed before loading a policy.'
+  );
 }
 
 export function loadPublisherTrustPolicy() {

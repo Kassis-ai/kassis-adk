@@ -37,7 +37,6 @@ jobs:
     permissions:
       contents: write
       id-token: write
-      actions: write
     defaults:
       run:
         shell: bash

@@ -16,6 +16,7 @@ const TRUST_FAILURES = [
   'Addon tier is not allowed for this publisher',
   'Addon id is outside the publisher prefixes',
   'Publisher trust policy is missing',
+  'Publisher trust seed is not configured',
 ];
 
 export function isPublisherTrustError(error) {

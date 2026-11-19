@@ -28,6 +28,17 @@ function loadIndex() {
   return parsed.documents;
 }
 
+/**
+ * @param {{ id?: string, path?: string }} document
+ * @returns {string}
+ */
+function sourceFile(document) {
+  if (document.id === 'addon-sdk-readme') {
+    return path.join(repoRoot, 'packages', 'addon-sdk', 'README.md');
+  }
+  return path.join(repoRoot, String(document.path).replaceAll('/', path.sep));
+}
+
 /** @returns {string[]} */
 function sync() {
   const failures = [];
@@ -41,7 +52,7 @@ function sync() {
       failures.push(`docs-index must not ship ${MAINTAINERS}: ${document.id}`);
       continue;
     }
-    const sourcePath = path.join(repoRoot, document.path.replaceAll('/', path.sep));
+    const sourcePath = sourceFile(document);
     if (!fs.existsSync(sourcePath)) {
       failures.push(`Missing source doc for ${document.id}: ${document.path}`);
       continue;

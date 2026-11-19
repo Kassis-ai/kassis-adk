@@ -11,6 +11,9 @@ import * as esbuild from 'esbuild';
 
 const pkgRoot = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(pkgRoot, '../..');
+// Module keys in the bundle are relative to this directory. The repo root would
+// label inlined kit files packages/..., which the installed CLI must not name.
+const bundleRoot = path.join(repoRoot, 'packages');
 const lib = path.join(pkgRoot, 'lib');
 const define = { 'globalThis.__KASSIS_ADK_PACKED__': 'true' };
 const external = [
@@ -49,7 +52,7 @@ const externalPlugin = {
 };
 
 await esbuild.build({
-  absWorkingDir: repoRoot,
+  absWorkingDir: bundleRoot,
   entryPoints: [path.join(repoRoot, 'tools/adk/kassis-addon.mjs')],
   outfile: path.join(lib, 'kassis-addon.mjs'),
   bundle: true,
@@ -65,7 +68,7 @@ await esbuild.build({
 });
 
 await esbuild.build({
-  absWorkingDir: repoRoot,
+  absWorkingDir: bundleRoot,
   entryPoints: [path.join(repoRoot, 'tools/adk/kassis-adk-mcp.mjs')],
   outfile: path.join(lib, 'kassis-adk-mcp.mjs'),
   bundle: true,

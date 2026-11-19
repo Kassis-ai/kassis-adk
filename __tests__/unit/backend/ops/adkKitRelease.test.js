@@ -32,7 +32,9 @@ describe('ADK kit release package list', () => {
     expect(new Set(packages.map((pkg) => pkg.version)).size).toBe(1);
     const at = (name) => packages.findIndex((pkg) => pkg.name === name);
     expect(at('@kassis/addon-sdk')).toBeGreaterThanOrEqual(0);
+    expect(at('@kassis/adk-protocol')).toBeGreaterThanOrEqual(0);
     expect(at('@kassis/addon-sdk')).toBeLessThan(at('@kassis/addon-testkit'));
+    expect(at('@kassis/adk-protocol')).toBeLessThan(at('@kassis/adk-core'));
     expect(at('@kassis/addon-testkit')).toBeLessThan(at('@kassis/adk-core'));
     expect(at('@kassis/addon-testkit')).toBeLessThan(at('@kassis/addon-cli'));
   });
@@ -140,5 +142,6 @@ describe('ADK kit release workflow', () => {
     expect(text).not.toMatch(/COSIGN_PRIVATE_KEY == ''|COSIGN_PRIVATE_KEY != ''/);
     expect(workflow.jobs.release.permissions['id-token']).toBe('write');
     expect(workflow.jobs.release.permissions.contents).toBe('write');
+    expect(workflow.jobs.release.permissions.actions).toBeUndefined();
   });
 });

@@ -8,19 +8,18 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 
-async function loadSignerModule(fileName, repoRelative) {
+async function loadSignerModule(fileName) {
   const here = path.dirname(fileURLToPath(import.meta.url));
-  const packed = path.join(here, fileName);
-  const repo = path.resolve(here, repoRelative);
-  const file = fs.existsSync(packed) ? packed : repo;
-  return import(pathToFileURL(file).href);
+  const beside = path.join(here, fileName);
+  if (fs.existsSync(beside)) return import(pathToFileURL(beside).href);
+  if (globalThis.__KASSIS_ADK_PACKED__ === true) {
+    throw new Error(`${fileName} is missing from the CLI package`);
+  }
+  return import('@kassis/adk-protocol');
 }
 
 async function canonicalString(body) {
-  const loaded = await loadSignerModule(
-    'canonicalJson.mjs',
-    '../../packages/adk-protocol/src/canonicalJson.mjs'
-  );
+  const loaded = await loadSignerModule('canonicalJson.mjs');
   return loaded.buildCanonicalManifestString(body);
 }
 
@@ -49,10 +48,8 @@ export async function signManifestFile(manifestPath, keyPath) {
     alg: 'ed25519',
     keyId: crypto.createHash('sha256').update(publicDer).digest('hex'),
   };
-  const { computeAddonContentHash, computeUiContentHash } = await loadSignerModule(
-    'addonContentHash.mjs',
-    '../../packages/adk-protocol/src/addonContentHash.mjs'
-  );
+  const { computeAddonContentHash, computeUiContentHash } =
+    await loadSignerModule('addonContentHash.mjs');
   const addonDir = path.dirname(manifestPath);
   // manifest.json is outside the hash scope, so writing this field does not change the digest.
   body.contentHash = await computeAddonContentHash(addonDir);

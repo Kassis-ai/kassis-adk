@@ -97,17 +97,14 @@ export function cliPackageVersion() {
   return '0.0.0';
 }
 
-function contentHashModulePath() {
-  const beside = path.join(here, 'addonContentHash.mjs');
-  if (fs.existsSync(beside)) return beside;
-  return path.resolve(here, '../../packages/adk-protocol/src/addonContentHash.mjs');
-}
-
 function contentHashOf(addonDir) {
-  const modulePath = contentHashModulePath();
+  const beside = path.join(here, 'addonContentHash.mjs');
+  const load = fs.existsSync(beside)
+    ? `const loaded = await import(pathToFileURL(${JSON.stringify(beside)}).href);`
+    : "const loaded = await import('@kassis/adk-protocol');";
   const script = [
     "import { pathToFileURL } from 'node:url';",
-    `const loaded = await import(pathToFileURL(${JSON.stringify(modulePath)}).href);`,
+    load,
     `process.stdout.write(await loaded.computeAddonContentHash(${JSON.stringify(addonDir)}));`,
   ].join('\n');
   const result = spawnSync(process.execPath, ['--input-type=module', '--eval', script], {
