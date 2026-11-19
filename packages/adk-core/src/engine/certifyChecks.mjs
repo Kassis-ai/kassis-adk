@@ -105,13 +105,14 @@ export function cliPackageVersion() {
 
 function contentHashOf(addonDir) {
   const beside = path.join(here, 'addonContentHash.mjs');
-  const protocolEntry = createRequire(import.meta.url).resolve('@kassis/adk-protocol');
-  const load = fs.existsSync(beside)
-    ? `const loaded = await import(pathToFileURL(${JSON.stringify(beside)}).href);`
-    : `const loaded = await import(pathToFileURL(${JSON.stringify(protocolEntry)}).href);`;
+  // The packed CLI copies the hasher beside the bundle and does not install
+  // @kassis/adk-protocol. Resolve the package only when that copy is absent.
+  const specifier = fs.existsSync(beside)
+    ? beside
+    : createRequire(import.meta.url).resolve('@kassis/adk-protocol');
   const script = [
     "import { pathToFileURL } from 'node:url';",
-    load,
+    `const loaded = await import(pathToFileURL(${JSON.stringify(specifier)}).href);`,
     `process.stdout.write(await loaded.computeAddonContentHash(${JSON.stringify(addonDir)}));`,
   ].join('\n');
   const result = spawnSync(process.execPath, ['--input-type=module', '--eval', script], {

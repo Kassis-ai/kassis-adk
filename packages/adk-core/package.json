@@ -15,6 +15,10 @@
     ".": {
       "types": "./src/index.ts",
       "default": "./src/index.ts"
+    },
+    "./mandatory-contract": {
+      "types": "./src/engine/mandatoryContract.d.mts",
+      "default": "./src/engine/mandatoryContract.mjs"
     }
   },
   "files": [
@@ -43,6 +47,11 @@
         "types": "./dist/index.d.ts",
         "import": "./dist/index.js",
         "default": "./dist/index.js"
+      },
+      "./mandatory-contract": {
+        "types": "./dist/engine/mandatoryContract.d.mts",
+        "import": "./dist/engine/mandatoryContract.mjs",
+        "default": "./dist/engine/mandatoryContract.mjs"
       }
     }
   }
