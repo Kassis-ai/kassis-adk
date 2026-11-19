@@ -1,1 +1,1 @@
-{ "dependencies": { "nodemailer": "6.9.0", "@kassis/addon-sdk": "1.0.0" } }
+{ "dependencies": { "nodemailer": "6.9.0", "@kassis/addon-sdk": "0.1.0" } }

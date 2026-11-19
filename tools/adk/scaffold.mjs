@@ -121,7 +121,7 @@ function finalizePackage(dir, addonId) {
   pkg.scripts['build:ui'] = `${cli} build --only=ui`;
   pkg.scripts.check = `${cli} check`;
   pkg.scripts.certify = `${cli} certify`;
-  pkg.dependencies['@kassis/addon-sdk'] = localSpec(dir, 'addon-sdk', '^1.0.0');
+  pkg.dependencies['@kassis/addon-sdk'] = localSpec(dir, 'addon-sdk', '^0.1.0');
   pkg.dependencies['@kassis/addon-testkit'] = localSpec(dir, 'addon-testkit', '^0.1.0');
   pkg.devDependencies['@kassis/addon-cli'] = localSpec(dir, 'addon-cli', '^0.1.0');
   fs.writeFileSync(file, `${JSON.stringify(pkg, null, 2)}\n`);

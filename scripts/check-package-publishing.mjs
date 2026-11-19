@@ -15,6 +15,11 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'
 const packagesDir = path.join(repoRoot, 'packages');
 const REGISTRY = 'https://npm.pkg.github.com';
 const SOURCE_EXT = ['.ts', '.tsx', '.mts'];
+/**
+ * S3.04 replaces this with a JavaScript dist prepack. Do not add packages.
+ * @type {ReadonlySet<string>}
+ */
+const TYPESCRIPT_PACK_ALLOW = new Set(['@kassis/adk-core']);
 
 /** @param {string} entry */
 function isSourceEntry(entry) {
@@ -112,7 +117,7 @@ function failures() {
       collectEntries(packedManifest.types, entries);
       collectEntries(packedManifest.exports, entries);
       for (const entry of entries) {
-        if (isSourceEntry(entry)) {
+        if (isSourceEntry(entry) && !TYPESCRIPT_PACK_ALLOW.has(manifest.name)) {
           found.push(`${manifest.name} packed entry ${entry} is TypeScript`);
         }
         if (!coveredByFiles(entry, files)) {

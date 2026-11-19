@@ -20,9 +20,12 @@ npm pack --pack-destination ./packs ./packages/addon-ui
 npm pack --pack-destination ./packs ./packages/host-sdk
 npm pack --pack-destination ./packs ./packages/agent-kit
 npm pack --pack-destination ./packs ./packages/addon-cli
+npm pack --pack-destination ./packs ./packages/mcp-contract
 ```
 
-`node scripts/pack-public-packages.mjs` builds the six public packages, packs them, installs those tarballs in an empty folder, imports each entry with plain Node, and type-checks the public subpaths.
+`@kassis/addon-sdk`, `@kassis/adk-core`, `@kassis/mcp-contract`, `@kassis/addon-cli`, and `@kassis/addon-testkit` are one changesets `fixed` group at `0.1.0`. `npm pack` of `@kassis/mcp-contract` runs its prepack and ships `dist`. `npm pack` of `@kassis/adk-core` still ships TypeScript sources. The air-gap bundle copies those sources and does not add an adk-core tarball. `HOST_API_VERSION` stays `1.0.0`. See the [semver policy](../addons/semver-policy.md).
+
+`node scripts/pack-public-packages.mjs` builds the six dist packages, packs them, installs those tarballs in an empty folder, imports each entry with plain Node, and type-checks the public subpaths.
 
 ## API Extractor reports
 
@@ -56,7 +59,7 @@ node scripts/adk-clean-room.mjs
 node scripts/adk-clean-room.mjs --airgap --bundle=./airgap
 ```
 
-The script builds the six public packages, packs them, and installs those tarballs in an empty folder with `npm install --no-package-lock`. It then runs `kassis-addon init`, scaffolds every scaffold kind including tier 2 `capability`, reinstalls dependencies (including a packed `@kassis/mcp-contract` tarball), then `build`, `test`, `check`, `conformance`, and `package` on a tier 2 rung 3 addon with `signature` and `contentHash`. `@kassis/adk-core` stays private and is not packed. The script does not deploy to an instance and does not approve a request.
+The script builds the six dist packages, packs them, and installs those tarballs in an empty folder with `npm install --no-package-lock`. It then runs `kassis-addon init`, scaffolds every scaffold kind including tier 2 `capability`, reinstalls dependencies (including a packed `@kassis/mcp-contract` tarball), then `build`, `test`, `check`, `conformance`, and `package` on a tier 2 rung 3 addon with `signature` and `contentHash`. `@kassis/adk-core` is versioned with the kit and is not packed. The script does not deploy to an instance and does not approve a request.
 
 `--airgap` runs only when the bundle directory is already populated. It checks `checksums.txt`, installs with `file:` tarballs from the bundle, and refuses the npm registry.
 

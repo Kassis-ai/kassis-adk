@@ -103,6 +103,84 @@ describe('rollbackProject', () => {
     });
   });
 
+  it('trims the bearer token and does not put it in the URL', async () => {
+    process.env.KASSIS_ADK_TOKEN = '  test-token  ';
+    const fetchMock = vi.fn().mockResolvedValue({
+      status: 200,
+      text: async () =>
+        JSON.stringify({
+          success: true,
+          data: { outcome: 'switched', addonId: 'demo-addon', version: '1.0.0' },
+        }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const result = await rollbackProject('https://user:secret@kassis.example/ignored', 'demo-addon', '1.0.0');
+
+    expect(result.ok).toBe(true);
+    const [url, init] = fetchMock.mock.calls[0] as [URL, RequestInit];
+    expect(url.username).toBe('');
+    expect(url.password).toBe('');
+    expect(url.pathname).toBe('/api/v1/platform/addons/demo-addon/rollback');
+    expect(init.headers).toMatchObject({ Authorization: 'Bearer test-token' });
+    expect(init.redirect).toBe('manual');
+  });
+
+  it('refuses an addon id that would change the request path', async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+    const result = await rollbackProject(instance, '..', '1.0.0');
+    expect(result.ok).toBe(false);
+    expect(result.issues[0]?.message).toContain('manifest id');
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('refuses a target version that is not x.y.z', async () => {
+    const result = await rollbackProject(instance, 'demo-addon', '../1.0.0');
+    expect(result.ok).toBe(false);
+    expect(result.issues[0]?.message).toContain('targetVersion');
+  });
+
+  it('refuses a non-http instance before sending the token', async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+    const result = await rollbackProject('file:///tmp/kassis', 'demo-addon', '1.0.0');
+    expect(result.ok).toBe(false);
+    expect(result.issues[0]?.message).toContain('http or https');
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('refuses a redirect so the token is not followed', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        status: 302,
+        text: async () => '',
+      })
+    );
+    const result = await rollbackProject(instance, 'demo-addon', '1.0.0');
+    expect(result.ok).toBe(false);
+    expect(result.issues[0]?.message).toContain('redirect');
+    expect(result.issues[0]?.message).toContain('302');
+  });
+
+  it('fails a hold that does not return a request id', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        status: 202,
+        text: async () =>
+          JSON.stringify({
+            success: true,
+            data: { outcome: 'held', addonId: 'demo-addon', version: '1.0.0' },
+          }),
+      })
+    );
+    const result = await rollbackProject(instance, 'demo-addon', '1.0.0');
+    expect(result.ok).toBe(false);
+    expect(result.issues[0]?.message).toContain('request id');
+  });
+
   it('fails when the instance returns an error status', async () => {
     vi.stubGlobal(
       'fetch',

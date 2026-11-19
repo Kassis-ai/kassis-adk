@@ -6,7 +6,7 @@
  *   node scripts/adk-clean-room.mjs --airgap --bundle=<dir>
  *
  * The default run uses this repository checkout. It does not deploy, approve,
- * or call a live Kassis instance. adk-core is private and is not packed.
+ * or call a live Kassis instance. adk-core is versioned with the kit and is not packed.
  * --airgap runs only when the bundle directory is already populated. It installs
  * file: tarballs from that bundle and refuses the npm registry.
  */

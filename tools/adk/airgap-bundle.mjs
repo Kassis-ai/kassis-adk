@@ -1,7 +1,9 @@
 /**
  * Air-gap bundle: SDK, testkit, template, public verification key, SBOM,
- * the six public package tarballs, adk-core sources, the CLI entry
+ * the six dist package tarballs, adk-core sources, the CLI entry
  * tools/adk/kassis-addon.mjs, and checksums.txt.
+ * adk-core is in the kit version group. This bundle copies its sources
+ * because the published entry is still TypeScript.
  * There is no separate CLI binary. The private signing key is not included.
  *
  *   node tools/adk/airgap-bundle.mjs --out=<dir>
@@ -189,7 +191,7 @@ function packageNameFromSpec(spec) {
 }
 
 /**
- * Build and npm pack the six public packages. adk-core stays private.
+ * Build and npm pack the six dist packages. adk-core is not packed here.
  * @param {string} root
  * @param {string} destination
  * @returns {PackedTarball[]}
@@ -218,7 +220,7 @@ export function packPublicPackages(root, destination) {
 }
 
 /**
- * Pack private packages needed by the clean-room scaffold exercise (mcp-tool).
+ * Pack @kassis/mcp-contract. prepack compiles dist and points the tarball at it.
  * @param {string} root
  * @param {string} destination
  * @returns {PackedTarball}
@@ -226,40 +228,13 @@ export function packPublicPackages(root, destination) {
 export function packMcpContractTarball(root, destination) {
   fs.mkdirSync(destination, { recursive: true });
   const pkgDir = path.join(root, 'packages', 'mcp-contract');
-  const pkgFile = path.join(pkgDir, 'package.json');
-  const pkgText = fs.readFileSync(pkgFile, 'utf8');
-  const pkg = JSON.parse(pkgText);
-  if (pkg === null || typeof pkg !== 'object' || Array.isArray(pkg)) {
-    throw new Error('mcp-contract package.json is not an object');
-  }
   const distDir = path.join(pkgDir, 'dist');
-  fs.mkdirSync(distDir, { recursive: true });
-  const esbuildBin = path.join(root, 'node_modules/esbuild/bin/esbuild');
-  if (!fs.existsSync(esbuildBin)) throw new Error('esbuild is missing; run npm ci');
-  const built = spawnSync(
-    esbuildBin,
-  [
-    'src/index.ts',
-    '--bundle',
-    '--platform=node',
-    '--format=esm',
-    '--outfile=dist/index.js',
-  ],
-    { cwd: pkgDir, encoding: 'utf8' }
-  );
-  if (built.status !== 0) {
-    throw new Error(`mcp-contract esbuild failed\n${built.stdout ?? ''}\n${built.stderr ?? ''}`.trim());
-  }
-  pkg.exports = { '.': './dist/index.js' };
-  pkg.files = ['dist/index.js'];
-  fs.writeFileSync(pkgFile, `${JSON.stringify(pkg, null, 2)}\n`);
   process.stdout.write('pack mcp-contract\n');
   try {
     const stdout = runNpm(['pack', '--json', '--pack-destination', destination], pkgDir, 'pipe');
     const file = packedFile(destination, packFilename(stdout));
     return { name: '@kassis/mcp-contract', file };
   } finally {
-    fs.writeFileSync(pkgFile, pkgText);
     if (fs.existsSync(distDir)) fs.rmSync(distDir, { recursive: true, force: true });
   }
 }

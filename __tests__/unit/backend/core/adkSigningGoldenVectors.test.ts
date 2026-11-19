@@ -119,4 +119,12 @@ describe('adk signing golden vectors (S3.01)', () => {
     expect(vectors.schemaVersion).toBe(1);
     expect(Object.keys(vectors.firstPartyAddons)).toHaveLength(9);
   });
+
+  it('keeps CRLF bytes so content-hash normalization is part of the vector', () => {
+    const bytes = fs.readFileSync(
+      path.join(fixtureRoot, 'synthetic/kassis-first-party/data/crlf.txt')
+    );
+    expect(bytes.includes(0x0d)).toBe(true);
+    expect(bytes.includes(0x0a)).toBe(true);
+  });
 });

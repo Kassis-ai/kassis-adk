@@ -333,9 +333,13 @@ export async function packageProject(
   }
 }
 
+const ADDON_ID = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
+const ADDON_VERSION =
+  /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/;
+
 function adkToken(code: string): CommandResult | string {
-  const token = process.env.KASSIS_ADK_TOKEN ?? '';
-  if (!token.trim()) {
+  const token = (process.env.KASSIS_ADK_TOKEN ?? '').trim();
+  if (!token) {
     return failure(
       'KASSIS_ADK_TOKEN is required',
       'Set KASSIS_ADK_TOKEN. The token is sent as a bearer token and is not printed.',
@@ -585,6 +589,20 @@ export async function rollbackProject(
         'ADK-ROLLBACK'
       );
     }
+    if (!ADDON_ID.test(id) || id.length > 64) {
+      return failure(
+        'addon id is not a manifest id',
+        'Pass the id from manifest.json. It is lowercase letters, digits, and hyphens.',
+        'ADK-ROLLBACK'
+      );
+    }
+    if (!ADDON_VERSION.test(version)) {
+      return failure(
+        'targetVersion is not a version',
+        'Pass the installed x.y.z version.',
+        'ADK-ROLLBACK'
+      );
+    }
     const pathname = `/api/v1/platform/addons/${encodeURIComponent(id)}/rollback`;
     const target = instanceTarget(instance, pathname, 'ADK-ROLLBACK');
     if (isResult(target)) return target;
@@ -601,6 +619,13 @@ export async function rollbackProject(
       signal: AbortSignal.timeout(REQUEST_MS),
     });
     const text = await response.text();
+    if (response.status >= 300 && response.status < 400) {
+      return failure(
+        `Rollback refused a redirect (${response.status})`,
+        'Pass the instance URL that serves the API. The token stays on that host.',
+        'ADK-ROLLBACK'
+      );
+    }
     if (response.status !== 200 && response.status !== 202) {
       return failure(
         errorText(response.status, text, 'Rollback'),
@@ -617,11 +642,19 @@ export async function rollbackProject(
         'ADK-ROLLBACK'
       );
     }
+    const requestId = data ? stringField(data, 'requestId') : '';
+    if (outcome === 'held' && !requestId) {
+      return failure(
+        'Rollback hold did not return a request id',
+        'The instance should return requestId when outcome is held.',
+        'ADK-ROLLBACK'
+      );
+    }
     return commandResult([], {
       outcome,
       addonId: data ? stringField(data, 'addonId') : id,
       version: data ? stringField(data, 'version') : version,
-      requestId: data ? stringField(data, 'requestId') : '',
+      requestId,
       deploymentId: data ? stringField(data, 'deploymentId') : '',
       httpStatus: response.status,
     });

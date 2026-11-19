@@ -12,9 +12,11 @@
 
 ## Packages
 
-The public packages are `@kassis/addon-sdk`, `@kassis/addon-testkit`, `@kassis/addon-ui`, `@kassis/host-sdk`, `@kassis/agent-kit`, and `@kassis/addon-cli`. They publish to GitHub Packages. Copy `.npmrc.example` to `.npmrc` and set `NODE_AUTH_TOKEN` in the environment. Do not commit a token.
+The packages an addon installs are `@kassis/addon-sdk`, `@kassis/addon-testkit`, `@kassis/addon-ui`, `@kassis/host-sdk`, `@kassis/agent-kit`, and `@kassis/addon-cli`. They publish to GitHub Packages. Copy `.npmrc.example` to `.npmrc` and set `NODE_AUTH_TOKEN` in the environment. Do not commit a token.
 
-Each package builds to `dist` in the published tarball. `@kassis/addon-sdk`, `@kassis/addon-testkit`, `@kassis/agent-kit`, and `@kassis/addon-cli` ship JavaScript. `@kassis/host-sdk` and `@kassis/addon-ui` ship type declarations plus a small JavaScript shim so plain Node can import the package. The shim does not contain the host UI. The running host serves `@kassis/host-sdk` at `/host-sdk/index.js` and `@kassis/addon-ui` at `/host-sdk/addon-ui.js`. An addon frontend build leaves those imports external.
+Depend on `@kassis/addon-sdk` at `^0.1.0`. That is the kit npm line. It is not the host API. `manifest.hostApi` stays `^1.0.0`. The version rules are in the [semver policy](../addons/semver-policy.md). `@kassis/adk-core` and `@kassis/mcp-contract` share that kit line. Install the CLI for commands. An addon that scaffolds an MCP tool depends on `@kassis/mcp-contract`.
+
+The packages in the install command below build to `dist` in the published tarball. `@kassis/addon-sdk`, `@kassis/addon-testkit`, `@kassis/agent-kit`, and `@kassis/addon-cli` ship JavaScript. `@kassis/host-sdk` and `@kassis/addon-ui` ship type declarations plus a small JavaScript shim so plain Node can import the package. The shim does not contain the host UI. The running host serves `@kassis/host-sdk` at `/host-sdk/index.js` and `@kassis/addon-ui` at `/host-sdk/addon-ui.js`. An addon frontend build leaves those imports external.
 
 ```bash
 npm install @kassis/addon-sdk @kassis/addon-testkit @kassis/addon-ui @kassis/host-sdk @kassis/agent-kit @kassis/addon-cli
@@ -38,6 +40,7 @@ Kit maintainers who build the bundle from the kassis repository use [Maintainers
 
 | Date       | Change                                                                                                                                                        |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-19 | Addon installs use `@kassis/addon-sdk` `^0.1.0`. `hostApi` stays `^1.0.0`. See the [semver policy](../addons/semver-policy.md). |
 | 2026-11-19 | Client install docs use registry and air-gap bundles only; repository pack scripts moved to [Maintainers](./maintainers.md).                                   |
 | 2026-11-16 | Clean room scaffolds route, event, job, migration, ui-slot, ui-page, mcp-tool, and tier 2 capability after init, and packs `@kassis/mcp-contract` for offline MCP tests. |
 | 2026-10-30 | The `.npmrc.example` path is text. The docs site does not publish files outside `docs/`.                                                                        |

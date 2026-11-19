@@ -143,7 +143,7 @@ Prints installed and pending versions from GET /api/v1/platform/addons/installat
 `,
   rollback: `Usage: kassis-addon rollback --instance <url> <addon-id> <target-version> [--json]
 
-Calls POST /api/v1/platform/addons/<addon-id>/rollback with { "targetVersion": "<target-version>" }. --instance <url> and --instance=<url> both work. Token: KASSIS_ADK_TOKEN. HTTP 200 switches the active version and prints the addon id and version. HTTP 202 holds the request for approval and prints the approval request id.
+Calls POST /api/v1/platform/addons/<addon-id>/rollback with { "targetVersion": "<target-version>" }. --instance <url> and --instance=<url> both work. Token: KASSIS_ADK_TOKEN (sent as a bearer token, never printed). The addon id must match the manifest id pattern. The version must be x.y.z. HTTP 200 switches the active version and prints the addon id and version. HTTP 202 holds the request for approval and prints the approval request id. A redirect is refused so the token is not sent to another host. Exit 0 on success, 1 on failure.
 `,
   sign: `Usage: kassis-addon sign [--key <path>] [--json]
 
@@ -227,8 +227,13 @@ function printSuccess(command, data) {
     process.stdout.write(`${data.requestId}\n`);
   if (command === 'status') printStatus(data.installations);
   if (command === 'rollback') {
-    if (typeof data.requestId === 'string' && data.requestId) process.stdout.write(`${data.requestId}\n`);
-    else if (typeof data.addonId === 'string' && typeof data.version === 'string') {
+    if (data.outcome === 'held' && typeof data.requestId === 'string' && data.requestId) {
+      process.stdout.write(`${data.requestId}\n`);
+    } else if (
+      data.outcome === 'switched' &&
+      typeof data.addonId === 'string' &&
+      typeof data.version === 'string'
+    ) {
       process.stdout.write(`${data.addonId} ${data.version}\n`);
     }
   }
