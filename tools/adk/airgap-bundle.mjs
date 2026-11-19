@@ -12,6 +12,7 @@
  * and fills npm-cache so a later offline install can refuse the registry.
  * Passing tarballs to writeAirgapBundle skips that build.
  */
+import { hostPackageSpec } from './hostPackages.mjs';
 import crypto from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
@@ -202,6 +203,11 @@ export function packPublicPackages(root, destination) {
   const packed = [];
   for (const dirName of PUBLIC_PACKAGE_DIRS) {
     const pkgDir = path.join(root, 'packages', dirName);
+    const hostSpec = hostPackageSpec(dirName);
+    if (hostSpec && !fs.existsSync(pkgDir)) {
+      packed.push({ name: hostSpec.slice(0, hostSpec.lastIndexOf('@')), file: packSpec(hostSpec, destination) });
+      continue;
+    }
     process.stdout.write(`build ${dirName}\n`);
     runNpm(['run', 'build'], pkgDir, 'inherit');
     process.stdout.write(`pack ${dirName}\n`);

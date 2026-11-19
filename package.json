@@ -13,12 +13,10 @@
     "packages/mcp-contract",
     "packages/addon-testkit",
     "packages/adk-core",
-    "packages/agent-kit",
-    "packages/addon-ui",
     "packages/addon-cli"
   ],
   "scripts": {
-    "build": "npm run build -w packages/addon-sdk -w packages/adk-protocol -w packages/mcp-contract -w packages/addon-testkit -w packages/adk-core -w packages/agent-kit -w packages/addon-ui -w packages/addon-cli",
+    "build": "npm run build -w packages/addon-sdk -w packages/adk-protocol -w packages/mcp-contract -w packages/addon-testkit -w packages/adk-core -w packages/addon-cli",
     "test": "vitest run",
     "gate": "node tools/ci/run-kit-gate.mjs",
     "adk:api-extract": "node tools/adk/api-surface.mjs",

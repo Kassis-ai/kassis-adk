@@ -13,9 +13,8 @@ Published packages (npmjs.com, public, scope `@kassis`):
 | `@kassis/adk-protocol` | Canonical JSON, content hash, signature verify, publisher trust |
 | `@kassis/addon-testkit` | Assertions for addon packs |
 | `@kassis/mcp-contract` | Typed MCP tool contract |
-| `@kassis/addon-ui`, `@kassis/agent-kit` | Addon UI slot types and task-agent manifest |
 
-`@kassis/host-sdk` is the host's surface and is published from the Kassis repository.
+`@kassis/host-sdk`, `@kassis/addon-ui` and `@kassis/agent-kit` belong to the Kassis app. They are published from the Kassis repository, and the kit installs them from npm.
 
 ## Work in this repository
 

@@ -9,6 +9,7 @@
  * generated acme key (kept in ~/.kassis/keys) and writes the package in the
  * temp directory. It does not deploy and it does not register the key.
  */
+import { hostPackageSpec } from '../tools/adk/hostPackages.mjs';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -238,6 +239,13 @@ function packReferencePackages(root, destination) {
   const notes = [];
   const packed = [];
   for (const [name, dirName] of PACKAGE_DIRS) {
+    const hostSpec = hostPackageSpec(dirName);
+    if (hostSpec && !fs.existsSync(path.join(root, 'packages', dirName))) {
+      process.stdout.write(`pack ${hostSpec}\n`);
+      const stdout = runNpm(['pack', hostSpec, '--json', '--pack-destination', destination], destination, 'pipe');
+      packed.push({ name, file: packedFile(destination, stdout) });
+      continue;
+    }
     if (dirName === 'host-sdk') {
       const built = spawnSync(process.execPath, ['build.mjs'], {
         cwd: path.join(root, 'packages', dirName),
