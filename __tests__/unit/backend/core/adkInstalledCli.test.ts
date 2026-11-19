@@ -5,6 +5,11 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { runNpm } from '../../../../tools/adk/airgap-bundle.mjs';
 
+/** The CLI reports the version in packages/addon-cli/package.json. */
+const CLI_VERSION: string = JSON.parse(
+  fs.readFileSync(path.resolve(import.meta.dirname, '../../../../packages/addon-cli/package.json'), 'utf8')
+).version;
+
 const repo = path.resolve(import.meta.dirname, '../../../..');
 
 function walk(dir: string, out: string[]): void {
@@ -44,7 +49,7 @@ describe('installed kassis-addon CLI', () => {
       runNpm(['install', ...tarballs, '--no-fund', '--no-audit'], client);
       const version = runCli(client, ['--version']);
       expect(version.status).toBe(0);
-      expect(version.stdout).toContain('kassis-addon 0.1.0');
+      expect(version.stdout).toContain(`kassis-addon ${CLI_VERSION}`);
       const init = runCli(client, ['init', '--id', 'demo', '--publisher', 'acme', '--dir', 'demo']);
       expect(init.status, init.stderr).toBe(0);
       expect(fs.existsSync(path.join(client, 'demo', 'manifest.json'))).toBe(true);

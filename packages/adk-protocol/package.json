@@ -1,6 +1,6 @@
 {
   "name": "@kassis/adk-protocol",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "description": "Canonical JSON, content hash, signature verification, publisher trust, and deployment evidence shared by the host and the kit.",
   "license": "UNLICENSED",

@@ -5,6 +5,11 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { startDevHost } from '../../../../packages/adk-core/src/devHost.ts';
 
+/** The CLI reports the version in packages/addon-cli/package.json. */
+const CLI_VERSION: string = JSON.parse(
+  fs.readFileSync(path.resolve(import.meta.dirname, '../../../../packages/addon-cli/package.json'), 'utf8')
+).version;
+
 const repo = path.resolve(import.meta.dirname, '../../../..');
 const cli = path.join(repo, 'tools/adk/kassis-addon.mjs');
 const mcp = path.join(repo, 'tools/adk/kassis-adk-mcp.mjs');
@@ -75,7 +80,7 @@ describe('adk phase H', () => {
     expect(initHelp.stdout).toContain('--json');
     const version = run(['--version'], repo);
     expect(version.status).toBe(0);
-    expect(version.stdout).toContain('kassis-addon 0.1.0');
+    expect(version.stdout).toContain(`kassis-addon ${CLI_VERSION}`);
   });
 
   it('parses --id value and --id=value', () => {
