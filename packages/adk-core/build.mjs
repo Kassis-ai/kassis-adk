@@ -34,6 +34,6 @@ fs.cpSync(path.join(pkgRoot, 'profiles'), path.join(dist, 'engine/profiles'), {
   recursive: true,
 });
 fs.copyFileSync(
-  path.join(repoRoot, 'server/keys/addon_verification_public.key'),
+  path.join(pkgRoot, 'keys/addon_verification_public.key'),
   path.join(dist, 'engine/addon_verification_public.key')
 );

@@ -3,7 +3,10 @@ import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { findPackageBoundaryViolations } from '../../../../../tools/ci/check-addon-sdk-boundary.mjs';
+import {
+  findPackageBoundaryViolations,
+  stripLiteralBodiesForImportScan,
+} from '../../../../../tools/ci/check-addon-sdk-boundary.mjs';
 
 const tempDirs: string[] = [];
 
@@ -38,8 +41,18 @@ afterEach(() => {
 });
 
 describe('ci:packages:addon-sdk-boundary', () => {
-  it('passes the real @kassis/addon-sdk package', () => {
-    expect(findPackageBoundaryViolations(path.resolve('packages/addon-sdk'))).toEqual([]);
+  it.each([
+    ['packages/addon-sdk', {}],
+    ['packages/adk-protocol', { allowNodeBuiltins: true }],
+    ['packages/adk-core', { allowNodeBuiltins: true }],
+    ['packages/mcp-contract', { allowNodeBuiltins: true }],
+  ] as const)('passes the real package at %s', (rel, options) => {
+    expect(findPackageBoundaryViolations(path.resolve(rel), options)).toEqual([]);
+  });
+
+  it('ignores import syntax inside string literals', () => {
+    const source = 'const tpl = `import x from "../../server/index.js";`;';
+    expect(stripLiteralBodiesForImportScan(source).includes('import')).toBe(false);
   });
 
   it('passes imports inside the package and declared dependencies', () => {
@@ -77,6 +90,31 @@ describe('ci:packages:addon-sdk-boundary', () => {
       'src/bad.ts': "import { t } from '../../packages/types/src/index.js';",
     });
     expect(codes(root)).toEqual(['KADK-204 ../../packages/types/src/index.js']);
+  });
+
+  it('fails on repo tools/, scripts/, and src/ (KADK-204)', () => {
+    const root = tempPackage({
+      'src/bad.ts': [
+        "import { a } from '../../../tools/adk/foo.mjs';",
+        "import { b } from 'tools/ci/bar.mjs';",
+        "import { c } from '../../../src/config/api.ts';",
+        "import { d } from 'scripts/deploy/x.mjs';",
+      ].join('\n'),
+    });
+    expect(codes(root)).toEqual([
+      'KADK-204 ../../../tools/adk/foo.mjs',
+      'KADK-204 tools/ci/bar.mjs',
+      'KADK-204 ../../../src/config/api.ts',
+      'KADK-204 scripts/deploy/x.mjs',
+    ]);
+  });
+
+  it('allows Node built-ins when allowNodeBuiltins is set', () => {
+    const root = tempPackage({
+      'src/ok.mjs': "import fs from 'node:fs';\nexport const x = fs;",
+    });
+    expect(findPackageBoundaryViolations(root, { allowNodeBuiltins: true })).toEqual([]);
+    expect(codes(root)).toEqual(['KADK-205 node:fs']);
   });
 
   it('fails on undeclared packages, Node built-ins and unverified @kassis packages (KADK-205)', () => {

@@ -18,7 +18,8 @@ const profilesDir = besideThenCheckout(
 const publicKeyPath = besideThenCheckout(
   import.meta.url,
   'addon_verification_public.key',
-  'server',
+  'packages',
+  'adk-core',
   'keys',
   'addon_verification_public.key'
 );

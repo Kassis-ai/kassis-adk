@@ -557,8 +557,8 @@ function wireUiIndex(dir: string, id: string, name: string): string | null {
   if (!fs.existsSync(initFile)) return null;
   const pageExport = `${pascal(name)}Page`;
   const importLine = `import { ${pageExport} } from './pages/${name}.js';`;
-  const reactImport = "import type { ComponentType } from 'react';";
-  const sdkImport = "import { registerAddonLocales } from '@kassis/host-sdk';";
+  const reactImport = `import type { ComponentType } from 'react';`;
+  const sdkImport = `import { registerAddonLocales } from '@kassis/host-sdk';`;
   let text = fs.readFileSync(initFile, 'utf8');
   if (text.includes(`path: '/${id}/${name}'`)) return null;
 
