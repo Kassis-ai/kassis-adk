@@ -1,0 +1,345 @@
+{
+  "profileId": "addon-coding-agent",
+  "version": "3",
+  "guardrails": [
+    {
+      "key": "adk.work-in-own-repo",
+      "severity": "advisory",
+      "title": "Work only in your addon repository",
+      "rule": "Advisory: a machine cannot see which repository you edited. Work only in this repository. Kassis core is a dependency, never a file to edit.",
+      "verification": "self"
+    },
+    {
+      "key": "adk.sdk-imports-only",
+      "severity": "blocking",
+      "title": "Import only from the SDK and your own code",
+      "rule": "Import only from @kassis/* packages and your own src/. Never resolve host services by name. Certify records kassis-addon-conformance (KADK-201 to KADK-205).",
+      "verification": "machine",
+      "checkIds": [
+        "kassis-addon-conformance"
+      ]
+    },
+    {
+      "key": "adk.lowest-rung",
+      "severity": "advisory",
+      "title": "Choose the lowest rung",
+      "rule": "Choose the lowest rung: configuration first, a declarative addon second, code last. State the rung you chose and why in the change summary.",
+      "verification": "self"
+    },
+    {
+      "key": "adk.declared-permissions-and-audit",
+      "severity": "advisory",
+      "title": "Declare permissions and audit every write",
+      "rule": "Advisory: check does not see route handlers or write sites. Every route declares a permission in your addon namespace. Every write goes through ctx.data or a host facade and records an audit action declared in the manifest.",
+      "verification": "self"
+    },
+    {
+      "key": "adk.event-schemas-and-null-capabilities",
+      "severity": "blocking",
+      "title": "Give every event a schema and handle missing capabilities",
+      "rule": "Every published event has a schema. Certify records kassis-addon-check, which requires each schema path to end in .schema.json (KADK-406). That check does not scan source for null when a consumed capability is absent; still handle null, because the provider can be switched off.",
+      "verification": "machine",
+      "checkIds": [
+        "kassis-addon-check"
+      ]
+    },
+    {
+      "key": "adk.reversible-migrations",
+      "severity": "blocking",
+      "title": "Make every migration reversible",
+      "rule": "Every migration has a down script, or is marked irreversible with a reason. Certify records kassis-addon-conformance.",
+      "verification": "machine",
+      "checkIds": [
+        "kassis-addon-conformance"
+      ]
+    },
+    {
+      "key": "adk.declare-widened-access",
+      "severity": "advisory",
+      "title": "Declare any widened access",
+      "rule": "Advisory: a machine cannot detect widened access. Never widen permissions, egress hosts or data access without saying so in the change summary. The approver reads that summary in the evidence pack.",
+      "verification": "self"
+    },
+    {
+      "key": "adk.certify",
+      "severity": "blocking",
+      "title": "Pass certify before you finish",
+      "rule": "Run kassis addon certify before you say you are done, and fix every error. Certify runs check, conformance, build and test, and those results are the only machine evidence.",
+      "verification": "machine",
+      "checkIds": [
+        "kassis-addon-check",
+        "kassis-addon-conformance",
+        "kassis-addon-build",
+        "kassis-addon-test"
+      ]
+    },
+    {
+      "key": "adk.requirements-traced",
+      "severity": "blocking",
+      "title": "Trace every Must requirement",
+      "rule": "Every Must row in REQUIREMENTS.md must be named by at least one test under test/ or one GAPS.md entry. Run kassis-addon requirements before you finish. Certify records machine check adk.requirements-traced and fails with KADK-718 or KADK-719 when tracing fails.",
+      "verification": "machine",
+      "checkIds": [
+        "adk.requirements-traced"
+      ]
+    },
+    {
+      "key": "adk.requirement-plan-mapped",
+      "severity": "blocking",
+      "title": "Map every requirement to a rung",
+      "rule": "Every FR-* and NFR-* row in REQUIREMENTS.md has one rung in PLAN.md: configuration, extension-point, facade, own-code, or gap. Run kassis-addon plan before you finish. Certify records machine check adk.requirement-plan-mapped and fails with KADK-720, KADK-721, or KADK-722 when the plan is missing, a row is unmapped, or a rung is invalid.",
+      "verification": "machine",
+      "checkIds": [
+        "adk.requirement-plan-mapped"
+      ]
+    },
+    {
+      "key": "adk.document-changes",
+      "severity": "advisory",
+      "title": "Document what you built",
+      "rule": "When a change is described by Kassisdoc, update the business page, the technical page, or both, and link the business page from the technical guide. Also update README.md and CHANGELOG.md.",
+      "verification": "self"
+    },
+    {
+      "key": "adk.no-unrequested-refactors",
+      "severity": "advisory",
+      "title": "Do not refactor code you were not asked to change",
+      "rule": "Advisory: a machine cannot tell which edits were requested. Do not refactor code you were not asked to change.",
+      "verification": "self"
+    },
+    {
+      "key": "adk.attest-pinned-profile",
+      "severity": "blocking",
+      "title": "Read your pinned guardrails and attest to them",
+      "rule": "At the start, read the guardrails and skills of your pinned profile (kassis adk sync). Before you say you are done, fill in .kassis/attestation.json with one answer per guardrail. Certify records machine check adk.attest-pinned-profile. A run with no pinned lock passes that check; a lock fails it until every guardrail is answered.",
+      "verification": "machine",
+      "checkIds": [
+        "adk.attest-pinned-profile"
+      ]
+    },
+    {
+      "key": "adk.mandatory-contract-intact",
+      "severity": "blocking",
+      "title": "Keep the mandatory record contract",
+      "rule": "A record access check must decide from the principal and the record. A deletion handler must erase or detach the record. Certify records adk.mandatory-contract-intact and fails a return-true or throw-only canAccess (KADK-730), an empty or throw-only onDelete (KADK-732), a missing canAccess when resourceTypes is set (KADK-729), and a missing onDelete when the addon owns tables (KADK-731). The record-type scaffold throws until you replace those stubs. The host refuses to enable the same addon. This guardrail is on the unsigned draft until the profile is signed.",
+      "verification": "machine",
+      "checkIds": [
+        "adk.mandatory-contract-intact"
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "key": "adk.add-route",
+      "title": "Add a route",
+      "description": "Add an HTTP route to a Kassis addon with kassis-addon scaffold route. Use when the BRD needs a new GET endpoint, a permission in the addon namespace, and mount wiring from initialize.",
+      "body": "# Add a route\n\n## When to use\n\nA Must requirement needs a new HTTP surface on this addon. Prefer a host facade or UI contribution when they already cover the need. Use a route when the addon must expose its own API under `/api/v1/addons/<id>/…`.\n\n## Steps\n\n1. From the addon root: `kassis-addon scaffold --kind=route --name=<kebab-case>`.\n2. Confirm `manifest.json` gained `<addon-id>.<name>` under `permissions`.\n3. Edit `src/server/routes/<name>.ts` — keep the Express GET stub working, then add the real handler. Every write goes through `ctx.data` or a host facade and records a declared audit action.\n4. Confirm `src/server/index.ts` calls `mount<Name>(ctx)` from `initialize`.\n5. Add or extend a test under `test/` that names the requirement id (`FR-*` / `NFR-*`).\n6. Run `kassis-addon check`, then `kassis-addon requirements`, then `kassis-addon certify`.\n\n## Do not\n\n- Import host services by name or reach outside `@kassis/*` and this addon's `src/`.\n- Skip the permission declaration or mount a route outside the addon namespace.\n- Hand-write a parallel router when scaffold already wired the mount.\n"
+    },
+    {
+      "key": "adk.add-table",
+      "title": "Add a table with a migration",
+      "description": "Add an owned table and reversible migration with kassis-addon scaffold migration. Use when the addon must store its own rows and declare data.schema, ownedTables, and retention.",
+      "body": "# Add a table with a migration\n\n## When to use\n\nA Must requirement needs persistent data that core tables cannot hold. Prefer a core record type or extension point first. Own a table only when the process data is this addon's.\n\n## Steps\n\n1. From the addon root: `kassis-addon scaffold --kind=migration --name=<kebab-case>`.\n2. Confirm the manifest sets `data.schema`, a qualified `database.ownedTables` entry, and `data.retention` (`retain` / `archive` / `purge`).\n3. Fill `migrations/<nnnn>_<name>.up.sql` and the matching `.down.sql`. Mark irreversible only with an `irreversible:` reason comment when a down script is impossible.\n4. Keep queries bounded (pagination / `take`). Do not create private copies of core approval, audit, notification, or user tables.\n5. Name the requirement id in a test under `test/` or record the gap in `GAPS.md`.\n6. Run `kassis-addon conformance` (checks up/down pairing), `kassis-addon requirements`, then `kassis-addon certify`.\n\n## Do not\n\n- Leave `ownedTables` empty while creating tables.\n- Ship an up script without a down script and without an irreversible reason.\n- Expect tier 2 install-time migration runs before host work S2.02; scaffold warns when that applies.\n"
+    },
+    {
+      "key": "adk.add-event",
+      "title": "Add an event with a schema",
+      "description": "Publish a domain event with a JSON schema using kassis-addon scaffold event. Use when other addons or core must react to a change this addon owns.",
+      "body": "# Add an event with a schema\n\n## When to use\n\nA Must requirement needs a named domain event other code can subscribe to. Every published event must have a schema; undeclared names are refused by the host and the testkit.\n\n## Steps\n\n1. From the addon root: `kassis-addon scaffold --kind=event --name=<kebab-case>`.\n2. Confirm `events.publishes` lists `<addon-id>.<name>` with `schemas/<name>.schema.json`.\n3. Tighten the schema required fields if the stub (`subjectId`, `summary`) is not enough.\n4. Use the generated `publish<Name>` helper from `src/server/events/<name>.ts` — do not call undeclared event names.\n5. Add a test that publishes through the testkit and names the requirement id.\n6. Run `kassis-addon check`, `kassis-addon requirements`, then `kassis-addon certify`.\n\n## Do not\n\n- Publish an event name missing from the manifest.\n- Omit a schema file or leave `additionalProperties` as a way to skip validation.\n- Swallow a missing optional capability without handling null when you consume events or capabilities.\n"
+    },
+    {
+      "key": "adk.add-job",
+      "title": "Add a job",
+      "description": "Register a background job handler with kassis-addon scaffold job. Use when work must run asynchronously under a declared job type.",
+      "body": "# Add a job\n\n## When to use\n\nA Must requirement needs work that must not run on the request path (retries, batching, deferred side effects). Declare the job type in the manifest and keep the handler idempotent.\n\n## Steps\n\n1. From the addon root: `kassis-addon scaffold --kind=job --name=<kebab-case>`.\n2. Confirm `jobs.types` lists `<addon-id>.<name>`.\n3. Implement `src/server/jobs/<name>.ts` and keep `register<Name>(ctx)` wired from `initialize`.\n4. Make the handler safe to run twice. Give every outbound call a timeout from Settings or the existing caller pattern — do not hardcode AI model or provider choices.\n5. Cover the requirement id in `test/` (or `GAPS.md`).\n6. Run `kassis-addon check`, `kassis-addon requirements`, then `kassis-addon certify`.\n\n## Do not\n\n- Enqueue a job type missing from the manifest.\n- Rely on module-level mutable state (hot toggle must dispose cleanly).\n- Skip audit when the job writes data.\n"
+    },
+    {
+      "key": "adk.add-ui-page",
+      "title": "Add a UI page",
+      "description": "Add an addon UI page and nav entry with kassis-addon scaffold ui-page. Use for rung 2 or 3 addons that need a host-sdk page, en/fr locales, and a render test.",
+      "body": "# Add a UI page\n\n## When to use\n\nA Must requirement needs an operator-facing screen inside Kassis. Prefer composing `@kassis/host-sdk` components. Use rung 2 (UI) or rung 3 (UI + migrations).\n\n## Steps\n\n1. From the addon root: `kassis-addon scaffold --kind=ui-page --name=<kebab-case>`.\n2. Confirm `ui.contributions.nav` gained an entry and `src/ui/index.ts` routes to the page.\n3. Edit `src/ui/pages/<name>.tsx` using `@kassis/host-sdk` only — no `@/features/*` or other addon internals.\n4. Put every chrome string through the generated locale keys in `src/ui/locales/en.json` and `fr.json`.\n5. Keep `test/ui/<name>Page.render.test.ts` green; name the requirement id in a test or `GAPS.md`.\n6. Run `kassis-addon check`, `kassis-addon requirements`, then `kassis-addon certify`.\n\n## Do not\n\n- Hardcode English button or empty-state chrome.\n- Import React components from the host app path aliases.\n- Scaffold ui-page on a rung 1 (server-only) addon without raising the rung first.\n"
+    },
+    {
+      "key": "adk.add-mcp-tool",
+      "title": "Add an MCP tool",
+      "description": "Declare an MCP tool contribution with kassis-addon scaffold mcp-tool. Use when agents must call this addon through the host MCP surface.",
+      "body": "# Add an MCP tool\n\n## When to use\n\nA Must requirement needs a tool agents can call through MCP. The contribution is gated by enablement and signatures; keep the handler thin and permission-aware.\n\n## Steps\n\n1. From the addon root: `kassis-addon scaffold --kind=mcp-tool --name=<kebab-case>`.\n2. Confirm `contributions.mcp` points at `dist/mcp/contribution.js` and `src/mcp/tools/<name>.ts` uses `@kassis/mcp-contract`.\n3. Implement the handler; refuse when the caller lacks the declared permission.\n4. Keep `test/mcp/<name>.mcp.test.ts` green and name the requirement id.\n5. Ensure the build emits `dist/mcp/contribution.js` before deploy (default `kassis-addon build` may only bundle `src/server/index.ts` — extend the build when needed).\n6. Run `kassis-addon check`, `kassis-addon requirements`, then `kassis-addon certify`.\n\n## Do not\n\n- Register a tool outside the addon id namespace.\n- Skip the offline MCP test scaffold writes.\n- Assume a disabled addon still exposes the tool — the host fails closed on toggle.\n"
+    }
+  ],
+  "previousVersion": {
+    "profileId": "addon-coding-agent",
+    "version": "2",
+    "guardrails": [
+      {
+        "key": "adk.work-in-own-repo",
+        "severity": "blocking",
+        "title": "Work only in your addon repository",
+        "rule": "Work only in this repository. Kassis core is a dependency, never a file to edit.",
+        "verification": "self"
+      },
+      {
+        "key": "adk.sdk-imports-only",
+        "severity": "blocking",
+        "title": "Import only from the SDK and your own code",
+        "rule": "Import only from @kassis/* packages and your own src/. Never resolve host services by name.",
+        "verification": "self"
+      },
+      {
+        "key": "adk.lowest-rung",
+        "severity": "advisory",
+        "title": "Choose the lowest rung",
+        "rule": "Choose the lowest rung: configuration first, a declarative addon second, code last. State the rung you chose and why in the change summary.",
+        "verification": "self"
+      },
+      {
+        "key": "adk.declared-permissions-and-audit",
+        "severity": "blocking",
+        "title": "Declare permissions and audit every write",
+        "rule": "Every route declares a permission in your addon namespace. Every write goes through ctx.data or a host facade and records an audit action declared in the manifest.",
+        "verification": "self"
+      },
+      {
+        "key": "adk.event-schemas-and-null-capabilities",
+        "severity": "blocking",
+        "title": "Give every event a schema and handle missing capabilities",
+        "rule": "Every published event has a schema. Every consumed capability handles null, because the addon that provides it can be switched off.",
+        "verification": "self"
+      },
+      {
+        "key": "adk.reversible-migrations",
+        "severity": "blocking",
+        "title": "Make every migration reversible",
+        "rule": "Every migration has a down script, or is marked irreversible with a reason.",
+        "verification": "self"
+      },
+      {
+        "key": "adk.declare-widened-access",
+        "severity": "blocking",
+        "title": "Declare any widened access",
+        "rule": "Never widen permissions, egress hosts or data access without saying so in the change summary.",
+        "verification": "self"
+      },
+      {
+        "key": "adk.certify",
+        "severity": "blocking",
+        "title": "Pass certify before you finish",
+        "rule": "Run kassis addon certify before you say you are done, and fix every error. Certify runs check, conformance, build and test, and those results are the only machine evidence.",
+        "verification": "machine",
+        "checkIds": [
+          "kassis-addon-check",
+          "kassis-addon-conformance",
+          "kassis-addon-build",
+          "kassis-addon-test"
+        ]
+      },
+      {
+        "key": "adk.document-changes",
+        "severity": "advisory",
+        "title": "Document what you built",
+        "rule": "When a change is described by Kassisdoc, update the business page, the technical page, or both, and link the business page from the technical guide. Also update README.md and CHANGELOG.md.",
+        "verification": "self"
+      },
+      {
+        "key": "adk.no-unrequested-refactors",
+        "severity": "blocking",
+        "title": "Do not refactor code you were not asked to change",
+        "rule": "Do not refactor code you were not asked to change.",
+        "verification": "self"
+      },
+      {
+        "key": "adk.attest-pinned-profile",
+        "severity": "blocking",
+        "title": "Read your pinned guardrails and attest to them",
+        "rule": "At the start, read the guardrails and skills of your pinned profile (kassis adk sync). Before you say you are done, fill in .kassis/attestation.json with one answer per guardrail.",
+        "verification": "self"
+      }
+    ],
+    "previousVersion": {
+      "profileId": "addon-coding-agent",
+      "version": "1",
+      "guardrails": [
+        {
+          "key": "adk.work-in-own-repo",
+          "severity": "blocking",
+          "title": "Work only in your addon repository",
+          "rule": "Work only in this repository. Kassis core is a dependency, never a file to edit.",
+          "verification": "self"
+        },
+        {
+          "key": "adk.sdk-imports-only",
+          "severity": "blocking",
+          "title": "Import only from the SDK and your own code",
+          "rule": "Import only from @kassis/* packages and your own src/. Never resolve host services by name.",
+          "verification": "self"
+        },
+        {
+          "key": "adk.lowest-rung",
+          "severity": "advisory",
+          "title": "Choose the lowest rung",
+          "rule": "Choose the lowest rung: configuration first, a declarative addon second, code last. State the rung you chose and why in the change summary.",
+          "verification": "self"
+        },
+        {
+          "key": "adk.declared-permissions-and-audit",
+          "severity": "blocking",
+          "title": "Declare permissions and audit every write",
+          "rule": "Every route declares a permission in your addon namespace. Every write goes through ctx.data or a host facade and records an audit action declared in the manifest.",
+          "verification": "self"
+        },
+        {
+          "key": "adk.event-schemas-and-null-capabilities",
+          "severity": "blocking",
+          "title": "Give every event a schema and handle missing capabilities",
+          "rule": "Every published event has a schema. Every consumed capability handles null, because the addon that provides it can be switched off.",
+          "verification": "self"
+        },
+        {
+          "key": "adk.reversible-migrations",
+          "severity": "blocking",
+          "title": "Make every migration reversible",
+          "rule": "Every migration has a down script, or is marked irreversible with a reason.",
+          "verification": "self"
+        },
+        {
+          "key": "adk.declare-widened-access",
+          "severity": "blocking",
+          "title": "Declare any widened access",
+          "rule": "Never widen permissions, egress hosts or data access without saying so in the change summary.",
+          "verification": "self"
+        },
+        {
+          "key": "adk.certify",
+          "severity": "blocking",
+          "title": "Pass certify before you finish",
+          "rule": "Run kassis addon certify before you say you are done, and fix every error.",
+          "verification": "machine",
+          "checkId": "kassis-addon-certify"
+        },
+        {
+          "key": "adk.document-changes",
+          "severity": "advisory",
+          "title": "Document what you built",
+          "rule": "When a change is described by Kassisdoc, update the business page, the technical page, or both, and link the business page from the technical guide. Also update README.md and CHANGELOG.md.",
+          "verification": "self"
+        },
+        {
+          "key": "adk.no-unrequested-refactors",
+          "severity": "blocking",
+          "title": "Do not refactor code you were not asked to change",
+          "rule": "Do not refactor code you were not asked to change.",
+          "verification": "self"
+        },
+        {
+          "key": "adk.attest-pinned-profile",
+          "severity": "blocking",
+          "title": "Read your pinned guardrails and attest to them",
+          "rule": "At the start, read the guardrails and skills of your pinned profile (kassis adk sync). Before you say you are done, fill in .kassis/attestation.json with one answer per guardrail.",
+          "verification": "self"
+        }
+      ],
+      "signature": "8c824b2dd3a91bff121eb290990034fd8ef316c5077b2c509830607bd7c02f2c9ad3cc4363265816bf8c73ed89e54f8767cd9e529a251d17bd37e9e20baa3902"
+    },
+    "signature": "1c77239ec6f34f313f3df2d87f5dfd7f3a1761fa9be09e844490cd01982d0efdfb17e04ee548163d80cb643558cb64c320f5f09685a48c2d720c7b624a541c02"
+  },
+  "signature": "9f170574d51bae4ed11e93535fd974b96fce13a80eb7e08883a531b306b0af439633b5c695214de8798e1f9b05b8f24c131043f814f1bed23c8c113c33ca7b08"
+}
