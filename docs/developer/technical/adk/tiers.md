@@ -4,7 +4,7 @@ Tier 2 process isolation is accident isolation until the container runner is the
 
 **Status:** GA
 **Version checked:** 2026-10-28
-**Technical owner:** Unassigned
+**Technical owner:** Platform Engineering (ADK)
 **Last reviewed:** 2026-11-16
 
 ## Tier 1

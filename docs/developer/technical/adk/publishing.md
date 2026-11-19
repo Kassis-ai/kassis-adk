@@ -2,44 +2,14 @@
 
 **Status:** GA
 **Version checked:** 2026-10-28
-**Technical owner:** Unassigned
-**Last reviewed:** 2026-11-16
+**Technical owner:** Platform Engineering (ADK)
+**Last reviewed:** 2026-11-19
 
 Version rules are in the [semver policy](../addons/semver-policy.md). Do not bump a public export of `@kassis/addon-sdk` without a matching report change.
 
-## API Extractor
+## npm registry (kit packages)
 
-```bash
-node tools/adk/api-surface.mjs
-node tools/adk/api-surface.mjs --write
-```
-
-The first command fails when `packages/addon-sdk/etc/addon-sdk.api.md` or `packages/host-sdk/etc/host-sdk.api.md` would change. `--write` updates those files. It compiles `@kassis/addon-sdk` into `packages/addon-sdk/dist` (gitignored) and rolls `@kassis/host-sdk` into one `.d.ts` per public subpath. The reports are the public surface.
-
-## Changesets
-
-`@changesets/cli` is a dev dependency. Config is `.changeset/config.json` and the base branch is `main`.
-
-```bash
-npm run changeset
-```
-
-## Registry
-
-The six public packages (`addon-sdk`, `addon-testkit`, `addon-ui`, `host-sdk`, `agent-kit`, `addon-cli`) set `publishConfig.registry` to GitHub Packages, `access` to `restricted`, and `provenance` to `true`. `prepack` copies `publishConfig` `main`, `types`, and `exports` onto the tarball, because npm does not apply those fields from `publishConfig`. `postpack` restores the workspace file, which keeps pointing at source. `npm run ci:packages:publish-config` packs each public package and fails when a packed entry is TypeScript, points outside `files`, or is missing from the tarball. It also fails when a committed workspace `package.json` no longer points at `src/`, or when a non-private `@kassis/*` package is missing the GitHub Packages registry. Internal packages stay `"private": true`. `npm publish` from a trusted CI run attaches provenance. A packed file can also be signed locally:
-
-```bash
-npm pack
-node tools/adk/sign-tarball.mjs <file.tgz> --key=<private-key-hex-file>
-```
-
-## Release checklist
-
-1. `node tools/adk/api-surface.mjs` is clean, or you committed a new report with `--write`.
-2. A changeset describes the public change.
-3. The tarball is published with provenance, or signed with `sign-tarball.mjs`.
-4. The air-gap bundle still excludes the private key: `node tools/adk/airgap-bundle.mjs --out=./airgap`.
-5. `npm run ci:packages:publish-config` passes.
+The six public packages (`addon-sdk`, `addon-testkit`, `addon-ui`, `host-sdk`, `agent-kit`, `addon-cli`) publish to GitHub Packages with restricted access and npm provenance. Workspace layout, API Extractor reports, changesets, and air-gap bundling are described in [Maintainers](./maintainers.md) for people working in the kassis repository.
 
 ## Addon package
 
@@ -57,6 +27,7 @@ The install path is `addons-installed/<id>/<version>/`. The version must be high
 
 | Date       | Change                                                                                                                                                                                         |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-19 | Kit publish workflow moved to [Maintainers](./maintainers.md); this page covers addon `.addon` packages and deploy.                                                                           |
 | 2026-11-16 | `host-sdk.api.md` includes `OwnerCommunicationTab` and `OwnerCommunicationTabProps`. `ci:packages:host-sdk-self-contained` passes on that report.                                              |
 | 2026-10-30 | `host-sdk.api.md` matches a clean API Extractor run (`React_2.JSX.Element`). `addon-sdk.api.md` lists `ManifestSigning`, which the source already exported.                                    |
 | 2026-10-28 | `package` refuses a failed certify and includes attestation and lock in the evidence pack. `ci:packages:publish-config` also checks that committed `package.json` files still point at `src/`. |

@@ -2,8 +2,8 @@
 
 **Status:** GA
 **Version checked:** 2026-10-28
-**Technical owner:** Unassigned
-**Last reviewed:** 2026-11-11
+**Technical owner:** Platform Engineering (ADK)
+**Last reviewed:** 2026-11-19
 
 ## Publisher keys
 
@@ -25,17 +25,11 @@ Revocation is immediate and does not wait for approval. A revoked fingerprint is
 
 Addon load, deploy verification, and the MCP contribution loader call the same trust loader. A revocation emits `system.addon.publisher_trust.invalidated`. The in-process cache also expires after a short TTL, which covers a process that misses the event.
 
-## Signed tarballs
+## Addon SBOM
 
-```bash
-node tools/adk/sign-tarball.mjs <file.tgz> --key=<private-key-hex-file>
-```
+`kassis-addon sbom` writes a CycloneDX document for the libraries this addon ships. `package` includes `sbom.json` in the `.addon` zip and in the content hash scope.
 
-This writes `<file.tgz>.sig`. The default key path is `server/keys/addon_signing_private.key`. Do not put that file in an air-gap bundle.
-
-## SBOM
-
-`node tools/adk/package-sbom.mjs` writes a CycloneDX document. `airgap-bundle.mjs` includes it as `sbom.json`.
+Signing npm kit tarballs is documented in [Maintainers](./maintainers.md).
 
 ## Content hash and runtime UI
 
@@ -51,6 +45,7 @@ The runtime UI catalog entry carries `contentHash`. The loader appends it as a q
 
 | Date       | Change                                                                                                                                                                                                                                                                                                                              |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-19 | Client docs use `kassis-addon sbom`; kit tarball signing moved to [Maintainers](./maintainers.md).                                                                                                                                                                                                                                    |
 | 2026-11-11 | The signature and `contentHash` gate runs before any host registration when an addon loads; a failed load disposes the addon's registrations. Install and update run the same gate on the staged package before promotion.                                                                                                          |
 | 2026-10-28 | First-party publishers (`kassis`, `kassis-corp`, empty) do not need `uiContentHash`. A client UI package signs it over `frontend/dist`. A missing or mismatched client hash is refused, and the UI route returns 404. The UI gate reuses a stat fingerprint cache.                                                                  |
 | 2026-10-28 | Tool, evidence, test, and `frontend/dist/**` folders are outside `contentHash`. The server image builds `frontend/dist` after signing. Runtime UI is served only after a passing signature gate while the addon stays enabled and the content-hash fingerprint still matches. The catalog `contentHash` is the loader query string. |

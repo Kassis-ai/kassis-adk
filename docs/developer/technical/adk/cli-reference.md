@@ -2,11 +2,10 @@
 
 **Status:** GA
 **Version checked:** 2026-10-28
-**Technical owner:** Unassigned
-**Last reviewed:** 2026-11-16
+**Technical owner:** Platform Engineering (ADK)
+**Last reviewed:** 2026-11-19
 
-
-Run `npx kassis-addon <command>` after installing `@kassis/addon-cli`, or `node tools/adk/kassis-addon.mjs <command>` from this repository. The packed CLI is a bundle. `npx kassis-adk-mcp` starts the MCP server from the same package. Help and errors name the command `kassis-addon`. `--help` exits 0. `--version` prints the CLI version and exits 0. `--flag value` and `--flag=value` both work. `--json` on every command prints `{ "ok", "issues", "data" }`. An issue is `{ "code", "severity", "message", "fix", "file", "line" }`. An unknown command prints usage and exits 1. Exit 0 is success. The MCP server also exposes offline discovery tools (`list_facades`, `get_facade`, `list_extension_points`, `list_events`, `get_event_schema`, `get_tier_matrix`, `search_docs`, `get_example`, `find_core_feature`) that read packaged kit data with no network.
+Run `npx kassis-addon <command>` after installing `@kassis/addon-cli`. The packed CLI is a bundle. `npx kassis-adk-mcp` starts the MCP server from the same package. Help and errors name the command `kassis-addon`. `--help` exits 0. `--version` prints the CLI version and exits 0. `--flag value` and `--flag=value` both work. `--json` on every command prints `{ "ok", "issues", "data" }`. An issue is `{ "code", "severity", "message", "fix", "file", "line" }`. An unknown command prints usage and exits 1. Exit 0 is success. The MCP server also exposes offline discovery tools (`list_facades`, `get_facade`, `list_extension_points`, `list_events`, `get_event_schema`, `get_tier_matrix`, `search_docs`, `get_example`, `find_core_feature`) that read packaged kit data with no network.
 
 | Command              | Flags                                                         | What it does                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | -------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -43,8 +42,8 @@ Run `npx kassis-addon <command>` after installing `@kassis/addon-cli`, or `node 
 Example:
 
 ```bash
-node tools/adk/kassis-addon.mjs init --id=sample-tprm-check --publisher=kassis --dir=../sample-tprm-check
-node tools/adk/kassis-addon.mjs certify --json
+npx kassis-addon init --id=sample-tprm-check --publisher=kassis --dir=../sample-tprm-check
+npx kassis-addon certify --json
 ```
 
 ## Changelog
@@ -58,7 +57,8 @@ node tools/adk/kassis-addon.mjs certify --json
 | 2026-11-16 | `check` and `certify` validate `process.packs[]` and `process/*.json` offline (KADK-125 to KADK-129, KADK-313, KADK-314, KADK-316 to KADK-318). A kind with no host schema warns and does not check the body. |
 | 2026-11-16 | `check` and `certify` refuse banned dependencies (KADK-221) and private mechanism tables (KADK-310). `REUSE.md` explains an override (KADK-311). `database.tableNotes` states the core record an owned table could not be (KADK-312). Evidence is `.kassis/evidence/reuse-core.json`. |
 | 2026-11-16 | Certify records machine check `adk.requirements-traced` for the unsigned coding profile v3 draft guardrail.                                                                                                                                                                                                                                                          |
-| 2026-11-16 | `kassis-adk-mcp` `find_core_feature` maps a common need to core feature, facade or extension point, and example (`packages/adk-core/src/discovery/core-features.json`). |
+| 2026-11-19 | Examples use `npx kassis-addon` only; repository CLI entry is [Maintainers](./maintainers.md). |
+| 2026-11-16 | `kassis-adk-mcp` `find_core_feature` maps a common need to core feature, facade or extension point, and example (packaged discovery data). |
 | 2026-11-16 | `kassis-addon plan` maps every requirement row to a rung in `PLAN.md`, writes `requirement-mapping.json`, and certify fails on KADK-720, KADK-721, or KADK-722. |
 | 2026-11-16 | `kassis-addon requirements` traces Must rows in `REQUIREMENTS.md` to `test/` or `GAPS.md`, writes `requirements-coverage.json`, and certify fails on KADK-719.                                                                                                                                                                                                                                                          |
 | 2026-11-16 | `kassis-adk-mcp` offline discovery tools: `list_facades`, `get_facade`, `list_extension_points`, `list_events`, `get_event_schema`, `get_tier_matrix`, `search_docs`, `get_example` (packaged data; live catalog is S2.36).                                                                                                                                                                                              |

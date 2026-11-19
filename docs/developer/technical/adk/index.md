@@ -2,10 +2,12 @@
 
 **Status:** GA
 **Version checked:** 2026-10-28
-**Technical owner:** Unassigned
-**Last reviewed:** 2026-10-28
+**Technical owner:** Platform Engineering (ADK)
+**Last reviewed:** 2026-11-19
 
 The Addon Development Kit (ADK) is how a Kassis addon is created, checked, signed, and loaded. It is also how an AI coding agent is given a signed profile, and how an operator turns an addon on.
+
+Client-facing pages in this section describe published npm packages and `kassis-addon`. They intentionally omit kassis repository paths so the same docs work when the kit lives in **kassis-adk**. People who build or ship the kit from the kassis monorepo use [Maintainers](./maintainers.md).
 
 ## Who it is for
 
@@ -55,6 +57,8 @@ Tier 1 addons run in the host process. Tier 2 addons run in a child process and 
 9. [AI agents](./ai-agents.md)
 10. [Operators](./operators.md)
 
+Kit maintainers in the kassis repository: [Maintainers](./maintainers.md).
+
 Related pages that this guide does not copy:
 
 - [Addon context facades](../addons/addon-context-facades.md)
@@ -63,3 +67,9 @@ Related pages that this guide does not copy:
 - [Permission namespaces](../addons/permission-namespaces.md)
 - [KADK error codes](../reference/adk-error-codes.md)
 - [Addon deploy CLI](../addons/addon-deploy-cli.md)
+
+## Changelog
+
+| Date       | Change                                                                                              |
+| ---------- | --------------------------------------------------------------------------------------------------- |
+| 2026-11-19 | Named **Platform Engineering (ADK)** as technical owner. Client pages avoid repository paths (S3.11). |
