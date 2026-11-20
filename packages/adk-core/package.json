@@ -46,7 +46,7 @@
     "@kassis/addon-testkit": "0.1.1",
     "@kassis/adk-protocol": "0.1.1",
     "@modelcontextprotocol/sdk": "1.32.2",
-    "ajv": "^8.17.1"
+    "ajv": "^8.20.0"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
