@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@kassis/addon-sdk": "0.1.1",
-    "es-module-lexer": "^2.1.0",
+    "es-module-lexer": "^3.0.5",
     "typescript": "^5.9.3"
   },
   "main": "./src/index.mjs",

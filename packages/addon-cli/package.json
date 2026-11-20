@@ -37,7 +37,7 @@
     "@kassis/addon-testkit": "0.1.1",
     "@modelcontextprotocol/sdk": "1.32.2",
     "ajv": "^8.17.1",
-    "es-module-lexer": "^2.1.0"
+    "es-module-lexer": "^3.0.5"
   },
   "devDependencies": {
     "esbuild": "0.28.2"
