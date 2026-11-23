@@ -8,6 +8,7 @@
     "rootDir": "src",
     "strict": true,
     "skipLibCheck": true,
+    "types": ["node"],
     "allowImportingTsExtensions": true,
     "rewriteRelativeImportExtensions": true,
     "resolveJsonModule": true

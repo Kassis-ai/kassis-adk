@@ -862,7 +862,7 @@ A published code keeps its number, category and meaning. A retired code is marke
 
 - Severity: error
 - Message: `Add-on '{id}' called {operation} with a principal that has no user`
-- Fix: Act for the signed-in user's principal, or provision the addon's service user; audited writes never run as 'system'.
+- Fix: Pass ctx.routes.principalOf for a user row; pass ctx.principal.service with actor: 'service' for a system row.
 - Reported by: `AddonContext` facades that write on behalf of a principal (3b)
 
 <a id="kadk-614"></a>

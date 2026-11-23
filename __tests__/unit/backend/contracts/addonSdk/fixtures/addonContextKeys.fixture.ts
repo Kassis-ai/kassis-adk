@@ -27,6 +27,10 @@ export const ADDON_CONTEXT_FAKE_KEYS = {
   http: true,
   capabilities: true,
   extend: true,
+  principal: true,
+  rateLimit: true,
+  sql: true,
+  widgets: true,
 } as const satisfies Record<keyof AddonContext, true>;
 
 export type AddonContextFakeKey = keyof typeof ADDON_CONTEXT_FAKE_KEYS;

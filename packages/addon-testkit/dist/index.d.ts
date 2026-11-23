@@ -1,3 +1,8 @@
+export { assertNoHostImports, checkAddonImports } from './checkAddonImports.mjs';
+export { checkAddonTierRefusals } from './checkAddonTierRefusals.mjs';
+export type CertifyReport = {
+    ok: true;
+};
 /**
  * @typedef {object} CertifyReport
  * @property {true} ok
@@ -6,10 +11,5 @@
  * @param {string} dir
  * @returns {CertifyReport}
  */
-export function assertEvidencePack(dir: string): CertifyReport;
-export { checkAddonTierRefusals } from "./checkAddonTierRefusals.mjs";
-export { createTestContext } from "./createTestContext.mjs";
-export type CertifyReport = {
-    ok: true;
-};
-export { assertNoHostImports, checkAddonImports } from "./checkAddonImports.mjs";
+export declare function assertEvidencePack(dir: string): CertifyReport;
+export { createTestContext } from './createTestContext.mjs';

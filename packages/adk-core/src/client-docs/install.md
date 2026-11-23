@@ -14,7 +14,7 @@
 
 The packages an addon installs are `@kassis/addon-sdk`, `@kassis/addon-testkit`, `@kassis/addon-ui`, `@kassis/host-sdk`, `@kassis/agent-kit`, and `@kassis/addon-cli`. They are public on npmjs.com under the `@kassis` scope, so `npm install` needs no token. A project `.npmrc` with `@kassis:registry=https://registry.npmjs.org/` keeps the scope on npmjs.com when a global `.npmrc` maps `@kassis` somewhere else.
 
-Depend on `@kassis/addon-sdk` at `^0.1.0`. That is the kit npm line. It is not the host API. `manifest.hostApi` stays `^1.0.0`. The version rules are in the [semver policy](../addons/semver-policy.md). `@kassis/adk-core` and `@kassis/mcp-contract` share that kit line. Install the CLI for commands. An addon that scaffolds an MCP tool depends on `@kassis/mcp-contract`.
+Depend on `@kassis/addon-sdk` at `^0.2.0`. That is the kit npm line. It is not the host API. `manifest.hostApi` stays `^1.0.0`. The version rules are in the [semver policy](../addons/semver-policy.md). `@kassis/adk-core` and `@kassis/mcp-contract` share that kit line. Install the CLI for commands. An addon that scaffolds an MCP tool depends on `@kassis/mcp-contract`.
 
 The packages in the install command below build to `dist` in the published tarball. `@kassis/addon-sdk`, `@kassis/addon-testkit`, `@kassis/agent-kit`, and `@kassis/addon-cli` ship JavaScript. `@kassis/host-sdk` and `@kassis/addon-ui` ship type declarations plus a small JavaScript shim so plain Node can import the package. The shim does not contain the host UI. The running host serves `@kassis/host-sdk` at `/host-sdk/index.js` and `@kassis/addon-ui` at `/host-sdk/addon-ui.js`. An addon frontend build leaves those imports external.
 
@@ -58,6 +58,7 @@ Kit maintainers who build the bundle from the kassis repository use [Maintainers
 
 | Date       | Change                                                                                                                                                        |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-23 | Addon installs use `@kassis/addon-sdk` `^0.2.0` for the Tier 1 context types. `hostApi` stays `^1.0.0`. |
 | 2026-11-19 | Air-gapped bundle: download from the kassis-adk GitHub release and verify with cosign; release key fingerprint published. |
 | 2026-11-19 | The kit packages publish publicly to npmjs.com under `@kassis`. Installs need no token.                                                                         |
 | 2026-11-19 | Addon installs use `@kassis/addon-sdk` `^0.1.0`. `hostApi` stays `^1.0.0`. See the [semver policy](../addons/semver-policy.md). |

@@ -137,6 +137,43 @@ export type {
   UsersFacade,
 } from './context/coreFacades.js';
 export type { AddonContext, AddonModule } from './context/addonContext.js';
+export type {
+  PrincipalFacade,
+  RouteGuards,
+  RouteMiddleware,
+  RouteServeOptions,
+} from './context/tier1PlatformMembers.js';
+export type {
+  CommunicationDirectInput,
+  CommunicationDirectResult,
+  GraphAssessmentDirect,
+  JurisdictionDirect,
+  LinkedEntityMax,
+  PartyScreeningDirect,
+  RiskBridgeSnapshot,
+  RiskBridgeSubmitResult,
+  RiskPlatformSubmit,
+  SchemaProfileDirect,
+  UboEntityDirect,
+} from './context/tier1DirectTypes.js';
+export type {
+  FileTextExtraction,
+  HostJobRef,
+  JobSchedulerQueue,
+  JobSchedulerRow,
+  JobSchedulerTemplate,
+  JobsHost,
+  LlmDirectRequest,
+  LlmDirectResult,
+  PromptDirectResult,
+  PromptResolveOptions,
+  RateLimitFacade,
+  RateLimitResult,
+  SqlNamespace,
+  SqlQuery,
+  WidgetSchemaFacade,
+  WidgetSchemaInput,
+} from './context/tier1HostTypes.js';
 
 export {
   defineAddon,

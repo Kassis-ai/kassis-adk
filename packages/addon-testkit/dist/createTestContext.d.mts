@@ -1,10 +1,9 @@
 /**
- * @param {CreateTestContextOptions} [options]
- * @returns {TestAddonContext}
+ * In-memory AddonContext recorders. No database and no model provider.
+ * Declared-name refusals mirror the host AddonContext facades (KADK-606, 401, 610, 608, 605, 607).
  */
-export function createTestContext(options?: CreateTestContextOptions): TestAddonContext;
 export type TestPrincipal = {
-    kind: "user" | "service";
+    kind: 'user' | 'service';
     userId: number | null;
     email: string | null;
 };
@@ -14,8 +13,8 @@ export type AuditSubject = {
 };
 export type AuditDetailInput = {
     subject: AuditSubject;
-    outcome?: "success" | "failure" | undefined;
-    metadata?: Record<string, string | number | boolean | null> | undefined;
+    outcome?: 'success' | 'failure';
+    metadata?: Record<string, string | number | boolean | null>;
 };
 export type RecordedAudit = {
     principal: TestPrincipal;
@@ -33,14 +32,14 @@ export type RecordedEvent = {
     occurredAt: string;
 };
 export type RecordedEnqueue = {
-    kind: "enqueue";
+    kind: 'enqueue';
     id: string;
     principal: TestPrincipal;
     type: string;
     data: object;
 };
 export type RecordedSchedule = {
-    kind: "schedule";
+    kind: 'schedule';
     type: string;
     cron: string;
     data: object;
@@ -70,13 +69,13 @@ export type RecordedHttpFetch = {
     url: string;
 };
 export type CreateTestContextOptions = {
-    addonId?: string | undefined;
-    version?: string | undefined;
-    tier?: 1 | 2 | undefined;
-    tenantId?: string | undefined;
-    config?: Record<string, unknown> | undefined;
-    manifest?: Record<string, unknown> | undefined;
-    manifestPath?: string | undefined;
+    addonId?: string;
+    version?: string;
+    tier?: 1 | 2;
+    tenantId?: string;
+    config?: Record<string, unknown>;
+    manifest?: Record<string, unknown>;
+    manifestPath?: string;
 };
 export type TestAddonContext = {
     addon: {
@@ -145,3 +144,8 @@ export type TestAddonContext = {
     extend: object;
     data: object;
 };
+/**
+ * @param {CreateTestContextOptions} [options]
+ * @returns {TestAddonContext}
+ */
+export declare function createTestContext(options?: CreateTestContextOptions): TestAddonContext;

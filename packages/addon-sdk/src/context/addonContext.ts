@@ -22,6 +22,8 @@ import type {
   SettingsFacade,
 } from './platformFacades.js';
 import type { RiskFacade } from './riskFacade.js';
+import type { PrincipalFacade } from './tier1PlatformMembers.js';
+import type { RateLimitFacade, SqlNamespace, WidgetSchemaFacade } from './tier1HostTypes.js';
 
 export interface AddonContext<D extends AddonDeclarations = AddonDeclarations> {
   readonly addon: AddonIdentity;
@@ -47,6 +49,14 @@ export interface AddonContext<D extends AddonDeclarations = AddonDeclarations> {
   readonly http: HttpFacade;
   readonly capabilities: CapabilitiesFacade<D['consumes']>;
   readonly extend: AddonExtensionPoints;
+  /** Service principal the host builds for this addon. */
+  readonly principal: PrincipalFacade;
+  /** Tier 1 only. Tier 2 RPC refuses `rateLimit`. AI token bucket, not the HTTP limit on `routes.mount`. */
+  readonly rateLimit: RateLimitFacade;
+  /** Tier 1 only. Tier 2 RPC refuses `sql`. Prisma SQL fragments. Not a query runner and not `data`. */
+  readonly sql: SqlNamespace;
+  /** Tier 1 only. Tier 2 RPC refuses `widgets`. */
+  readonly widgets: WidgetSchemaFacade;
 }
 
 /** The module an addon's entry point exports. Registrations made in initialize() are tracked by the host. */

@@ -1,6 +1,6 @@
 {
   "name": "@kassis/addon-testkit",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "type": "module",
   "description": "Assertions a coding agent uses to prove an addon pack and that source stays off the host.",
   "license": "UNLICENSED",
@@ -10,9 +10,9 @@
     "directory": "packages/addon-testkit"
   },
   "dependencies": {
-    "@kassis/addon-sdk": "0.1.1",
+    "@kassis/addon-sdk": "0.2.0",
     "es-module-lexer": "^2.1.0",
-    "typescript": "^7.0.2"
+    "typescript": "5.9.3"
   },
   "main": "./src/index.mjs",
   "types": "./index.d.ts",

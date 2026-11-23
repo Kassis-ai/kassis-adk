@@ -41,8 +41,10 @@ export interface AddonContext<D extends AddonDeclarations = AddonDeclarations> {
     readonly logger: AddonLogger;
     // (undocumented)
     readonly notify: NotificationsFacade;
+    readonly principal: PrincipalFacade;
     // (undocumented)
     readonly prompts: PromptsFacade;
+    readonly rateLimit: RateLimitFacade;
     // (undocumented)
     readonly risk: RiskFacade;
     // (undocumented)
@@ -51,8 +53,10 @@ export interface AddonContext<D extends AddonDeclarations = AddonDeclarations> {
     readonly secrets: SecretsFacade<D['secretKeys']>;
     // (undocumented)
     readonly settings: SettingsFacade;
+    readonly sql: SqlNamespace;
     // (undocumented)
     readonly tenant: TenantScope;
+    readonly widgets: WidgetSchemaFacade;
 }
 
 // Warning: (ae-missing-release-tag) "AddonDataBatchResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -137,6 +141,7 @@ export interface AddonDeclarations {
 //
 // @public (undocumented)
 export interface AddonEvent<P extends JsonObject = JsonObject> {
+    readonly actorKind?: 'user' | 'service';
     // (undocumented)
     readonly correlationId: string;
     // (undocumented)
@@ -639,6 +644,7 @@ export interface ApprovalsFacade {
 //
 // @public (undocumented)
 export interface AuditDetail {
+    readonly actor?: 'user' | 'service';
     // (undocumented)
     readonly after?: JsonObject | null;
     // (undocumented)
@@ -888,6 +894,56 @@ export type CommunicableContribution = {
 // @public
 export type CommunicationAccessCheck = (principal: AddonPrincipal, ownerId: string) => Promise<boolean>;
 
+// Warning: (ae-missing-release-tag) "CommunicationDirectInput" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface CommunicationDirectInput {
+    // (undocumented)
+    readonly bcc?: string | readonly string[] | null;
+    // (undocumented)
+    readonly cc?: string | readonly string[] | null;
+    // (undocumented)
+    readonly emailAccountId?: number | null;
+    // (undocumented)
+    readonly fromName?: string | null;
+    // (undocumented)
+    readonly html?: string;
+    // (undocumented)
+    readonly isDraft?: boolean;
+    // (undocumented)
+    readonly ownerId?: string | number | null;
+    // (undocumented)
+    readonly ownerType?: string | null;
+    // (undocumented)
+    readonly priority?: number;
+    // (undocumented)
+    readonly replyTo?: string | null;
+    // (undocumented)
+    readonly subject: string;
+    // (undocumented)
+    readonly text?: string;
+    // (undocumented)
+    readonly threadId?: string | null;
+    // (undocumented)
+    readonly to: string | readonly string[];
+    // (undocumented)
+    readonly userId?: number | null;
+}
+
+// Warning: (ae-missing-release-tag) "CommunicationDirectResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export interface CommunicationDirectResult {
+    // (undocumented)
+    readonly emailId: number;
+    // (undocumented)
+    readonly messageId: string;
+    // (undocumented)
+    readonly status: string;
+    // (undocumented)
+    readonly success: boolean;
+}
+
 // Warning: (ae-missing-release-tag) "CommunicationFacade" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -897,6 +953,7 @@ export interface CommunicationFacade {
     registerAccess(ownerType: string, canAccess: CommunicationAccessCheck): Disposable;
     // (undocumented)
     send(principal: AddonPrincipal, input: CommunicationSendInput): Promise<CommunicationSendResult>;
+    sendDirect(input: CommunicationDirectInput): Promise<CommunicationDirectResult>;
 }
 
 // Warning: (ae-missing-release-tag) "CommunicationListQuery" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -1142,12 +1199,15 @@ export interface DocumentRecord {
 export interface DocumentsFacade {
     // (undocumented)
     create(principal: AddonPrincipal, input: DocumentCreateInput): Promise<DocumentRecord>;
+    extractBuffer(content: Uint8Array, fileName: string): Promise<FileTextExtraction>;
+    extractFile(fileUrl: string, fileName?: string): Promise<FileTextExtraction>;
     // (undocumented)
     extractText(principal: AddonPrincipal, source: DocumentTextSource): Promise<{
         readonly text: string;
         readonly truncated: boolean;
     }>;
     indexText(principal: AddonPrincipal, input: DocumentIndexInput): Promise<void>;
+    mapAiTags(tags: readonly string[]): Promise<readonly (string | number)[]>;
     // (undocumented)
     mapTags(principal: AddonPrincipal, tags: readonly string[]): Promise<readonly DocumentTagMatch[]>;
 }
@@ -1370,6 +1430,18 @@ export interface EventSubscriptionOptions {
     readonly retries?: number;
 }
 
+// Warning: (ae-missing-release-tag) "FileTextExtraction" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface FileTextExtraction {
+    // (undocumented)
+    readonly metadata: {
+        readonly [key: string]: JsonValue | readonly JsonValue[] | undefined;
+    };
+    // (undocumented)
+    readonly text: string;
+}
+
 // Warning: (ae-missing-release-tag) "fillKadkTemplate" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
@@ -1467,6 +1539,27 @@ export function getGuardrailCatalogEntry(id: string): GuardrailCatalogEntry | un
 // @public
 export function getKadkCode(code: KadkCode): KadkCodeDefinition;
 
+// Warning: (ae-missing-release-tag) "GraphAssessmentDirect" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface GraphAssessmentDirect {
+    // (undocumented)
+    readonly assessments: readonly {
+        readonly factorCode: string;
+        readonly score: number;
+        readonly reason: string;
+        readonly rawValue?: JsonObject;
+        readonly computationMode?: string;
+        readonly status?: 'known' | 'proposed' | 'confirmed' | 'rejected' | 'overridden';
+    }[];
+    // (undocumented)
+    readonly correlationId?: string;
+    // (undocumented)
+    readonly graphId: string;
+    // (undocumented)
+    readonly providerId: string;
+}
+
 // Warning: (ae-missing-release-tag) "GraphRiskMirrorContribution" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
@@ -1529,6 +1622,14 @@ export type GuardrailGroup = 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
 //
 // @public (undocumented)
 export type GuardrailLevel = 'L1' | 'L2' | 'L3' | 'L4' | 'L5';
+
+// Warning: (ae-missing-release-tag) "HostJobRef" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface HostJobRef {
+    // (undocumented)
+    readonly id?: string | number;
+}
 
 // Warning: (ae-missing-release-tag) "HttpFacade" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1619,17 +1720,67 @@ export interface JobRegistrationOptions {
     readonly queue?: string;
 }
 
+// Warning: (ae-missing-release-tag) "JobSchedulerQueue" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface JobSchedulerQueue {
+    // (undocumented)
+    getJobSchedulers(): Promise<readonly JobSchedulerRow[]>;
+    // (undocumented)
+    removeJobScheduler(id: string): Promise<boolean>;
+    // (undocumented)
+    upsertJobScheduler(jobId: string, repeat: {
+        readonly pattern: string;
+    }, template: JobSchedulerTemplate): Promise<unknown>;
+}
+
+// Warning: (ae-missing-release-tag) "JobSchedulerRow" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface JobSchedulerRow {
+    // (undocumented)
+    readonly id?: string | null;
+    // (undocumented)
+    readonly key?: string;
+    // (undocumented)
+    readonly name: string;
+    // (undocumented)
+    readonly pattern?: string | null;
+}
+
+// Warning: (ae-missing-release-tag) "JobSchedulerTemplate" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface JobSchedulerTemplate {
+    // (undocumented)
+    readonly data: JsonObject;
+    // (undocumented)
+    readonly name: string;
+    // (undocumented)
+    readonly opts?: JsonObject;
+}
+
 // Warning: (ae-missing-release-tag) "JobsFacade" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export interface JobsFacade<T extends string = string> {
     // (undocumented)
     enqueue(principal: AddonPrincipal, type: T, data: JsonObject, options?: JobEnqueueOptions): Promise<JobRef>;
+    readonly host: JobsHost;
     // (undocumented)
     register(type: T, handler: JobHandler, options?: JobRegistrationOptions): Disposable;
     schedule(type: T, cron: string, data?: JsonObject): Disposable;
     // (undocumented)
     status(jobId: string): Promise<JobStatus | null>;
+}
+
+// Warning: (ae-missing-release-tag) "JobsHost" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export interface JobsHost {
+    add(queueName: string, jobType: string, data: JsonObject, options?: JsonObject): Promise<HostJobRef>;
+    queue(queueName: string): JobSchedulerQueue | null;
+    resolveQueueName(queueName: string): string;
 }
 
 // Warning: (ae-missing-release-tag) "JobState" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -1681,6 +1832,24 @@ export type JsonSchema = JsonObject;
 //
 // @public (undocumented)
 export type JsonValue = JsonPrimitive | JsonArray | JsonObject;
+
+// Warning: (ae-missing-release-tag) "JurisdictionDirect" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface JurisdictionDirect {
+    // (undocumented)
+    readonly correlationId?: string;
+    // (undocumented)
+    readonly countryCode?: string | null;
+    // (undocumented)
+    readonly entityId: string;
+    // (undocumented)
+    readonly entityType?: string | null;
+    // (undocumented)
+    readonly reason?: string | null;
+    // (undocumented)
+    readonly score: number;
+}
 
 // Warning: (ae-missing-release-tag) "KADK_CATEGORY_HUNDREDS" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1793,6 +1962,22 @@ export type LinkableContribution = {
     allowedRoles?: string[];
 };
 
+// Warning: (ae-missing-release-tag) "LinkedEntityMax" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface LinkedEntityMax {
+    // (undocumented)
+    readonly entityScores: readonly {
+        readonly entityId: string;
+        readonly score: number;
+        readonly level?: string;
+    }[];
+    // (undocumented)
+    readonly reason: string;
+    // (undocumented)
+    readonly score: number;
+}
+
 // Warning: (ae-missing-release-tag) "listGuardrailCatalogEntries" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -1803,13 +1988,101 @@ export function listGuardrailCatalogEntries(): readonly GuardrailCatalogEntry[];
 // @public (undocumented)
 export function listKadkCodes(): readonly KadkCodeDefinition[];
 
+// Warning: (ae-missing-release-tag) "LlmDirectRequest" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export interface LlmDirectRequest {
+    // (undocumented)
+    readonly addonId?: string;
+    // (undocumented)
+    readonly authToken?: string;
+    // (undocumented)
+    readonly bypass_agent?: boolean;
+    // (undocumented)
+    readonly case_id?: string | number | null;
+    // (undocumented)
+    readonly case_title?: string;
+    // (undocumented)
+    readonly caseId?: string | number | null;
+    // (undocumented)
+    readonly caseTitle?: string;
+    // (undocumented)
+    readonly contextAction?: string;
+    // (undocumented)
+    readonly entityId?: string | number;
+    // (undocumented)
+    readonly entityType?: string;
+    // (undocumented)
+    readonly file_urls?: readonly string[];
+    // (undocumented)
+    readonly maxTokens?: number;
+    // (undocumented)
+    readonly model?: string;
+    // (undocumented)
+    readonly operationId?: string;
+    // (undocumented)
+    readonly profile?: string;
+    // (undocumented)
+    readonly prompt?: string;
+    // (undocumented)
+    readonly promptKey?: string;
+    // (undocumented)
+    readonly promptMetadata?: {
+        readonly hash?: string;
+        readonly promptKey?: string;
+        readonly owner?: string;
+        readonly usageLogId?: number | null;
+    };
+    // (undocumented)
+    readonly promptSource?: 'managed' | {
+        readonly unmanaged: true;
+        readonly reason: string;
+    };
+    // (undocumented)
+    readonly provider?: string;
+    // (undocumented)
+    readonly response_json_schema?: JsonObject;
+    // (undocumented)
+    readonly skipAudit?: boolean;
+    // (undocumented)
+    readonly skipCache?: boolean;
+    // (undocumented)
+    readonly temperature?: number;
+    // (undocumented)
+    readonly user?: {
+        readonly id?: number | string;
+        readonly email?: string;
+    } | null;
+}
+
+// Warning: (ae-missing-release-tag) "LlmDirectResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface LlmDirectResult {
+    // (undocumented)
+    readonly model?: string;
+    // (undocumented)
+    readonly provider?: string;
+    // (undocumented)
+    readonly text?: string;
+    // (undocumented)
+    readonly usage?: {
+        readonly total_tokens?: number;
+        readonly prompt_tokens?: number;
+        readonly completion_tokens?: number;
+    } | null;
+}
+
 // Warning: (ae-missing-release-tag) "LlmFacade" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export interface LlmFacade<K extends string = string> {
+    completeDirect(request: LlmDirectRequest): Promise<LlmDirectResult>;
     // (undocumented)
     estimateTokens(text: string): Promise<number>;
     invoke(principal: AddonPrincipal, promptKey: K, variables: PromptVariables, options?: LlmInvokeOptions): Promise<LlmResult>;
+    invokeRegistered(request: LlmDirectRequest): Promise<LlmDirectResult>;
+    modelName(): Promise<JsonValue>;
 }
 
 // Warning: (ae-missing-release-tag) "LlmInvokeOptions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -1872,17 +2145,19 @@ export interface LocksFacade {
     acquire(key: string, options: {
         readonly ttlSeconds: number;
     }): Promise<LockHandle | null>;
+    acquireExact(key: string, ttlSeconds: number): Promise<boolean>;
+    releaseExact(key: string): Promise<void>;
 }
 
 // Warning: (ae-missing-release-tag) "MANIFEST_EXTEND_POINT_IDS" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
-export const MANIFEST_EXTEND_POINT_IDS: readonly ["analyticsContributor", "approvable", "approvableFields", "auditSubject", "automationAction", "automationFields", "automationTrigger", "communicable", "deletable", "documentable", "echoStrategy", "employeeDirectory", "flaggable", "graphRiskMirror", "importQuestionnairePack", "investigationDomain", "investigationTemplate", "licenseFeatures", "linkable", "predictionCapability", "questionnaireDomain", "questionnaireDomainAdapter", "recordAccess", "riskFactors", "shutdownHook"];
+export const MANIFEST_EXTEND_POINT_IDS: readonly ['analyticsContributor', 'approvable', 'approvableFields', 'auditSubject', 'automationAction', 'automationFields', 'automationTrigger', 'communicable', 'deletable', 'documentable', 'echoStrategy', 'employeeDirectory', 'flaggable', 'graphRiskMirror', 'importQuestionnairePack', 'investigationDomain', 'investigationTemplate', 'licenseFeatures', 'linkable', 'predictionCapability', 'questionnaireDomain', 'questionnaireDomainAdapter', 'recordAccess', 'riskFactors', 'shutdownHook'];
 
 // Warning: (ae-missing-release-tag) "MANIFEST_RESOURCE_SENSITIVITY_LEVELS" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
-export const MANIFEST_RESOURCE_SENSITIVITY_LEVELS: readonly ["standard", "confidential", "mnpi"];
+export const MANIFEST_RESOURCE_SENSITIVITY_LEVELS: readonly ['standard', 'confidential', 'mnpi'];
 
 // Warning: (ae-missing-release-tag) "MANIFEST_V1_FIELD_HOMES" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2301,6 +2576,34 @@ export interface PartiesFacade {
     }): Promise<readonly DuplicateMatch[]>;
 }
 
+// Warning: (ae-missing-release-tag) "PartyScreeningDirect" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface PartyScreeningDirect {
+    // (undocumented)
+    readonly adverseMediaHitCount?: number;
+    // (undocumented)
+    readonly confirmedAdverseCount?: number;
+    // (undocumented)
+    readonly correlationId?: string;
+    // (undocumented)
+    readonly entityId: string;
+    // (undocumented)
+    readonly entityType?: string | null;
+    // (undocumented)
+    readonly pepHitCount?: number;
+    // (undocumented)
+    readonly reviewAgingCount?: number;
+    // (undocumented)
+    readonly sanctionsHitCount?: number;
+    // (undocumented)
+    readonly sourceConflictCount?: number;
+    // (undocumented)
+    readonly topicRiskLevel?: string | null;
+    // (undocumented)
+    readonly topicRiskScore?: number | null;
+}
+
 // Warning: (ae-missing-release-tag) "PolicyEvaluationInput" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -2359,6 +2662,14 @@ export type PreferenceWriteResult = {
     readonly reason: 'too_large' | 'too_many_keys';
 };
 
+// Warning: (ae-missing-release-tag) "PrincipalFacade" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export interface PrincipalFacade {
+    // (undocumented)
+    readonly service: AddonPrincipal;
+}
+
 // Warning: (ae-missing-release-tag) "ProfileFactorsInput" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
@@ -2375,12 +2686,57 @@ export interface ProfileFactorsInput {
     readonly schema: JsonObject;
 }
 
+// Warning: (ae-missing-release-tag) "PromptDirectResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface PromptDirectResult {
+    // (undocumented)
+    readonly metadata: {
+        readonly hash?: string | null;
+        readonly promptKey?: string;
+        readonly templateId?: number | string | null;
+        readonly version?: number;
+        readonly llmDefaults?: {
+            readonly temperature?: number;
+            readonly maxTokens?: number;
+        } | null;
+    };
+    // (undocumented)
+    readonly prompt: string;
+}
+
+// Warning: (ae-missing-release-tag) "PromptResolveOptions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface PromptResolveOptions {
+    // (undocumented)
+    readonly abTestGroup?: string | null;
+    // (undocumented)
+    readonly captureRunId?: string | null;
+    // (undocumented)
+    readonly caseId?: string | number | null;
+    // (undocumented)
+    readonly domain?: string | null;
+    // (undocumented)
+    readonly fallbackTemplate?: string | null;
+    // (undocumented)
+    readonly sessionId?: string | null;
+    // (undocumented)
+    readonly skipCache?: boolean;
+    // (undocumented)
+    readonly softRequiredVariables?: boolean;
+    // (undocumented)
+    readonly userId?: number | string | null;
+}
+
 // Warning: (ae-missing-release-tag) "PromptsFacade" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export interface PromptsFacade {
+    get(key: string, variables: PromptVariables, options?: PromptResolveOptions): Promise<PromptDirectResult>;
     // (undocumented)
     registerPack(pack: AddonPromptPack): Disposable;
+    resolve(key: string, variables: PromptVariables, options?: PromptResolveOptions): Promise<PromptDirectResult>;
 }
 
 // Warning: (ae-missing-release-tag) "PromptVariables" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -2563,6 +2919,23 @@ export type QuestionnaireSubjectAccessContext = {
     subject: QuestionnaireRegistrySubject;
 };
 
+// Warning: (ae-missing-release-tag) "RateLimitFacade" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export interface RateLimitFacade {
+    consume(key: string, capacity: number, refillRate: number, requested?: number): Promise<RateLimitResult>;
+}
+
+// Warning: (ae-missing-release-tag) "RateLimitResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface RateLimitResult {
+    // (undocumented)
+    readonly allowed: boolean;
+    // (undocumented)
+    readonly remaining: number;
+}
+
 // Warning: (ae-missing-release-tag) "RecordTypeAuditSubject" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -2646,20 +3019,87 @@ export interface RiskAssessmentSubmission {
     readonly subject: RiskSubject;
 }
 
+// Warning: (ae-missing-release-tag) "RiskBridgeSnapshot" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export interface RiskBridgeSnapshot {
+    // (undocumented)
+    readonly composition?: object;
+    // (undocumented)
+    readonly domain: string;
+    // (undocumented)
+    readonly effectiveAt: string;
+    // (undocumented)
+    readonly factorBreakdown?: readonly object[];
+    // (undocumented)
+    readonly level: string;
+    // (undocumented)
+    readonly score: number;
+    // (undocumented)
+    readonly snapshotId?: string;
+    // (undocumented)
+    readonly subjectId?: string;
+    // (undocumented)
+    readonly subjectType?: string;
+    // (undocumented)
+    readonly tenantId?: string;
+    // (undocumented)
+    readonly version: number;
+}
+
+// Warning: (ae-missing-release-tag) "RiskBridgeSubmitResult" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface RiskBridgeSubmitResult {
+    // (undocumented)
+    readonly accepted: boolean;
+    // (undocumented)
+    readonly assessmentIds?: readonly string[];
+    // (undocumented)
+    readonly correlationId: string;
+    // (undocumented)
+    readonly level?: string;
+    // (undocumented)
+    readonly score?: number;
+    // (undocumented)
+    readonly snapshotId?: string | null;
+    // (undocumented)
+    readonly validationErrors?: readonly string[];
+    // (undocumented)
+    readonly version?: number;
+}
+
 // Warning: (ae-missing-release-tag) "RiskFacade" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export interface RiskFacade {
+    analyzeWatchlist(rows: readonly JsonObject[], rules: readonly JsonObject[]): Promise<readonly object[]>;
     evaluatePolicyRules(principal: AddonPrincipal, input: PolicyEvaluationInput): Promise<readonly JsonObject[]>;
     // (undocumented)
     getSnapshot(principal: AddonPrincipal, subject: RiskSubject, domain?: string): Promise<RiskSnapshot | null>;
+    hydrateEntities<T extends {
+        readonly id?: string | number;
+    }>(records: readonly T[]): Promise<ReadonlyArray<T & {
+        risk_score?: number;
+        risk_level?: string;
+    }>>;
     // (undocumented)
     isLaneEnabled(lane: RiskLane): Promise<boolean>;
+    laneEnabled(lane: RiskLane): boolean;
+    linkedEntityMax(entityIds: readonly string[]): Promise<LinkedEntityMax | null>;
+    readEntitySnapshot(entityId: string, domain?: string): Promise<RiskBridgeSnapshot | null>;
+    readGraphSnapshot(graphId: string, domain?: string): Promise<RiskBridgeSnapshot | null> | null;
     submitAssessments(principal: AddonPrincipal, submission: RiskAssessmentSubmission): Promise<RiskSubmitResult | null>;
+    submitGraph(input: GraphAssessmentDirect): Promise<RiskBridgeSubmitResult | null>;
+    submitJurisdiction(input: JurisdictionDirect): Promise<RiskBridgeSubmitResult | null>;
+    submitPartyScreening(input: PartyScreeningDirect): Promise<RiskBridgeSubmitResult | null>;
+    submitPlatform(request: RiskPlatformSubmit): Promise<RiskBridgeSubmitResult>;
     // (undocumented)
     submitProfileFactors(principal: AddonPrincipal, input: ProfileFactorsInput): Promise<RiskSubmitResult | null>;
+    submitSchemaProfile(input: SchemaProfileDirect): Promise<RiskBridgeSubmitResult | null>;
     // (undocumented)
     submitScreeningFactors(principal: AddonPrincipal, input: ScreeningFactorsInput): Promise<RiskSubmitResult | null>;
+    submitUboEntity(input: UboEntityDirect): Promise<RiskBridgeSubmitResult | null>;
 }
 
 // Warning: (ae-missing-release-tag) "RiskFactorsContribution" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -2675,6 +3115,25 @@ export type RiskFactorsContribution = {
 //
 // @public (undocumented)
 export type RiskLane = 'entity' | 'graph';
+
+// Warning: (ae-missing-release-tag) "RiskPlatformSubmit" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export interface RiskPlatformSubmit {
+    // (undocumented)
+    readonly assessments: readonly JsonObject[];
+    // (undocumented)
+    readonly correlationId?: string;
+    // (undocumented)
+    readonly providerId: string;
+    // (undocumented)
+    readonly subject: {
+        readonly subjectType: string;
+        readonly subjectId: string;
+        readonly tenantId?: string;
+        readonly entityType?: string | null;
+    };
+}
 
 // Warning: (ae-missing-release-tag) "RiskSnapshot" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2729,6 +3188,23 @@ export type RiskSubscriberRegistration = {
     subscriptions?: JsonObject[];
 };
 
+// Warning: (ae-missing-release-tag) "RouteGuards" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export interface RouteGuards {
+    anyOf(permissions: readonly string[]): RouteMiddleware;
+    auditChanges(): RouteMiddleware;
+    auditResource(): RouteMiddleware;
+    authenticate(): RouteMiddleware;
+    permission(permission: string): RouteMiddleware;
+    resource(type: string, scope: 'own' | 'department' | 'all'): RouteMiddleware;
+}
+
+// Warning: (ae-missing-release-tag) "RouteMiddleware" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export type RouteMiddleware = (request: object, response: object, next: (error?: unknown) => void) => void | Promise<void>;
+
 // Warning: (ae-missing-release-tag) "RouteMountOptions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -2737,13 +3213,38 @@ export interface RouteMountOptions<P extends string = string> {
     readonly permission: P;
 }
 
+// Warning: (ae-missing-release-tag) "RouteServeOptions" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface RouteServeOptions {
+    readonly path?: string;
+}
+
 // Warning: (ae-missing-release-tag) "RoutesFacade" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export interface RoutesFacade<P extends string = string> {
+    readonly guards: RouteGuards;
     // (undocumented)
     mount(router: AddonRouter, options: RouteMountOptions<P>): Disposable;
     principalOf(request: object): AddonPrincipal;
+    serve(router: AddonRouter, options?: RouteServeOptions): Disposable;
+}
+
+// Warning: (ae-missing-release-tag) "SchemaProfileDirect" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface SchemaProfileDirect {
+    // (undocumented)
+    readonly attributes: JsonObject;
+    // (undocumented)
+    readonly correlationId?: string;
+    // (undocumented)
+    readonly entityId: string;
+    // (undocumented)
+    readonly entityType?: string | null;
+    // (undocumented)
+    readonly schema?: JsonObject;
 }
 
 // Warning: (ae-missing-release-tag) "ScreeningFactorsInput" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -2799,6 +3300,27 @@ export type ShutdownHookContribution = {
     handler: () => void | Promise<void>;
 };
 
+// Warning: (ae-missing-release-tag) "SqlNamespace" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export interface SqlNamespace {
+    // (undocumented)
+    readonly empty: SqlQuery;
+    join(values: readonly SqlQuery[], separator?: SqlQuery): SqlQuery;
+    raw(sql: string): SqlQuery;
+    sql(strings: TemplateStringsArray, ...values: readonly unknown[]): SqlQuery;
+}
+
+// Warning: (ae-missing-release-tag) "SqlQuery" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export interface SqlQuery {
+    // (undocumented)
+    readonly strings: readonly string[];
+    // (undocumented)
+    readonly values: readonly unknown[];
+}
+
 // Warning: (ae-missing-release-tag) "SqlValue" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -2818,6 +3340,44 @@ export interface TenantScope {
 export type Tier2OwnedRecord = {
     resourceType: string;
 };
+
+// Warning: (ae-missing-release-tag) "UboEntityDirect" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface UboEntityDirect {
+    // (undocumented)
+    readonly chainDepthReason?: string | null;
+    // (undocumented)
+    readonly chainDepthScore: number;
+    // (undocumented)
+    readonly correlationId?: string;
+    // (undocumented)
+    readonly entityId: string;
+    // (undocumented)
+    readonly entityType?: string | null;
+    // (undocumented)
+    readonly jurisdictionReason?: string | null;
+    // (undocumented)
+    readonly jurisdictionScore: number;
+    // (undocumented)
+    readonly nomineeReason?: string | null;
+    // (undocumented)
+    readonly nomineeScore: number;
+    // (undocumented)
+    readonly pepReason?: string | null;
+    // (undocumented)
+    readonly pepScore: number;
+    // (undocumented)
+    readonly sanctionsHitCount?: number;
+    // (undocumented)
+    readonly shellReason?: string | null;
+    // (undocumented)
+    readonly shellScore: number;
+    // (undocumented)
+    readonly verificationReason?: string | null;
+    // (undocumented)
+    readonly verificationScore: number;
+}
 
 // Warning: (ae-missing-release-tag) "UsersFacade" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2851,6 +3411,25 @@ export interface UserSummary {
 //
 // @public
 export function validateManifestV2(manifest: unknown, options?: ManifestValidationOptions): ManifestValidationResult;
+
+// Warning: (ae-missing-release-tag) "WidgetSchemaFacade" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export interface WidgetSchemaFacade {
+    register(schema: WidgetSchemaInput): void;
+}
+
+// Warning: (ae-missing-release-tag) "WidgetSchemaInput" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface WidgetSchemaInput {
+    // (undocumented)
+    readonly buildCustomData: (config: JsonObject) => JsonObject | null;
+    // (undocumented)
+    readonly legacyIds?: readonly string[];
+    // (undocumented)
+    readonly widgetId: string;
+}
 
 // Warnings were encountered during analysis:
 //

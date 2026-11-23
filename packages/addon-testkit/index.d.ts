@@ -481,6 +481,34 @@ export interface TestAddonContext {
   readonly locks: TestLocksFacade;
   readonly extend: TestExtendFacade;
   readonly data: TestDataFacade;
+  /** Service principal the host would build for this addon. */
+  readonly principal: { readonly service: TestPrincipal };
+  /** Tier 1 token bucket. Tier 2 RPC refuses `rateLimit` on the host. */
+  readonly rateLimit: {
+    consume(
+      key: string,
+      capacity: number,
+      refillRate: number,
+      requested?: number
+    ): Promise<{ readonly allowed: boolean; readonly remaining: number }>;
+  };
+  /** Tier 1 SQL fragments. Tier 2 RPC refuses `sql` on the host. */
+  readonly sql: {
+    sql(strings: TemplateStringsArray, ...values: readonly unknown[]): {
+      readonly strings: readonly string[];
+      readonly values: readonly unknown[];
+    };
+    join(
+      values: readonly { readonly strings: readonly string[]; readonly values: readonly unknown[] }[],
+      separator?: { readonly strings: readonly string[]; readonly values: readonly unknown[] }
+    ): { readonly strings: readonly string[]; readonly values: readonly unknown[] };
+    readonly empty: { readonly strings: readonly string[]; readonly values: readonly unknown[] };
+    raw(sql: string): { readonly strings: readonly string[]; readonly values: readonly unknown[] };
+  };
+  /** Tier 1 widget schema registration. Tier 2 RPC refuses `widgets` on the host. */
+  readonly widgets: {
+    register(schema: JsonObject): void;
+  };
 }
 
 export function createTestContext(options?: CreateTestContextOptions): TestAddonContext;

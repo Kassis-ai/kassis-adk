@@ -6,6 +6,7 @@ import type { Disposable } from '../disposable.js';
 import type { JsonObject, JsonValue } from '../json.js';
 import type { AddonPrincipal } from './addonIdentity.js';
 import type { CommunicationFacade } from './communicationFacade.js';
+import type { FileTextExtraction } from './tier1HostTypes.js';
 
 export type {
   CommunicationAccessCheck,
@@ -186,6 +187,12 @@ export interface DocumentsFacade {
     source: DocumentTextSource
   ): Promise<{ readonly text: string; readonly truncated: boolean }>;
   mapTags(principal: AddonPrincipal, tags: readonly string[]): Promise<readonly DocumentTagMatch[]>;
+  /** Tier 1 only. Tier 2 RPC refuses `extractBuffer`. No user. `extractText` stays the checked path. */
+  extractBuffer(content: Uint8Array, fileName: string): Promise<FileTextExtraction>;
+  /** Tier 1 only. Tier 2 RPC refuses `extractFile`. No user. `extractText` stays the checked path. */
+  extractFile(fileUrl: string, fileName?: string): Promise<FileTextExtraction>;
+  /** Tier 1 only. Tier 2 RPC refuses `mapAiTags`. No user. `mapTags` stays the checked path. */
+  mapAiTags(tags: readonly string[]): Promise<readonly (string | number)[]>;
   /** Queues the text for semantic search indexing; blank content is ignored. */
   indexText(principal: AddonPrincipal, input: DocumentIndexInput): Promise<void>;
 }

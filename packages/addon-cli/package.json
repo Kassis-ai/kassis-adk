@@ -1,6 +1,6 @@
 {
   "name": "@kassis/addon-cli",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "type": "module",
   "description": "kassis-addon command line. The host supplies the runtime; this package supplies the commands.",
   "license": "UNLICENSED",
@@ -34,7 +34,7 @@
     "postpack": "node ../../tools/adk/pack-publish-fields.mjs restore"
   },
   "dependencies": {
-    "@kassis/addon-testkit": "0.1.1",
+    "@kassis/addon-testkit": "0.2.0",
     "@modelcontextprotocol/sdk": "1.32.2",
     "ajv": "^8.20.0",
     "es-module-lexer": "^2.1.0"

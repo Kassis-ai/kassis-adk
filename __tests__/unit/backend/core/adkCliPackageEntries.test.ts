@@ -27,6 +27,7 @@ describe('@kassis/addon-cli package entries', () => {
       'addon-coding-agent.json',
       'addon-coding-agent.v1.json',
       'addon-coding-agent.v3.draft.json',
+      'addon-coding-agent.v3.json',
     ]);
     const build = fs.readFileSync(path.join(repo, 'packages/adk-core/build.mjs'), 'utf8');
     expect(build).not.toContain('tools/adk');

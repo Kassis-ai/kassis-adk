@@ -24,6 +24,7 @@ export async function expirePending(
     await ctx.audit.record(principal, 'acme-swift-approval.message.expired', {
       subject: { type: 'acme-swift-approval.message', id: row.id },
       outcome: 'success',
+      actor: 'service',
       metadata: { expiryHours: settings.expiryHours },
     });
   }

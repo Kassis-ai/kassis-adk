@@ -4,6 +4,7 @@
  */
 import type { Disposable } from '../disposable.js';
 import type { AddonPrincipal } from './addonIdentity.js';
+import type { CommunicationDirectInput, CommunicationDirectResult } from './tier1DirectTypes.js';
 
 export interface CommunicationSendInput {
   readonly ownerType: string;
@@ -51,4 +52,10 @@ export interface CommunicationFacade {
   ): Promise<readonly CommunicationMessage[]>;
   /** Called by the host before send and list. Removed on dispose or disable. */
   registerAccess(ownerType: string, canAccess: CommunicationAccessCheck): Disposable;
+  /**
+   * Tier 1 only. Tier 2 RPC refuses `sendDirect`.
+   * Forwards `emailService.sendEmail`. `userId` and `priority` stay the caller's, including null.
+   * `send` is still KADK-617 and KADK-613 for the service actor.
+   */
+  sendDirect(input: CommunicationDirectInput): Promise<CommunicationDirectResult>;
 }

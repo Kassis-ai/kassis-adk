@@ -8,6 +8,7 @@ import { createConfigFake, createCoreFacadesFake, createFlagsFake, createNotifyF
 import { manifestPolicyFromManifest } from './manifestPolicy.mjs';
 import { TestContextError } from './testContextError.mjs';
 import { createTierGuardedCapabilities, createTierGuardedData, createTierGuardedExtend, createTierGuardedLocks, } from './tierGuardedFacades.mjs';
+import { attachTier1FacadeMethods, tier1ContextFields } from './tier1AreaFakes.mjs';
 /**
  * @typedef {object} TestPrincipal
  * @property {'user' | 'service'} kind
@@ -228,7 +229,9 @@ export function createTestContext(options = {}) {
     const routes = [];
     /** @type {object[]} */
     const extend = [];
-    return {
+    /** @type {object[]} */
+    const tier1 = [];
+    const context = {
         addon: { id: addonId, version, tier },
         tenant: { id: tenantId },
         logger: {
@@ -253,6 +256,7 @@ export function createTestContext(options = {}) {
             prompts,
             routes,
             extend,
+            tier1,
         },
         audit: {
             /**
@@ -458,4 +462,15 @@ export function createTestContext(options = {}) {
         extend: createTierGuardedExtend(tier, extend),
         data: createTierGuardedData(tier),
     };
+    Object.assign(context, tier1ContextFields(tier1));
+    attachTier1FacadeMethods(context, {
+        routes,
+        risk,
+        jobs,
+        llm,
+        prompts,
+        locks: tier1,
+        core,
+    });
+    return context;
 }

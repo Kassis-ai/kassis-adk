@@ -3,10 +3,17 @@
  * @ts-expect-error for every violation the types must reject, so zero diagnostics means the
  * valid usage compiles and every violation is caught.
  */
+import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import ts from 'typescript';
 import { describe, expect, it } from 'vitest';
+
+// The testkit scans source with the TypeScript 5 compiler API. The repo's
+// `typescript` package is 7, whose default export is only the version.
+const require = createRequire(
+  path.join(path.dirname(fileURLToPath(import.meta.url)), '../../../../../packages/addon-testkit/src/checkAddonImports.mjs')
+);
+const ts = require('typescript') as typeof import('typescript');
 
 const FIXTURES = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures');
 

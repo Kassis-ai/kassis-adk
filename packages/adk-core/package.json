@@ -1,6 +1,6 @@
 {
   "name": "@kassis/adk-core",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "type": "module",
   "description": "Command library for kassis-addon and kassis-adk-mcp. Returns results; callers handle printing and exit codes.",
   "license": "UNLICENSED",
@@ -42,9 +42,9 @@
     "postpack": "node ../../tools/adk/pack-publish-fields.mjs restore"
   },
   "dependencies": {
-    "@kassis/addon-sdk": "0.1.1",
-    "@kassis/addon-testkit": "0.1.1",
-    "@kassis/adk-protocol": "0.1.1",
+    "@kassis/addon-sdk": "0.2.0",
+    "@kassis/addon-testkit": "0.2.0",
+    "@kassis/adk-protocol": "0.2.0",
     "@modelcontextprotocol/sdk": "1.32.2",
     "ajv": "^8.20.0"
   },

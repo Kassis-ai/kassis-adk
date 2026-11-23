@@ -4,6 +4,17 @@
  */
 import type { JsonObject } from '../json.js';
 import type { AddonPrincipal } from './addonIdentity.js';
+import type {
+  GraphAssessmentDirect,
+  JurisdictionDirect,
+  LinkedEntityMax,
+  PartyScreeningDirect,
+  RiskBridgeSnapshot,
+  RiskBridgeSubmitResult,
+  RiskPlatformSubmit,
+  SchemaProfileDirect,
+  UboEntityDirect,
+} from './tier1DirectTypes.js';
 
 export type RiskLane = 'entity' | 'graph';
 
@@ -93,4 +104,30 @@ export interface RiskFacade {
     principal: AddonPrincipal,
     input: PolicyEvaluationInput
   ): Promise<readonly JsonObject[]>;
+  /** Tier 1 only. Tier 2 RPC refuses `laneEnabled`. Synchronous. `isLaneEnabled` stays a promise. */
+  laneEnabled(lane: RiskLane): boolean;
+  /** Tier 1 only. Tier 2 RPC refuses `submitPartyScreening`. Screening counts the strict method drops are kept. */
+  submitPartyScreening(input: PartyScreeningDirect): Promise<RiskBridgeSubmitResult | null>;
+  /** Tier 1 only. Tier 2 RPC refuses `submitUboEntity`. */
+  submitUboEntity(input: UboEntityDirect): Promise<RiskBridgeSubmitResult | null>;
+  /** Tier 1 only. Tier 2 RPC refuses `submitJurisdiction`. */
+  submitJurisdiction(input: JurisdictionDirect): Promise<RiskBridgeSubmitResult | null>;
+  /** Tier 1 only. Tier 2 RPC refuses `submitSchemaProfile`. */
+  submitSchemaProfile(input: SchemaProfileDirect): Promise<RiskBridgeSubmitResult | null>;
+  /** Tier 1 only. Tier 2 RPC refuses `hydrateEntities`. */
+  hydrateEntities<T extends { readonly id?: string | number }>(
+    records: readonly T[]
+  ): Promise<ReadonlyArray<T & { risk_score?: number; risk_level?: string }>>;
+  /** Tier 1 only. Tier 2 RPC refuses `readEntitySnapshot`. Includes `version`. No user. */
+  readEntitySnapshot(entityId: string, domain?: string): Promise<RiskBridgeSnapshot | null>;
+  /** Tier 1 only. Tier 2 RPC refuses `submitGraph`. */
+  submitGraph(input: GraphAssessmentDirect): Promise<RiskBridgeSubmitResult | null>;
+  /** Tier 1 only. Tier 2 RPC refuses `readGraphSnapshot`. Null immediately when the lane is off. */
+  readGraphSnapshot(graphId: string, domain?: string): Promise<RiskBridgeSnapshot | null> | null;
+  /** Tier 1 only. Tier 2 RPC refuses `linkedEntityMax`. */
+  linkedEntityMax(entityIds: readonly string[]): Promise<LinkedEntityMax | null>;
+  /** Tier 1 only. Tier 2 RPC refuses `analyzeWatchlist`. No principal and no tenant stamp. */
+  analyzeWatchlist(rows: readonly JsonObject[], rules: readonly JsonObject[]): Promise<readonly object[]>;
+  /** Tier 1 only. Tier 2 RPC refuses `submitPlatform`. The request object is not rebuilt. */
+  submitPlatform(request: RiskPlatformSubmit): Promise<RiskBridgeSubmitResult>;
 }

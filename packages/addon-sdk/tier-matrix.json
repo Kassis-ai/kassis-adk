@@ -121,10 +121,31 @@
       "permission": "principal"
     },
     {
+      "method": "ctx.core.communication.sendDirect",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
       "method": "ctx.core.documents.create",
       "tier1": true,
       "tier2": true,
       "permission": "principal"
+    },
+    {
+      "method": "ctx.core.documents.extractBuffer",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
+      "method": "ctx.core.documents.extractFile",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
     },
     {
       "method": "ctx.core.documents.extractText",
@@ -137,6 +158,13 @@
       "tier1": true,
       "tier2": true,
       "permission": "principal"
+    },
+    {
+      "method": "ctx.core.documents.mapAiTags",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
     },
     {
       "method": "ctx.core.documents.mapTags",
@@ -476,6 +504,27 @@
       "permission": "jobs.types"
     },
     {
+      "method": "ctx.jobs.host.add",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
+      "method": "ctx.jobs.host.queue",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
+      "method": "ctx.jobs.host.resolveQueueName",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
       "method": "ctx.jobs.register",
       "tier1": true,
       "tier2": true,
@@ -494,6 +543,13 @@
       "permission": "jobs.types"
     },
     {
+      "method": "ctx.llm.completeDirect",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
       "method": "ctx.llm.estimateTokens",
       "tier1": true,
       "tier2": true,
@@ -506,10 +562,38 @@
       "permission": "prompts.keys"
     },
     {
+      "method": "ctx.llm.invokeRegistered",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
+      "method": "ctx.llm.modelName",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
       "method": "ctx.locks.acquire",
       "tier1": true,
       "tier2": false,
       "permission": "principal"
+    },
+    {
+      "method": "ctx.locks.acquireExact",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
+      "method": "ctx.locks.releaseExact",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
     },
     {
       "method": "ctx.notify.registerType",
@@ -524,10 +608,38 @@
       "permission": "principal"
     },
     {
+      "method": "ctx.prompts.get",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
       "method": "ctx.prompts.registerPack",
       "tier1": true,
       "tier2": true,
       "permission": "principal"
+    },
+    {
+      "method": "ctx.prompts.resolve",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
+      "method": "ctx.rateLimit.consume",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
+      "method": "ctx.risk.analyzeWatchlist",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
     },
     {
       "method": "ctx.risk.evaluatePolicyRules",
@@ -542,10 +654,45 @@
       "permission": "principal"
     },
     {
+      "method": "ctx.risk.hydrateEntities",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
       "method": "ctx.risk.isLaneEnabled",
       "tier1": true,
       "tier2": true,
       "permission": "principal"
+    },
+    {
+      "method": "ctx.risk.laneEnabled",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
+      "method": "ctx.risk.linkedEntityMax",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
+      "method": "ctx.risk.readEntitySnapshot",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
+      "method": "ctx.risk.readGraphSnapshot",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
     },
     {
       "method": "ctx.risk.submitAssessments",
@@ -554,16 +701,100 @@
       "permission": "principal"
     },
     {
+      "method": "ctx.risk.submitGraph",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
+      "method": "ctx.risk.submitJurisdiction",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
+      "method": "ctx.risk.submitPartyScreening",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
+      "method": "ctx.risk.submitPlatform",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
       "method": "ctx.risk.submitProfileFactors",
       "tier1": true,
       "tier2": true,
       "permission": "principal"
     },
     {
+      "method": "ctx.risk.submitSchemaProfile",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
       "method": "ctx.risk.submitScreeningFactors",
       "tier1": true,
       "tier2": true,
       "permission": "principal"
+    },
+    {
+      "method": "ctx.risk.submitUboEntity",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
+      "method": "ctx.routes.guards.anyOf",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
+      "method": "ctx.routes.guards.auditChanges",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
+      "method": "ctx.routes.guards.auditResource",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
+      "method": "ctx.routes.guards.authenticate",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
+      "method": "ctx.routes.guards.permission",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
+      "method": "ctx.routes.guards.resource",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
     },
     {
       "method": "ctx.routes.mount",
@@ -577,6 +808,13 @@
       "tier2": false,
       "permission": "principal",
       "note": "resolved in tier 2 child without RPC"
+    },
+    {
+      "method": "ctx.routes.serve",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
     },
     {
       "method": "ctx.secrets.get",
@@ -597,11 +835,39 @@
       "permission": "principal"
     },
     {
+      "method": "ctx.sql.join",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
+      "method": "ctx.sql.raw",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
+      "method": "ctx.sql.sql",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
+    },
+    {
       "method": "ctx.streams",
       "tier1": false,
       "tier2": false,
       "permission": null,
       "availability": "reserved"
+    },
+    {
+      "method": "ctx.widgets.register",
+      "tier1": true,
+      "tier2": false,
+      "permission": null,
+      "note": "Tier 1 only. Tier 2 RPC refuses this method."
     }
   ]
 }
