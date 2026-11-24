@@ -456,18 +456,26 @@ describe('validateManifestV2', () => {
   });
 
   // First-party addons live in the host repository only.
-  it.skipIf(!fs.existsSync(path.resolve('addons')))('reports every current v1 addon manifest as not v2 (KADK-104)', () => {
-    const addonsDir = path.resolve('addons');
-    const manifests = fs
-      .readdirSync(addonsDir, { withFileTypes: true })
-      .filter((entry) => entry.isDirectory())
-      .map((entry) => path.join(addonsDir, entry.name, 'manifest.json'))
-      .filter((file) => fs.existsSync(file));
+  it.skipIf(!fs.existsSync(path.resolve('addons')))(
+    'enforces manifest v2 on first-party addon manifests (KADK-104 when not v2)',
+    () => {
+      const addonsDir = path.resolve('addons');
+      const manifests = fs
+        .readdirSync(addonsDir, { withFileTypes: true })
+        .filter((entry) => entry.isDirectory())
+        .map((entry) => path.join(addonsDir, entry.name, 'manifest.json'))
+        .filter((file) => fs.existsSync(file));
 
-    expect(manifests.length).toBeGreaterThan(0);
-    for (const file of manifests) {
-      const manifest: unknown = JSON.parse(fs.readFileSync(file, 'utf8'));
-      expect(codesOf(manifest), file).toContain('KADK-104');
+      expect(manifests.length).toBeGreaterThan(0);
+      for (const file of manifests) {
+        const manifest = JSON.parse(fs.readFileSync(file, 'utf8')) as Record<string, unknown>;
+        const codes = codesOf(manifest);
+        if (manifest.manifestVersion === 2) {
+          expect(codes, file).not.toContain('KADK-104');
+        } else {
+          expect(codes, file).toContain('KADK-104');
+        }
+      }
     }
-  });
+  );
 });
