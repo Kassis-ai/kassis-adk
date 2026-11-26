@@ -40,6 +40,8 @@ describe('publish-packages helpers', () => {
     try {
       delete process.env.GITHUB_ACTIONS;
       delete process.env.ACTIONS_ID_TOKEN_REQUEST_URL;
+      delete process.env.NPM_TOKEN;
+      delete process.env.NODE_AUTH_TOKEN;
       expect(resolveAuth(true, null)).toEqual({ token: null, userconfig: null, usedOtp: false });
       expect(resolveAuth(false, '123456')).toEqual({ token: null, userconfig: null, usedOtp: true });
       expect(() => resolveAuth(false, null)).toThrow(NPM_TOKEN_HELP.split('\n')[0]);
@@ -49,6 +51,10 @@ describe('publish-packages helpers', () => {
     } finally {
       process.env.GITHUB_ACTIONS = prev.GITHUB_ACTIONS;
       process.env.ACTIONS_ID_TOKEN_REQUEST_URL = prev.ACTIONS_ID_TOKEN_REQUEST_URL;
+      if (prev.NPM_TOKEN === undefined) delete process.env.NPM_TOKEN;
+      else process.env.NPM_TOKEN = prev.NPM_TOKEN;
+      if (prev.NODE_AUTH_TOKEN === undefined) delete process.env.NODE_AUTH_TOKEN;
+      else process.env.NODE_AUTH_TOKEN = prev.NODE_AUTH_TOKEN;
     }
   });
 

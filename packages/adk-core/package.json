@@ -38,8 +38,8 @@
   ],
   "scripts": {
     "build": "node build.mjs",
-    "prepack": "npm run build && node ../../tools/adk/pack-publish-fields.mjs apply",
-    "postpack": "node ../../tools/adk/pack-publish-fields.mjs restore"
+    "prepack": "node ../../tools/adk/pack-session.mjs begin \"npm run build && node ../../tools/adk/pack-publish-fields.mjs apply\"",
+    "postpack": "node ../../tools/adk/pack-session.mjs end \"node ../../tools/adk/pack-publish-fields.mjs restore\""
   },
   "dependencies": {
     "@kassis/addon-sdk": "0.2.0",

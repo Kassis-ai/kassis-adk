@@ -146,7 +146,7 @@ function main() {
     for (const pkg of packages) {
       const label = `${pkg.name}@${pkg.version}`;
       try {
-        if (!options.dryRun && versionOnRegistry(pkg.name, pkg.version, userconfig)) {
+        if (versionOnRegistry(pkg.name, pkg.version, userconfig)) {
           process.stdout.write(`skip ${label} (already on npm)\n`);
           summary.push({ name: pkg.name, status: 'skipped', detail: pkg.version });
           continue;

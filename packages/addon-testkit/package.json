@@ -27,8 +27,8 @@
   ],
   "scripts": {
     "build": "node build.mjs",
-    "prepack": "node build.mjs && node ../../tools/adk/pack-publish-fields.mjs apply",
-    "postpack": "node ../../tools/adk/pack-publish-fields.mjs restore"
+    "prepack": "node ../../tools/adk/pack-session.mjs begin \"node build.mjs && node ../../tools/adk/pack-publish-fields.mjs apply\"",
+    "postpack": "node ../../tools/adk/pack-session.mjs end \"node ../../tools/adk/pack-publish-fields.mjs restore\""
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",

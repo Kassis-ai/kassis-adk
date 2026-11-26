@@ -125,7 +125,7 @@ function fallbackPackageList(root) {
  */
 export function writeTempNpmUserconfig(token, destination) {
   const lines = ['registry=https://registry.npmjs.org/', `//registry.npmjs.org/:_authToken=${token}`, ''];
-  fs.writeFileSync(destination, lines, { encoding: 'utf8', mode: 0o600 });
+  fs.writeFileSync(destination, `${lines.join('\n')}\n`, { encoding: 'utf8', mode: 0o600 });
 }
 
 export const NPM_TOKEN_HELP = `NPM_TOKEN is not set.
