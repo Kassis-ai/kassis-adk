@@ -8,7 +8,7 @@
       "title": "Manifest does not match the schema",
       "message": "{path}: {detail}",
       "fix": "Fix the value at {path}. The schema is @kassis/addon-sdk/schema/addon-manifest.v2.schema.json.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-101"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-101"
     },
     {
       "code": "KADK-102",
@@ -17,7 +17,7 @@
       "title": "Required manifest field is missing",
       "message": "{path} is missing '{field}'",
       "fix": "Add '{field}' at {path}.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-102"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-102"
     },
     {
       "code": "KADK-103",
@@ -26,7 +26,7 @@
       "title": "Unknown manifest field",
       "message": "{path} has an unknown field '{field}'",
       "fix": "Remove '{field}'. Informational values go under metadata.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-103"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-103"
     },
     {
       "code": "KADK-104",
@@ -35,7 +35,7 @@
       "title": "Not a manifest v2",
       "message": "manifestVersion must be 2",
       "fix": "Set \"manifestVersion\": 2 and move the v1 fields as the v1-to-v2 map in the @kassis/addon-sdk README describes.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-104"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-104"
     },
     {
       "code": "KADK-105",
@@ -44,7 +44,7 @@
       "title": "routing cannot be set",
       "message": "routing is derived from the addon id and cannot be set",
       "fix": "Remove routing. Routes mount at /api/v1/addons/<id>; pass a sub-path to ctx.routes.mount.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-105"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-105"
     },
     {
       "code": "KADK-106",
@@ -53,7 +53,7 @@
       "title": "entry is removed",
       "message": "entry is an old scaffold field that the host does not read",
       "fix": "Remove entry. Set entrypoints.main when the module is not index.js.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-106"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-106"
     },
     {
       "code": "KADK-107",
@@ -62,7 +62,7 @@
       "title": "permissionNamespaceWaiver is removed",
       "message": "permissionNamespaceWaiver is no longer supported",
       "fix": "Remove it and name every permission <id>.<resource>.<action>.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-107"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-107"
     },
     {
       "code": "KADK-108",
@@ -71,7 +71,7 @@
       "title": "Manifest v1 field",
       "message": "'{field}' is a manifest v1 field; in v2 use {home}",
       "fix": "Move the value to {home}.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-108"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-108"
     },
     {
       "code": "KADK-109",
@@ -80,7 +80,7 @@
       "title": "Addon id is a core namespace",
       "message": "Addon id '{id}' collides with the core namespace '{namespace}'",
       "fix": "Choose an id that is not a core namespace.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-109"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-109"
     },
     {
       "code": "KADK-110",
@@ -89,7 +89,7 @@
       "title": "Permission outside the addon namespace",
       "message": "Permission '{value}' at {path} must start with {prefixes}",
       "fix": "Rename the permission so it starts with {prefixes}.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-110"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-110"
     },
     {
       "code": "KADK-111",
@@ -98,7 +98,7 @@
       "title": "Job type outside the addon namespace",
       "message": "Job type '{value}' at {path} must start with {prefixes}",
       "fix": "Rename the job type so it starts with {prefixes}.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-111"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-111"
     },
     {
       "code": "KADK-112",
@@ -107,7 +107,7 @@
       "title": "Prompt key outside the addon namespace",
       "message": "Prompt key '{value}' at {path} must start with {prefixes}",
       "fix": "Rename the prompt key so it starts with {prefixes}.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-112"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-112"
     },
     {
       "code": "KADK-113",
@@ -116,7 +116,7 @@
       "title": "Secret key outside the addon namespace",
       "message": "Secret key '{value}' at {path} must start with {prefixes}",
       "fix": "Rename the secret key so it starts with {prefixes}.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-113"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-113"
     },
     {
       "code": "KADK-114",
@@ -125,7 +125,7 @@
       "title": "Published event outside the addon namespace",
       "message": "Event '{value}' at {path} must start with {prefixes}",
       "fix": "Rename the event so it starts with {prefixes}. Events other addons publish go in events.subscribes.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-114"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-114"
     },
     {
       "code": "KADK-115",
@@ -134,7 +134,7 @@
       "title": "Audit action outside the addon namespace",
       "message": "Audit action '{value}' at {path} must start with {prefixes}",
       "fix": "Rename the audit action so it starts with {prefixes}.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-115"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-115"
     },
     {
       "code": "KADK-116",
@@ -143,7 +143,7 @@
       "title": "Duplicate manifest entry",
       "message": "{path} lists '{value}' more than once",
       "fix": "Remove the duplicate entry.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-116"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-116"
     },
     {
       "code": "KADK-117",
@@ -152,7 +152,7 @@
       "title": "Capability is both required and optional",
       "message": "Capability '{value}' is in both requires and optional",
       "fix": "Keep it in one list: requires when the addon cannot work without it, optional when it degrades.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-117"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-117"
     },
     {
       "code": "KADK-118",
@@ -161,7 +161,7 @@
       "title": "Required permission is not declared",
       "message": "requiredPermissions lists '{value}', which is not in permissions",
       "fix": "Declare '{value}' in permissions, or remove it from requiredPermissions.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-118"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-118"
     },
     {
       "code": "KADK-119",
@@ -170,7 +170,7 @@
       "title": "Host API version not supported",
       "message": "The addon needs host API {range}; this host provides {hostVersion}",
       "fix": "Build against an @kassis/addon-sdk major this host supports, or upgrade the host.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-119"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-119"
     },
     {
       "code": "KADK-120",
@@ -179,7 +179,7 @@
       "title": "Path leaves the addon package",
       "message": "{path} '{value}' must be a relative path inside the addon package",
       "fix": "Use a path relative to the package root, without '..' segments.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-120"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-120"
     },
     {
       "code": "KADK-121",
@@ -188,7 +188,7 @@
       "title": "Addon configuration does not match config.schema",
       "message": "Configuration of '{id}' is invalid: {detail}",
       "fix": "Change the addon configuration so it matches config.schema in the manifest.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-121"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-121"
     },
     {
       "code": "KADK-122",
@@ -197,7 +197,7 @@
       "title": "Group name outside the addon namespace",
       "message": "Group name '{value}' at {path} must start with {prefixes}",
       "fix": "Rename the group so it starts with {prefixes}.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-122"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-122"
     },
     {
       "code": "KADK-123",
@@ -206,7 +206,7 @@
       "title": "Group lists an undeclared permission",
       "message": "groups lists '{value}', which is not in permissions",
       "fix": "Declare '{value}' in permissions, or remove it from the group.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-123"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-123"
     },
     {
       "code": "KADK-124",
@@ -215,7 +215,7 @@
       "title": "Resource type missing sensitivity",
       "message": "{path} must declare sensitivity ({levels}) when database.ownedTables is non-empty",
       "fix": "Set sensitivity on every resourceTypes entry to one of the seal levels: {levels}.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-124"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-124"
     },
     {
       "code": "KADK-125",
@@ -224,7 +224,7 @@
       "title": "Process pack key outside the addon namespace",
       "message": "Pack key '{value}' at {path} must start with {prefixes}",
       "fix": "Rename the pack key so it starts with {prefixes}.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-125"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-125"
     },
     {
       "code": "KADK-126",
@@ -233,7 +233,7 @@
       "title": "Process pack file is missing or outside process/",
       "message": "Pack file '{file}' is missing or is not under process/",
       "fix": "Put the item at process/<name>.json and set process.packs[].file to that path.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-126"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-126"
     },
     {
       "code": "KADK-127",
@@ -242,7 +242,7 @@
       "title": "Process pack file does not match the manifest",
       "message": "Pack file '{file}' key or kind does not match process.packs",
       "fix": "Set the file's key and kind to the same values as its process.packs entry.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-127"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-127"
     },
     {
       "code": "KADK-128",
@@ -251,7 +251,7 @@
       "title": "Process pack lists an undeclared permission",
       "message": "Pack '{key}' lists permission '{value}', which is not in permissions",
       "fix": "Declare '{value}' in permissions, or remove it from the pack.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-128"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-128"
     },
     {
       "code": "KADK-129",
@@ -260,7 +260,7 @@
       "title": "Process pack names an undeclared record type",
       "message": "Pack '{key}' names record type '{value}', which is not in resourceTypes",
       "fix": "Declare '{value}' in resourceTypes, or remove it from the pack.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-129"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-129"
     },
     {
       "code": "KADK-201",
@@ -269,7 +269,7 @@
       "title": "Import from the host alias @/",
       "message": "{file} imports '{specifier}', which is host source",
       "fix": "Import from @kassis/* packages or from your own src/.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-201"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-201"
     },
     {
       "code": "KADK-202",
@@ -278,7 +278,7 @@
       "title": "Import from Kassis core",
       "message": "{file} imports '{specifier}', which is Kassis core (server/)",
       "fix": "Use an AddonContext facade or a capability declared in requires or optional.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-202"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-202"
     },
     {
       "code": "KADK-203",
@@ -287,7 +287,7 @@
       "title": "Import of the core capability registry",
       "message": "{file} imports '{specifier}', which skips the capability access check",
       "fix": "Consume capabilities through ctx.capabilities.consume, declared in requires or optional.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-203"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-203"
     },
     {
       "code": "KADK-204",
@@ -296,7 +296,7 @@
       "title": "Import outside the package",
       "message": "{file} imports '{specifier}', which resolves outside the package",
       "fix": "Keep relative imports inside the package; depend on other code through a declared package.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-204"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-204"
     },
     {
       "code": "KADK-205",
@@ -305,7 +305,7 @@
       "title": "Import of an undeclared package",
       "message": "{file} imports '{specifier}', which is not declared in the package dependencies",
       "fix": "Declare the package in dependencies, or remove the import. Node built-ins and unverified @kassis/* packages are not allowed.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-205"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-205"
     },
     {
       "code": "KADK-206",
@@ -314,7 +314,7 @@
       "title": "Host service resolved by name",
       "message": "Add-on '{id}' resolved '{key}' from the host container",
       "fix": "Use the AddonContext facade that replaces '{key}' (see the facade table in the @kassis/addon-sdk README).",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-206"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-206"
     },
     {
       "code": "KADK-207",
@@ -323,7 +323,7 @@
       "title": "Service name outside the addon namespace",
       "message": "Service '{value}' must start with {prefixes}",
       "fix": "Publish the service as a capability, or rename it so it starts with {prefixes}.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-207"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-207"
     },
     {
       "code": "KADK-208",
@@ -332,7 +332,7 @@
       "title": "Service name already registered",
       "message": "Service '{value}' is already registered by {owner}",
       "fix": "Pick a name in your namespace. An addon cannot replace a core or another addon's service.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-208"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-208"
     },
     {
       "code": "KADK-209",
@@ -341,7 +341,7 @@
       "title": "Job type already has a handler",
       "message": "Job type '{value}' already has a handler from {owner}",
       "fix": "Use a job type in your namespace and declare it in jobs.types.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-209"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-209"
     },
     {
       "code": "KADK-210",
@@ -350,7 +350,7 @@
       "title": "Prompt key already registered",
       "message": "Prompt key '{value}' is already registered by {owner}",
       "fix": "Use a prompt key in your namespace and declare it in prompts.keys.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-210"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-210"
     },
     {
       "code": "KADK-211",
@@ -359,7 +359,7 @@
       "title": "Mount path outside the addon",
       "message": "Mount path '{value}' must be /api/v1/addons/{id} or below it",
       "fix": "Mount through ctx.routes.mount, which places routes under /api/v1/addons/{id}.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-211"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-211"
     },
     {
       "code": "KADK-212",
@@ -368,7 +368,7 @@
       "title": "Required capability is missing",
       "message": "Add-on '{id}' requires {capability} {range}; available: {available}",
       "fix": "Enable an addon that provides a matching version, or move the capability to optional and handle null.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-212"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-212"
     },
     {
       "code": "KADK-213",
@@ -377,7 +377,7 @@
       "title": "Capability dependency cycle",
       "message": "Required capabilities form a cycle: {cycle}",
       "fix": "Make one edge optional, or move the shared contract into a third addon.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-213"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-213"
     },
     {
       "code": "KADK-214",
@@ -386,7 +386,7 @@
       "title": "Capability consumed without a declaration",
       "message": "Add-on '{id}' consumed '{capability}', which is not in requires or optional",
       "fix": "Declare '{capability}' in requires or optional.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-214"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-214"
     },
     {
       "code": "KADK-215",
@@ -395,7 +395,7 @@
       "title": "Capability provided without a declaration",
       "message": "Add-on '{id}' provided '{capability}', which is not in provides",
       "fix": "Declare '{capability}' in provides with the version it implements.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-215"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-215"
     },
     {
       "code": "KADK-216",
@@ -404,7 +404,7 @@
       "title": "Route permission is not declared",
       "message": "Add-on '{id}' mounted a route with permission '{value}', which is not in permissions",
       "fix": "Declare '{value}' in permissions, or mount the route with a permission the manifest declares.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-216"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-216"
     },
     {
       "code": "KADK-217",
@@ -413,7 +413,7 @@
       "title": "Tool path is outside the project",
       "message": "{path} is outside the project root",
       "fix": "Pass a dir inside the directory where kassis-adk-mcp was started, or set --root to that directory.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-217"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-217"
     },
     {
       "code": "KADK-218",
@@ -422,7 +422,7 @@
       "title": "Tier 2 cannot provide a capability yet",
       "message": "Add-on '{id}' is tier 2; ctx.capabilities.provide is refused by the host",
       "fix": "Use requires to consume another addon's capability. Do not add provides[] for tier 2 until the host accepts provide.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-218"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-218"
     },
     {
       "code": "KADK-219",
@@ -431,7 +431,7 @@
       "title": "Facade call refused for this tier",
       "message": "{file} calls {method}, which tier {tier} addons cannot use",
       "fix": "Use a facade allowed for your tier in @kassis/addon-sdk/tier-matrix.json, pick tier 1 when appropriate, or consume another addon through requires.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-219"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-219"
     },
     {
       "code": "KADK-220",
@@ -440,7 +440,7 @@
       "title": "Capability outside the addon namespace",
       "message": "Capability '{value}' at {path} must start with {prefixes}",
       "fix": "Rename the capability so it starts with {prefixes}, and declare that id in provides.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-220"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-220"
     },
     {
       "code": "KADK-221",
@@ -449,7 +449,7 @@
       "title": "Banned dependency",
       "message": "Dependency '{name}' is a banned {category} package",
       "fix": "Remove '{name}' from package.json and use the core facade for {category}.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-221"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-221"
     },
     {
       "code": "KADK-222",
@@ -458,7 +458,7 @@
       "title": "Extension point is not declared",
       "message": "Add-on '{id}' registered '{value}', which is not in extends",
       "fix": "Add '{value}' to extends in the manifest.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-222"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-222"
     },
     {
       "code": "KADK-223",
@@ -467,7 +467,7 @@
       "title": "Extension name is already registered",
       "message": "Add-on '{id}' cannot register '{value}' on '{path}'; another registration already owns that name",
       "fix": "Use a name this add-on owns, or disable the add-on that registered '{value}'.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-223"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-223"
     },
     {
       "code": "KADK-301",
@@ -476,7 +476,7 @@
       "title": "Tier 2 addon declares legacyTables",
       "message": "legacyTables is allowed only for tier 1 addons",
       "fix": "Remove legacyTables and keep the addon's tables in data.schema.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-301"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-301"
     },
     {
       "code": "KADK-302",
@@ -485,7 +485,7 @@
       "title": "Tier 2 addon reads core tables",
       "message": "database.readAccess is allowed only for tier 1 addons",
       "fix": "Remove database.readAccess and read core data through ctx.core facades.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-302"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-302"
     },
     {
       "code": "KADK-303",
@@ -494,7 +494,7 @@
       "title": "Owned table outside data.schema",
       "message": "Owned table '{value}' at {path} is not in {schema}",
       "fix": "Qualify the table as {schema}.<table>.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-303"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-303"
     },
     {
       "code": "KADK-304",
@@ -503,7 +503,7 @@
       "title": "data.schema does not match the addon id",
       "message": "data.schema is '{value}'; it must be '{expected}'",
       "fix": "Set data.schema to '{expected}'.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-304"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-304"
     },
     {
       "code": "KADK-305",
@@ -512,7 +512,7 @@
       "title": "Tier 2 tables without data.schema",
       "message": "A tier 2 addon that owns tables must declare data.schema",
       "fix": "Add data.schema and qualify every owned table with it.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-305"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-305"
     },
     {
       "code": "KADK-306",
@@ -521,7 +521,7 @@
       "title": "Legacy table is not owned",
       "message": "legacyTables entry '{value}' is not in database.ownedTables",
       "fix": "List the table in database.ownedTables, or remove the legacyTables entry.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-306"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-306"
     },
     {
       "code": "KADK-307",
@@ -530,7 +530,7 @@
       "title": "Legacy rename outside the addon prefix",
       "message": "legacyTables newName '{value}' must start with {prefixes}",
       "fix": "Rename the table into the addon prefix or into data.schema.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-307"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-307"
     },
     {
       "code": "KADK-308",
@@ -539,7 +539,7 @@
       "title": "Core table queried through ctx.data",
       "message": "Add-on '{id}' queried '{table}', which it does not own",
       "fix": "Read core data through ctx.core facades; ctx.data reaches only the addon's own schema.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-308"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-308"
     },
     {
       "code": "KADK-309",
@@ -548,7 +548,7 @@
       "title": "Owned tables without data.retention",
       "message": "database.ownedTables is set but data.retention is missing",
       "fix": "Set data.retention to retain, archive, or purge.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-309"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-309"
     },
     {
       "code": "KADK-310",
@@ -557,7 +557,7 @@
       "title": "Private mechanism table",
       "message": "Table '{table}' is a private {mechanism} table",
       "fix": "Use the core {mechanism} feature, or add an explained row for '{table}' in REUSE.md.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-310"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-310"
     },
     {
       "code": "KADK-311",
@@ -566,7 +566,7 @@
       "title": "Private mechanism table needs acknowledgement",
       "message": "Table '{table}' is a private {mechanism} table with an override",
       "fix": "An approver must acknowledge the REUSE.md reason for '{table}' before this ships.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-311"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-311"
     },
     {
       "code": "KADK-312",
@@ -575,7 +575,7 @@
       "title": "Owned table has no core alternative",
       "message": "Owned table '{table}' does not say which core record it could not be",
       "fix": "Add database.tableNotes for '{table}' with notCoreRecord and why.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-312"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-312"
     },
     {
       "code": "KADK-313",
@@ -584,7 +584,7 @@
       "title": "Process pack kind has no stable schema",
       "message": "Pack '{key}' kind '{kind}' has no stable schema, so its body was not checked",
       "fix": "Leave the body unchecked until the host publishes a schema for '{kind}'. Do not add one in the kit.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-313"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-313"
     },
     {
       "code": "KADK-314",
@@ -593,7 +593,7 @@
       "title": "Process pack reference does not resolve",
       "message": "Pack '{key}' references '{value}', which is not a pack key",
       "fix": "Point '{value}' at another pack key in this addon. References use keys, never ids.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-314"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-314"
     },
     {
       "code": "KADK-316",
@@ -602,7 +602,7 @@
       "title": "Process pack file does not match the pack schema",
       "message": "{path}: {detail}",
       "fix": "Match the file to @kassis/addon-sdk/schema/process-pack.schema.json. The body stays an object; do not add settings, users, role assignments or secrets.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-316"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-316"
     },
     {
       "code": "KADK-317",
@@ -611,7 +611,7 @@
       "title": "Duplicate process pack key",
       "message": "Pack key '{value}' is listed more than once",
       "fix": "Keep one process.packs entry for '{value}'.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-317"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-317"
     },
     {
       "code": "KADK-318",
@@ -620,7 +620,7 @@
       "title": "Process file is not listed",
       "message": "'{file}' is under process/ but not listed in process.packs",
       "fix": "Add a process.packs entry for '{file}', or remove the file. The list is what the signature approval diff shows.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-318"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-318"
     },
     {
       "code": "KADK-401",
@@ -629,7 +629,7 @@
       "title": "Event is not declared in publishes",
       "message": "Add-on '{id}' published '{event}', which is not in events.publishes",
       "fix": "Declare the event with its schema in events.publishes.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-401"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-401"
     },
     {
       "code": "KADK-402",
@@ -638,7 +638,7 @@
       "title": "Event payload fails its schema",
       "message": "Payload for '{event}' is invalid: {detail}",
       "fix": "Send a payload that matches the event schema, or change the schema in a compatible way.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-402"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-402"
     },
     {
       "code": "KADK-403",
@@ -647,7 +647,7 @@
       "title": "Event is not declared in subscribes",
       "message": "Add-on '{id}' subscribed to '{event}', which is not in events.subscribes",
       "fix": "Declare the event in events.subscribes.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-403"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-403"
     },
     {
       "code": "KADK-404",
@@ -656,7 +656,7 @@
       "title": "Event schema file is missing",
       "message": "Schema '{value}' for event '{event}' is not in the package",
       "fix": "Add the schema file at that path, inside the package.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-404"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-404"
     },
     {
       "code": "KADK-405",
@@ -665,7 +665,7 @@
       "title": "Event schema is not valid",
       "message": "Schema '{value}' for event '{event}' is not a valid JSON Schema: {detail}",
       "fix": "Fix the schema so it compiles as JSON Schema draft 2020-12.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-405"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-405"
     },
     {
       "code": "KADK-406",
@@ -674,7 +674,7 @@
       "title": "Event schema path is not a schema file",
       "message": "Schema '{value}' at {path} must end with .schema.json",
       "fix": "Point events.publishes[].schema at a .schema.json file inside the package.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-406"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-406"
     },
     {
       "code": "KADK-501",
@@ -683,7 +683,7 @@
       "title": "Runtime-loaded UI without an entry file",
       "message": "ui.runtimeLoad is true but ui.entryFile is not set",
       "fix": "Set ui.entryFile to the built UI entry, or set ui.runtimeLoad to false.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-501"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-501"
     },
     {
       "code": "KADK-502",
@@ -692,7 +692,7 @@
       "title": "UI slot contribution collides",
       "message": "Slot '{slot}' already has component '{component}' from {owner}",
       "fix": "Use a different component name or slot.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-502"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-502"
     },
     {
       "code": "KADK-503",
@@ -701,7 +701,7 @@
       "title": "UI slot failed to render",
       "message": "Component '{component}' in slot '{slot}' threw while rendering: {detail}",
       "fix": "Fix the render error; the host shows an error state in the slot until then.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-503"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-503"
     },
     {
       "code": "KADK-504",
@@ -710,7 +710,7 @@
       "title": "UI entry file includes a directory",
       "message": "ui.entryFile '{value}' includes a slash",
       "fix": "Set ui.entryFile to the file name inside frontend/dist, for example index.js.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-504"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-504"
     },
     {
       "code": "KADK-601",
@@ -719,7 +719,7 @@
       "title": "Manifest signature is invalid",
       "message": "The signature of '{id}' does not match its manifest",
       "fix": "Sign the package again with a trusted publisher key.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-601"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-601"
     },
     {
       "code": "KADK-602",
@@ -728,7 +728,7 @@
       "title": "Content hash does not match",
       "message": "The files of '{id}' do not match contentHash",
       "fix": "Rebuild and sign the package again; never edit files after signing.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-602"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-602"
     },
     {
       "code": "KADK-603",
@@ -737,7 +737,7 @@
       "title": "Addon identity mismatch",
       "message": "Add-on '{id}' called {operation} as '{claimed}'",
       "fix": "Do not pass another addon's id; the host fills in the caller.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-603"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-603"
     },
     {
       "code": "KADK-604",
@@ -746,7 +746,7 @@
       "title": "Secret mapping rejected",
       "message": "Secret mapping '{value}' for '{id}' was rejected: {detail}",
       "fix": "Map only keys that start with '{id}:' to secret names and variables with the addon prefix.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-604"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-604"
     },
     {
       "code": "KADK-605",
@@ -755,7 +755,7 @@
       "title": "Secret key is not declared",
       "message": "Add-on '{id}' read secret '{value}', which is not in secrets.keys",
       "fix": "Declare the key in secrets.keys.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-605"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-605"
     },
     {
       "code": "KADK-606",
@@ -764,7 +764,7 @@
       "title": "Audit action is not declared",
       "message": "Add-on '{id}' recorded audit action '{value}', which is not in audit.actions",
       "fix": "Declare the action in audit.actions.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-606"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-606"
     },
     {
       "code": "KADK-607",
@@ -773,7 +773,7 @@
       "title": "Egress host is not allowed",
       "message": "Add-on '{id}' called '{host}', which is not in egress.hosts",
       "fix": "Declare the host in egress.hosts; the change shows in the evidence pack.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-607"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-607"
     },
     {
       "code": "KADK-608",
@@ -782,7 +782,7 @@
       "title": "Prompt key is not declared",
       "message": "Add-on '{id}' used prompt key '{value}', which is not in prompts.keys",
       "fix": "Declare the key in prompts.keys.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-608"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-608"
     },
     {
       "code": "KADK-609",
@@ -791,7 +791,7 @@
       "title": "LLM settings override rejected",
       "message": "Add-on '{id}' passed '{option}' to ctx.llm.invoke",
       "fix": "Remove the option. Model, provider, temperature, token limits and timeouts come from AI Settings and the prompt.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-609"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-609"
     },
     {
       "code": "KADK-610",
@@ -800,7 +800,7 @@
       "title": "Job type is not declared",
       "message": "Add-on '{id}' used job type '{value}', which is not in jobs.types",
       "fix": "Declare the job type in jobs.types.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-610"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-610"
     },
     {
       "code": "KADK-611",
@@ -809,7 +809,7 @@
       "title": "Principal not issued by the host",
       "message": "Add-on '{id}' passed {operation} a principal or request the host did not issue",
       "fix": "Pass the principal from ctx.routes.principalOf(request), event.principal or job.principal, unchanged.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-611"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-611"
     },
     {
       "code": "KADK-612",
@@ -818,7 +818,7 @@
       "title": "Setting outside the addon's read scope",
       "message": "Add-on '{id}' read setting '{value}', which is outside its namespace",
       "fix": "Read settings that start with {prefixes}. Core settings reach an addon through a facade, such as ctx.settings.search().",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-612"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-612"
     },
     {
       "code": "KADK-613",
@@ -827,7 +827,7 @@
       "title": "No user to attribute the write to",
       "message": "Add-on '{id}' called {operation} with a principal that has no user",
       "fix": "Pass ctx.routes.principalOf for a user row; pass ctx.principal.service with actor: 'service' for a system row.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-613"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-613"
     },
     {
       "code": "KADK-614",
@@ -836,7 +836,7 @@
       "title": "Egress limit exceeded",
       "message": "Add-on '{id}' call to '{host}' exceeded the egress {limit} limit of {value}",
       "fix": "Ask for less data or a faster answer, or have an operator raise addons.egress.timeoutMs or addons.egress.maxResponseBytes in Settings.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-614"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-614"
     },
     {
       "code": "KADK-615",
@@ -845,7 +845,7 @@
       "title": "Principal lacks the permission",
       "message": "Add-on '{id}' called {operation} for a principal without {permission}",
       "fix": "Act for a user who holds {permission}, or have an operator grant it to the addon's service account. Facades check the principal's permissions, never the addon's.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-615"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-615"
     },
     {
       "code": "KADK-616",
@@ -854,7 +854,7 @@
       "title": "Record outside the principal's scope",
       "message": "Add-on '{id}' called {operation} on {resource} '{value}', which the principal cannot access",
       "fix": "Act for a user whose scope (own, department, jurisdiction) includes the record.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-616"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-616"
     },
     {
       "code": "KADK-617",
@@ -863,7 +863,7 @@
       "title": "Record type not open to the addon",
       "message": "Add-on '{id}' called {operation} on record type '{value}', which is not open to it",
       "fix": "Use a record type the addon owns: one it registered through ctx.extend, or one in its namespace. Core record types are reached only through the facade operations that apply their API checks.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-617"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-617"
     },
     {
       "code": "KADK-701",
@@ -872,7 +872,7 @@
       "title": "Attestation file is missing",
       "message": ".kassis/attestation.json was not found",
       "fix": "Run kassis addon attest and answer every guardrail of the pinned profile version.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-701"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-701"
     },
     {
       "code": "KADK-702",
@@ -881,7 +881,7 @@
       "title": "Blocking guardrail has no answer",
       "message": "Guardrail '{key}' is blocking and has no answer",
       "fix": "Answer '{key}' with followed, not_applicable (with a reason) or violated (with an explanation).",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-702"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-702"
     },
     {
       "code": "KADK-703",
@@ -890,7 +890,7 @@
       "title": "Blocking guardrail violated",
       "message": "Guardrail '{key}' is blocking and was answered violated",
       "fix": "Undo the change that broke '{key}', then attest again.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-703"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-703"
     },
     {
       "code": "KADK-704",
@@ -899,7 +899,7 @@
       "title": "Attestation does not match the lock file",
       "message": "The attestation is for profile version {attested}; the lock file pins {locked}",
       "fix": "Run kassis addon attest again against the pinned profile version.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-704"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-704"
     },
     {
       "code": "KADK-705",
@@ -908,7 +908,7 @@
       "title": "not_applicable without a reason",
       "message": "Guardrail '{key}' is not_applicable but has no reason",
       "fix": "Add the reason in the answer note.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-705"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-705"
     },
     {
       "code": "KADK-706",
@@ -917,7 +917,7 @@
       "title": "violated without an explanation",
       "message": "Guardrail '{key}' is violated but has no explanation",
       "fix": "Add the explanation in the answer note.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-706"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-706"
     },
     {
       "code": "KADK-707",
@@ -926,7 +926,7 @@
       "title": "Machine-verified guardrail without evidence",
       "message": "Guardrail '{key}' is followed but has no evidence from {check}",
       "fix": "Run certify so {check} is recorded in .kassis/evidence/checks.json. Evidence typed into the attestation is ignored.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-707"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-707"
     },
     {
       "code": "KADK-708",
@@ -935,7 +935,7 @@
       "title": "Agent run expired",
       "message": "Run '{runId}' expired before the attestation was submitted",
       "fix": "Start a new run, read the pinned guardrails and attest again.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-708"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-708"
     },
     {
       "code": "KADK-709",
@@ -944,7 +944,7 @@
       "title": "Profile lock file is missing",
       "message": ".kassis/agent-profile.lock.json was not found",
       "fix": "Run kassis adk sync to pin the latest published profile version.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-709"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-709"
     },
     {
       "code": "KADK-710",
@@ -953,7 +953,7 @@
       "title": "Answer for an unknown guardrail",
       "message": "Guardrail '{key}' is not in the pinned profile version",
       "fix": "Remove the answer or sync the lock file.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-710"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-710"
     },
     {
       "code": "KADK-711",
@@ -962,7 +962,7 @@
       "title": "Guardrail answered twice",
       "message": "Guardrail '{key}' has more than one answer",
       "fix": "Keep one answer per guardrail.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-711"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-711"
     },
     {
       "code": "KADK-712",
@@ -971,7 +971,7 @@
       "title": "Advisory guardrail violated",
       "message": "Advisory guardrail '{key}' was answered violated",
       "fix": "Say why in the change summary; the answer is recorded.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-712"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-712"
     },
     {
       "code": "KADK-713",
@@ -980,7 +980,7 @@
       "title": "Advisory guardrail has no answer",
       "message": "Advisory guardrail '{key}' has no answer",
       "fix": "Answer every guardrail, including advisory ones.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-713"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-713"
     },
     {
       "code": "KADK-714",
@@ -989,7 +989,7 @@
       "title": "Attestation outcome is not allowed",
       "message": "Guardrail '{key}' has outcome '{outcome}', which is not followed, violated or not_applicable",
       "fix": "Set the outcome to followed, violated or not_applicable. A blank outcome fails certify.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-714"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-714"
     },
     {
       "code": "KADK-715",
@@ -998,7 +998,7 @@
       "title": "Typed machine evidence is ignored",
       "message": "Guardrail '{key}' has typed evidence. Machine evidence comes only from .kassis/evidence/checks.json.",
       "fix": "Remove the typed evidence for '{key}'. Certify records {check} itself.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-715"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-715"
     },
     {
       "code": "KADK-718",
@@ -1007,7 +1007,7 @@
       "title": "Requirements file is missing",
       "message": "REQUIREMENTS.md was not found",
       "fix": "Add REQUIREMENTS.md with FR-* and NFR-* rows, or run kassis-addon init from the template.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-718"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-718"
     },
     {
       "code": "KADK-719",
@@ -1016,7 +1016,7 @@
       "title": "Must requirement is not traced",
       "message": "Must requirement '{id}' is not named in test/ or GAPS.md",
       "fix": "Add the id to a test under test/, or record the gap in GAPS.md, then run kassis-addon requirements.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-719"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-719"
     },
     {
       "code": "KADK-720",
@@ -1025,7 +1025,7 @@
       "title": "Requirement plan is missing",
       "message": "PLAN.md was not found",
       "fix": "Add PLAN.md with a rung for every FR-* and NFR-* row, then run kassis-addon plan.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-720"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-720"
     },
     {
       "code": "KADK-721",
@@ -1034,7 +1034,7 @@
       "title": "Requirement has no rung",
       "message": "Requirement '{id}' has no rung in PLAN.md",
       "fix": "Map '{id}' to configuration, extension-point, facade, own-code, or gap, then run kassis-addon plan.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-721"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-721"
     },
     {
       "code": "KADK-722",
@@ -1043,7 +1043,7 @@
       "title": "Requirement rung is not allowed",
       "message": "Requirement '{id}' has rung '{rung}', which is not configuration, extension-point, facade, own-code or gap",
       "fix": "Set the rung for '{id}' to configuration, extension-point, facade, own-code, or gap. A duplicate row uses rung duplicate.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-722"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-722"
     },
     {
       "code": "KADK-723",
@@ -1052,7 +1052,7 @@
       "title": "Soft budget exceeded without reason",
       "message": "Soft budget '{metric}' is {count} (limit {limit}) and BUDGETS.md has no reason",
       "fix": "Add a BUDGETS.md row for '{metric}' with Count, Limit and a written reason the approver can acknowledge, then run kassis-addon budgets.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-723"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-723"
     },
     {
       "code": "KADK-724",
@@ -1061,7 +1061,7 @@
       "title": "Outbound call has no timeout",
       "message": "Outbound call in '{path}' has no timeout, AbortSignal or signal option",
       "fix": "Pass a timeout, AbortSignal.timeout, or signal on every fetch/HTTP call in '{path}', then run kassis-addon engineering.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-724"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-724"
     },
     {
       "code": "KADK-725",
@@ -1070,7 +1070,7 @@
       "title": "Query has no pagination cap",
       "message": "findMany in '{path}' has no take or skip",
       "fix": "Add take or skip to the findMany call in '{path}', then run kassis-addon engineering.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-725"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-725"
     },
     {
       "code": "KADK-726",
@@ -1079,7 +1079,7 @@
       "title": "UI chrome is outside i18n",
       "message": "UI file '{path}' has chrome outside translation keys or imports i18next",
       "fix": "Move user-visible chrome in '{path}' to host-sdk translation keys (en/fr). Do not import i18next from addon UI. Then run kassis-addon engineering.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-726"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-726"
     },
     {
       "code": "KADK-727",
@@ -1088,7 +1088,7 @@
       "title": "Handler is not idempotent",
       "message": "Handler '{path}' mutates without an idempotency marker, upsert, findFirst/findUnique or ON CONFLICT",
       "fix": "Make the job or event handler in '{path}' safe to run twice (idempotent key, upsert, or prior find), then run kassis-addon engineering.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-727"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-727"
     },
     {
       "code": "KADK-728",
@@ -1097,7 +1097,7 @@
       "title": "Module-level mutable state",
       "message": "Server file '{path}' declares module-level let or var state",
       "fix": "Move mutable state out of module scope in '{path}' so hot toggle does not keep stale values, then run kassis-addon engineering.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-728"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-728"
     },
     {
       "code": "KADK-729",
@@ -1106,7 +1106,7 @@
       "title": "Record access check is missing",
       "message": "Record access check is missing for a declared record type ('{path}')",
       "fix": "Add a canAccess handler for each resourceTypes entry. A missing handler is not an allow.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-729"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-729"
     },
     {
       "code": "KADK-730",
@@ -1115,7 +1115,7 @@
       "title": "Record access check is a stub",
       "message": "Access check '{name}' in '{path}' returns true or only throws",
       "fix": "Replace the access check in '{path}' so it decides from the principal and the record. A return true body and a body that only throws are stubs, including the record-type scaffold.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-730"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-730"
     },
     {
       "code": "KADK-731",
@@ -1124,7 +1124,7 @@
       "title": "Deletion handler is missing",
       "message": "Deletion handler is missing while the addon owns tables ('{path}')",
       "fix": "Add an onDelete handler when database.ownedTables is not empty.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-731"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-731"
     },
     {
       "code": "KADK-732",
@@ -1133,7 +1133,7 @@
       "title": "Deletion handler is a stub",
       "message": "Deletion handler '{name}' in '{path}' is empty or only throws",
       "fix": "Replace the deletion handler in '{path}' so it erases or detaches the record. An empty body and a body that only throws are stubs, including the record-type scaffold.",
-      "docs": "docs/developer/reference/adk-error-codes.md#kadk-732"
+      "docs": "docs/developer/technical/reference/adk-error-codes.md#kadk-732"
     }
   ]
 }

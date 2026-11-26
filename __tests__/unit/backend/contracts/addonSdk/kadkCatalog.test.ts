@@ -9,7 +9,7 @@ import {
 } from '@kassis/addon-sdk';
 import { describe, expect, it } from 'vitest';
 
-const DOCS_PAGE = 'docs/developer/reference/adk-error-codes.md';
+const DOCS_PAGE = 'docs/developer/technical/reference/adk-error-codes.md';
 const SDK_SOURCE = path.resolve('packages/addon-sdk/src');
 
 function docAnchors(markdown: string): string[] {

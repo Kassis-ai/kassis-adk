@@ -96,7 +96,7 @@ describe('validateManifestV2', () => {
       message:
         "Job type 'core.reindex' at jobs.types[0] must start with 'sample-tprm-check.' or 'sample_tprm_check.'",
       fix: "Rename the job type so it starts with 'sample-tprm-check.' or 'sample_tprm_check.'.",
-      docs: 'docs/developer/reference/adk-error-codes.md#kadk-111',
+      docs: 'docs/developer/technical/reference/adk-error-codes.md#kadk-111',
     });
   });
 
