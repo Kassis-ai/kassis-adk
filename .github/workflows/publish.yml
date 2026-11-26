@@ -1,0 +1,56 @@
+# Manual npm publish for the @kassis kit packages (workflow_dispatch only).
+# Manual only: no automatic triggers on branch or tag pushes. Does not push git tags.
+#
+# Auth: NPM_TOKEN repository secret (granular, read/write on @kassis, bypass 2FA)
+#   or npm Trusted Publishing (OIDC) after you link this workflow on npmjs.com.
+#
+# See docs/publishing.md.
+
+name: Publish @kassis packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      dist_tag:
+        description: npm dist-tag (default latest)
+        required: false
+        default: latest
+        type: string
+      dry_run:
+        description: npm publish --dry-run only (no upload)
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Kassis Node
+        uses: ./.github/actions/setup-kassis-node
+
+      - name: Authenticate to npm
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: '22'
+          registry-url: https://registry.npmjs.org
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish packages
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          args=(--tag "${{ inputs.dist_tag }}")
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            args+=(--dry-run)
+          fi
+          node tools/release/publish-packages.mjs "${args[@]}"

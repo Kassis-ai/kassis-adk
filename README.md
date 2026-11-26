@@ -32,6 +32,10 @@ Client documentation is under `docs/developer/technical/adk`. Maintainer notes a
 
 ## Release
 
+To publish all six `@kassis` packages to npm in one step (no 2FA prompt per package),
+see [docs/publishing.md](./docs/publishing.md) (`npm run publish:packages:dry`, then
+`npm run publish:packages`).
+
 A maintainer pushes a tag `adk/vX.Y.Z`. `.github/workflows/adk-release.yml` builds,
 tests, packs, signs and publishes the changesets fixed group to npmjs.com and attaches
 the signed air-gap bundle to the GitHub release.
