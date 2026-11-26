@@ -21,7 +21,10 @@ const STEPS = [
 
 for (const [label, command, args] of STEPS) {
   process.stdout.write(`\n== ${label}\n`);
-  const result = spawnSync(command, args, { stdio: 'inherit', shell: process.platform === 'win32' });
+  // cmd.exe splits an unquoted executable path on spaces, so `C:\Program Files\nodejs\node.exe`
+  // becomes the command `C:\Program`. Node runs directly. npm.cmd still needs a shell.
+  const shell = process.platform === 'win32' && command === npm;
+  const result = spawnSync(command, args, { stdio: 'inherit', shell });
   if (result.status !== 0) {
     process.stderr.write(`\nGate failed at: ${label}\n`);
     process.exit(result.status ?? 1);
