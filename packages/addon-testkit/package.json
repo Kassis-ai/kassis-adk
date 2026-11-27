@@ -12,7 +12,7 @@
   "dependencies": {
     "@kassis/addon-sdk": "0.2.0",
     "es-module-lexer": "^2.1.0",
-    "typescript": "5.9.3"
+    "typescript": "7.0.2"
   },
   "main": "./src/index.mjs",
   "types": "./index.d.ts",
